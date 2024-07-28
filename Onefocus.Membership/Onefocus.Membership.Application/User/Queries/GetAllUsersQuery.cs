@@ -2,20 +2,31 @@
 using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Application.User.Services;
+using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record GetAllUsersItemQueryResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName) 
-    : IResponseObject<GetAllUsersItemQueryResponse, GetAllUsersItemServiceResponse>
-{
-    public static GetAllUsersItemQueryResponse Create(GetAllUsersItemServiceResponse source) 
-        => new(source.Id, source.UserName, source.Email, source.FirstName, source.LastName);
-}
-public sealed record GetAllUsersQueryResponse(List<GetAllUsersItemQueryResponse> Users) 
+public sealed record GetAllUsersQueryResponse(List<GetAllUsersQueryResponse.UserResponse> Users) 
     : IResponseObject<GetAllUsersQueryResponse, GetAllUsersServiceResponse>
 {
     public static GetAllUsersQueryResponse Create(GetAllUsersServiceResponse source) 
-        => new(source.Users.Select(user => GetAllUsersItemQueryResponse.Create(user)).ToList());
+        => new(source.Users.Select(user => UserResponse.Create(user)).ToList());
+
+    public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles)
+    : IResponseObject<UserResponse, GetAllUsersServiceResponse.UserResponse>
+    {
+        public static UserResponse Create(GetAllUsersServiceResponse.UserResponse source)
+        {
+            List<RoleRepsonse> roles = source.Roles.Select(r => RoleRepsonse.Create(r)).ToList();
+
+            return new(source.Id, source.UserName, source.Email, source.FirstName, source.LastName, roles);
+        }
+    }
+
+    public sealed record RoleRepsonse(Guid Id, string? RoleName) : IResponseObject<RoleRepsonse, GetAllUsersServiceResponse.RoleRepsonse>
+    {
+        public static RoleRepsonse Create(GetAllUsersServiceResponse.RoleRepsonse source) => new(source.Id, source.RoleName);
+    }
 }
 
 public sealed record GetAllUsersQuery() : IQuery<GetAllUsersQueryResponse>;

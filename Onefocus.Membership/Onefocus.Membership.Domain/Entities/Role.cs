@@ -8,5 +8,5 @@ namespace Onefocus.Membership.Domain.Entities;
 public class Role : IdentityRole<Guid>
 {
     private readonly List<UserRole> _userRoles = new();
-    public virtual IReadOnlyCollection<UserRole> UserRoles => _userRoles;
+    public virtual IReadOnlyList<UserRole> UserRoles => _userRoles;
 }

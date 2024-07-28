@@ -1,5 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Messaging;
+using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Domain.ValueObjects;
+using static Onefocus.Membership.Infrastructure.Databases.Repositories.User.GetAllUsersRepositoryResponse;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories.User;
 
@@ -16,5 +18,13 @@ public sealed record UpdatePasswordRepositoryRequest(Guid Id, string Password) :
     public PasswordCommandObject ToRequestObject() => new(Id, Password);
 }
 
-public sealed record GetAllUsersUserItemRepositoryResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName);
-public sealed record GetAllUsersRepositoryResponse(List<GetAllUsersUserItemRepositoryResponse> Users);
+public sealed record GetAllUsersRepositoryResponse(List<UserReponse> Users)
+{
+    public sealed record UserReponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles);
+
+    public sealed record RoleRepsonse(Guid Id, string? RoleName) : IResponseObject<RoleRepsonse, Role>
+    {
+        public static RoleRepsonse Create(Role? source) => source != null ? new (source.Id, source.Name) : new(Guid.Empty, string.Empty);
+    }
+}
+

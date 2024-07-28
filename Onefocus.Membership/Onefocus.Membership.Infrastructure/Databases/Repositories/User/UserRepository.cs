@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
+using Onefocus.Membership.Domain.Entities;
+using System.Linq;
 using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories.User;
@@ -43,7 +45,14 @@ public sealed class UserRepository : IUserRepository
             var users = await _userManager.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-                .Select(u => new GetAllUsersUserItemRepositoryResponse(u.Id, u.UserName, u.Email, u.FirstName, u.LastName))
+                .Select(u => new GetAllUsersRepositoryResponse.UserReponse(
+                    u.Id
+                    , u.UserName
+                    , u.Email
+                    , u.FirstName
+                    , u.LastName
+                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.Create(c.Role)).ToList())
+                )
                 .ToListAsync();
 
             return Result.Success<GetAllUsersRepositoryResponse>(new GetAllUsersRepositoryResponse(users));

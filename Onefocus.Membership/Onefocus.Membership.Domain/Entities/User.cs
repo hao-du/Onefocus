@@ -11,7 +11,7 @@ public class User : IdentityUser<Guid>
     private readonly List<UserRole> _userRoles = new();
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public virtual IReadOnlyCollection<UserRole> UserRoles => _userRoles;
+    public virtual IReadOnlyList<UserRole> UserRoles => _userRoles;
 
     private User(string userName, string firstName, string lastName) : base(userName)
     {
