@@ -1,0 +1,54 @@
+version: '3.4'
+
+networks:
+    proxybackend:
+        name: proxybackend
+        driver: bridge
+
+services:
+    web:
+        image: ${DOCKER_REGISTRY-}onefocusweb
+        build:
+            context: .
+            dockerfile: Onefocus.Web/Dockerfile
+        ports:
+            - "5000:8080"
+        networks:
+            - proxybackend
+
+
+    gateway:
+        image: ${DOCKER_REGISTRY-}onefocusgateway
+        build:
+            context: .
+            dockerfile: Onefocus.Gateway/Dockerfile
+        ports:
+            - "5001:8080"
+        networks:
+            - proxybackend
+
+
+    identity:
+        image: ${DOCKER_REGISTRY-}onefocusidentity
+        build:
+            context: .
+            dockerfile: Onefocus.Identity/Dockerfile
+        ports:
+            - "5002:8080"
+        networks:
+            - proxybackend
+
+
+    membership:
+        image: ${DOCKER_REGISTRY-}onefocusmembershipapi
+        build:
+            context: .
+            dockerfile: Onefocus.Membership/Onefocus.Membership.Api/Dockerfile
+        ports:
+            - "5500:8080"
+        networks:
+            - proxybackend
+
+
+  
+
