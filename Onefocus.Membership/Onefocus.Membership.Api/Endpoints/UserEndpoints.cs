@@ -10,37 +10,37 @@ internal static class UserEndpoints
     {
         app.MapGet("user/all", async (ISender sender) =>
         {
-            Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQuery());
+            Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQueryRequest());
 
-            return result.IsSuccess ? Results.Ok(result.Value) : result.ToBadRequestProblemDetails();
+            return result.IsSuccess ? result.ToOk() : result.ToBadRequestProblemDetails();
         });
 
         app.MapGet("user/{id}", async (Guid id, ISender sender) =>
         {
-            Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQuery());
+            Result<GetUserByIdQueryResponse> result = await sender.Send(new GetUserByIdQueryRequest(id));
 
-            return result.IsSuccess ? Results.Ok(result.Value) : result.ToBadRequestProblemDetails();
+            return result.IsSuccess ? result.ToOk() : result.ToBadRequestProblemDetails();
         });
 
-        app.MapPost("user/create", async (CreateUserCommand command, ISender sender) =>
+        app.MapPost("user/create", async (CreateUserCommandRequest request, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            Result result = await sender.Send(request);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.IsSuccess ? result.ToOk() : result.ToBadRequestProblemDetails();
         });
 
-        app.MapPut("user/update", async (UpdateUserCommand command, ISender sender) =>
+        app.MapPut("user/update", async (UpdateUserCommandRequest request, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            Result result = await sender.Send(request);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.IsSuccess ? result.ToOk() : result.ToBadRequestProblemDetails();
         });
 
-        app.MapPatch("user/password/update", async (UpdatePasswordCommand command, ISender sender) =>
+        app.MapPatch("user/password/update", async (UpdatePasswordCommandRequest request, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            Result result = await sender.Send(request);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.IsSuccess ? result.ToOk() : result.ToBadRequestProblemDetails();
         });
     }
 }

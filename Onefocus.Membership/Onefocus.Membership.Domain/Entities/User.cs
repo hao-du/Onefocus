@@ -29,6 +29,8 @@ public class User : IdentityUser<Guid>
         Email = valueObject.Email;
         FirstName = valueObject.FirstName;
         LastName = valueObject.LastName;
+
+        SecurityStamp = Guid.NewGuid().ToString();
     }
 
     public Result Update(PasswordCommandObject valueObject, IPasswordHasher<User> passwordHash)

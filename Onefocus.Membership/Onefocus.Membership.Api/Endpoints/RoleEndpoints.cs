@@ -8,7 +8,7 @@ internal static class RoleEndpoints
 {
     public static void MapRoleEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("role/create", async (UpdateUserCommand command, ISender sender) =>
+        app.MapPost("role/create", async (UpdateUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 

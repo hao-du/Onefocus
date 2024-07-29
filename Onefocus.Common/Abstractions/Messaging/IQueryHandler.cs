@@ -3,7 +3,7 @@ using Onefocus.Common.Results;
 
 namespace Onefocus.Common.Abstractions.Messaging;
 
-public interface IQueryHandler<in TQuery, TResponse> : IRequestHandler<TQuery, Result<TResponse>>
-    where TQuery : IQuery<TResponse>
+public interface IQueryHandler<in TRequest, TResponse> : IRequestHandler<TRequest, Result<TResponse>>
+    where TRequest : IQuery<TResponse>
 {
 }
