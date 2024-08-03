@@ -29,10 +29,10 @@ services:
 
 
     identity:
-        image: ${DOCKER_REGISTRY-}onefocusidentity
+        image: ${DOCKER_REGISTRY-}onefocusidentityapi
         build:
             context: .
-            dockerfile: Onefocus.Identity/Dockerfile
+            dockerfile: Onefocus.Identity/Onefocus.Identity.Api/Dockerfile
         ports:
             - "5002:8080"
         networks:

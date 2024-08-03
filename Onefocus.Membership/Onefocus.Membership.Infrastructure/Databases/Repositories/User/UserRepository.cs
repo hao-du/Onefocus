@@ -14,7 +14,7 @@ public interface IUserRepository
 {
     Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync();
     Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
-    Task<Result<CreateUserRepositoryResponse>> CreateUserAsync(CreateUserRepositoryRequest request);
+    Task<Result> CreateUserAsync(CreateUserRepositoryRequest request);
     Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request);
     Task<Result> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
 }
@@ -46,10 +46,17 @@ public sealed class UserRepository : IUserRepository
             var users = await _userManager.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-                .AsNoTracking()
+                .Select(u => new GetAllUsersRepositoryResponse.UserReponse(
+                    u.Id
+                    , u.UserName
+                    , u.Email
+                    , u.FirstName
+                    , u.LastName
+                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.Create(c.Role)).ToList())
+                )
                 .ToListAsync();
 
-            return Result.Success<GetAllUsersRepositoryResponse>(GetAllUsersRepositoryResponse.Create(users));
+            return Result.Success<GetAllUsersRepositoryResponse>(new GetAllUsersRepositoryResponse(users));
         }
         catch (Exception ex)
         {
@@ -68,7 +75,7 @@ public sealed class UserRepository : IUserRepository
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == request.Id);
 
-            if(user == null)
+            if (user == null)
             {
                 return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.UserNotExist);
             }
@@ -82,12 +89,12 @@ public sealed class UserRepository : IUserRepository
         }
     }
 
-    public async Task<Result<CreateUserRepositoryResponse>> CreateUserAsync(CreateUserRepositoryRequest request)
+    public async Task<Result> CreateUserAsync(CreateUserRepositoryRequest request)
     {
         var userResult = Entity.User.Create(request.ToRequestObject());
         if (userResult.IsFailure)
         {
-            return Result.Failure<CreateUserRepositoryResponse>(userResult.Error);
+            return userResult;
         }
 
         var user = userResult.Value;
@@ -102,18 +109,18 @@ public sealed class UserRepository : IUserRepository
                 var identityError = identityResult.Errors.FirstOrDefault();
                 if (identityError != null)
                 {
-                    return Result.Failure<CreateUserRepositoryResponse>(new Error(identityError.Code, identityError.Description));
+                    return Result.Failure(new Error(identityError.Code, identityError.Description));
                 }
-                return Result.Failure<CreateUserRepositoryResponse>(CommonErrors.Unknown);
+                return Result.Failure(CommonErrors.Unknown);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure<CreateUserRepositoryResponse>(CommonErrors.InternalServer);
+            return Result.Failure(CommonErrors.InternalServer);
         }
 
-        return Result.Success<CreateUserRepositoryResponse>(new (user.Id));
+        return Result.Success();
     }
 
     public async Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request)

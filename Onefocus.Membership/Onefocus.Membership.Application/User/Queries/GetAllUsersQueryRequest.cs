@@ -1,31 +1,28 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
+﻿using MediatR;
+using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
-using System.Linq;
-using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.User.GetAllUsersRepositoryResponse;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record GetAllUsersQueryResponse(List<GetAllUsersQueryResponse.UserResponse> Users): IResponseObject<GetAllUsersQueryResponse, RepoRes>
+public sealed record GetAllUsersQueryRequest() : IQuery<GetAllUsersQueryResponse>;
+
+public sealed record GetAllUsersQueryResponse(List<GetAllUsersQueryResponse.UserResponse> Users): IResponseObject<GetAllUsersQueryResponse, GetAllUsersRepositoryResponse>
 {
-    public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleResponse> Roles);
-    public sealed record RoleResponse(Guid Id, string? RoleName);
-    public static GetAllUsersQueryResponse Create(RepoRes source)
+    public static GetAllUsersQueryResponse Create(GetAllUsersRepositoryResponse source)
     {
         var users = source.Users.Select(u => new UserResponse(
-            u.Id
-            , u.UserName
-            , u.Email
-            , u.FirstName
-            , u.LastName
-            , u.Roles.Select(r => new RoleResponse(r.Id, r.RoleName)).ToList()
+            u.Id, u.UserName, u.Email, u.FirstName, u.LastName,
+            u.Roles.Select(r => new RoleRepsonse(r.Id, r.RoleName)).ToList()
         )).ToList();
 
-        return new(users);
+        return new (users);
     }
+    public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles);
+    public sealed record RoleRepsonse(Guid Id, string? RoleName);
 }
 
-public sealed record GetAllUsersQueryRequest() : IQuery<GetAllUsersQueryResponse>;
+
 internal sealed class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQueryRequest, GetAllUsersQueryResponse>
 {
     private readonly IUserRepository _userRepository;

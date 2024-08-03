@@ -14,11 +14,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<IdentityDbContext>(option =>
-            option.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")));
+        services.AddDbContext<MembershipDbContext>(option =>
+            option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
 
         services.AddIdentityCore<User>()
-            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddEntityFrameworkStores<MembershipDbContext>()
             .AddDefaultTokenProviders();
 
         services.AddScoped<IUserRepository, UserRepository>();

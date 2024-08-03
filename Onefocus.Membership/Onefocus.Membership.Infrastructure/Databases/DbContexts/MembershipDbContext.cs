@@ -5,9 +5,9 @@ using Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.DbContexts;
 
-internal class IdentityDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
+internal class MembershipDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
+    public MembershipDbContext(DbContextOptions<MembershipDbContext> options) : base(options)
     {
     }
 

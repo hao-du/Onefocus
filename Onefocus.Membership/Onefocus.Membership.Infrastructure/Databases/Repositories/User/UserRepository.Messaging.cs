@@ -1,43 +1,31 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Onefocus.Common.Abstractions.Messaging;
+﻿using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Domain.ValueObjects;
+using static Onefocus.Membership.Infrastructure.Databases.Repositories.User.GetAllUsersRepositoryResponse;
 using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories.User;
 
-public record CommandUserRepositoryRequest(string Email, string FirstName, string LastName): IRequestObject<UserCommandObject>
+public record CommandUserRepositoryRequest(string Email, string FirstName, string LastName) : IRequestObject<UserCommandObject>
 {
     public UserCommandObject ToRequestObject() => new(Email, FirstName, LastName);
 }
-
-public sealed record CreateUserRepositoryRequest(string Email, string FirstName, string LastName, string Password): CommandUserRepositoryRequest(Email, FirstName, LastName);
-public sealed record CreateUserRepositoryResponse(Guid Id);
-
-public sealed record UpdateUserRepositoryRequest(Guid Id, string Email, string FirstName, string LastName): CommandUserRepositoryRequest(Email, FirstName, LastName);
-
-public sealed record UpdatePasswordRepositoryRequest(Guid Id, string Password): IRequestObject<PasswordCommandObject>
+public sealed record CreateUserRepositoryRequest(string Email, string FirstName, string LastName, string Password) 
+    : CommandUserRepositoryRequest(Email, FirstName, LastName);
+public sealed record UpdateUserRepositoryRequest(Guid Id, string Email, string FirstName, string LastName) 
+    : CommandUserRepositoryRequest(Email, FirstName, LastName);
+public sealed record UpdatePasswordRepositoryRequest(Guid Id, string Password) : IRequestObject<PasswordCommandObject>
 {
     public PasswordCommandObject ToRequestObject() => new(Id, Password);
 }
 
-public sealed record GetAllUsersRepositoryResponse(List<GetAllUsersRepositoryResponse.UserResponse> Users): IResponseObject<GetAllUsersRepositoryResponse, List<Entity.User>>
+public sealed record GetAllUsersRepositoryResponse(List<UserReponse> Users)
 {
-    public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleResponse> Roles);
-    public sealed record RoleResponse(Guid Id, string? RoleName);
-    public static GetAllUsersRepositoryResponse Create(List<Entity.User> source)
-    {
-        var users = source.Select(u => new UserResponse(
-            u.Id
-            , u.UserName
-            , u.Email
-            , u.FirstName
-            , u.LastName
-            , u.UserRoles.Select(r => r.Role != null ? new RoleResponse(r.Role.Id, r.Role.Name) : new RoleResponse(Guid.Empty, string.Empty)).ToList()
-        )).ToList();
+    public sealed record UserReponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles);
 
-        return new(users);
+    public sealed record RoleRepsonse(Guid Id, string? RoleName) : IResponseObject<RoleRepsonse, Role>
+    {
+        public static RoleRepsonse Create(Role? source) => source != null ? new (source.Id, source.Name) : new(Guid.Empty, string.Empty);
     }
 }
 
@@ -60,4 +48,6 @@ public sealed record GetUserByIdRepositoryResponse(GetUserByIdRepositoryResponse
         return new(user);
     }
 }
+
+public sealed record LockUserRepositoryRequest(Guid Id);
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Onefocus.Membership.Application;
+namespace Onefocus.Identity.Application;
 
 public static class DependencyInjection
 {

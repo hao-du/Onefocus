@@ -10,7 +10,7 @@ using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Migrations
 {
-    [DbContext(typeof(IdentityDbContext))]
+    [DbContext(typeof(MembershipDbContext))]
     partial class IdentityDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

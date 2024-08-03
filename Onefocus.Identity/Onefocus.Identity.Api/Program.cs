@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using Onefocus.Common.Infrastructure;
-using Onefocus.Membership.Api.Endpoints;
-using Onefocus.Membership.Application;
-using Onefocus.Membership.Infrastructure;
+using Onefocus.Identity.Infrastructure;
+using Onefocus.Identity.Application;
+using Onefocus.Identity.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +15,6 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,8 +23,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler();
-
-app.MapUserEndpoints();
+app.MapIdentityApi<User>();
 
 app.Run();

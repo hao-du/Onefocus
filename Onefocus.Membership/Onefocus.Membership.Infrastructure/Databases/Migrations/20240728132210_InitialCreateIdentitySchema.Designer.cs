@@ -11,7 +11,7 @@ using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Migrations
 {
-    [DbContext(typeof(IdentityDbContext))]
+    [DbContext(typeof(MembershipDbContext))]
     [Migration("20240728132210_InitialCreateIdentitySchema")]
     partial class InitialCreateIdentitySchema
     {

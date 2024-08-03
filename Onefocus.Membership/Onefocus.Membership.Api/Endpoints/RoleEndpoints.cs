@@ -2,7 +2,7 @@
 using Onefocus.Common.Results;
 using Onefocus.Membership.Application.User.Commands;
 
-namespace Web.Api.Endpoints;
+namespace Onefocus.Membership.Api.Endpoints;
 
 internal static class RoleEndpoints
 {
