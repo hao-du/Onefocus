@@ -8,7 +8,7 @@ using Onefocus.Membership.Domain.Entities;
 using System.Linq;
 using Entity = Onefocus.Membership.Domain.Entities;
 
-namespace Onefocus.Membership.Infrastructure.Databases.Repositories.User;
+namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 
 public interface IUserRepository
 {
@@ -21,20 +21,20 @@ public interface IUserRepository
 
 public sealed class UserRepository : IUserRepository
 {
-    private readonly UserManager<Entity.User> _userManager;
-    private readonly IUserStore<Entity.User> _userStore;
-    private readonly IUserEmailStore<Entity.User> _emailStore;
-    private readonly IPasswordHasher<Entity.User> _passwordHasher;
+    private readonly UserManager<User> _userManager;
+    private readonly IUserStore<User> _userStore;
+    private readonly IUserEmailStore<User> _emailStore;
+    private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ILogger<UserRepository> _logger;
 
-    public UserRepository(UserManager<Entity.User> userManager
-        , IUserStore<Entity.User> userStore
+    public UserRepository(UserManager<User> userManager
+        , IUserStore<User> userStore
         , ILogger<UserRepository> logger
-        , IPasswordHasher<Entity.User> passwordHasher)
+        , IPasswordHasher<User> passwordHasher)
     {
         _userManager = userManager;
         _userStore = userStore;
-        _emailStore = (IUserEmailStore<Entity.User>)userStore;
+        _emailStore = (IUserEmailStore<User>)userStore;
         _logger = logger;
         _passwordHasher = passwordHasher;
     }
@@ -56,7 +56,7 @@ public sealed class UserRepository : IUserRepository
                 )
                 .ToListAsync();
 
-            return Result.Success<GetAllUsersRepositoryResponse>(new GetAllUsersRepositoryResponse(users));
+            return Result.Success(new GetAllUsersRepositoryResponse(users));
         }
         catch (Exception ex)
         {
@@ -80,7 +80,7 @@ public sealed class UserRepository : IUserRepository
                 return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.UserNotExist);
             }
 
-            return Result.Success<GetUserByIdRepositoryResponse>(GetUserByIdRepositoryResponse.Create(user));
+            return Result.Success(GetUserByIdRepositoryResponse.Create(user));
         }
         catch (Exception ex)
         {
@@ -91,7 +91,7 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<Result> CreateUserAsync(CreateUserRepositoryRequest request)
     {
-        var userResult = Entity.User.Create(request.ToRequestObject());
+        var userResult = User.Create(request.ToRequestObject());
         if (userResult.IsFailure)
         {
             return userResult;
@@ -126,7 +126,7 @@ public sealed class UserRepository : IUserRepository
     public async Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request)
     {
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
-        if(user == null)
+        if (user == null)
         {
             return Result.Failure(Errors.User.UserNotExist);
         }
@@ -152,7 +152,7 @@ public sealed class UserRepository : IUserRepository
         if (user == null) return Result.Failure(Errors.User.UserNotExist);
 
         var updatePasswordResult = user.Update(request.ToRequestObject(), _passwordHasher);
-        if(updatePasswordResult.IsFailure) return Result.Failure(updatePasswordResult.Error);
+        if (updatePasswordResult.IsFailure) return Result.Failure(updatePasswordResult.Error);
 
         try
         {

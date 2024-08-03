@@ -12,35 +12,35 @@ internal static class UserEndpoints
         {
             Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQueryRequest());
 
-            return result.IsSuccess ? Results.Ok(result.Value) : result.ToBadRequestProblemDetails();
-        });
+            return result.ToResult();
+        }).RequireAuthorization();
 
         app.MapGet("user/{id}", async (Guid id, ISender sender) =>
         {
             Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQueryRequest());
 
-            return result.IsSuccess ? Results.Ok(result.Value) : result.ToBadRequestProblemDetails();
+            return result.ToResult();
         });
 
         app.MapPost("user/create", async (CreateUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.ToResult();
         });
 
         app.MapPut("user/update", async (UpdateUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.ToResult();
         });
 
         app.MapPatch("user/password/update", async (UpdatePasswordCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.ToResult();
         });
     }
 }

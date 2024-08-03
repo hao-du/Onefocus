@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
+using Onefocus.Common.Constants;
+
 namespace Onefocus.Membership.Infrastructure;
 
 public static class DependencyInjection
@@ -19,7 +20,8 @@ public static class DependencyInjection
 
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddTokenProvider(Commons.TokenProviderName, typeof(DataProtectorTokenProvider<User>));
 
         services.AddScoped<IUserRepository, UserRepository>();
 

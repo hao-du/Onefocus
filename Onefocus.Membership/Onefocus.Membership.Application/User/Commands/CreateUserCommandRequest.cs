@@ -1,7 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
-using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
+using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Membership.Application.User.Commands;

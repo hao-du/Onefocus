@@ -1,8 +1,8 @@
 ﻿using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
+using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using System.Linq;
-using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.User.GetUserByIdRepositoryResponse;
+using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.GetUserByIdRepositoryResponse;
 
 namespace Onefocus.Membership.Application.User.Commands;
 

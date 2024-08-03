@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Infrastructure.Databases.Repositories.User;
+using Onefocus.Membership.Infrastructure.Databases.Repositories;
 
 namespace Onefocus.Membership.Application.User.Commands;
 

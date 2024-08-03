@@ -12,7 +12,7 @@ internal static class RoleEndpoints
         {
             Result result = await sender.Send(command);
 
-            return result.IsSuccess ? Results.Ok() : result.ToBadRequestProblemDetails();
+            return result.ToResult();
         });
     }
 }
