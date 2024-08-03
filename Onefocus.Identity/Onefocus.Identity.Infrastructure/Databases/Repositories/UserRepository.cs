@@ -13,6 +13,7 @@ namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 public interface IUserRepository
 {
     Task<Result<CheckPasswordRepositoryResponse>> CheckPasswordAsync(CheckPasswordRepositoryRequest request);
+    Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
 }
 
 public sealed class UserRepository : IUserRepository
@@ -51,6 +52,19 @@ public sealed class UserRepository : IUserRepository
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        return Result.Success<CheckPasswordRepositoryResponse>(new (request.Email, roles.ToList()));
+        return Result.Success<CheckPasswordRepositoryResponse>(new(user, roles.ToList()));
+    }
+
+    public async Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(request.Id.ToString());
+        if (user == null)
+        {
+            return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.IncorrectUserNameOrPassword);
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Result.Success<GetUserByIdRepositoryResponse>(new(user, roles.ToList()));
     }
 }

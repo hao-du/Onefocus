@@ -8,21 +8,21 @@ using Onefocus.Membership.Api.Security;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using System.Linq;
 
-namespace Onefocus.Identity.Application.Authentication.Queries;
+namespace Onefocus.Identity.Application.Authentication.Commands;
 
-public sealed record AuthenticateQueryRequest(string Email, string Password) : IQuery<AccessTokenResponse>, IRequestObject<CheckPasswordRepositoryRequest>
+public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>, IRequestObject<CheckPasswordRepositoryRequest>
 {
     public CheckPasswordRepositoryRequest ToRequestObject() => new(Email, Password);
 }
 
-internal sealed class AuthenticateQueryHandler : IQueryHandler<AuthenticateQueryRequest, AccessTokenResponse>
+internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommandRequest, AccessTokenResponse>
 {
     private readonly IAuthenticationSettings _authSettings;
     private readonly ITokenService _tokenService;
     private readonly IUserRepository _userRepository;
     private readonly ITokenRepository _tokenRepository;
 
-    public AuthenticateQueryHandler(
+    public AuthenticateCommandHandler(
         IAuthenticationSettings authSettings
         , ITokenService tokenService
         , IUserRepository userRepository
@@ -34,7 +34,7 @@ internal sealed class AuthenticateQueryHandler : IQueryHandler<AuthenticateQuery
         _tokenRepository = tokenRepository;
     }
 
-    public async Task<Result<AccessTokenResponse>> Handle(AuthenticateQueryRequest request, CancellationToken cancellationToken)
+    public async Task<Result<AccessTokenResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
     {
         var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToRequestObject());
         if (checkPasswordResult.IsFailure)
@@ -45,13 +45,13 @@ internal sealed class AuthenticateQueryHandler : IQueryHandler<AuthenticateQuery
         var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Create(checkPasswordResult.Value));
         if (accessTokenResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);
+            return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);
         }
 
-        var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new UpsertTokenRepositoryRequest(checkPasswordResult.Value.Email));
+        var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(checkPasswordResult.Value.User));
         if (refreshTokenResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);
+            return Result.Failure<AccessTokenResponse>(refreshTokenResult.Error);
         }
 
         var token = new AccessTokenResponse()
@@ -61,7 +61,7 @@ internal sealed class AuthenticateQueryHandler : IQueryHandler<AuthenticateQuery
             ExpiresIn = _authSettings.AuthTokenExpirySpanSeconds
         };
 
-        return Result.Success<AccessTokenResponse>(token);
+        return Result.Success(token);
     }
 }
 

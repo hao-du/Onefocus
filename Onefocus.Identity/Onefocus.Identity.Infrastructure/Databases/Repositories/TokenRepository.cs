@@ -14,63 +14,82 @@ namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 
 public interface ITokenRepository
 {
-    Task<Result<UpsertTokenRepositoryResponse>> GenerateRefreshTokenAsync(UpsertTokenRepositoryRequest request);
+    Task<Result<GenerateRefreshTokenRepositoryResponse>> GenerateRefreshTokenAsync(GenerateRefreshTokenRepositoryRequest request);
+    Task<Result> MatchTokenAsync(MatchRefreshTokenRepositoryRequest request);
 }
 
 public sealed class TokenRepository : ITokenRepository
 {
     private readonly UserManager<User> _userManager;
-    private readonly IUserStore<User> _userStore;
-    private readonly IUserEmailStore<User> _emailStore;
-    private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ILogger<UserRepository> _logger;
 
     public TokenRepository(UserManager<User> userManager
-        , IUserStore<User> userStore
-        , ILogger<UserRepository> logger
-        , IPasswordHasher<User> passwordHasher)
+        , ILogger<UserRepository> logger)
     {
         _userManager = userManager;
-        _userStore = userStore;
-        _emailStore = (IUserEmailStore<User>)userStore;
         _logger = logger;
-        _passwordHasher = passwordHasher;
     }
-    public async Task<Result<UpsertTokenRepositoryResponse>> GenerateRefreshTokenAsync(UpsertTokenRepositoryRequest request)
+    public async Task<Result<GenerateRefreshTokenRepositoryResponse>> GenerateRefreshTokenAsync(GenerateRefreshTokenRepositoryRequest request)
     {
         try
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null)
+            if (request.User == null)
             {
-                return Result.Failure<UpsertTokenRepositoryResponse>(Errors.User.UserNotExist);
+                return Result.Failure<GenerateRefreshTokenRepositoryResponse>(Errors.User.UserNotExist);
             }
 
-            var refreshToken = await _userManager.GenerateUserTokenAsync(user, Commons.TokenProviderName, "RefreshToken");
+            var refreshToken = await _userManager.GenerateUserTokenAsync(request.User, Commons.TokenProviderName, "RefreshToken");
             if (string.IsNullOrEmpty(refreshToken))
             {
-                return Result.Failure<UpsertTokenRepositoryResponse>(Errors.User.CannotCreateToken);
+                return Result.Failure<GenerateRefreshTokenRepositoryResponse>(Errors.Token.CannotCreateToken);
             }
 
-            string composedTokenName = $"RefreshToken_{user.Email}";
-            var removeIdentityResult =  await _userManager.RemoveAuthenticationTokenAsync(user, Commons.TokenProviderName, composedTokenName);
+            var composedTokenName = $"RefreshToken_{request.User.Email}";
+
+            var removeIdentityResult =  await _userManager.RemoveAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
             if (!removeIdentityResult.Succeeded)
             {
-                removeIdentityResult.ToResult<UpsertTokenRepositoryResponse>();
+                removeIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
             }
 
-            var setIdentityResult = await _userManager.SetAuthenticationTokenAsync(user, Commons.TokenProviderName, composedTokenName, refreshToken);
+            var setIdentityResult = await _userManager.SetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName, refreshToken);
             if (!setIdentityResult.Succeeded)
             {
-                setIdentityResult.ToResult<UpsertTokenRepositoryResponse>();
+                setIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
             }
 
-            return Result.Success<UpsertTokenRepositoryResponse>(new UpsertTokenRepositoryResponse(refreshToken));
+            return Result.Success<GenerateRefreshTokenRepositoryResponse>(new GenerateRefreshTokenRepositoryResponse(refreshToken));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure<UpsertTokenRepositoryResponse>(CommonErrors.InternalServer);
+            return Result.Failure<GenerateRefreshTokenRepositoryResponse>(CommonErrors.InternalServer);
+        }
+    }
+
+    public async Task<Result> MatchTokenAsync(MatchRefreshTokenRepositoryRequest request)
+    {
+        try
+        {
+            if (request.User == null)
+            {
+                return Result.Failure<CheckPasswordRepositoryResponse>(Errors.User.IncorrectUserNameOrPassword);
+            }
+
+            var composedTokenName = $"RefreshToken_{request.User.Email}";
+            var storedToken = await _userManager.GetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
+
+            if(storedToken != request.RefreshToken)
+            {
+                return Result.Failure(Errors.Token.InvalidRefreshToken);
+            }
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Result.Failure<GenerateRefreshTokenRepositoryResponse>(CommonErrors.InternalServer);
         }
     }
 }

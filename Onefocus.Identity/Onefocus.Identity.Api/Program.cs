@@ -31,6 +31,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthenticationEndpoints();
-app.MapIdentityApi<User>();
 
 app.Run();
