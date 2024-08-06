@@ -20,27 +20,27 @@ internal static class UserEndpoints
             Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQueryRequest());
 
             return result.ToResult();
-        });
+        }).RequireAuthorization();
 
         app.MapPost("user/create", async (CreateUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
             return result.ToResult();
-        });
+        }).RequireAuthorization();
 
         app.MapPut("user/update", async (UpdateUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
             return result.ToResult();
-        });
+        }).RequireAuthorization();
 
         app.MapPatch("user/password/update", async (UpdatePasswordCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 
             return result.ToResult();
-        });
+        }).RequireAuthorization();
     }
 }

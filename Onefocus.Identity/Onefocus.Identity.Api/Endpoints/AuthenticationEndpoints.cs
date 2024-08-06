@@ -14,13 +14,13 @@ internal static class AuthenticationEndpoints
 {
     public static void MapAuthenticationEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("identity/authenticate", async (AuthenticateCommandRequest request, ISender sender) =>
+        app.MapPost("authenticate", async (AuthenticateCommandRequest request, ISender sender) =>
         {
             Result<AccessTokenResponse> result = await sender.Send(request);
             return result.ToResult();
         });
 
-        app.MapPost("identity/refresh", async (RefreshTokenCommandRequest request, ISender sender) =>
+        app.MapPost("refresh", async (RefreshTokenCommandRequest request, ISender sender) =>
         {
             Result<AccessTokenResponse> result = await sender.Send(request);
             return result.ToResult();

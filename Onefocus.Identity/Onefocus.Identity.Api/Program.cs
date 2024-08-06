@@ -6,11 +6,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Onefocus.Identity.Api.Endpoints;
 using Onefocus.Membership.Api.Security;
 using Onefocus.Common;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.OpenApi.Models;
+using Onefocus.Common.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus", Description = "Manage everything in one place!", Version = "v1" });
+    option.DocumentFilter<SwaggerDocumentFilter>("/identity");
+});
 
 builder.Services.AddAuthenticationSettings(builder.Configuration);
 builder.Services.AddAuthorization();
