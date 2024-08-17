@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
+using Onefocus.Common.Constants;
 using Onefocus.Membership.Api.Security;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus", Description = "Manage everything in one place!", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Gateway", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,

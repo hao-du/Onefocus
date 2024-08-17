@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
+using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
 using Onefocus.Membership.Api.Endpoints;
 using Onefocus.Membership.Api.Security;
@@ -15,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus", Description = "Manage everything in one place!", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Membership", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
         new ("default", "/"),
         new ("with gateway", "/membership")

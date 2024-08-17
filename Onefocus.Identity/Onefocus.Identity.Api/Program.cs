@@ -10,13 +10,14 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common.Infrastructure;
 using System.Security.Principal;
+using Onefocus.Common.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus", Description = "Manage everything in one place!", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Identity", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
         new ("default", "/"),
         new ("with gateway", "/identity")
