@@ -3,12 +3,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Onefocus.Common.Results;
 
+public record Error(string Code, string Description)
+{
+    public static implicit operator Result(Error error) => Result.Failure(error);
+    public Result ToResult() => Result.Failure(this);
+}
+
 public class Result
 {
     protected internal Result(bool isSuccess, Error error)
     {
-        if (isSuccess && error != CommonErrors.None ||
-            !isSuccess && error == CommonErrors.None)
+        if (isSuccess && error != CommonErrors.None || !isSuccess && error == CommonErrors.None)
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -36,18 +41,14 @@ public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    protected internal Result(TValue? value, bool isSuccess, Error error)
-        : base(isSuccess, error)
+    protected internal Result(TValue? value, bool isSuccess, Error error): base(isSuccess, error)
     {
         _value = value;
     }
 
     [NotNull]
-    public TValue Value => IsSuccess
-        ? _value!
-        : throw new InvalidOperationException("The value of a failure result can't be accessed.");
+    public TValue Value => IsSuccess ? _value! : throw new InvalidOperationException("The value of a failure result can't be accessed.");
 
-    public static implicit operator Result<TValue>(TValue? value) =>
-        value is not null ? Success(value) : Failure<TValue>(CommonErrors.NullReference);
+    public static implicit operator Result<TValue>(TValue? value) => value is not null ? Success(value) : Failure<TValue>(CommonErrors.NullReference);
 }
 
