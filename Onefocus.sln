@@ -23,13 +23,23 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Onefocus.Identity", "Onefocus.Identity", "{C8D91BC5-514C-4E89-B02E-830F15E4DF3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Identity.Api", "Onefocus.Identity\Onefocus.Identity.Api\Onefocus.Identity.Api.csproj", "{5322C8A2-01AC-4E48-9A39-DE97A2019BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onefocus.Identity.Api", "Onefocus.Identity\Onefocus.Identity.Api\Onefocus.Identity.Api.csproj", "{5322C8A2-01AC-4E48-9A39-DE97A2019BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Identity.Domain", "Onefocus.Identity\Onefocus.Identity.Domain\Onefocus.Identity.Domain.csproj", "{484EC11C-631B-4BBD-AB2E-7981D5A54FA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onefocus.Identity.Domain", "Onefocus.Identity\Onefocus.Identity.Domain\Onefocus.Identity.Domain.csproj", "{484EC11C-631B-4BBD-AB2E-7981D5A54FA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Identity.Infrastructure", "Onefocus.Identity\Onefocus.Identity.Infrastructure\Onefocus.Identity.Infrastructure.csproj", "{299DFD88-429D-417A-A8F3-444404161738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onefocus.Identity.Infrastructure", "Onefocus.Identity\Onefocus.Identity.Infrastructure\Onefocus.Identity.Infrastructure.csproj", "{299DFD88-429D-417A-A8F3-444404161738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Identity.Application", "Onefocus.Identity\Onefocus.Identity.Application\Onefocus.Identity.Application.csproj", "{8A7FF5DA-27E7-434A-A707-594081F54426}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onefocus.Identity.Application", "Onefocus.Identity\Onefocus.Identity.Application\Onefocus.Identity.Application.csproj", "{8A7FF5DA-27E7-434A-A707-594081F54426}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Onefocus.Wallet", "Onefocus.Wallet", "{732079BF-B1D2-4C60-9A0E-6B36B07EFD70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Wallet.Api", "Onefocus.Wallet\Onefocus.Wallet.Api\Onefocus.Wallet.Api.csproj", "{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Wallet.Domain", "Onefocus.Wallet\Onefocus.Wallet.Domain\Onefocus.Wallet.Domain.csproj", "{C6442E3C-38E6-4DF6-B218-0D15419FABE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Wallet.Infrastructure", "Onefocus.Wallet\Onefocus.Wallet.Infrastructure\Onefocus.Wallet.Infrastructure.csproj", "{29D83A73-E26D-4094-88EC-771FA892AC1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Wallet.Application", "Onefocus.Wallet\Onefocus.Wallet.Application\Onefocus.Wallet.Application.csproj", "{DD99B578-14CF-48D7-894A-87897AB7C8C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +95,22 @@ Global
 		{8A7FF5DA-27E7-434A-A707-594081F54426}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A7FF5DA-27E7-434A-A707-594081F54426}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A7FF5DA-27E7-434A-A707-594081F54426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6442E3C-38E6-4DF6-B218-0D15419FABE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6442E3C-38E6-4DF6-B218-0D15419FABE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6442E3C-38E6-4DF6-B218-0D15419FABE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6442E3C-38E6-4DF6-B218-0D15419FABE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29D83A73-E26D-4094-88EC-771FA892AC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29D83A73-E26D-4094-88EC-771FA892AC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29D83A73-E26D-4094-88EC-771FA892AC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29D83A73-E26D-4094-88EC-771FA892AC1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD99B578-14CF-48D7-894A-87897AB7C8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD99B578-14CF-48D7-894A-87897AB7C8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD99B578-14CF-48D7-894A-87897AB7C8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD99B578-14CF-48D7-894A-87897AB7C8C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +124,10 @@ Global
 		{484EC11C-631B-4BBD-AB2E-7981D5A54FA0} = {C8D91BC5-514C-4E89-B02E-830F15E4DF3B}
 		{299DFD88-429D-417A-A8F3-444404161738} = {C8D91BC5-514C-4E89-B02E-830F15E4DF3B}
 		{8A7FF5DA-27E7-434A-A707-594081F54426} = {C8D91BC5-514C-4E89-B02E-830F15E4DF3B}
+		{9A8A92D7-D7E7-4EA6-B75C-3F6F0FA3A32A} = {732079BF-B1D2-4C60-9A0E-6B36B07EFD70}
+		{C6442E3C-38E6-4DF6-B218-0D15419FABE9} = {732079BF-B1D2-4C60-9A0E-6B36B07EFD70}
+		{29D83A73-E26D-4094-88EC-771FA892AC1C} = {732079BF-B1D2-4C60-9A0E-6B36B07EFD70}
+		{DD99B578-14CF-48D7-894A-87897AB7C8C7} = {732079BF-B1D2-4C60-9A0E-6B36B07EFD70}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD625179-24CF-4106-8A8D-416F2137CBF5}
