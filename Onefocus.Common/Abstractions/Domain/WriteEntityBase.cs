@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Common.Abstractions.Domain
 {
-    public abstract class EntityBase
+    public abstract class WriteEntityBase
     {
         public Guid Id { get; private set; }
         public bool ActiveFlag { get; private set; }

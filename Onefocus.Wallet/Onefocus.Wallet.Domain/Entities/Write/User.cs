@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Exceptions.Errors;
+﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
-using System.Collections.ObjectModel;
 
-namespace Onefocus.Membership.Domain.Entities;
+namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class User: EntityBase, IAggregateRoot
+public class User : WriteEntityBase, IAggregateRoot
 {
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
@@ -59,10 +56,9 @@ public class User: EntityBase, IAggregateRoot
         LastName = lastName;
         Email = email;
 
-        if (activeFlag) MarkActive(actionedBy); 
+        if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
         return this;
     }
 }
-

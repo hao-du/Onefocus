@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Membership.Domain.Entities;
+using Onefocus.Wallet.Domain.Entities.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts;
 
-public class WalletDbContext: DbContext
+public class WalletReadDbContext : DbContext
 {
-    public WalletDbContext(DbContextOptions<WalletDbContext> options) : base(options)
+    public WalletReadDbContext(DbContextOptions<WalletReadDbContext> options) : base(options)
     {
     }
 
