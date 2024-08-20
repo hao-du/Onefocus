@@ -8,9 +8,10 @@ namespace Onefocus.Common.Abstractions.Domain
 {
     public abstract class WriteEntityBase: EntityBase
     {
-        protected void Init(Guid? id, Guid actionedBy)
+        protected void Init(Guid? id, string description, Guid actionedBy)
         {
             Id = id.HasValue ? id.Value : Guid.NewGuid();
+            Description = description;
             ActiveFlag = true;
             CreatedBy = actionedBy;
             CreatedOn = DateTimeOffset.Now;

@@ -10,5 +10,29 @@ public static class Errors
         public static readonly Error LastNameRequired = new("LastNameRequired", "Last name is required.");
         public static readonly Error EmailRequired = new("EmailRequired", "Email is required.");
         public static readonly Error UserNotExist = new("UserNotExist", "User does not exist.");
+        public static readonly Error UserRequired = new("UserRequired", "User is required.");
+    }
+
+    public static class Currency
+    {
+        public static readonly Error NameRequired = new("CurrencyNameRequired", "Name is required.");
+        public static readonly Error ShortNameRequired = new("CurrencyShortNameRequired", "Short name is required.");
+        public static readonly Error CurrencyRequired = new("CurrencyRequired", "Currency is required.");
+    }
+
+    public static class Bank
+    {
+        public static readonly Error NameRequired = new("BankNameRequired", "Bank name is required.");
+        public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
+    }
+
+    public static class Transaction
+    {
+        public static readonly Error AmountMustGreaterThanZero = new("AmountMustGreaterThanZero", "Amount must be greater than 0.");
+
+        public static class Transfer 
+        {
+            public static readonly Error TransferredUserRequired = new("TransferredUserRequired", "Transferred user is required.");
+        }
     }
 }
