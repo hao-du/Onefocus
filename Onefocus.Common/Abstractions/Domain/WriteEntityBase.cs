@@ -6,15 +6,8 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Common.Abstractions.Domain
 {
-    public abstract class WriteEntityBase
+    public abstract class WriteEntityBase: EntityBase
     {
-        public Guid Id { get; private set; }
-        public bool ActiveFlag { get; private set; }
-        public DateTimeOffset CreatedOn { get; private set; }
-        public DateTimeOffset UpdatedOn { get; private set; }
-        public Guid CreatedBy { get; private set; }
-        public Guid UpdatedBy { get; private set; }
-
         protected void Init(Guid? id, Guid actionedBy)
         {
             Id = id.HasValue ? id.Value : Guid.NewGuid();

@@ -8,4 +8,3 @@ public class User : ReadEntityBase
     public string LastName { get; init; } = default!;
     public string Email { get; init; } = default!;
 }
-
