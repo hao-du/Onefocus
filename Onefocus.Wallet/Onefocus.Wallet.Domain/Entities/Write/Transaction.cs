@@ -13,20 +13,20 @@ namespace Onefocus.Wallet.Domain.Entities.Write;
 public abstract class Transaction: WriteEntityBase
 {
     public decimal Amount { get; protected set; }
-    public DateTimeOffset TraceDate { get; protected set; }
+    public DateTimeOffset Date { get; protected set; }
     public Guid UserId { get; protected set; }
     public Guid CurrencyId { get; protected set; }
     public User? User { get; protected set; }
     public Currency? Currency { get; protected set; }
 
-    protected Transaction(decimal amount, DateTimeOffset traceDate, Guid userId, Guid currencyId, string description, Guid actionedBy)
+    protected Transaction(decimal amount, DateTimeOffset date, Guid userId, Guid currencyId, string description, Guid actionedBy)
     {
         Amount = amount;
-        TraceDate = traceDate;
+        Date = date;
         CurrencyId = currencyId;
         UserId = userId;
 
-        Init(Guid.NewGuid (), description, actionedBy);
+        Init(Guid.NewGuid(), description, actionedBy);
     }
 }
 

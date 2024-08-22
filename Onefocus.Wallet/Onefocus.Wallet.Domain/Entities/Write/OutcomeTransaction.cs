@@ -19,7 +19,7 @@ public class TransferTransaction : Transaction
         TransferredUserID= transferredUserID;
     }
 
-    public static Result<TransferTransaction> Create(decimal amount, DateTimeOffset traceDate, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy)
+    public static Result<TransferTransaction> Create(decimal amount, DateTimeOffset date, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy)
     {
         if(amount < 0)
         {
@@ -38,10 +38,10 @@ public class TransferTransaction : Transaction
             return Result.Failure<TransferTransaction>(Errors.Currency.CurrencyRequired);
         }
 
-        return new TransferTransaction(amount, traceDate, userId, transferredUserID, currencyId, description, actionedBy);
+        return new TransferTransaction(amount, date, userId, transferredUserID, currencyId, description, actionedBy);
     }
 
-    public Result<TransferTransaction> Update(decimal amount, DateTimeOffset traceDate, Guid userId, Guid transferredUserID, Guid currencyId, string description, bool activeFlag, Guid actionedBy)
+    public Result<TransferTransaction> Update(decimal amount, DateTimeOffset date, Guid userId, Guid transferredUserID, Guid currencyId, string description, bool activeFlag, Guid actionedBy)
     {
         if (amount < 0)
         {
@@ -61,7 +61,7 @@ public class TransferTransaction : Transaction
         }
 
         Amount = amount;
-        TraceDate = traceDate;
+        Date = date;
         UserId = userId;
         TransferredUserID = transferredUserID;
         CurrencyId = currencyId;
