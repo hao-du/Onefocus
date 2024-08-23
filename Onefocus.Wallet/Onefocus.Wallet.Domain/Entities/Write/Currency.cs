@@ -1,6 +1,10 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
+using Onefocus.Wallet.Domain.Entities.Read;
+using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using System.Transactions;
+using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -21,27 +25,21 @@ public class Currency : WriteEntityBase
 
     public static Result<Currency> Create(string name, string shortName, string description, bool defaultFlag, Guid actionedBy)
     {
-        if (string.IsNullOrEmpty(name))
+        var validationResult = Validate(name, shortName);
+        if (validationResult.IsFailure)
         {
-            return Result.Failure<Currency>(Errors.Currency.NameRequired);
-        }
-        if (string.IsNullOrEmpty(shortName))
-        {
-            return Result.Failure<Currency>(Errors.Currency.ShortNameRequired);
+            return Result.Failure<Currency>(validationResult.Error);
         }
 
         return new Currency(name, shortName, description, defaultFlag, actionedBy);
     }
 
-    public Result<Currency> Update(string name, string shortName, string description, bool defaultFlag, bool activeFlag, Guid actionedBy)
+    public Result Update(string name, string shortName, string description, bool defaultFlag, bool activeFlag, Guid actionedBy)
     {
-        if (string.IsNullOrEmpty(name))
+        var validationResult = Validate(name, shortName);
+        if (validationResult.IsFailure)
         {
-            return Result.Failure<Currency>(Errors.Currency.NameRequired);
-        }
-        if (string.IsNullOrEmpty(shortName))
-        {
-            return Result.Failure<Currency>(Errors.Currency.ShortNameRequired);
+            return validationResult;
         }
 
         Name = name;
@@ -52,12 +50,26 @@ public class Currency : WriteEntityBase
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        return this;
+        return Result.Success();
     }
 
     public void MarkDefault(bool defaultFlag, Guid actionedBy)
     {
         DefaultFlag = defaultFlag;
         Update(actionedBy);
+    }
+
+    private static Result Validate(string name, string shortName)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return Result.Failure<Currency>(Errors.Currency.NameRequired);
+        }
+        if (string.IsNullOrEmpty(shortName))
+        {
+            return Result.Failure<Currency>(Errors.Currency.ShortNameRequired);
+        }
+
+        return Result.Success();
     }
 }

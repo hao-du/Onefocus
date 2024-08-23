@@ -1,32 +1,95 @@
 ﻿using MediatR;
 using Onefocus.Common.Abstractions.Domain;
+using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Enums;
+using Onefocus.Wallet.Domain.Entities.ObjectValues;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ObjectValue = Onefocus.Wallet.Domain.Entities.ObjectValues;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public abstract class Transaction: WriteEntityBase
+public abstract class Transaction : WriteEntityBase
 {
+    private List<TransactionDetail> _transactionDetails = new List<TransactionDetail>();
+
     public decimal Amount { get; protected set; }
-    public DateTimeOffset Date { get; protected set; }
+    public DateTimeOffset TransactedOn { get; protected set; }
     public Guid UserId { get; protected set; }
     public Guid CurrencyId { get; protected set; }
-    public User? User { get; protected set; }
-    public Currency? Currency { get; protected set; }
+    public IReadOnlyList<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
 
-    protected Transaction(decimal amount, DateTimeOffset date, Guid userId, Guid currencyId, string description, Guid actionedBy)
+    protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy)
     {
         Amount = amount;
-        Date = date;
+        TransactedOn = transactedOn;
         CurrencyId = currencyId;
         UserId = userId;
 
         Init(Guid.NewGuid(), description, actionedBy);
+    }
+
+    public Result AddDetail(ObjectValue.TransactionDetail objectValue)
+    {
+        if(objectValue == null)
+        {
+            return Result.Failure(CommonErrors.NullReference);
+        }
+
+        var detailResult = TransactionDetail.Create(objectValue);
+        if (detailResult.IsFailure)
+        {
+            return detailResult;
+        }
+
+        _transactionDetails.Add(detailResult.Value);
+
+        return Result.Success();
+    }
+
+    public Result UpdateDetail(ObjectValue.TransactionDetail objectValue)
+    {
+        if (objectValue == null)
+        {
+            return Result.Failure(CommonErrors.NullReference);
+        }
+        if (objectValue.Id == Guid.Empty)
+        {
+            return Result.Failure(Errors.Transaction.Detail.DetailRequired);
+        }
+
+        var detail = _transactionDetails.Find(td => td.Id == objectValue.Id);
+        if(detail == null)
+        {
+            return Result.Failure(CommonErrors.NullReference);
+        }
+
+        detail.Update(objectValue);
+
+        return Result.Success();
+    }
+
+    public Result MarkDetailAsInactive(Guid detailId, Guid actionedBy)
+    {
+        if (detailId == Guid.Empty)
+        {
+            return Result.Failure(Errors.Transaction.Detail.DetailRequired);
+        }
+
+        var detail = _transactionDetails.Find(td => td.Id == detailId);
+        if (detail == null)
+        {
+            return Result.Failure(CommonErrors.NullReference);
+        }
+
+        detail.MarkInactive(actionedBy);
+
+        return Result.Success();
     }
 }
 

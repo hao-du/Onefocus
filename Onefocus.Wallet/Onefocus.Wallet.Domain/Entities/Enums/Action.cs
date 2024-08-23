@@ -1,4 +1,5 @@
 ﻿using Onefocus.Common.Utilities.Attributes;
+using Onefocus.Wallet.Domain.Entities.Write.Transactions;
 using System.ComponentModel;
 
 namespace Onefocus.Wallet.Domain.Entities.Enums
@@ -6,47 +7,47 @@ namespace Onefocus.Wallet.Domain.Entities.Enums
     public enum Action
     {
         [Description("Get")]
-        [Group<TransactionType>(TransactionType.Income)]
+        [Group(typeof(IncomeTransaction))]
         Get = 0,
 
         [Description("Pay")]
-        [Group<TransactionType>(TransactionType.Outcome)]
+        [Group(typeof(OutcomeTransaction))]
         Pay = 1,
 
         [Description("Lend")]
-        [Group<TransactionType>(TransactionType.Transfer)]
+        [Group(typeof(TransferTransaction))]
         Lend = 2,
 
         [Description("Get back")]
-        [Group<TransactionType>(TransactionType.Transfer)]
+        [Group(typeof(TransferTransaction))]
         GetBack = 3,
 
         [Description("Borrow")]
-        [Group<TransactionType>(TransactionType.Transfer)]
+        [Group(typeof(TransferTransaction))]
         Borrow = 4,
 
         [Description("Return")]
-        [Group<TransactionType>(TransactionType.Transfer)]
+        [Group(typeof(TransferTransaction))]
         Return = 5,
 
         [Description("Withdraw")]
-        [Group<TransactionType>(TransactionType.Banking)]
+        [Group(typeof(BankingTransaction))]
         Withdraw = 6,
 
         [Description("Deposit")]
-        [Group<TransactionType>(TransactionType.Banking)]
+        [Group(typeof(BankingTransaction))]
         Deposit = 7,
 
         [Description("Get interest")]
-        [Group<TransactionType>(TransactionType.Banking)]
+        [Group(typeof(BankingTransaction))]
         GetInterest = 8,
 
         [Description("Exchange from")]
-        [Group<TransactionType>(TransactionType.Exchange)]
+        [Group(typeof(ExchangeTransaction))]
         ExchangeFrom = 9,
 
         [Description("Exchange to")]
-        [Group<TransactionType>(TransactionType.Exchange)]
+        [Group(typeof(ExchangeTransaction))]
         ExchangeTo = 10,
     }
 }

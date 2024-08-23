@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Common.Utilities.Attributes
 {
-    public class GroupAttribute<T> : Attribute
+    public class GroupAttribute : Attribute
     {
-        public T Key { get; private set; }
+        public Type Key { get; private set; }
 
-        public GroupAttribute(T key)
+        public GroupAttribute(Type key)
         {
             Key = key;
         }

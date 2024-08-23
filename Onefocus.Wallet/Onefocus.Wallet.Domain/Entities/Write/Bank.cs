@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -17,19 +18,21 @@ public class Bank : WriteEntityBase
 
     public static Result<Bank> Create(string name, string description, Guid actionedBy)
     {
-        if (string.IsNullOrEmpty(name))
+        var validationResult = Validate(name);
+        if (validationResult.IsFailure)
         {
-            return Result.Failure<Bank>(Errors.Bank.NameRequired);
+            return Result.Failure<Bank>(validationResult.Error);
         }
 
         return new Bank(name, description, actionedBy);
     }
 
-    public Result<Bank> Update(string name, string description, bool activeFlag, Guid actionedBy)
+    public Result Update(string name, string description, bool activeFlag, Guid actionedBy)
     {
-        if (string.IsNullOrEmpty(name))
+        var validationResult = Validate(name);
+        if (validationResult.IsFailure)
         {
-            return Result.Failure<Bank>(Errors.Bank.NameRequired);
+            return validationResult;
         }
 
         Description = description;
@@ -37,6 +40,16 @@ public class Bank : WriteEntityBase
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        return this;
+        return Result.Success();
+    }
+
+    private static Result Validate(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return Result.Failure<Bank>(Errors.Bank.NameRequired);
+        }
+
+        return Result.Success();
     }
 }

@@ -14,4 +14,8 @@
 	  <ProjectReference Include="..\Onefocus.Wallet.Domain\Onefocus.Wallet.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Databases\DbContexts\Configurations\" />
+	</ItemGroup>
+
 </Project>

@@ -26,6 +26,12 @@ public static class Errors
         public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
     }
 
+    public static class BankAccount
+    {
+        public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
+        public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
+    }
+
     public static class Transaction
     {
         public static readonly Error AmountMustGreaterThanZero = new("AmountMustGreaterThanZero", "Amount must be greater than 0.");
@@ -33,6 +39,17 @@ public static class Errors
         public static class Transfer 
         {
             public static readonly Error TransferredUserRequired = new("TransferredUserRequired", "Transferred user is required.");
+        }
+
+        public static class Exchange
+        {
+            public static readonly Error ExchangedCurrencyRequired = new("ExchangedCurrencyRequired", "Exchanged currency is required.");
+            public static readonly Error ExchangeRateMustGreaterThanZero = new("ExchangeRateMustGreaterThanZero", "Exchange rate must be greater than 0.");
+        }
+
+        public static class Detail
+        {
+            public static readonly Error DetailRequired = new("DetailRequired", "Cannot insert empty transaction action.");
         }
     }
 }

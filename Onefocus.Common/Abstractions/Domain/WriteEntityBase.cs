@@ -24,13 +24,13 @@ public abstract class WriteEntityBase : EntityBase
         UpdatedBy = actionedBy;
     }
 
-    protected void MarkActive(Guid actionedBy)
+    public void MarkActive(Guid actionedBy)
     {
         ActiveFlag = true;
         Update(actionedBy);
     }
 
-    protected void MarkInactive(Guid actionedBy)
+    public void MarkInactive(Guid actionedBy)
     {
         ActiveFlag = false;
         Update(actionedBy);
