@@ -2,14 +2,16 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
 {
-    public class BankAccount
+    public sealed class BankAccount
     {
         public string AccountNumber { get; private set; }
-        public DateTimeOffset? ClosedOn { get; private set; }
+        public DateTimeOffset ClosedOn { get; private set; }
         public bool CloseFlag { get; private set; } = false;
         public Guid BankId { get; private set; }
 
-        private BankAccount(string accountNumber, Guid bankId, DateTimeOffset? closedOn, bool closeFlag)
+        public Bank Bank { get; private set; } = default!;
+
+        private BankAccount(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
         {
             AccountNumber = accountNumber;
             ClosedOn = closedOn;
@@ -17,7 +19,7 @@ namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
             CloseFlag = closeFlag;
         }
 
-        public static Result<BankAccount> Create(string accountNumber, Guid bankId, DateTimeOffset? closedOn, bool closeFlag)
+        public static Result<BankAccount> Create(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {
@@ -31,7 +33,7 @@ namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
             return new BankAccount(accountNumber, bankId, closedOn, closeFlag);
         }
 
-        public Result<BankAccount> Update(string accountNumber, Guid bankId, DateTimeOffset? closedOn, bool closeFlag)
+        public Result<BankAccount> Update(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
         {
             if (string.IsNullOrEmpty(accountNumber))
             {

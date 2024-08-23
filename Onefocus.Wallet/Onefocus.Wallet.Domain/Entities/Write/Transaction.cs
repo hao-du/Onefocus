@@ -12,7 +12,10 @@ public abstract class Transaction : WriteEntityBase
     public DateTimeOffset TransactedOn { get; protected set; }
     public Guid UserId { get; protected set; }
     public Guid CurrencyId { get; protected set; }
-    public IReadOnlyList<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
+
+    public User User { get; protected set; } = default!;
+    public Currency Currency { get; protected set; } = default!;
+    public IReadOnlyCollection<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
 
     protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy)
     {

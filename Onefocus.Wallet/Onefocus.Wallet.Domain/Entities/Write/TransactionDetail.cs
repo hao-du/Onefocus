@@ -3,12 +3,14 @@ using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class TransactionDetail: WriteEntityBase
+public sealed class TransactionDetail: WriteEntityBase
 {
-    public decimal Amount { get; protected set; }
-    public DateTimeOffset TransactedOn { get; protected set; }
-    public Enums.Action Action { get; protected set; }
-    public Guid TransactionId { get; init; }
+    public decimal Amount { get; private set; }
+    public DateTimeOffset TransactedOn { get; private set; }
+    public Enums.Action Action { get; private set; }
+    public Guid TransactionId { get; private set; }
+
+    public Transaction Transaction { get; private set; } = default!;
 
     private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
     {

@@ -4,7 +4,7 @@ using Onefocus.Wallet.Domain.Entities.Write.ObjectValues;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
-public class BankingTransaction : Transaction
+public sealed class BankingTransaction : Transaction
 {
     public BankAccount BankAccount { get; private set; }
 

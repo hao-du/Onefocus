@@ -2,16 +2,16 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues;
 
-public class TransactionDetail
+public sealed class TransactionDetail
 {
-    public Guid TransactionId { get; protected set; }
-    public Guid Id { get; protected set; } = default;
-    public decimal Amount { get; protected set; }
-    public DateTimeOffset TransactedOn { get; protected set; }
-    public Enums.Action Action { get; protected set; }
-    public string Description { get; protected set; }
-    public bool ActiveFlag { get; protected set; }
-    public Guid ActionedBy { get; protected set; }
+    public Guid TransactionId { get; private set; }
+    public Guid Id { get; private set; } = default;
+    public decimal Amount { get; private set; }
+    public DateTimeOffset TransactedOn { get; private set; }
+    public Enums.Action Action { get; private set; }
+    public string Description { get; private set; }
+    public bool ActiveFlag { get; private set; }
+    public Guid ActionedBy { get; private set; }
 
     private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, bool activeFlag, Guid actionedBy)
     {

@@ -2,7 +2,7 @@
 using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Entities.Read.Transactions;
 
-namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts;
+namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
 public class WalletReadDbContext : DbContext
 {
@@ -24,7 +24,7 @@ public class WalletReadDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Transaction>().UseTpcMappingStrategy();
+        builder.ApplyConfigurationsFromAssembly(typeof(WalletReadDbContext).Assembly);
     }
 }
 

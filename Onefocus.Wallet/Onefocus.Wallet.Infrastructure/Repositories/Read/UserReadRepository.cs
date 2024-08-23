@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
 

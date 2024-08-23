@@ -13,8 +13,6 @@ public abstract class Transaction : WriteEntityBase
 
     public User User { get; init; } = default!;
     public Currency Currency { get; init; } = default!;
-    public IReadOnlyList<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
-
-
+    public IReadOnlyCollection<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
 }
 

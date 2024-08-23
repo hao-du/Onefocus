@@ -2,7 +2,7 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
-public class TransactionDetail : WriteEntityBase
+public sealed class TransactionDetail : WriteEntityBase
 {
     public decimal Amount { get; init; }
     public DateTimeOffset TransactedOn { get; init; }

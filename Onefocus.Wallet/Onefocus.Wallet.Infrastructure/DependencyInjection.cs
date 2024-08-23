@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 using Onefocus.Wallet.Infrastructure.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Repositories.Write;
 

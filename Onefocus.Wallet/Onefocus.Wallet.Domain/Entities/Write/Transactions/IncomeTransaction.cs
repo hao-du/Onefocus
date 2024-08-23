@@ -2,7 +2,7 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
-public class IncomeTransaction : Transaction
+public sealed class IncomeTransaction : Transaction
 {
     private IncomeTransaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy) : base(amount, transactedOn, userId, currencyId, description, actionedBy)
     {

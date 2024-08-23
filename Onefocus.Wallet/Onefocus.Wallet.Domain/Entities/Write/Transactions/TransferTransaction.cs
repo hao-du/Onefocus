@@ -2,14 +2,15 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
-public class TransferTransaction : Transaction
+public sealed class TransferTransaction : Transaction
 {
-    public Guid TransferredUserID { get; private set; }
-    public User? TransferredUser { get; private set; }
+    public Guid TransferredUserId { get; private set; }
+
+    public User TransferredUser { get; private set; } = default!;
 
     private TransferTransaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy) : base(amount, transactedOn, userId, currencyId, description, actionedBy)
     {
-        TransferredUserID = transferredUserID;
+        TransferredUserId = transferredUserID;
     }
 
     public static Result<TransferTransaction> Create(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy)
@@ -34,7 +35,7 @@ public class TransferTransaction : Transaction
         Amount = amount;
         TransactedOn = transactedOn;
         UserId = userId;
-        TransferredUserID = transferredUserID;
+        TransferredUserId = transferredUserID;
         CurrencyId = currencyId;
         Description = description;
 

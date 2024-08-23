@@ -5,7 +5,7 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Read;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 using Onefocus.Wallet.Infrastructure.Repositories.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
@@ -48,7 +48,7 @@ public sealed class UserWriteRepository : IUserWriteRepository
             }
             else
             {
-                user.Update(request.Email, request.FirstName, request.LastName, request.ActionFlag, request.ActionBy);
+                user.Update(request.Email, request.FirstName, request.LastName, request.Description, request.ActionFlag, request.ActionBy);
             }
 
             _context.SaveChanges();

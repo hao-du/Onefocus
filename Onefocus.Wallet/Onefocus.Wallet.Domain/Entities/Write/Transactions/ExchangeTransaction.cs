@@ -2,10 +2,12 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
-public class ExchangeTransaction : Transaction
+public sealed class ExchangeTransaction : Transaction
 {
     public Guid ExchangedCurrencyId { get; private set; }
     public decimal ExchangeRate { get; private set; }
+
+    public Currency ExchangedCurrency { get; private set; } = default!;
 
     private ExchangeTransaction(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy) : base(amount, transactedOn, userId, currencyId, description, actionedBy)
     {

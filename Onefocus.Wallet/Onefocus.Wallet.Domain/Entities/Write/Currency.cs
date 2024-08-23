@@ -1,13 +1,20 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class Currency : WriteEntityBase
+public sealed class Currency : WriteEntityBase
 {
+    private List<Transaction> _transactions = new List<Transaction>();
+    private List<ExchangeTransaction> _exchangeTransactions = new List<ExchangeTransaction>();
+
     public string Name { get; private set; }
     public string ShortName { get; private set; }
     public bool DefaultFlag { get; private set; }
+
+    public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
+    public IReadOnlyCollection<ExchangeTransaction> ExchangeTransactions => _exchangeTransactions.AsReadOnly();
 
     private Currency(string name, string shortName, string description, bool defaultFlag, Guid actionedBy)
     {

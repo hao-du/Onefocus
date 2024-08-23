@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
-namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts;
+namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
-public class WalletWriteDbContext: DbContext
+public class WalletWriteDbContext : DbContext
 {
     public WalletWriteDbContext(DbContextOptions<WalletWriteDbContext> options) : base(options)
     {
@@ -23,7 +24,7 @@ public class WalletWriteDbContext: DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Transaction>().UseTpcMappingStrategy();
+        builder.ApplyConfigurationsFromAssembly(typeof(WalletWriteDbContext).Assembly);
     }
 }
 

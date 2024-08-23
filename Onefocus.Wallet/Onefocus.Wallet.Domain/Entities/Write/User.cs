@@ -1,13 +1,20 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class User : WriteEntityBase
+public sealed class User : WriteEntityBase
 {
+    private List<Transaction> _transactions = new List<Transaction>();
+    private List<TransferTransaction> _transferTransactions = new List<TransferTransaction>();
+
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
+
+    public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
+    public IReadOnlyCollection<TransferTransaction> TransferTransactions => _transferTransactions.AsReadOnly();
 
     private User(string email, string firstName, string lastName, string description, Guid actionedBy)
     {
