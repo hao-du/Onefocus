@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
@@ -18,6 +17,7 @@ public class WalletWriteDbContext: DbContext
     public DbSet<OutcomeTransaction> OutcomeTransaction { get; set; }
     public DbSet<TransferTransaction> TransferTransaction { get; set; }
     public DbSet<BankingTransaction> BankingTransaction { get; set; }
+    public DbSet<TransactionDetail> TransactionDetail { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

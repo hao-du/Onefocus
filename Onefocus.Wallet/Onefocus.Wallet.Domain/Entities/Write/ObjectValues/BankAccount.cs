@@ -1,21 +1,12 @@
 ﻿using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Write.Transactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Onefocus.Wallet.Domain.Errors;
-using Onefocus.Common.Abstractions.Domain;
-using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
-namespace Onefocus.Wallet.Domain.Entities.ObjectValues
+namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
 {
     public class BankAccount
     {
         public string AccountNumber { get; private set; }
-        public DateTimeOffset? ClosedOn { get; set; }
-        public bool CloseFlag { get; set; } = false;
+        public DateTimeOffset? ClosedOn { get; private set; }
+        public bool CloseFlag { get; private set; } = false;
         public Guid BankId { get; private set; }
 
         private BankAccount(string accountNumber, Guid bankId, DateTimeOffset? closedOn, bool closeFlag)

@@ -1,5 +1,5 @@
 ﻿using Onefocus.Common.Utilities.Attributes;
-using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using Onefocus.Wallet.Domain.Entities.Read.Transactions;
 using System.ComponentModel;
 
 namespace Onefocus.Wallet.Domain.Entities.Enums

@@ -1,7 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 

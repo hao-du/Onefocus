@@ -1,10 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Read;
-using Onefocus.Wallet.Domain.Entities.Write.Transactions;
-using System.Transactions;
-using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 

@@ -1,16 +1,6 @@
-﻿using MediatR;
-using Onefocus.Common.Abstractions.Domain;
+﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Enums;
-using Onefocus.Wallet.Domain.Entities.ObjectValues;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ObjectValue = Onefocus.Wallet.Domain.Entities.ObjectValues;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -34,7 +24,7 @@ public abstract class Transaction : WriteEntityBase
         Init(Guid.NewGuid(), description, actionedBy);
     }
 
-    public Result AddDetail(ObjectValue.TransactionDetail objectValue)
+    public Result AddDetail(ObjectValues.TransactionDetail objectValue)
     {
         if(objectValue == null)
         {
@@ -52,7 +42,7 @@ public abstract class Transaction : WriteEntityBase
         return Result.Success();
     }
 
-    public Result UpdateDetail(ObjectValue.TransactionDetail objectValue)
+    public Result UpdateDetail(ObjectValues.TransactionDetail objectValue)
     {
         if (objectValue == null)
         {

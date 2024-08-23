@@ -1,8 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -11,25 +8,16 @@ public class TransactionDetail: WriteEntityBase
     public decimal Amount { get; protected set; }
     public DateTimeOffset TransactedOn { get; protected set; }
     public Enums.Action Action { get; protected set; }
+    public Guid TransactionId { get; init; }
 
-    private TransactionDetail(decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
+    private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
     {
+        TransactionId = transactionId;
         Amount = amount;
         TransactedOn = transactedOn;
         Action = action;
 
         Init(Guid.NewGuid(), description, actionedBy);
-    }
-
-    internal static Result<TransactionDetail> Create(decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
-    {
-        var validationResult = Validate(amount);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<TransactionDetail>(validationResult.Error);
-        }
-
-        return new TransactionDetail(amount, transactedOn, action, description, actionedBy);
     }
 
     internal static Result<TransactionDetail> Create(ObjectValues.TransactionDetail objectValue)
@@ -40,7 +28,7 @@ public class TransactionDetail: WriteEntityBase
             return Result.Failure<TransactionDetail>(validationResult.Error);
         }
 
-        return new TransactionDetail(objectValue.Amount, objectValue.TransactedOn, objectValue.Action, objectValue.Description, objectValue.ActionedBy);
+        return new TransactionDetail(objectValue.TransactionId, objectValue.Amount, objectValue.TransactedOn, objectValue.Action, objectValue.Description, objectValue.ActionedBy);
     }
 
     internal Result Update(ObjectValues.TransactionDetail objectValue)
