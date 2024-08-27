@@ -30,24 +30,32 @@ namespace Onefocus.Wallet.Domain.Entities.Enums
         [Group(typeof(TransferTransaction))]
         Return = 5,
 
+        [Description("Give")]
+        [Group(typeof(TransferTransaction))]
+        Give = 6,
+
+        [Description("Receive")]
+        [Group(typeof(TransferTransaction))]
+        Receive = 7,
+
         [Description("Withdraw")]
         [Group(typeof(BankingTransaction))]
-        Withdraw = 6,
+        Withdraw = 8,
 
         [Description("Deposit")]
         [Group(typeof(BankingTransaction))]
-        Deposit = 7,
+        Deposit = 9,
 
         [Description("Get interest")]
         [Group(typeof(BankingTransaction))]
-        GetInterest = 8,
+        GetInterest = 10,
 
         [Description("Exchange from")]
         [Group(typeof(ExchangeTransaction))]
-        ExchangeFrom = 9,
+        ExchangeFrom = 11,
 
         [Description("Exchange to")]
         [Group(typeof(ExchangeTransaction))]
-        ExchangeTo = 10,
+        ExchangeTo = 12,
     }
 }

@@ -29,7 +29,6 @@ public static class Errors
     public static class BankAccount
     {
         public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
-        public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
     }
 
     public static class Transaction
@@ -39,6 +38,7 @@ public static class Errors
         public static class Transfer 
         {
             public static readonly Error TransferredUserRequired = new("TransferredUserRequired", "Transferred user is required.");
+            public static readonly Error RequireDefaultActionInDetailList = new("RequireDefaultActionInDetailList", "Default action must be defined in transaction action list.");
         }
 
         public static class Exchange
@@ -50,6 +50,7 @@ public static class Errors
         public static class Detail
         {
             public static readonly Error DetailRequired = new("DetailRequired", "Cannot insert empty transaction action.");
+            public static readonly Error DetailMustBeNew = new("DetailMustBeNew", "Cannot insert an existing transaction action.");
         }
     }
 }

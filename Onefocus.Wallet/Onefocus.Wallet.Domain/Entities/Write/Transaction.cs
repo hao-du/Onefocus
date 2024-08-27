@@ -1,6 +1,8 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -17,9 +19,12 @@ public abstract class Transaction : WriteEntityBase
     public Currency Currency { get; protected set; } = default!;
     public IReadOnlyCollection<TransactionDetail> TransactionDetails => _transactionDetails.AsReadOnly();
 
-    protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy)
+    protected Transaction()
     {
-        Amount = amount;
+    }
+
+    protected Transaction(DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy)
+    {
         TransactedOn = transactedOn;
         CurrencyId = currencyId;
         UserId = userId;
@@ -27,11 +32,15 @@ public abstract class Transaction : WriteEntityBase
         Init(Guid.NewGuid(), description, actionedBy);
     }
 
-    public Result AddDetail(ObjectValues.TransactionDetail objectValue)
+    protected Result AddDetail(ObjectValues.TransactionDetail objectValue)
     {
         if(objectValue == null)
         {
             return Result.Failure(CommonErrors.NullReference);
+        }
+        if (objectValue.Id != Guid.Empty)
+        {
+            return Result.Failure(Errors.Transaction.Detail.DetailMustBeNew);
         }
 
         var detailResult = TransactionDetail.Create(objectValue);
@@ -45,7 +54,7 @@ public abstract class Transaction : WriteEntityBase
         return Result.Success();
     }
 
-    public Result UpdateDetail(ObjectValues.TransactionDetail objectValue)
+    protected Result UpsertDetail(ObjectValues.TransactionDetail objectValue)
     {
         if (objectValue == null)
         {
@@ -53,7 +62,7 @@ public abstract class Transaction : WriteEntityBase
         }
         if (objectValue.Id == Guid.Empty)
         {
-            return Result.Failure(Errors.Transaction.Detail.DetailRequired);
+            return AddDetail(objectValue);
         }
 
         var detail = _transactionDetails.Find(td => td.Id == objectValue.Id);
@@ -67,22 +76,9 @@ public abstract class Transaction : WriteEntityBase
         return Result.Success();
     }
 
-    public Result MarkDetailAsInactive(Guid detailId, Guid actionedBy)
+    protected virtual void CalculateAmount()
     {
-        if (detailId == Guid.Empty)
-        {
-            return Result.Failure(Errors.Transaction.Detail.DetailRequired);
-        }
-
-        var detail = _transactionDetails.Find(td => td.Id == detailId);
-        if (detail == null)
-        {
-            return Result.Failure(CommonErrors.NullReference);
-        }
-
-        detail.MarkInactive(actionedBy);
-
-        return Result.Success();
+        Amount = _transactionDetails.Sum(td => td.Amount);
     }
 }
 

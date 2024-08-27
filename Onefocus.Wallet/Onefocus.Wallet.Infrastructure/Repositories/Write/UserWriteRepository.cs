@@ -6,7 +6,6 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
-using Onefocus.Wallet.Infrastructure.Repositories.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
 

@@ -36,9 +36,10 @@ public sealed class TransactionDetail
 
     public static Result<TransactionDetail> Create(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, bool activeFlag, Guid actionedBy)
     {
-        if (amount < 0)
+        var validationResult = Validate(amount);
+        if (validationResult.IsFailure)
         {
-            return Result.Failure<TransactionDetail>(Errors.Transaction.AmountMustGreaterThanZero);
+            return Result.Failure<TransactionDetail>(validationResult.Error);
         }
 
         return new TransactionDetail(transactionId, amount, transactedOn, action, description, activeFlag, actionedBy);
@@ -46,12 +47,28 @@ public sealed class TransactionDetail
 
     public static Result<TransactionDetail> Create(Guid transactionId, Guid id, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, bool activeFlag, Guid actionedBy)
     {
+        var validationResult = Validate(amount);
+        if (validationResult.IsFailure)
+        {
+            return Result.Failure<TransactionDetail>(validationResult.Error);
+        }
+
+        return new TransactionDetail(id, transactionId, amount, transactedOn, action, description, activeFlag, actionedBy);
+    }
+
+    public bool IsNew()
+    {
+        return Id == Guid.Empty;
+    }
+
+    private static Result Validate(decimal amount)
+    {
         if (amount < 0)
         {
             return Result.Failure<TransactionDetail>(Errors.Transaction.AmountMustGreaterThanZero);
         }
 
-        return new TransactionDetail(id, transactionId, amount, transactedOn, action, description, activeFlag, actionedBy);
+        return Result.Success();
     }
 }
 

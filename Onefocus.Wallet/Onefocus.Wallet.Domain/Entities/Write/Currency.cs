@@ -16,6 +16,12 @@ public sealed class Currency : WriteEntityBase
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<ExchangeTransaction> ExchangeTransactions => _exchangeTransactions.AsReadOnly();
 
+    private Currency()
+    {
+        Name = default!;
+        ShortName = default!;
+    }
+
     private Currency(string name, string shortName, string description, bool defaultFlag, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);

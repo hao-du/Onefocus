@@ -12,6 +12,11 @@ public sealed class Bank : WriteEntityBase
 
     public IReadOnlyCollection<BankingTransaction> BankingTransactions => _bankingTransactions.AsReadOnly();
 
+    private Bank()
+    {
+        Name = default!;
+    }
+
     private Bank(string name, string description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);

@@ -9,6 +9,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
         public void Configure(EntityTypeBuilder<ExchangeTransaction> builder)
         {
             builder.HasOne(et => et.ExchangedCurrency).WithMany(c => c.ExchangeTransactions).HasForeignKey(et => et.ExchangedCurrencyId);
+
+            builder.Ignore(et => et.ExchangedAmount);
         }
     }
 }

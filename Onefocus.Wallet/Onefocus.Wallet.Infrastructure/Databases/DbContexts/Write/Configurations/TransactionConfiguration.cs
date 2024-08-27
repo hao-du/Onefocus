@@ -8,7 +8,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
-            builder.UseTpcMappingStrategy();
+            builder.UseTptMappingStrategy();
 
             builder.Property(p => p.Description).HasMaxLength(255);
 

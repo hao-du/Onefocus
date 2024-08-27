@@ -6,29 +6,47 @@ public sealed class ExchangeTransaction : Transaction
 {
     public Guid ExchangedCurrencyId { get; private set; }
     public decimal ExchangeRate { get; private set; }
+    public decimal ExchangedAmount => Amount * ExchangeRate;
 
     public Currency ExchangedCurrency { get; private set; } = default!;
 
-    private ExchangeTransaction(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy) : base(amount, transactedOn, userId, currencyId, description, actionedBy)
+    private ExchangeTransaction() : base()
+    {
+    }
+
+    private ExchangeTransaction(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy) : base(transactedOn, userId, currencyId, description, actionedBy)
     {
         ExchangedCurrencyId = exchangedCurrencyId;
         ExchangeRate = exchangeRate;
     }
 
-    public static Result<ExchangeTransaction> Create(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy)
+    public static Result<ExchangeTransaction> Create(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
     {
-        var validationResult = Validate(amount, exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
+        var validationResult = Validate(exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
         if (validationResult.IsFailure)
         {
             return Result.Failure<ExchangeTransaction>(validationResult.Error);
         }
 
-        return new ExchangeTransaction(amount, exchangeRate, transactedOn, userId, exchangedCurrencyId, currencyId, description, actionedBy);
+        var transaction = new ExchangeTransaction(exchangeRate, transactedOn, userId, exchangedCurrencyId, currencyId, description, actionedBy);
+
+        foreach (var objectValueDetail in objectValueDetails)
+        {
+            var detailResult = transaction.AddDetail(objectValueDetail);
+            if (detailResult.IsFailure)
+            {
+                return Result.Failure<ExchangeTransaction>(detailResult.Error);
+            }
+        }
+
+        transaction.CalculateAmount();
+
+        return transaction;
     }
 
-    public Result Update(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, bool activeFlag, Guid actionedBy)
+    public Result Update(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
     {
-        var validationResult = Validate(amount, exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
+        var validationResult = Validate(exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
         if (validationResult.IsFailure)
         {
             return validationResult;
@@ -45,15 +63,27 @@ public sealed class ExchangeTransaction : Transaction
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
+        foreach (var objectValueDetail in objectValueDetails)
+        {
+            var detailResult = UpsertDetail(objectValueDetail);
+            if (detailResult.IsFailure)
+            {
+                return Result.Failure(detailResult.Error);
+            }
+        }
+
+        CalculateAmount();
+
         return Result.Success();
     }
 
-    private static Result Validate(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId)
+    protected override void CalculateAmount()
     {
-        if (amount < 0)
-        {
-            return Result.Failure(Errors.Transaction.AmountMustGreaterThanZero);
-        }
+        Amount = TransactionDetails.Where(td => td.Action == Enums.Action.ExchangeFrom).Sum(td => td.Amount);
+    }
+
+    private static Result Validate(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId)
+    {
         if (exchangeRate < 0)
         {
             return Result.Failure<ExchangeTransaction>(Errors.Transaction.Exchange.ExchangeRateMustGreaterThanZero);

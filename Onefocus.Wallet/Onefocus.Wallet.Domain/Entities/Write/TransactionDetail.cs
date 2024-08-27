@@ -12,6 +12,10 @@ public sealed class TransactionDetail: WriteEntityBase
 
     public Transaction Transaction { get; private set; } = default!;
 
+    private TransactionDetail()
+    {
+    }
+
     private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
     {
         TransactionId = transactionId;

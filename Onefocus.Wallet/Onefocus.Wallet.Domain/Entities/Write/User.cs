@@ -16,6 +16,13 @@ public sealed class User : WriteEntityBase
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<TransferTransaction> TransferTransactions => _transferTransactions.AsReadOnly();
 
+    private User()
+    {
+        FirstName = default!; 
+        LastName = default!; 
+        Email = default!;
+    }
+
     private User(string email, string firstName, string lastName, string description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);

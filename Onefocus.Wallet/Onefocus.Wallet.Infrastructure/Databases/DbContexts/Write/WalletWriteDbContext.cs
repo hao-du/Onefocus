@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Domain.Entities.Write.Transactions;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations.Transactions;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
@@ -24,7 +25,14 @@ public class WalletWriteDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfigurationsFromAssembly(typeof(WalletWriteDbContext).Assembly);
+        builder.ApplyConfiguration(new UserConfiguration());
+        builder.ApplyConfiguration(new CurrencyConfiguration());
+        builder.ApplyConfiguration(new BankConfiguration());
+        builder.ApplyConfiguration(new TransactionConfiguration());
+        builder.ApplyConfiguration(new BankingTransactionConfiguration());
+        builder.ApplyConfiguration(new ExchangeTransactionConfiguration());
+        builder.ApplyConfiguration(new TransferTransactionConfiguration());
+        builder.ApplyConfiguration(new TransactionDetailConfiguration());
     }
 }
 

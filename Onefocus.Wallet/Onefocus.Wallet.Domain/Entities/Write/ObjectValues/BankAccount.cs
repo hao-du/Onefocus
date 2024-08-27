@@ -1,4 +1,5 @@
-﻿using Onefocus.Common.Results;
+﻿using Onefocus.Common.Exceptions.Errors;
+using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
 {
@@ -7,54 +8,53 @@ namespace Onefocus.Wallet.Domain.Entities.Write.ObjectValues
         public string AccountNumber { get; private set; }
         public DateTimeOffset ClosedOn { get; private set; }
         public bool CloseFlag { get; private set; } = false;
-        public Guid BankId { get; private set; }
 
-        public Bank Bank { get; private set; } = default!;
-
-        private BankAccount(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
+        private BankAccount(string accountNumber, DateTimeOffset closedOn, bool closeFlag)
         {
             AccountNumber = accountNumber;
             ClosedOn = closedOn;
-            BankId = bankId;
             CloseFlag = closeFlag;
         }
 
-        public static Result<BankAccount> Create(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
+        public static Result<BankAccount> Create(string accountNumber, DateTimeOffset closedOn, bool closeFlag)
         {
-            if (string.IsNullOrEmpty(accountNumber))
+            var validationResult = Validate(accountNumber);
+            if (validationResult.IsFailure)
             {
-                return Result.Failure<BankAccount>(Errors.BankAccount.AccountNumberRequired);
-            }
-            if (bankId == Guid.Empty)
-            {
-                return Result.Failure<BankAccount>(Errors.BankAccount.BankRequired);
+                return Result.Failure<BankAccount>(validationResult.Error);
             }
 
-            return new BankAccount(accountNumber, bankId, closedOn, closeFlag);
+            return new BankAccount(accountNumber, closedOn, closeFlag);
         }
 
-        public Result<BankAccount> Update(string accountNumber, Guid bankId, DateTimeOffset closedOn, bool closeFlag)
+        public Result Update(string accountNumber, DateTimeOffset closedOn, bool closeFlag)
         {
-            if (string.IsNullOrEmpty(accountNumber))
+            var validationResult = Validate(accountNumber);
+            if (validationResult.IsFailure)
             {
-                return Result.Failure<BankAccount>(Errors.BankAccount.AccountNumberRequired);
-            }
-            if (bankId == Guid.Empty)
-            {
-                return Result.Failure<BankAccount>(Errors.BankAccount.BankRequired);
+                return validationResult;
             }
 
             AccountNumber = accountNumber;
-            BankId = bankId;
             ClosedOn = closedOn;
             CloseFlag = closeFlag;
 
-            return this;
+            return Result.Success();
         }
 
         public void SetCloseFlag(bool closeFlag)
         {
             CloseFlag = closeFlag;
+        }
+
+        private static Result Validate(string accountNumber)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                return Result.Failure(Errors.BankAccount.AccountNumberRequired);
+            }
+
+            return Result.Success();
         }
     }
 }

@@ -5,52 +5,81 @@ namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 public sealed class TransferTransaction : Transaction
 {
     public Guid TransferredUserId { get; private set; }
-
     public User TransferredUser { get; private set; } = default!;
+    public Enums.Action DefaultAction { get; private set; }
 
-    private TransferTransaction(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy) : base(amount, transactedOn, userId, currencyId, description, actionedBy)
+    private TransferTransaction() : base()
     {
-        TransferredUserId = transferredUserID;
     }
 
-    public static Result<TransferTransaction> Create(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, string description, Guid actionedBy)
+    private TransferTransaction(DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, Enums.Action defaultAction, string description, Guid actionedBy) : base(transactedOn, userId, currencyId, description, actionedBy)
     {
-        var validationResult = Validate(amount, transactedOn, userId, currencyId, transferredUserID);
+        TransferredUserId = transferredUserID;
+        DefaultAction = defaultAction;
+    }
+
+    public static Result<TransferTransaction> Create(DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, Enums.Action defaultAction, string description, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    {
+        var validationResult = Validate(transactedOn, userId, currencyId, transferredUserID, defaultAction, objectValueDetails);
         if (validationResult.IsFailure)
         {
             return Result.Failure<TransferTransaction>(validationResult.Error);
         }
 
-        return new TransferTransaction(amount, transactedOn, userId, transferredUserID, currencyId, description, actionedBy);
+        var transaction = new TransferTransaction(transactedOn, userId, transferredUserID, currencyId, defaultAction, description, actionedBy);
+
+        foreach (var objectValueDetail in objectValueDetails)
+        {
+            var detailResult = transaction.AddDetail(objectValueDetail);
+            if (detailResult.IsFailure)
+            {
+                return Result.Failure<TransferTransaction>(detailResult.Error);
+            }
+        }
+
+        transaction.CalculateAmount();
+
+        return transaction;
     }
 
-    public Result Update(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, string description, bool activeFlag, Guid actionedBy)
+    public Result Update(DateTimeOffset transactedOn, Guid userId, Guid transferredUserID, Guid currencyId, Enums.Action defaultAction, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
     {
-        var validationResult = Validate(amount, transactedOn, userId, currencyId, transferredUserID);
+        var validationResult = Validate(transactedOn, userId, currencyId, transferredUserID, defaultAction, objectValueDetails);
         if (validationResult.IsFailure)
         {
             return validationResult;
         }
 
-        Amount = amount;
         TransactedOn = transactedOn;
         UserId = userId;
         TransferredUserId = transferredUserID;
+        DefaultAction = defaultAction;
         CurrencyId = currencyId;
         Description = description;
 
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
+        foreach (var objectValueDetail in objectValueDetails)
+        {
+            var detailResult = UpsertDetail(objectValueDetail);
+            if (detailResult.IsFailure)
+            {
+                return Result.Failure(detailResult.Error);
+            }
+        }
+
         return Result.Success();
     }
 
-    private static Result Validate(decimal amount, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid transferredUserID)
+    protected override void CalculateAmount()
     {
-        if (amount < 0)
-        {
-            return Result.Failure(Errors.Transaction.AmountMustGreaterThanZero);
-        }
+        //Only count the actions which are the same as default one.
+        Amount = TransactionDetails.Where(td => td.Action == DefaultAction).Sum(td => td.Amount);
+    }
+
+    private static Result Validate(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid transferredUserID, Enums.Action defaultAction, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    {
         if (userId == Guid.Empty)
         {
             return Result.Failure(Errors.User.UserRequired);
@@ -62,6 +91,10 @@ public sealed class TransferTransaction : Transaction
         if (currencyId == Guid.Empty)
         {
             return Result.Failure(Errors.Currency.CurrencyRequired);
+        }
+        if (!objectValueDetails.Any(ovd => ovd.Action == defaultAction))
+        {
+            return Result.Failure(Errors.Transaction.Transfer.RequireDefaultActionInDetailList);
         }
 
         return Result.Success();

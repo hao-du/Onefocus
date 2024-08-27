@@ -13,7 +13,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
                 ba.Property(p => p.AccountNumber).HasMaxLength(50);
             });
 
-            builder.HasOne(bt => bt.BankAccount.Bank).WithMany(b => b.BankingTransactions).HasForeignKey(bt => bt.BankAccount.BankId);
+            builder.HasOne(bt => bt.Bank).WithMany(b => b.BankingTransactions).HasForeignKey(bt => bt.BankId);
         }
     }
 }
