@@ -74,7 +74,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     TransactedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -220,7 +219,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransferredUserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    TransferredUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DefaultAction = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

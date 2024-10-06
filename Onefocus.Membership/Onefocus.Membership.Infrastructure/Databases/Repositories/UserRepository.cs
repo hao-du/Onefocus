@@ -14,7 +14,7 @@ public interface IUserRepository
 {
     Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync();
     Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
-    Task<Result> CreateUserAsync(CreateUserRepositoryRequest request);
+    Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request);
     Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request);
     Task<Result> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
 }
@@ -52,7 +52,7 @@ public sealed class UserRepository : IUserRepository
                     , u.Email
                     , u.FirstName
                     , u.LastName
-                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.Create(c.Role)).ToList())
+                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.Cast(c.Role)).ToList())
                 )
                 .ToListAsync();
 
@@ -80,7 +80,7 @@ public sealed class UserRepository : IUserRepository
                 return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.UserNotExist);
             }
 
-            return Result.Success(GetUserByIdRepositoryResponse.Create(user));
+            return Result.Success(GetUserByIdRepositoryResponse.Cast(user));
         }
         catch (Exception ex)
         {
@@ -89,12 +89,12 @@ public sealed class UserRepository : IUserRepository
         }
     }
 
-    public async Task<Result> CreateUserAsync(CreateUserRepositoryRequest request)
+    public async Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request)
     {
-        var userResult = User.Create(request.ToRequestObject());
+        var userResult = User.Create(request.ToObject());
         if (userResult.IsFailure)
         {
-            return userResult;
+            return Result.Failure<Guid>(userResult.Error);
         }
 
         var user = userResult.Value;
@@ -109,18 +109,18 @@ public sealed class UserRepository : IUserRepository
                 var identityError = identityResult.Errors.FirstOrDefault();
                 if (identityError != null)
                 {
-                    return Result.Failure(new Error(identityError.Code, identityError.Description));
+                    return Result.Failure<Guid>(new Error(identityError.Code, identityError.Description));
                 }
-                return Result.Failure(CommonErrors.Unknown);
+                return Result.Failure<Guid>(CommonErrors.Unknown);
             }
+
+            return Result.Success<Guid>(user.Id);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure(CommonErrors.InternalServer);
+            return Result.Failure<Guid>(CommonErrors.InternalServer);
         }
-
-        return Result.Success();
     }
 
     public async Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request)
@@ -131,7 +131,7 @@ public sealed class UserRepository : IUserRepository
             return Result.Failure(Errors.User.UserNotExist);
         }
 
-        user.Update(request.ToRequestObject());
+        user.Update(request.ToObject());
 
         try
         {
@@ -151,7 +151,7 @@ public sealed class UserRepository : IUserRepository
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
         if (user == null) return Result.Failure(Errors.User.UserNotExist);
 
-        var updatePasswordResult = user.Update(request.ToRequestObject(), _passwordHasher);
+        var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
         if (updatePasswordResult.IsFailure) return Result.Failure(updatePasswordResult.Error);
 
         try

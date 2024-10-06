@@ -14,8 +14,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
             });
 
             builder.HasOne(bt => bt.Bank).WithMany(b => b.BankingTransactions).HasForeignKey(bt => bt.BankId);
-
-            builder.Ignore(bt => bt.WithdrawalAmount).Ignore(bt => bt.InterestAmount);
         }
     }
 }

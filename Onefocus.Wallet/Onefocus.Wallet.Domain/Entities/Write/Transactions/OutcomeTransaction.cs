@@ -31,8 +31,6 @@ public sealed class OutcomeTransaction : Transaction
             }
         }
 
-        transaction.CalculateAmount();
-
         return transaction;
     }
 
@@ -59,8 +57,6 @@ public sealed class OutcomeTransaction : Transaction
                 return Result.Failure(detailResult.Error);
             }
         }
-
-        CalculateAmount();
 
         return Result.Success();
     }

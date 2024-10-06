@@ -7,11 +7,11 @@ using Entity = Onefocus.Identity.Domain.Entities;
 namespace Onefocus.Identity.Infrastructure.Security;
 
 public sealed record GenerateTokenServiceRequest(string Email, List<string> Roles) 
-    : IResponseObject<GenerateTokenServiceRequest, CheckPasswordRepositoryResponse>
-    , IResponseObject<GenerateTokenServiceRequest, GetUserByIdRepositoryResponse>
+    : ICastObject<GenerateTokenServiceRequest, CheckPasswordRepositoryResponse>
+    , ICastObject<GenerateTokenServiceRequest, GetUserByIdRepositoryResponse>
 {
-    public static GenerateTokenServiceRequest Create(CheckPasswordRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
-    public static GenerateTokenServiceRequest Create(GetUserByIdRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
+    public static GenerateTokenServiceRequest Cast(CheckPasswordRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
+    public static GenerateTokenServiceRequest Cast(GetUserByIdRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
 }
 
 public sealed record GenerateTokenServiceResponse(string AccessToken);

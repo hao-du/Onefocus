@@ -23,7 +23,7 @@ public sealed class User : WriteEntityBase
         Email = default!;
     }
 
-    private User(string email, string firstName, string lastName, string description, Guid actionedBy)
+    private User(string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
@@ -32,7 +32,7 @@ public sealed class User : WriteEntityBase
         Email = email;
     }
 
-    public static Result<User> Create(string email, string firstName, string lastName, string description, Guid actionedBy)
+    public static Result<User> Create(string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)
@@ -43,7 +43,7 @@ public sealed class User : WriteEntityBase
         return new User(email, firstName, lastName, description, actionedBy);
     }
 
-    public Result<User> Update(string email, string firstName, string lastName, string description, bool activeFlag, Guid actionedBy)
+    public Result<User> Update(string email, string firstName, string lastName, string? description, bool activeFlag, Guid actionedBy)
     {
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)

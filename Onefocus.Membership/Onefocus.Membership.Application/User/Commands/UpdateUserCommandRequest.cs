@@ -3,12 +3,19 @@ using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
 using System.ComponentModel.DataAnnotations;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
+using Onefocus.Common.Abstractions.ServiceBus.Membership;
+using Onefocus.Membership.Infrastructure.ServiceBus;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand, IRequestObject<UpdateUserRepositoryRequest>
+public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand, IToObject<UpdateUserRepositoryRequest>, IToObject<IUserUpdatedMessage, Guid?>
 {
-    public UpdateUserRepositoryRequest ToRequestObject() => new (Id, Email, FirstName, LastName);
+    public UpdateUserRepositoryRequest ToObject() => new (Id, Email, FirstName, LastName);
+
+    public IUserUpdatedMessage ToObject(Guid? id = null)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommandRequest>
@@ -25,7 +32,7 @@ internal sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserComma
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
 
-        return await _userRepository.UpdateUserAsync(request.ToRequestObject());
+        return await _userRepository.UpdateUserAsync(request.ToObject());
     }
 
     private Result ValidateRequest(UpdateUserCommandRequest request)

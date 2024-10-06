@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace Onefocus.Identity.Application.Authentication.Commands;
 
-public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>, IRequestObject<CheckPasswordRepositoryRequest>
+public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>, IToObject<CheckPasswordRepositoryRequest>
 {
-    public CheckPasswordRepositoryRequest ToRequestObject() => new(Email, Password);
+    public CheckPasswordRepositoryRequest ToObject() => new(Email, Password);
 }
 
 internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommandRequest, AccessTokenResponse>
@@ -36,13 +36,13 @@ internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateC
 
     public async Task<Result<AccessTokenResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
     {
-        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToRequestObject());
+        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToObject());
         if (checkPasswordResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);
         }
 
-        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Create(checkPasswordResult.Value));
+        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(checkPasswordResult.Value));
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);

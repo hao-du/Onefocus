@@ -45,7 +45,7 @@ internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenC
             return Result.Failure<AccessTokenResponse>(matchResult.Error);
         }
 
-        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Create(userResult.Value));
+        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(userResult.Value));
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);

@@ -37,8 +37,6 @@ public sealed class TransferTransaction : Transaction
             }
         }
 
-        transaction.CalculateAmount();
-
         return transaction;
     }
 
@@ -70,12 +68,6 @@ public sealed class TransferTransaction : Transaction
         }
 
         return Result.Success();
-    }
-
-    protected override void CalculateAmount()
-    {
-        //Only count the actions which are the same as default one.
-        Amount = TransactionDetails.Where(td => td.Action == DefaultAction).Sum(td => td.Amount);
     }
 
     private static Result Validate(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid transferredUserID, Enums.Action defaultAction, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)

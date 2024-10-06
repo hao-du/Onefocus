@@ -6,7 +6,6 @@ public sealed class ExchangeTransaction : Transaction
 {
     public Guid ExchangedCurrencyId { get; private set; }
     public decimal ExchangeRate { get; private set; }
-    public decimal ExchangedAmount => Amount * ExchangeRate;
 
     public Currency ExchangedCurrency { get; private set; } = default!;
 
@@ -39,8 +38,6 @@ public sealed class ExchangeTransaction : Transaction
             }
         }
 
-        transaction.CalculateAmount();
-
         return transaction;
     }
 
@@ -52,7 +49,6 @@ public sealed class ExchangeTransaction : Transaction
             return validationResult;
         }
 
-        Amount = amount;
         TransactedOn = transactedOn;
         UserId = userId;
         ExchangedCurrencyId = exchangedCurrencyId;
@@ -72,14 +68,7 @@ public sealed class ExchangeTransaction : Transaction
             }
         }
 
-        CalculateAmount();
-
         return Result.Success();
-    }
-
-    protected override void CalculateAmount()
-    {
-        Amount = TransactionDetails.Where(td => td.Action == Enums.Action.ExchangeFrom).Sum(td => td.Amount);
     }
 
     private static Result Validate(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId)

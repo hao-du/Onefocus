@@ -31,8 +31,6 @@ public sealed class IncomeTransaction : Transaction
             }
         }
 
-        transaction.CalculateAmount();
-
         return transaction;
     }
 
@@ -60,8 +58,6 @@ public sealed class IncomeTransaction : Transaction
                 return Result.Failure(detailResult.Error);
             }
         }
-
-        CalculateAmount();
 
         return Result.Success();
     }

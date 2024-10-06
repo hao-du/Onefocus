@@ -6,6 +6,8 @@ using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using Onefocus.Common.Constants;
+using MassTransit;
+using Onefocus.Membership.Infrastructure.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure;
 
@@ -24,6 +26,24 @@ public static class DependencyInjection
             .AddTokenProvider(Commons.TokenProviderName, typeof(DataProtectorTokenProvider<User>));
 
         services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddMassTransit(busConfigure =>
+        {
+            busConfigure.SetKebabCaseEndpointNameFormatter();
+
+            busConfigure.UsingRabbitMq((context, configure) =>
+            {
+                configure.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
+                {
+                    host.Username(configuration["MessageBroker:UserName"]!);
+                    host.Password(configuration["MessageBroker:Password"]!);
+                });
+
+                configure.ConfigureEndpoints(context);
+            });
+        });
+
+        services.AddScoped<IUserCreatedPublisher, UserCreatedPublisher>();
 
         return services;
     }

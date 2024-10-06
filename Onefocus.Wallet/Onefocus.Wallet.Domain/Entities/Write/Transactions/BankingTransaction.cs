@@ -42,8 +42,6 @@ public sealed class BankingTransaction : Transaction
             }
         }
 
-        transaction.CalculateAmount();
-
         return transaction;
     }
 
@@ -75,8 +73,6 @@ public sealed class BankingTransaction : Transaction
             }
         }
 
-        CalculateAmount();
-
         return Result.Success();
     }
 
@@ -84,11 +80,6 @@ public sealed class BankingTransaction : Transaction
     {
         BankAccount.SetCloseFlag(true);
         Update(actionedBy);
-    }
-
-    protected override void CalculateAmount()
-    {
-        Amount = TransactionDetails.Where(td => td.Action == Enums.Action.Deposit).Sum(td => td.Amount);
     }
 
     private static Result Validate(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid bankId, BankAccount bankAccount)

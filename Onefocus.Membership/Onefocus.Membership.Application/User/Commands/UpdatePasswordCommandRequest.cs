@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand, IRequestObject<UpdatePasswordRepositoryRequest>
+public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand, IToObject<UpdatePasswordRepositoryRequest>
 {
-    public UpdatePasswordRepositoryRequest ToRequestObject() => new (Id, Password);
+    public UpdatePasswordRepositoryRequest ToObject() => new (Id, Password);
 }
 internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswordCommandRequest>
 {
@@ -24,7 +24,7 @@ internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePassw
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
         
-        return await _userRepository.UpdatePasswordAsync(request.ToRequestObject());
+        return await _userRepository.UpdatePasswordAsync(request.ToObject());
     }
 
     private Result ValidateRequest(UpdatePasswordCommandRequest request)

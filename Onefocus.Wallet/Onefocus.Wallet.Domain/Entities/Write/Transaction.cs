@@ -10,7 +10,6 @@ public abstract class Transaction : WriteEntityBase
 {
     private List<TransactionDetail> _transactionDetails = new List<TransactionDetail>();
 
-    public decimal Amount { get; protected set; }
     public DateTimeOffset TransactedOn { get; protected set; }
     public Guid UserId { get; protected set; }
     public Guid CurrencyId { get; protected set; }
@@ -74,11 +73,6 @@ public abstract class Transaction : WriteEntityBase
         detail.Update(objectValue);
 
         return Result.Success();
-    }
-
-    protected virtual void CalculateAmount()
-    {
-        Amount = _transactionDetails.Sum(td => td.Amount);
     }
 }
 

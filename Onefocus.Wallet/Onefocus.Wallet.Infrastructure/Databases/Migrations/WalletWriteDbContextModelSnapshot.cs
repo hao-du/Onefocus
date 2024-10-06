@@ -109,9 +109,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<bool>("ActiveFlag")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -290,6 +287,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Transactions.TransferTransaction", b =>
                 {
                     b.HasBaseType("Onefocus.Wallet.Domain.Entities.Write.Transaction");
+
+                    b.Property<int>("DefaultAction")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("TransferredUserId")
                         .HasColumnType("uuid");

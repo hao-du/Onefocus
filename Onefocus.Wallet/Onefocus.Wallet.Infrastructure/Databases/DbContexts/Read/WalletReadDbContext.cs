@@ -27,4 +27,3 @@ public class WalletReadDbContext : DbContext
         builder.ApplyConfigurationsFromAssembly(typeof(WalletReadDbContext).Assembly);
     }
 }
-
