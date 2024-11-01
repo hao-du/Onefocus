@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
 using Onefocus.Membership.Domain.Entities;
 using System.Linq;
@@ -16,7 +17,7 @@ public interface IUserRepository
     Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
     Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request);
     Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request);
-    Task<Result> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
+    Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
 }
 
 public sealed class UserRepository : IUserRepository
@@ -146,24 +147,24 @@ public sealed class UserRepository : IUserRepository
         return Result.Success();
     }
 
-    public async Task<Result> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request)
+    public async Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request)
     {
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
-        if (user == null) return Result.Failure(Errors.User.UserNotExist);
+        if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
 
         var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
-        if (updatePasswordResult.IsFailure) return Result.Failure(updatePasswordResult.Error);
+        if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
 
         try
         {
             IdentityResult result = await _userManager.UpdateAsync(user);
+
+            return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.Cast(user));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure(CommonErrors.InternalServer);
+            return Result.Failure<UpdatePasswordRepositoryResponse>(CommonErrors.InternalServer);
         }
-
-        return Result.Success();
     }
 }

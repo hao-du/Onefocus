@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
 using Onefocus.Identity.Domain;
 using Onefocus.Identity.Domain.Entities;
 using System.Linq;
@@ -14,6 +15,7 @@ public interface IUserRepository
 {
     Task<Result<CheckPasswordRepositoryResponse>> CheckPasswordAsync(CheckPasswordRepositoryRequest request);
     Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
+    Task<Result> UpsertUserByIdAsync(UpsertUserRepositoryRequest request);
 }
 
 public sealed class UserRepository : IUserRepository
@@ -66,5 +68,86 @@ public sealed class UserRepository : IUserRepository
         var roles = await _userManager.GetRolesAsync(user);
 
         return Result.Success<GetUserByIdRepositoryResponse>(new(user, roles.ToList()));
+    }
+
+    public async Task<Result> UpsertUserByIdAsync(UpsertUserRepositoryRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(request.Id.ToString());
+        if (user == null)
+        {
+            return await CreateUserAsync(request);
+        }
+        else
+        {
+            return await UpdateUserAsync(user, request);
+        }
+    }
+
+    private async Task<Result> CreateUserAsync(UpsertUserRepositoryRequest request)
+    {
+        try
+        {
+            var userResult = User.Create(request.Email);
+            if (userResult.IsFailure)
+            {
+                return Result.Failure(userResult.Error);
+            }
+
+            var user = userResult.Value;
+
+            await _userStore.SetUserNameAsync(user, request.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, request.Email, CancellationToken.None);
+
+            IdentityResult identityResult;
+            if (!string.IsNullOrEmpty(request.HashedPassword))
+            {
+                identityResult = await _userManager.CreateAsync(user, Cryptography.Decrypt(request.HashedPassword));
+            }
+            else 
+            {
+                identityResult = await _userManager.CreateAsync(user);
+            }
+            if (!identityResult.Succeeded)
+            {
+                var identityError = identityResult.Errors.FirstOrDefault();
+                if (identityError != null)
+                {
+                    return Result.Failure<Guid>(new Error(identityError.Code, identityError.Description));
+                }
+                return Result.Failure<Guid>(CommonErrors.Unknown);
+            }
+
+            return Result.Success<Guid>(user.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Result.Failure<Guid>(CommonErrors.InternalServer);
+        }
+    }
+
+    private async Task<Result> UpdateUserAsync(User user, UpsertUserRepositoryRequest request)
+    {
+        try
+        {
+            user.Update(request.Email);
+            if (!string.IsNullOrEmpty(request.HashedPassword))
+            {
+                user.PasswordHash = _passwordHasher.HashPassword(user, Cryptography.Decrypt(request.HashedPassword));
+            }
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description)).ToList());
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Result.Failure(CommonErrors.InternalServer);
+        }
+
+        return Result.Success();
     }
 }

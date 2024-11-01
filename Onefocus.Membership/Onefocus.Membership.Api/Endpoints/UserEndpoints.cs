@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Api.Security;
 using Onefocus.Membership.Application.User.Commands;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -12,9 +11,9 @@ internal static class UserEndpoints
 {
     public static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        var routes = app.MapGroup(prefix: string.Empty).RequireAuthorization();
+        var routes = app.MapGroup(prefix: string.Empty);//.RequireAuthorization();
 
-        routes.MapGet("user/all", async (ISender sender, HttpContext context, IAuthenticationSettings authSettings) =>
+        routes.MapGet("user/all", async (ISender sender) =>
         {
             Result<GetAllUsersQueryResponse> result = await sender.Send(new GetAllUsersQueryRequest());
 
@@ -36,6 +35,13 @@ internal static class UserEndpoints
         });
 
         routes.MapPut("user/update", async (UpdateUserCommandRequest command, ISender sender) =>
+        {
+            Result result = await sender.Send(command);
+
+            return result.ToResult();
+        });
+
+        routes.MapPost("user/sync", async (SyncUserCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Onefocus.Membership.Api.Security
+namespace Onefocus.Common.Security
 {
     public interface IAuthenticationSettings
     {

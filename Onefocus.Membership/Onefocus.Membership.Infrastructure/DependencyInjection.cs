@@ -43,7 +43,7 @@ public static class DependencyInjection
             });
         });
 
-        services.AddScoped<IUserCreatedPublisher, UserCreatedPublisher>();
+        services.AddScoped<IUserSyncedPublisher, UserSyncedPublisher>();
 
         return services;
     }

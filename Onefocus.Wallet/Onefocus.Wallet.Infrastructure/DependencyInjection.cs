@@ -27,7 +27,10 @@ public static class DependencyInjection
 
         services.AddMassTransit(busConfigure =>
         {
-            busConfigure.AddConsumer<UserCreatedConsumer>();
+            busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
+            {
+                configure.InstanceId = Guid.NewGuid().ToString();
+            });
 
             busConfigure.UsingRabbitMq((context, configure) =>
             {

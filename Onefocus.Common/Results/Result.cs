@@ -11,37 +11,43 @@ public record Error(string Code, string Description)
 
 public class Result
 {
-    protected internal Result(bool isSuccess, Error error)
+    protected internal Result(bool isSuccess, List<Error> errors)
     {
-        if (isSuccess && error != CommonErrors.None || !isSuccess && error == CommonErrors.None)
+        if (isSuccess && errors.Any())
         {
-            throw new ArgumentException("Invalid error", nameof(error));
+            throw new ArgumentException("Invalid errors.", nameof(errors));
         }
 
         IsSuccess = isSuccess;
-        Error = error;
+        _errors = errors;
     }
 
     public bool IsSuccess { get; }
 
     public bool IsFailure => !IsSuccess;
 
-    public Error Error { get; }
+    private List<Error> _errors;
+    public IReadOnlyList<Error> Errors => _errors.ToList();
+    public Error Error => _errors.First();
 
-    public static Result Success() => new(true, CommonErrors.None);
+    public static Result Success() => new(true, new List<Error>());
 
-    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, CommonErrors.None);
+    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, new List<Error>());
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error error) => new(false, new List<Error>() { error });
 
-    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
+    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, new List<Error>() { error });
+
+    public static Result Failure(List<Error> errors) => new(false, errors);
+
+    public static Result<TValue> Failure<TValue>(List<Error> errors) => new(default, false, errors);
 }
 
 public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    protected internal Result(TValue? value, bool isSuccess, Error error): base(isSuccess, error)
+    protected internal Result(TValue? value, bool isSuccess, List<Error> errors) : base(isSuccess, errors)
     {
         _value = value;
     }

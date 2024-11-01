@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Onefocus.Membership.Api.Security;
+using Onefocus.Common.Security;
 using System.Text;
 
 namespace Onefocus.Common;

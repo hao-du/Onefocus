@@ -67,6 +67,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
 
-app.MapUserEndpoints();
+app.MapTransactionEndpoints();
 
 app.Run();

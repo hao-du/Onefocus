@@ -2,27 +2,24 @@
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
-using Onefocus.Membership.Api.Security;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using System.Linq;
 
 namespace Onefocus.Identity.Application.Authentication.Commands;
 
-public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>, IToObject<CheckPasswordRepositoryRequest>
-{
-    public CheckPasswordRepositoryRequest ToObject() => new(Email, Password);
-}
+public sealed record RefreshTokenCommandRequest(Guid UserId, string RefreshToken) : ICommand<AccessTokenResponse>;
 
-internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommandRequest, AccessTokenResponse>
+internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommandRequest, AccessTokenResponse>
 {
     private readonly IAuthenticationSettings _authSettings;
     private readonly ITokenService _tokenService;
     private readonly IUserRepository _userRepository;
     private readonly ITokenRepository _tokenRepository;
 
-    public AuthenticateCommandHandler(
+    public RefreshTokenCommandHandler(
         IAuthenticationSettings authSettings
         , ITokenService tokenService
         , IUserRepository userRepository
@@ -34,21 +31,27 @@ internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateC
         _tokenRepository = tokenRepository;
     }
 
-    public async Task<Result<AccessTokenResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
+    public async Task<Result<AccessTokenResponse>> Handle(RefreshTokenCommandRequest request, CancellationToken cancellationToken)
     {
-        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToObject());
-        if (checkPasswordResult.IsFailure)
+        var userResult = await _userRepository.GetUserByIdAsync(new (request.UserId));
+        if (userResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);
+            return Result.Failure<AccessTokenResponse>(userResult.Error);
         }
 
-        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(checkPasswordResult.Value));
+        var matchResult = await _tokenRepository.MatchTokenAsync(new MatchRefreshTokenRepositoryRequest(userResult.Value.User, request.RefreshToken));
+        if (matchResult.IsFailure)
+        {
+            return Result.Failure<AccessTokenResponse>(matchResult.Error);
+        }
+
+        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(userResult.Value));
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);
         }
 
-        var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(checkPasswordResult.Value.User));
+        var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(userResult.Value.User));
         if (refreshTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(refreshTokenResult.Error);

@@ -7,6 +7,8 @@ using Onefocus.Identity.Domain.Entities;
 using Onefocus.Common.Constants;
 using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
+using MassTransit;
+using Onefocus.Identity.Infrastructure.ServiceBus;
 
 namespace Onefocus.Identity.Infrastructure;
 
@@ -25,8 +27,26 @@ public static class DependencyInjection
             .AddApiEndpoints()
             .AddTokenProvider(Commons.TokenProviderName, typeof(DataProtectorTokenProvider<User>));
 
-        services.AddScoped<ITokenService, TokenService>();
+        services.AddMassTransit(busConfigure =>
+        {
+            busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
+            {
+                configure.InstanceId = Guid.NewGuid().ToString();
+            });
 
+            busConfigure.UsingRabbitMq((context, configure) =>
+            {
+                configure.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
+                {
+                    host.Username(configuration["MessageBroker:UserName"]!);
+                    host.Password(configuration["MessageBroker:Password"]!);
+                });
+
+                configure.ConfigureEndpoints(context);
+            });
+        });
+
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
 

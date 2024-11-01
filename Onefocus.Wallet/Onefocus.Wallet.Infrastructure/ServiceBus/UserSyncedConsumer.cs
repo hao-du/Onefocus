@@ -13,21 +13,21 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Wallet.Infrastructure.ServiceBus
 {
-    internal class UserUpdatedConsumer : IConsumer<IUserUpdatedMessage>
+    internal class UserSyncedConsumer : IConsumer<IUserSyncedMessage>
     {
         private readonly IUserWriteRepository _userRepository;
-        private readonly ILogger<UserUpdatedConsumer> _logger;
+        private readonly ILogger<UserSyncedConsumer> _logger;
 
-        public UserUpdatedConsumer(
+        public UserSyncedConsumer(
             IUserWriteRepository userRepository
-            , ILogger<UserUpdatedConsumer> logger
+            , ILogger<UserSyncedConsumer> logger
         )
         {
             _userRepository = userRepository;
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<IUserUpdatedMessage> context)
+        public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
         {
             var result = await _userRepository.UpsertUserAsync(UpsertUserRepositoryRequest.Cast(context.Message));
             if (result.IsFailure)

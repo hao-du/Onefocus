@@ -6,7 +6,7 @@ using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.GetUse
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserResponse User): ICastObject<GetUserByIdQueryResponse, RepoRes>
+public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserResponse User)
 {
     public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleResponse> Roles);
     public sealed record RoleResponse(Guid Id, string? RoleName);
@@ -25,7 +25,7 @@ public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserRespo
     }
 }
 
-public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryResponse>, IToObject<GetUserByIdRepositoryRequest>
+public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryResponse>
 {
     public GetUserByIdRepositoryRequest ToObject() => new(Id);
 }

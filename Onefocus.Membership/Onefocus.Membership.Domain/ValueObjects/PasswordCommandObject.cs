@@ -5,5 +5,4 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Membership.Domain.ValueObjects;
 
-public sealed record PasswordCommandObject(Guid Id, string Password);
-
+public sealed record PasswordCommandObject(Guid Id, string Email, string FirstName, string LastName, string Password);

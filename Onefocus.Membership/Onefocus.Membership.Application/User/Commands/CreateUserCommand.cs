@@ -2,31 +2,32 @@
 using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using Onefocus.Membership.Infrastructure.ServiceBus;
 using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Membership.Application.User.Commands;
-public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand, IToObject<CreateUserRepositoryRequest>, IToObject<IUserCreatedMessage, Guid>
+public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand
 {
     public CreateUserRepositoryRequest ToObject() => new (Email, FirstName, LastName, Password);
-    public IUserCreatedMessage ToObject(Guid id) => new UserCreatedPublishMessage(id, Email, FirstName, LastName);
+    public IUserSyncedMessage ToObject(Guid id) => new UserSyncedPublishMessage(id, Email, FirstName, LastName, null, true, Cryptography.Encrypt(Password));
 
 }
 
 internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommandRequest>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUserCreatedPublisher _userCreatedPublisher;
+    private readonly IUserSyncedPublisher _userSyncePdublisher;
 
     public CreateUserCommandHandler(
         IUserRepository userRepository
-        , IUserCreatedPublisher userCreatedPublisher
+        , IUserSyncedPublisher userSyncedPublisher
     )
     {
         _userRepository = userRepository;
-        _userCreatedPublisher = userCreatedPublisher;
+        _userSyncePdublisher = userSyncedPublisher;
     }
 
     public async Task<Result> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
@@ -35,10 +36,9 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
 
         var repoResult = await _userRepository.CreateUserAsync(request.ToObject());
-        if (repoResult.IsFailure) return Result.Failure(validationResult.Error);
+        if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
 
-        var eventPublishResult = await _userCreatedPublisher.Publish(request.ToObject(repoResult.Value));
-
+        var eventPublishResult = await _userSyncePdublisher.Publish(request.ToObject(repoResult.Value));
         return eventPublishResult;
     }
 

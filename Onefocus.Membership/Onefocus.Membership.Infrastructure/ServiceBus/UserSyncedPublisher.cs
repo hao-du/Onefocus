@@ -13,37 +13,36 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Membership.Infrastructure.ServiceBus
 {
-    public record UserCreatedPublishMessage(Guid Id, string Email, string FirstName, string LastName): IUserCreatedMessage;
+    public record UserSyncedPublishMessage(Guid Id, string Email, string FirstName, string LastName, string? Description, bool ActionFlag, string? HashedPassword): IUserSyncedMessage;
 
-    public interface IUserCreatedPublisher
+    public interface IUserSyncedPublisher
     {
-        Task<Result> Publish(IUserCreatedMessage message, CancellationToken cancellationToken = default);
+        Task<Result> Publish(IUserSyncedMessage message, CancellationToken cancellationToken = default);
     }
 
-    public class UserCreatedPublisher: IUserCreatedPublisher
+    public class UserSyncedPublisher : IUserSyncedPublisher
     {
         private readonly IPublishEndpoint _publishEndpoint;
-        private readonly ILogger<UserCreatedPublisher> _logger;
+        private readonly ILogger<UserSyncedPublisher> _logger;
 
-        public UserCreatedPublisher(
+        public UserSyncedPublisher(
             IPublishEndpoint publishEndpoint
-            , ILogger<UserCreatedPublisher> logger)
+            , ILogger<UserSyncedPublisher> logger)
         {
             _publishEndpoint = publishEndpoint;
             _logger = logger;
         }
 
-        public async Task<Result> Publish(IUserCreatedMessage message, CancellationToken cancellationToken = default)
+        public async Task<Result> Publish(IUserSyncedMessage message, CancellationToken cancellationToken = default)
         {
             try
             {
                 await _publishEndpoint.Publish(message, cancellationToken);
-
                 return Result.Success();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, $"Cannot sync user {message.FirstName} {message.LastName} - email: {message.Email} - id: {message.Id} with error: {ex.Message}");
                 return Result.Failure(CommonErrors.InternalServer);
             }
         }

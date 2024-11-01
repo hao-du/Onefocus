@@ -4,7 +4,7 @@ using static Onefocus.Wallet.Infrastructure.Repositories.Read.GetAllUsersReposit
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
 
-public sealed record GetAllUsersRepositoryResponse(List<UserResponse> Users) : ICastObject<GetAllUsersRepositoryResponse, List<User>>
+public sealed record GetAllUsersRepositoryResponse(List<UserResponse> Users)
 {
     public static GetAllUsersRepositoryResponse Cast(List<User> source)
     {
@@ -21,7 +21,7 @@ public sealed record GetAllUsersRepositoryResponse(List<UserResponse> Users) : I
 }
 
 public sealed record GetUserByIdRepositoryRequest(Guid Id);
-public sealed record GetUserByIdRepositoryResponse(Guid Id, string Email, string FirstName, string LastName, bool ActiveFlag) : ICastObject<GetUserByIdRepositoryResponse?, User>
+public sealed record GetUserByIdRepositoryResponse(Guid Id, string Email, string FirstName, string LastName, bool ActiveFlag)
 {
     public static GetUserByIdRepositoryResponse? Cast(User? source)
     {

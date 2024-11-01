@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Common.Abstractions.ServiceBus.Membership
 {
-    public interface IUserUpdatedMessage
+    public interface IUserSyncedMessage
     {
         Guid Id { get; } 
         string Email { get; }
@@ -14,5 +14,6 @@ namespace Onefocus.Common.Abstractions.ServiceBus.Membership
         string LastName { get; }
         string? Description { get; }
         bool ActionFlag { get; }
+        string? HashedPassword { get; }
     }
 }

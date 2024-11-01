@@ -4,7 +4,6 @@ using Onefocus.Identity.Application;
 using Onefocus.Identity.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Onefocus.Identity.Api.Endpoints;
-using Onefocus.Membership.Api.Security;
 using Onefocus.Common;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
