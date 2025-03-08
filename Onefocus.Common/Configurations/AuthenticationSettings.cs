@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Onefocus.Common.Security
+namespace Onefocus.Common.Configurations
 {
     public interface IAuthenticationSettings
     {
+        const string SettingName = "Authentication";
+
         string TokenProviderName { get; }
         string Audience { get; }
         string Issuer { get; }

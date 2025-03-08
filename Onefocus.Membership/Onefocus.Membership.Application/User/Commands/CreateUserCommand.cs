@@ -11,8 +11,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Onefocus.Membership.Application.User.Commands;
 public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand
 {
-    public CreateUserRepositoryRequest ToObject() => new (Email, FirstName, LastName, Password);
-    public IUserSyncedMessage ToObject(Guid id) => new UserSyncedPublishMessage(id, Email, FirstName, LastName, null, true, Cryptography.Encrypt(Password));
+    public CreateUserRepositoryRequest ConvertTo() => new (Email, FirstName, LastName, Password);
+    public IUserSyncedMessage ConvertTo(Guid id) => new UserSyncedPublishMessage(id, Email, FirstName, LastName, null, true, Cryptography.Encrypt(Password));
 
 }
 
@@ -35,10 +35,10 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
 
-        var repoResult = await _userRepository.CreateUserAsync(request.ToObject());
+        var repoResult = await _userRepository.CreateUserAsync(request.ConvertTo());
         if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
 
-        var eventPublishResult = await _userSyncePdublisher.Publish(request.ToObject(repoResult.Value));
+        var eventPublishResult = await _userSyncePdublisher.Publish(request.ConvertTo(repoResult.Value));
         return eventPublishResult;
     }
 

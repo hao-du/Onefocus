@@ -9,7 +9,7 @@ public sealed record GetAllUsersQueryRequest() : IQuery<GetAllUsersQueryResponse
 
 public sealed record GetAllUsersQueryResponse(List<GetAllUsersQueryResponse.UserResponse> Users)
 {
-    public static GetAllUsersQueryResponse Cast(GetAllUsersRepositoryResponse source)
+    public static GetAllUsersQueryResponse CastFrom(GetAllUsersRepositoryResponse source)
     {
         var users = source.Users.Select(u => new UserResponse(
             u.Id, u.UserName, u.Email, u.FirstName, u.LastName,
@@ -40,7 +40,7 @@ internal sealed class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQueryRe
             return Result.Failure<GetAllUsersQueryResponse>(userResult.Error);
         }
 
-        return Result.Success<GetAllUsersQueryResponse>(GetAllUsersQueryResponse.Cast(userResult.Value));
+        return Result.Success<GetAllUsersQueryResponse>(GetAllUsersQueryResponse.CastFrom(userResult.Value));
     }
 }
 

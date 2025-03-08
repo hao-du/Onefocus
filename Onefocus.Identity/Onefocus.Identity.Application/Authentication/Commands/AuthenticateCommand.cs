@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Onefocus.Common.Abstractions.Messaging;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
-using Onefocus.Common.Security;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
@@ -12,7 +12,7 @@ namespace Onefocus.Identity.Application.Authentication.Commands;
 
 public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>
 {
-    public CheckPasswordRepositoryRequest ToObject() => new(Email, Password);
+    public CheckPasswordRepositoryRequest ConvertTo() => new(Email, Password);
 }
 
 internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommandRequest, AccessTokenResponse>
@@ -36,13 +36,13 @@ internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateC
 
     public async Task<Result<AccessTokenResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
     {
-        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToObject());
+        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ConvertTo());
         if (checkPasswordResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);
         }
 
-        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(checkPasswordResult.Value));
+        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.CastFrom(checkPasswordResult.Value));
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);

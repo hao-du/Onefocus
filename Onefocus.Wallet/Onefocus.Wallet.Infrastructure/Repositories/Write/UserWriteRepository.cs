@@ -36,7 +36,7 @@ public sealed class UserWriteRepository : IUserWriteRepository
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id == request.Id);
             if (user == null)
             {
-                var userResult = request.ToObject();
+                var userResult = request.ConvertTo();
                 if (userResult.IsFailure)
                 {
                     return Result.Failure<UpsertUserRepositoryResponse>(userResult.Error);

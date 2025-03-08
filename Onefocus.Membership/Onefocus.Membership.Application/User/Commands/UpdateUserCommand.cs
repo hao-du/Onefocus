@@ -11,9 +11,9 @@ namespace Onefocus.Membership.Application.User.Commands;
 
 public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand
 {
-    public UpdateUserRepositoryRequest ToObject() => new (Id, Email, FirstName, LastName);
+    public UpdateUserRepositoryRequest ConvertTo() => new (Id, Email, FirstName, LastName);
 
-    public IUserSyncedMessage ToObject(Guid? id = null) => new UserSyncedPublishMessage(id.HasValue ? id.Value : Id, Email, FirstName, LastName, null, true, null);
+    public IUserSyncedMessage ConvertTo(Guid? id = null) => new UserSyncedPublishMessage(id.HasValue ? id.Value : Id, Email, FirstName, LastName, null, true, null);
 }
 
 internal sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommandRequest>
@@ -34,10 +34,10 @@ internal sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserComma
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
 
-        var repoResult = await _userRepository.UpdateUserAsync(request.ToObject());
+        var repoResult = await _userRepository.UpdateUserAsync(request.ConvertTo());
         if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
 
-        var eventPublishResult = await _userSyncedPublisher.Publish(request.ToObject(request.Id));
+        var eventPublishResult = await _userSyncedPublisher.Publish(request.ConvertTo(request.Id));
         return eventPublishResult;
     }
 

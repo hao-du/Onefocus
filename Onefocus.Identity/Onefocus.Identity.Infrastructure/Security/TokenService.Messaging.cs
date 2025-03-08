@@ -8,8 +8,8 @@ namespace Onefocus.Identity.Infrastructure.Security;
 
 public sealed record GenerateTokenServiceRequest(string Email, List<string> Roles)
 {
-    public static GenerateTokenServiceRequest Cast(CheckPasswordRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
-    public static GenerateTokenServiceRequest Cast(GetUserByIdRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
+    public static GenerateTokenServiceRequest CastFrom(CheckPasswordRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
+    public static GenerateTokenServiceRequest CastFrom(GetUserByIdRepositoryResponse source) => new(source.User.Email ?? string.Empty, source.Roles);
 }
 
 public sealed record GenerateTokenServiceResponse(string AccessToken);

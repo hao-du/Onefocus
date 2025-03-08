@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Onefocus.Common.Configurations;
+using Onefocus.Common.Constants;
 using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Common.Constants;
-using MassTransit;
 using Onefocus.Membership.Infrastructure.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure;
@@ -17,8 +18,9 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<MembershipDbContext>(option =>
-            option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
+        services.AddDbContext<MembershipDbContext>(option => option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
+
+        IMessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
 
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
@@ -33,10 +35,10 @@ public static class DependencyInjection
 
             busConfigure.UsingRabbitMq((context, configure) =>
             {
-                configure.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
+                configure.Host(new Uri(messageBrokerSettings.Host), host =>
                 {
-                    host.Username(configuration["MessageBroker:UserName"]!);
-                    host.Password(configuration["MessageBroker:Password"]!);
+                    host.Username(messageBrokerSettings.UserName);
+                    host.Password(messageBrokerSettings.Password);
                 });
 
                 configure.ConfigureEndpoints(context);

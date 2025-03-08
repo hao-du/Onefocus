@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
-using Onefocus.Common.Security;
 using Onefocus.Identity.Domain.Entities;
 using System;
 using System.Collections.Generic;

@@ -11,9 +11,11 @@ using Onefocus.Wallet.Api.Endpoints;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option =>
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Wallet", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
@@ -45,15 +47,15 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-builder.Services.AddAuthenticationSettings(builder.Configuration);
-builder.Services.AddAuthorization();
+services.AddAuthenticationSettings(configuration);
+services.AddAuthorization();
 
-builder.Services
-    .AddInfrastructure(builder.Configuration)
+services
+    .AddInfrastructure(configuration)
     .AddApplication();
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
+services.AddExceptionHandler<GlobalExceptionHandler>();
+services.AddProblemDetails();
 
 var app = builder.Build();
 

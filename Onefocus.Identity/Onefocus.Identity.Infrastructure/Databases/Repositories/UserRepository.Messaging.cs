@@ -15,5 +15,5 @@ public sealed record GetUserByIdRepositoryResponse(User User, List<string> Roles
 
 public sealed record UpsertUserRepositoryRequest(Guid Id, string Email, string? HashedPassword)
 {
-    public static UpsertUserRepositoryRequest Cast(IUserSyncedMessage source) => new(source.Id, source.Email, source.HashedPassword);
+    public static UpsertUserRepositoryRequest CastFrom(IUserSyncedMessage source) => new(source.Id, source.Email, source.HashedPassword);
 }

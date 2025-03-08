@@ -9,6 +9,9 @@ using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using MassTransit;
 using Onefocus.Identity.Infrastructure.ServiceBus;
+using Onefocus.Common.Security;
+using Onefocus.Common.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Onefocus.Identity.Infrastructure;
 
@@ -18,8 +21,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<IdentityDbContext>(option =>
-            option.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")));
+        services.AddDbContext<IdentityDbContext>(option => option.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")));
 
         services.AddIdentityCore<User>()
             .AddRoles<IdentityRole<Guid>>()
@@ -27,19 +29,21 @@ public static class DependencyInjection
             .AddApiEndpoints()
             .AddTokenProvider(Commons.TokenProviderName, typeof(DataProtectorTokenProvider<User>));
 
+        IMessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
+
         services.AddMassTransit(busConfigure =>
         {
             busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
             {
-                configure.InstanceId = Guid.NewGuid().ToString();
+                configure.InstanceId = messageBrokerSettings.InstanceId;
             });
 
             busConfigure.UsingRabbitMq((context, configure) =>
             {
-                configure.Host(new Uri(configuration["MessageBroker:Host"]!), host =>
+                configure.Host(new Uri(messageBrokerSettings.Host), host =>
                 {
-                    host.Username(configuration["MessageBroker:UserName"]!);
-                    host.Password(configuration["MessageBroker:Password"]!);
+                    host.Username(messageBrokerSettings.UserName);
+                    host.Password(messageBrokerSettings.Password);
                 });
 
                 configure.ConfigureEndpoints(context);

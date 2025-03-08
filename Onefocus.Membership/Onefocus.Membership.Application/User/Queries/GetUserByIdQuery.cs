@@ -10,7 +10,7 @@ public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserRespo
 {
     public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleResponse> Roles);
     public sealed record RoleResponse(Guid Id, string? RoleName);
-    public static GetUserByIdQueryResponse Cast(RepoRes source)
+    public static GetUserByIdQueryResponse CastFrom(RepoRes source)
     {
         var user = new UserResponse(
             source.User.Id
@@ -27,7 +27,7 @@ public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserRespo
 
 public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryResponse>
 {
-    public GetUserByIdRepositoryRequest ToObject() => new(Id);
+    public GetUserByIdRepositoryRequest ConvertTo() => new(Id);
 }
 
 internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRequest, GetUserByIdQueryResponse>
@@ -41,13 +41,13 @@ internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRe
 
     public async Task<Result<GetUserByIdQueryResponse>> Handle(GetUserByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var userResult = await _userRepository.GetUserByIdAsync(request.ToObject());
+        var userResult = await _userRepository.GetUserByIdAsync(request.ConvertTo());
         if (userResult.IsFailure)
         {
             return Result.Failure<GetUserByIdQueryResponse>(userResult.Error);
         }
 
-        return Result.Success<GetUserByIdQueryResponse>(GetUserByIdQueryResponse.Cast(userResult.Value));
+        return Result.Success<GetUserByIdQueryResponse>(GetUserByIdQueryResponse.CastFrom(userResult.Value));
     }
 }
 

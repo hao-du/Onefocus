@@ -53,7 +53,7 @@ public sealed class UserRepository : IUserRepository
                     , u.Email
                     , u.FirstName
                     , u.LastName
-                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.Cast(c.Role)).ToList())
+                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.CastFrom(c.Role)).ToList())
                 )
                 .ToListAsync();
 
@@ -81,7 +81,7 @@ public sealed class UserRepository : IUserRepository
                 return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.UserNotExist);
             }
 
-            return Result.Success(GetUserByIdRepositoryResponse.Cast(user));
+            return Result.Success(GetUserByIdRepositoryResponse.CastFrom(user));
         }
         catch (Exception ex)
         {
@@ -92,7 +92,7 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request)
     {
-        var userResult = User.Create(request.ToObject());
+        var userResult = User.Create(request.ConvertTo());
         if (userResult.IsFailure)
         {
             return Result.Failure<Guid>(userResult.Error);
@@ -132,7 +132,7 @@ public sealed class UserRepository : IUserRepository
             return Result.Failure(Errors.User.UserNotExist);
         }
 
-        user.Update(request.ToObject());
+        user.Update(request.ConvertTo());
 
         try
         {
@@ -152,14 +152,14 @@ public sealed class UserRepository : IUserRepository
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
         if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
 
-        var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
+        var updatePasswordResult = user.Update(request.ConvertTo(), _passwordHasher);
         if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
 
         try
         {
             IdentityResult result = await _userManager.UpdateAsync(user);
 
-            return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.Cast(user));
+            return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.CastFrom(user));
         }
         catch (Exception ex)
         {

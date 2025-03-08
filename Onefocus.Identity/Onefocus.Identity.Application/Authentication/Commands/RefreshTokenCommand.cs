@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Onefocus.Common.Abstractions.Messaging;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
-using Onefocus.Common.Security;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
@@ -45,7 +45,7 @@ internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenC
             return Result.Failure<AccessTokenResponse>(matchResult.Error);
         }
 
-        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.Cast(userResult.Value));
+        var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.CastFrom(userResult.Value));
         if (accessTokenResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
@@ -14,7 +14,7 @@ namespace Onefocus.Membership.Application.User.Commands;
 
 public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand
 {
-    public UpdatePasswordRepositoryRequest ToObject() => new (Id, Password);
+    public UpdatePasswordRepositoryRequest ConvertTo() => new (Id, Password);
 }
 internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswordCommandRequest>
 {
@@ -38,7 +38,7 @@ internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePassw
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
         
-        var responseResult = await _userRepository.UpdatePasswordAsync(request.ToObject());
+        var responseResult = await _userRepository.UpdatePasswordAsync(request.ConvertTo());
         if (responseResult.IsFailure) return Result.Failure(responseResult.Error);
 
         var encryptedPassword = Cryptography.Encrypt(request.Password, _authSettings?.SymmetricSecurityKeyString);

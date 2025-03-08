@@ -6,7 +6,7 @@ namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
 
 public sealed record GetAllUsersRepositoryResponse(List<UserResponse> Users)
 {
-    public static GetAllUsersRepositoryResponse Cast(List<User> source)
+    public static GetAllUsersRepositoryResponse CastFrom(List<User> source)
     {
         var users = new List<UserResponse>();
         if (source != null && source.Any())
@@ -23,7 +23,7 @@ public sealed record GetAllUsersRepositoryResponse(List<UserResponse> Users)
 public sealed record GetUserByIdRepositoryRequest(Guid Id);
 public sealed record GetUserByIdRepositoryResponse(Guid Id, string Email, string FirstName, string LastName, bool ActiveFlag)
 {
-    public static GetUserByIdRepositoryResponse? Cast(User? source)
+    public static GetUserByIdRepositoryResponse? CastFrom(User? source)
     {
         if (source == null) return null;
         return new(source.Id, source.Email, source.FirstName, source.LastName, source.ActiveFlag);

@@ -33,7 +33,7 @@ public sealed class UserReadRepository : IUserReadRepository
         {
             var users = await _context.User.Where(u => u.ActiveFlag).ToListAsync();
 
-            return Result.Success(GetAllUsersRepositoryResponse.Cast(users));
+            return Result.Success(GetAllUsersRepositoryResponse.CastFrom(users));
         }
         catch (Exception ex)
         {
@@ -48,7 +48,7 @@ public sealed class UserReadRepository : IUserReadRepository
         {
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id == request.Id);
 
-            return Result.Success(GetUserByIdRepositoryResponse.Cast(user));
+            return Result.Success(GetUserByIdRepositoryResponse.CastFrom(user));
         }
         catch (Exception ex)
         {
