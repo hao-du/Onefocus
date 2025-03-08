@@ -35,6 +35,7 @@ public static class DependencyInjection
                     ValidIssuer = authSettings.Issuer,
                     IssuerSigningKey = Cryptography.CreateSymmetricSecurityKey(authSettings.SymmetricSecurityKey),
                     ClockSkew = TimeSpan.FromSeconds(2),
+                    RequireExpirationTime = true
                 };
             });
         }
