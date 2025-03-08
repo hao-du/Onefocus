@@ -25,7 +25,6 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddAuthenticationSettings(builder.Configuration);
-//builder.Services.AddAuthorization();
 
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
@@ -39,9 +38,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
-//app.UseAuthorization();
 app.MapReverseProxy();
-
-app.MapGet("test/authenticate", (ClaimsPrincipal user) => $"Hello {user.Identity?.Name}!!!");//.RequireAuthorization();
 
 app.Run();
