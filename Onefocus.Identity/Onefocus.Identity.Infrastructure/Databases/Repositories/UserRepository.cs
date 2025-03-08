@@ -15,7 +15,7 @@ public interface IUserRepository
 {
     Task<Result<CheckPasswordRepositoryResponse>> CheckPasswordAsync(CheckPasswordRepositoryRequest request);
     Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
-    Task<Result> UpsertUserByIdAsync(UpsertUserRepositoryRequest request);
+    Task<Result> UpsertUserByNameAsync(UpsertUserRepositoryRequest request);
 }
 
 public sealed class UserRepository : IUserRepository
@@ -70,9 +70,9 @@ public sealed class UserRepository : IUserRepository
         return Result.Success<GetUserByIdRepositoryResponse>(new(user, roles.ToList()));
     }
 
-    public async Task<Result> UpsertUserByIdAsync(UpsertUserRepositoryRequest request)
+    public async Task<Result> UpsertUserByNameAsync(UpsertUserRepositoryRequest request)
     {
-        var user = await _userManager.FindByIdAsync(request.Id.ToString());
+        var user = await _userManager.FindByNameAsync(request.Email);
         if (user == null)
         {
             return await CreateUserAsync(request);
@@ -137,7 +137,7 @@ public sealed class UserRepository : IUserRepository
             }
 
             IdentityResult result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
                 return Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description)).ToList());
             }

@@ -53,6 +53,6 @@ internal static class UserEndpoints
             Result result = await sender.Send(command);
 
             return result.ToResult();
-        });
+        }).AllowAnonymous();
     }
 }

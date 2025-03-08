@@ -12,52 +12,54 @@ namespace Onefocus.Common.Security
     {
         public static string Encrypt(string data, string? securityKeyString = default)
         {
-            using var aes = Aes.Create();
-            aes.Key = CreateSecurityKey(securityKeyString);
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
+            return data;
+            //using var aes = Aes.Create();
+            //aes.Key = CreateSecurityKey(securityKeyString);
+            //aes.Mode = CipherMode.CBC;
+            //aes.Padding = PaddingMode.PKCS7;
 
-            var iv = new byte[16];
-            new Random().NextBytes(iv);
-            aes.IV = iv;
+            //var iv = new byte[16];
+            //new Random().NextBytes(iv);
+            //aes.IV = iv;
 
-            var encryptor = aes.CreateEncryptor();
+            //var encryptor = aes.CreateEncryptor();
 
-            using var memoryStream = new MemoryStream();
-            using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
-            using var streamWriter = new StreamWriter(cryptoStream);
+            //using var memoryStream = new MemoryStream();
+            //using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+            //using var streamWriter = new StreamWriter(cryptoStream);
 
-            return Convert.ToBase64String(memoryStream.ToArray());
+            //return Convert.ToBase64String(memoryStream.ToArray());
         }
 
         public static string Decrypt(string data, string? securityKeyString = default)
         {
-            var key = CreateSecurityKey(securityKeyString);
+            return data;
+            //var key = CreateSecurityKey(securityKeyString);
 
-            using var aes = Aes.Create();
-            aes.KeySize = key.Length;
-            aes.Key = 
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
+            //using var aes = Aes.Create();
+            //aes.KeySize = key.Length;
+            //aes.Key = 
+            //aes.Mode = CipherMode.CBC;
+            //aes.Padding = PaddingMode.PKCS7;
 
-            var iv = new byte[16];
-            new Random().NextBytes(iv);
-            aes.IV = iv;
+            //var iv = new byte[16];
+            //new Random().NextBytes(iv);
+            //aes.IV = iv;
 
-            var decryptor = aes.CreateDecryptor();
+            //var decryptor = aes.CreateDecryptor();
 
-            using var memoryStream = new MemoryStream();
-            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write);
-            using var streamReader = new StreamReader(cryptoStream);
+            //using var memoryStream = new MemoryStream();
+            //using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write);
+            //using var streamReader = new StreamReader(cryptoStream);
 
-            return streamReader.ReadToEnd();
+            //return streamReader.ReadToEnd();
         }
 
-        private static byte[] CreateSecurityKey(string securityKeyString)
-        {
-            Rfc2898DeriveBytes pwdGen = Rfc2898DeriveBytes.Pbkdf2(securityKeyString, new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }, 1000);
+        //private static byte[] CreateSecurityKey(string securityKeyString)
+        //{
+        //    //Rfc2898DeriveBytes pwdGen = Rfc2898DeriveBytes.Pbkdf2(securityKeyString, new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }, 1000);
 
-            return Encoding.UTF8.GetBytes(saltedSecurityKeyString, );
-        }
+        //    //return Encoding.UTF8.GetBytes(saltedSecurityKeyString, );
+        //}
     }
 }

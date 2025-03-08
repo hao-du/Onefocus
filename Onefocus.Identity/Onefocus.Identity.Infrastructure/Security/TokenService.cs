@@ -40,15 +40,11 @@ namespace Onefocus.Identity.Infrastructure.Security
             {
                 return Result.Failure<GenerateTokenServiceResponse>(Errors.TokenService.EmailRequired);
             }
-            if (request.Roles == null || !request.Roles.Any())
-            {
-                return Result.Failure<GenerateTokenServiceResponse>(Errors.TokenService.RolesRequired);
-            }
 
-            List<Claim> claims = request.Roles.Select(r => new Claim(ClaimTypes.Role, r)).ToList();
+            var claims = new List<Claim>();
             claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, request.Email));
 
-            JwtSecurityToken token = new JwtSecurityToken(
+            var token = new JwtSecurityToken(
                 issuer: _authenticationSettings.Issuer,
                 audience: _authenticationSettings.Audience,
                 expires: DateTime.UtcNow.AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds),

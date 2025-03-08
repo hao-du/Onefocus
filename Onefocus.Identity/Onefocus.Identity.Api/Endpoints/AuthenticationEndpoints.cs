@@ -16,13 +16,13 @@ internal static class AuthenticationEndpoints
     {
         app.MapPost("authenticate", async (AuthenticateCommandRequest request, ISender sender) =>
         {
-            Result<AccessTokenResponse> result = await sender.Send(request);
+            var result = await sender.Send<Result<AccessTokenResponse>>(request);
             return result.ToResult();
         });
 
         app.MapPost("refresh", async (RefreshTokenCommandRequest request, ISender sender) =>
         {
-            Result<AccessTokenResponse> result = await sender.Send(request);
+            var result = await sender.Send<Result<AccessTokenResponse>>(request);
             return result.ToResult();
         });
     }
