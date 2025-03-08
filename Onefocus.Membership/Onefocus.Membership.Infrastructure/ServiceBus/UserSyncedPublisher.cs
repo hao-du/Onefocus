@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Membership.Infrastructure.ServiceBus
 {
-    public record UserSyncedPublishMessage(Guid Id, string Email, string FirstName, string LastName, string? Description, bool ActionFlag, string? HashedPassword): IUserSyncedMessage;
+    public record UserSyncedPublishMessage(Guid Id, string Email, string FirstName, string LastName, string? Description, bool ActionFlag, string? EncryptedPassword): IUserSyncedMessage;
 
     public interface IUserSyncedPublisher
     {

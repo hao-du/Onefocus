@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
 using Onefocus.Identity.Domain;
 using Onefocus.Identity.Domain.Entities;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Entity = Onefocus.Identity.Domain.Entities;
 
 namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
@@ -25,17 +27,20 @@ public sealed class UserRepository : IUserRepository
     private readonly IUserEmailStore<Entity.User> _emailStore;
     private readonly IPasswordHasher<Entity.User> _passwordHasher;
     private readonly ILogger<UserRepository> _logger;
+    private readonly IAuthenticationSettings _authenticationSettings;
 
     public UserRepository(UserManager<Entity.User> userManager
         , IUserStore<Entity.User> userStore
         , ILogger<UserRepository> logger
-        , IPasswordHasher<Entity.User> passwordHasher)
+        , IPasswordHasher<Entity.User> passwordHasher
+        , IAuthenticationSettings authenticationSettings)
     {
         _userManager = userManager;
         _userStore = userStore;
         _emailStore = (IUserEmailStore<Entity.User>)userStore;
         _logger = logger;
         _passwordHasher = passwordHasher;
+        _authenticationSettings = authenticationSettings;
     }
 
     public async Task<Result<CheckPasswordRepositoryResponse>> CheckPasswordAsync(CheckPasswordRepositoryRequest request)
@@ -99,9 +104,10 @@ public sealed class UserRepository : IUserRepository
             await _emailStore.SetEmailAsync(user, request.Email, CancellationToken.None);
 
             IdentityResult identityResult;
-            if (!string.IsNullOrEmpty(request.HashedPassword))
+            if (!string.IsNullOrEmpty(request.EncryptedPassword))
             {
-                identityResult = await _userManager.CreateAsync(user, Cryptography.Decrypt(request.HashedPassword));
+                var password = await Cryptography.Decrypt(request.EncryptedPassword, _authenticationSettings.SymmetricSecurityKey);
+                identityResult = await _userManager.CreateAsync(user, password);
             }
             else 
             {
@@ -131,9 +137,10 @@ public sealed class UserRepository : IUserRepository
         try
         {
             user.Update(request.Email);
-            if (!string.IsNullOrEmpty(request.HashedPassword))
+            if (!string.IsNullOrEmpty(request.EncryptedPassword))
             {
-                user.PasswordHash = _passwordHasher.HashPassword(user, Cryptography.Decrypt(request.HashedPassword));
+                var password = await Cryptography.Decrypt(request.EncryptedPassword, _authenticationSettings.SymmetricSecurityKey);
+                user.PasswordHash = _passwordHasher.HashPassword(user, password);
             }
 
             IdentityResult result = await _userManager.UpdateAsync(user);

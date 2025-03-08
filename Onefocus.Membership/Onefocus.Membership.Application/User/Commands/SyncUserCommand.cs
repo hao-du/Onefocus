@@ -43,7 +43,7 @@ internal sealed class SyncUserCommandHandler : ICommandHandler<SyncUserCommandRe
         var errors = new List<Error>();
         foreach (var user in allUsersResult.Value.Users)
         {
-            tasks.Add(Publish(user.ConvertTo(), errors));
+            tasks.Add(Publish(user.ToObject(), errors));
         }
         await Task.WhenAll(tasks);
 

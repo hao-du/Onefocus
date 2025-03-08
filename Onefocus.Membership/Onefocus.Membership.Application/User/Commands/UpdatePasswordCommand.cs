@@ -14,23 +14,23 @@ namespace Onefocus.Membership.Application.User.Commands;
 
 public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand
 {
-    public UpdatePasswordRepositoryRequest ConvertTo() => new (Id, Password);
+    public UpdatePasswordRepositoryRequest ToObject() => new (Id, Password);
 }
 internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswordCommandRequest>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserSyncedPublisher _userSyncedPublisher;
-    private readonly IAuthenticationSettings? _authSettings;
+    private readonly IAuthenticationSettings _authSettings;
 
     public UpdatePasswordCommandHandler(
         IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
-        , IOptions<AuthenticationSettings> options
+        , IAuthenticationSettings authSettings
     )
     {
         _userRepository = userRepository;
         _userSyncedPublisher = userSyncedPublisher;
-        _authSettings = options.Value;
+        _authSettings = authSettings;
     }
 
     public async Task<Result> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
@@ -38,10 +38,10 @@ internal sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePassw
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
         
-        var responseResult = await _userRepository.UpdatePasswordAsync(request.ConvertTo());
+        var responseResult = await _userRepository.UpdatePasswordAsync(request.ToObject());
         if (responseResult.IsFailure) return Result.Failure(responseResult.Error);
 
-        var encryptedPassword = Cryptography.Encrypt(request.Password, _authSettings?.SymmetricSecurityKeyString);
+        var encryptedPassword = await Cryptography.Encrypt(request.Password, _authSettings.SymmetricSecurityKey);
 
         var eventPublishResult = await _userSyncedPublisher.Publish(responseResult.Value.ToObject(encryptedPassword));
         return eventPublishResult;

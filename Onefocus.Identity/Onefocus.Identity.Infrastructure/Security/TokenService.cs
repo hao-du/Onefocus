@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
 using Onefocus.Identity.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,16 +22,13 @@ namespace Onefocus.Identity.Infrastructure.Security
     public sealed class TokenService : ITokenService
     {
         private readonly IAuthenticationSettings _authenticationSettings;
-        private readonly SymmetricSecurityKey _symmetricSecurityKey;
         private readonly UserManager<User> _userManager;
 
         public TokenService(
             IAuthenticationSettings authenticationSettings
-            , SymmetricSecurityKey symmetricSecurityKey
             , UserManager<User> userManager)
         {
             _authenticationSettings = authenticationSettings;
-            _symmetricSecurityKey = symmetricSecurityKey;
             _userManager = userManager;
         }
 
@@ -49,7 +47,7 @@ namespace Onefocus.Identity.Infrastructure.Security
                 audience: _authenticationSettings.Audience,
                 expires: DateTime.UtcNow.AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds),
                 claims: claims,
-                signingCredentials: new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(_authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
             );
 
             return Result.Success<GenerateTokenServiceResponse>(new (new JwtSecurityTokenHandler().WriteToken(token)));

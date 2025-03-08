@@ -12,7 +12,7 @@ namespace Onefocus.Identity.Application.Authentication.Commands;
 
 public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AccessTokenResponse>
 {
-    public CheckPasswordRepositoryRequest ConvertTo() => new(Email, Password);
+    public CheckPasswordRepositoryRequest ToObject() => new(Email, Password);
 }
 
 internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommandRequest, AccessTokenResponse>
@@ -36,7 +36,7 @@ internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateC
 
     public async Task<Result<AccessTokenResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
     {
-        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ConvertTo());
+        var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToObject());
         if (checkPasswordResult.IsFailure)
         {
             return Result.Failure<AccessTokenResponse>(checkPasswordResult.Error);

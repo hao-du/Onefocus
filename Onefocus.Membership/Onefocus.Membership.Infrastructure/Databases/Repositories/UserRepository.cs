@@ -92,7 +92,7 @@ public sealed class UserRepository : IUserRepository
 
     public async Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request)
     {
-        var userResult = User.Create(request.ConvertTo());
+        var userResult = User.Create(request.ToObject());
         if (userResult.IsFailure)
         {
             return Result.Failure<Guid>(userResult.Error);
@@ -132,7 +132,7 @@ public sealed class UserRepository : IUserRepository
             return Result.Failure(Errors.User.UserNotExist);
         }
 
-        user.Update(request.ConvertTo());
+        user.Update(request.ToObject());
 
         try
         {
@@ -152,7 +152,7 @@ public sealed class UserRepository : IUserRepository
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
         if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
 
-        var updatePasswordResult = user.Update(request.ConvertTo(), _passwordHasher);
+        var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
         if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
 
         try

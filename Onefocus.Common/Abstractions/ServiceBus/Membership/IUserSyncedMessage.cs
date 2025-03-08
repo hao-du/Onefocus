@@ -14,6 +14,6 @@ namespace Onefocus.Common.Abstractions.ServiceBus.Membership
         string LastName { get; }
         string? Description { get; }
         bool ActionFlag { get; }
-        string? HashedPassword { get; }
+        string? EncryptedPassword { get; }
     }
 }

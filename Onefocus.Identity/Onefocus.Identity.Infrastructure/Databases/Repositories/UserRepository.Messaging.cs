@@ -13,7 +13,7 @@ public sealed record CheckPasswordRepositoryResponse(User User, List<string> Rol
 public sealed record GetUserByIdRepositoryRequest(Guid Id);
 public sealed record GetUserByIdRepositoryResponse(User User, List<string> Roles);
 
-public sealed record UpsertUserRepositoryRequest(Guid Id, string Email, string? HashedPassword)
+public sealed record UpsertUserRepositoryRequest(Guid Id, string Email, string? EncryptedPassword)
 {
-    public static UpsertUserRepositoryRequest CastFrom(IUserSyncedMessage source) => new(source.Id, source.Email, source.HashedPassword);
+    public static UpsertUserRepositoryRequest CastFrom(IUserSyncedMessage source) => new(source.Id, source.Email, source.EncryptedPassword);
 }

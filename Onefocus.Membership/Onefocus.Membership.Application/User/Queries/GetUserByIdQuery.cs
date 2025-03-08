@@ -27,7 +27,7 @@ public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserRespo
 
 public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryResponse>
 {
-    public GetUserByIdRepositoryRequest ConvertTo() => new(Id);
+    public GetUserByIdRepositoryRequest ToObject() => new(Id);
 }
 
 internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRequest, GetUserByIdQueryResponse>
@@ -41,7 +41,7 @@ internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRe
 
     public async Task<Result<GetUserByIdQueryResponse>> Handle(GetUserByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var userResult = await _userRepository.GetUserByIdAsync(request.ConvertTo());
+        var userResult = await _userRepository.GetUserByIdAsync(request.ToObject());
         if (userResult.IsFailure)
         {
             return Result.Failure<GetUserByIdQueryResponse>(userResult.Error);

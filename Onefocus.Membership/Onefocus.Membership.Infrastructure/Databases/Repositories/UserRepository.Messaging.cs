@@ -11,7 +11,7 @@ namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 
 public record CommandUserRepositoryRequest(string Email, string FirstName, string LastName)
 {
-    public UserCommandObject ConvertTo() => new(Email, FirstName, LastName);
+    public UserCommandObject ToObject() => new(Email, FirstName, LastName);
 }
 public sealed record CreateUserRepositoryRequest(string Email, string FirstName, string LastName, string Password)
     : CommandUserRepositoryRequest(Email, FirstName, LastName);
@@ -19,7 +19,7 @@ public sealed record UpdateUserRepositoryRequest(Guid Id, string Email, string F
     : CommandUserRepositoryRequest(Email, FirstName, LastName);
 public sealed record UpdatePasswordRepositoryRequest(Guid Id, string Password)
 {
-    public PasswordCommandObject ConvertTo() => new(Id, string.Empty, string.Empty, string.Empty, Password);
+    public PasswordCommandObject ToObject() => new(Id, string.Empty, string.Empty, string.Empty, Password);
 }
 public sealed record UpdatePasswordRepositoryResponse(Guid Id, string Email, string FirstName, string LastName)
 {
@@ -32,7 +32,7 @@ public sealed record GetAllUsersRepositoryResponse(List<UserReponse> Users)
 {
     public sealed record UserReponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles)
     {
-        public IUserSyncedMessage ConvertTo() => new UserSyncedPublishMessage(Id, Email??string.Empty, FirstName, LastName, null, true, null);
+        public IUserSyncedMessage ToObject() => new UserSyncedPublishMessage(Id, Email??string.Empty, FirstName, LastName, null, true, null);
     }
 
     public sealed record RoleRepsonse(Guid Id, string? RoleName)

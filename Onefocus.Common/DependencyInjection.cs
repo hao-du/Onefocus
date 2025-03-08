@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Configurations;
+using Onefocus.Common.Security;
 using System.Text;
 
 namespace Onefocus.Common;
@@ -15,10 +16,8 @@ public static class DependencyInjection
         , bool includeAuthentication = true)
     {
         var authSettings = configuration.GetSection(IAuthenticationSettings.SettingName).Get<AuthenticationSettings>()!;
-        var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.SymmetricSecurityKeyString));
 
         services.AddSingleton<IAuthenticationSettings>(authSettings);
-        services.AddSingleton<SymmetricSecurityKey>(issuerSigningKey);
 
         if (includeAuthentication)
         {
@@ -34,12 +33,13 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     ValidAudience = authSettings.Audience,
                     ValidIssuer = authSettings.Issuer,
-                    IssuerSigningKey = issuerSigningKey,
+                    IssuerSigningKey = Cryptography.CreateSymmetricSecurityKey(authSettings.SymmetricSecurityKey),
                     ClockSkew = TimeSpan.FromSeconds(2),
                 };
             });
         }
- 
+
         return services;
     }
 }
+
