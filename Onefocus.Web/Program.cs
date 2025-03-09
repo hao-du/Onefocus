@@ -4,6 +4,8 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 app.MapStaticAssets();
@@ -14,23 +16,22 @@ if (!app.Environment.IsDevelopment())
     
 }
 
-app.UseDefaultFiles(new DefaultFilesOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Client/wallet/dist")),
-    RequestPath = "/wallet"
-});
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Client/wallet/dist")),
-    RequestPath = "/wallet"
+    RequestPath = "/wallet",
 });
+
 app.UseRouting();
 
-app.MapGet("/wallet", () =>
-{
-    return Results.Redirect("/wallet/index.html");
-});
-
-app.MapFallbackToFile("/wallet/index.html"); 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+app.MapControllerRoute(
+    name: "catch-all",
+    pattern: "wallet/{**url}",
+    defaults: new { controller = "Wallet", action = "Index" }
+);
 
 app.Run();
