@@ -1,21 +1,26 @@
+using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-
 var app = builder.Build();
+
+app.MapStaticAssets();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     
 }
-app.UseStaticFiles();
+
+app.UseDefaultFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Client/wallet/dist")),
+    RequestPath = "/wallet"
+});
 
 app.UseRouting();
 
-app.UseAuthorization();
-
-app.MapRazorPages();
+app.MapFallbackToFile("/index.html"); 
 
 app.Run();
