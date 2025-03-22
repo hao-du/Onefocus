@@ -1,5 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Onefocus";
+
+    string scriptPath = System.IO.Path.Combine("Client/dist/assets/");
+    string scriptWildcardPattern = "index-*.js";
+    var scriptFiles = Directory.GetFiles(scriptPath, scriptWildcardPattern);
+
+    string styleWildcardPattern = "index-*.css";
+    var styleFiles = Directory.GetFiles(scriptPath, styleWildcardPattern);
 }
 
-Home
+@section StyleSheets {
+    @foreach (var styleFile in styleFiles)
+    {
+        var fileName = System.IO.Path.GetFileName(styleFile);
+        <link rel="stylesheet" crossorigin="" href="/assets/@fileName" />
+    }
+}
+
+@section Scripts {
+    @foreach (var scriptFile in scriptFiles)
+    {
+        var fileName = System.IO.Path.GetFileName(scriptFile);
+        <script type="module" crossorigin="" src="/assets/@fileName"></script>
+    }
+}
+
+<div id="root"></div>

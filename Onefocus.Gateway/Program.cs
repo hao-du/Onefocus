@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
@@ -8,6 +9,19 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var corsPolicyName = "Onefocus CORS policy";
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: corsPolicyName,
+                          policy =>
+                          {
+                              policy.WithOrigins("http://localhost:5000").AllowCredentials().AllowAnyHeader();
+                          });
+    });
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -30,9 +44,9 @@ builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 var app = builder.Build();
-
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(corsPolicyName);
     app.UseSwagger();
     app.UseSwaggerUI();
 }

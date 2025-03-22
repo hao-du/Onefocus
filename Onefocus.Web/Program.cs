@@ -1,8 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var corsPolicyName = "Onefocus CORS policy";
+if (builder.Environment.IsDevelopment())
+{
+}
 
 builder.Services.AddControllersWithViews();
 
@@ -10,28 +16,23 @@ var app = builder.Build();
 
 app.MapStaticAssets();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    
-}
-
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Client/wallet/dist")),
-    RequestPath = "/wallet",
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Client/dist/assets")),
+    RequestPath = "/assets",
 });
 
 app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
-);
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+}
+
 app.MapControllerRoute(
     name: "catch-all",
-    pattern: "wallet/{**url}",
-    defaults: new { controller = "Wallet", action = "Index" }
+    pattern: "{**url}",
+    defaults: new { controller = "Home", action = "Index" }
 );
 
 app.Run();

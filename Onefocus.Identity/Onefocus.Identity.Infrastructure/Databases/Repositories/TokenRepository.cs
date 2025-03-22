@@ -49,13 +49,13 @@ public sealed class TokenRepository : ITokenRepository
             var removeIdentityResult =  await _userManager.RemoveAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
             if (!removeIdentityResult.Succeeded)
             {
-                removeIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
+                return removeIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
             }
 
             var setIdentityResult = await _userManager.SetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName, refreshToken);
             if (!setIdentityResult.Succeeded)
             {
-                setIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
+                return setIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
             }
 
             return Result.Success<GenerateRefreshTokenRepositoryResponse>(new GenerateRefreshTokenRepositoryResponse(refreshToken));

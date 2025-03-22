@@ -33,6 +33,18 @@ public static class ResultExtensions
         return HttpResults.Ok(okResult);
     }
 
+    public static IResult ToNotAcceptableResult<TResponse>(this Result<TResponse> result)
+    {
+        return HttpResults.Problem(
+            statusCode: StatusCodes.Status406NotAcceptable,
+            title: "Not Acceptable",
+            type: "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6",
+            extensions: new Dictionary<string, object?>
+            {
+                { "errors", new[] { result.Error } }
+            });
+    }
+
     private static IResult ToBadRequest(Result result)
     {
         return HttpResults.Problem(

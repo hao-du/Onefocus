@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Http;
 using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Configurations;
+using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
@@ -10,61 +12,73 @@ using System.Linq;
 
 namespace Onefocus.Identity.Application.Authentication.Commands;
 
-public sealed record RefreshTokenCommandRequest(Guid UserId, string RefreshToken) : ICommand<AccessTokenResponse>;
+public sealed record RefreshTokenCommandRequest() : ICommand<RefreshTokenCommandReponse>;
+public sealed record RefreshTokenCommandReponse(string Token);
 
-internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommandRequest, AccessTokenResponse>
+internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenCommandRequest, RefreshTokenCommandReponse>
 {
     private readonly IAuthenticationSettings _authSettings;
     private readonly ITokenService _tokenService;
     private readonly IUserRepository _userRepository;
     private readonly ITokenRepository _tokenRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public RefreshTokenCommandHandler(
         IAuthenticationSettings authSettings
         , ITokenService tokenService
         , IUserRepository userRepository
-        , ITokenRepository tokenRepository)
+        , ITokenRepository tokenRepository
+        , IHttpContextAccessor httpContextAccessor)
     {
         _authSettings = authSettings;
         _tokenService = tokenService;
         _userRepository = userRepository;
         _tokenRepository = tokenRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Result<AccessTokenResponse>> Handle(RefreshTokenCommandRequest request, CancellationToken cancellationToken)
+    public async Task<Result<RefreshTokenCommandReponse>> Handle(RefreshTokenCommandRequest request, CancellationToken cancellationToken)
     {
-        var userResult = await _userRepository.GetUserByIdAsync(new (request.UserId));
-        if (userResult.IsFailure)
+        //Get r and i from HttpOnly cookies
+        string? refreshToken = _httpContextAccessor.HttpContext?.Request.Cookies["r"];
+        string? userId = _httpContextAccessor.HttpContext?.Request.Cookies["i"];
+
+        if(string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(userId))
         {
-            return Result.Failure<AccessTokenResponse>(userResult.Error);
+            return Result.Failure<RefreshTokenCommandReponse>(CommonErrors.InternalServer);
         }
 
-        var matchResult = await _tokenRepository.MatchTokenAsync(new MatchRefreshTokenRepositoryRequest(userResult.Value.User, request.RefreshToken));
+        var userResult = await _userRepository.GetUserByIdAsync(new (Guid.Parse(userId)));
+        if (userResult.IsFailure)
+        {
+            return Result.Failure<RefreshTokenCommandReponse>(userResult.Error);
+        }
+
+        var matchResult = await _tokenRepository.MatchTokenAsync(new MatchRefreshTokenRepositoryRequest(userResult.Value.User, refreshToken));
         if (matchResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(matchResult.Error);
+            return Result.Failure<RefreshTokenCommandReponse>(matchResult.Error);
         }
 
         var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.CastFrom(userResult.Value));
         if (accessTokenResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(accessTokenResult.Error);
+            return Result.Failure<RefreshTokenCommandReponse>(accessTokenResult.Error);
         }
 
         var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(userResult.Value.User));
         if (refreshTokenResult.IsFailure)
         {
-            return Result.Failure<AccessTokenResponse>(refreshTokenResult.Error);
+            return Result.Failure<RefreshTokenCommandReponse>(refreshTokenResult.Error);
         }
 
-        var token = new AccessTokenResponse()
+        _httpContextAccessor.HttpContext?.Response.Cookies.Append("r", refreshTokenResult.Value.RefreshToken, new CookieOptions
         {
-            AccessToken = accessTokenResult.Value.AccessToken,
-            RefreshToken = refreshTokenResult.Value.RefreshToken,
-            ExpiresIn = _authSettings.AuthTokenExpirySpanSeconds
-        };
+            SameSite = SameSiteMode.Unspecified,
+            HttpOnly = true
+        });
 
-        return Result.Success(token);
+        return Result.Success(new RefreshTokenCommandReponse(accessTokenResult.Value.AccessToken));
     }
 }
 
