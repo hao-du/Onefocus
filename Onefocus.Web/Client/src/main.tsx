@@ -8,7 +8,7 @@ import App from './pages/App';
 import Login from "./pages/Login";
 
 import 'primereact/resources/themes/mira/theme.css';
-import './index.css';
+import './index.scss';
 import {AuthProvider} from "./hooks/authentication/useAuth.tsx";
 import {ClientProvider} from "./api/client/useClient.tsx";
 
@@ -21,10 +21,10 @@ createRoot(document.getElementById('root')!).render(
                 <QueryClientProvider client={queryClient}>
                     <AuthProvider>
                         <ClientProvider>
-                                <Routes>
-                                    <Route path="login" element={<Login/>}/>
-                                    <Route path="*" element={<App/>}/>
-                                </Routes>
+                            <Routes>
+                                <Route path="login" element={<Login/>}/>
+                                <Route path="*" element={<App/>}/>
+                            </Routes>
                         </ClientProvider>
                     </AuthProvider>
                 </QueryClientProvider>

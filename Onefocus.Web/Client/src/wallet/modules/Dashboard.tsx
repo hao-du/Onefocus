@@ -8,8 +8,7 @@ const Dashboard = () => {
         queryKey: ['Dashboard'],
         queryFn: async () => {
             return await getAllUsers();
-        },
-        retry: 2
+        }
     });
 
     return (

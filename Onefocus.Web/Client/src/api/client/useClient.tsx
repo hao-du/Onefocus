@@ -1,5 +1,5 @@
 import * as React from "react";
-import {createContext, useContext} from "react";
+import {createContext, useContext, useState} from "react";
 import {ClientContextValue} from "./models/ClientContextValue";
 import {useAuth} from "../../hooks/authentication/useAuth";
 import {useNavigate} from "react-router";
@@ -17,9 +17,11 @@ const client = axios.create({
 
 const ClientContext = createContext<ClientContextValue>({
     client: client,
+    isClientReady: false,
 });
 
 const ClientProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
+    const [isClientReady, setIsClientReady] = useState(false);
     const {token, setToken} = useAuth();
     const {refreshToken} = useAuthenticationApi();
     const navigate = useNavigate();
@@ -52,12 +54,14 @@ const ClientProvider: React.FC<{ children: React.ReactNode }> = ({children}) => 
                     return Promise.reject(error);
                 }
             );
+
+            setIsClientReady(true);
         }
     });
 
     // Provide the authentication context to the children components
     return (
-        <ClientContext.Provider value={{client}}>
+        <ClientContext.Provider value={{client, isClientReady}}>
             {children}
         </ClientContext.Provider>
     );

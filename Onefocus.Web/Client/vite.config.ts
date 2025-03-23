@@ -38,5 +38,13 @@ export default defineConfig(({mode}) => {
         build: {
             sourcemap: mode === 'development' ? true : false,
         },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern',
+                    quietDeps: true,
+                },
+            },
+        },
     };
 });
