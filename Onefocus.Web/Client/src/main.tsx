@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Routes} from "react-router";
 import {PrimeReactProvider} from "primereact/api";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
-import App from './pages/App';
+import App from './App.tsx';
 import Login from "./pages/Login";
 
 import 'primereact/resources/themes/mira/theme.css';

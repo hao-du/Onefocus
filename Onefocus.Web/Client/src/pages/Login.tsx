@@ -2,12 +2,12 @@ import {useMutation} from "@tanstack/react-query";
 import {useNavigate} from "react-router";
 import {useAuth} from "../hooks/authentication/useAuth.tsx";
 import useAuthenticationApi from "../api/authentication/useAuthenticationApi.ts";
-import {Fieldset} from "primereact/fieldset";
-import {FloatLabel} from "primereact/floatlabel";
-import {InputText} from "primereact/inputtext";
-import {Password} from "primereact/password";
 import {useState} from "react";
-import {Button} from "primereact/button";
+import Button from "../components/atoms/buttons/Button.tsx";
+import Text from "../components/atoms/inputs/Text.tsx";
+import Password from "../components/atoms/inputs/Password.tsx";
+import DefaultLayout from "../components/layouts/DefaultLayout.tsx";
+import Fieldset from "../components/atoms/panels/Fieldset.tsx";
 
 const Login = () => {
     const {setToken} = useAuth();
@@ -30,24 +30,14 @@ const Login = () => {
     });
 
     return (
-        <>
-            <div className="h-screen flex align-items-center justify-content-center">
-                <div className="flex flex-column align-items-center">
-                    <p><span className="text-6xl">Wallet</span><span> by Onefocus</span></p>
-                    <Fieldset legend="Login" className="pt-4">
-                        <FloatLabel className="mb-5">
-                            <InputText id="username" value={userName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)} />
-                            <label htmlFor="username">Username</label>
-                        </FloatLabel>
-                        <FloatLabel className="mb-5">
-                            <Password inputId="password" feedback={false} value={password} onChange={(e) => setPasword(e.target.value)} />
-                            <label htmlFor="password">Password</label>
-                        </FloatLabel>
-                        {<Button className="mb-5" label="Sign in" icon={'pi' + (isPending ? ' pi-spin pi-spinner' : ' pi-lock')} disabled={isPending} onClick={async () => { await mutateAsync(); }}/>}
-                    </Fieldset>
-                </div>
-            </div>
-        </>
+        <DefaultLayout alignCenter={true} justifyContentCenter={true}>
+            <p><span className="text-6xl">Wallet</span><span> by Onefocus</span></p>
+            <Fieldset title="Login" className="pt-4">
+                <Text id="username" label="Username" value={userName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)}></Text>
+                <Password id="password" label="Password" value={password} onChange={(e) => setPasword(e.target.value)}></Password>
+                <Button className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending} onClick={async () => { await mutateAsync(); }}/>
+            </Fieldset>
+        </DefaultLayout>
     );
 };
 
