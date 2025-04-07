@@ -1,16 +1,15 @@
 import {Route, Routes} from "react-router";
-
-import {useClient} from "./api/client/useClient.tsx";
-import Loading from "./pages/Loading.tsx";
-import Home from "./pages/Home.tsx";
-import Wallet from "./pages/Wallet.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import Loading from "./presentation/pages/Loading";
+import Home from "./presentation/pages/Home";
+import Wallet from "./presentation/pages/Wallet";
+import NotFound from "./presentation/pages/NotFound";
+import {useClient} from "./infrastructure/hooks/client/useClient";
 
 function App() {
-    const { isClientReady } = useClient();
+    const {isClientReady} = useClient();
 
-    if(!isClientReady) {
-        return <Loading />;
+    if (!isClientReady) {
+        return <Loading/>;
     }
     console.log("Client Ready");
     return (

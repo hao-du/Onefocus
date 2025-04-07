@@ -5,12 +5,12 @@ import {PrimeReactProvider} from "primereact/api";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 import App from './App.tsx';
-import Login from "./pages/Login";
+import Login from "./presentation/pages/Login";
 
 import 'primereact/resources/themes/mira/theme.css';
 import './index.scss';
-import {AuthProvider} from "./hooks/authentication/useAuth.tsx";
-import {ClientProvider} from "./api/client/useClient.tsx";
+import {AuthProvider} from "./infrastructure/hooks/authentication/useAuth";
+import {ClientProvider} from "./infrastructure/hooks/client/useClient";
 
 const queryClient = new QueryClient();
 
