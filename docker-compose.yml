@@ -27,6 +27,16 @@ services:
         networks:
             - proxybackend
 
+    home:
+        image: ${DOCKER_REGISTRY-}onefocushomeapi
+        build:
+            context: .
+            dockerfile: Onefocus.Home/Onefocus.Home.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
 
     identity:
         image: ${DOCKER_REGISTRY-}onefocusidentityapi

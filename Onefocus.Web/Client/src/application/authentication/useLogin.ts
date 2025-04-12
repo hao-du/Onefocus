@@ -5,7 +5,7 @@ import {AuthenticationRequest} from "../../infrastructure/modules/authentication
 import {authenticate} from "../../infrastructure/modules/authentication/authentication.api";
 import {useClient} from "../../infrastructure/hooks/client/useClient";
 
-const Login = () => {
+const useLogin = () => {
     const {setToken} = useAuth();
     const navigate = useNavigate();
     const {client} = useClient();
@@ -25,4 +25,4 @@ const Login = () => {
     return {mutateAsync, isPending};
 };
 
-export default Login;
+export default useLogin;

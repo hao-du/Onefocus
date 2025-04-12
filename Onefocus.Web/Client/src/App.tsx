@@ -3,15 +3,16 @@ import Loading from "./presentation/pages/Loading";
 import Home from "./presentation/pages/Home";
 import Wallet from "./presentation/pages/Wallet";
 import NotFound from "./presentation/pages/NotFound";
-import {useClient} from "./infrastructure/hooks/client/useClient";
+import useCheck from "./application/authentication/useCheck";
 
 function App() {
-    const {isClientReady} = useClient();
+    const {isCheckDone} = useCheck();
 
-    if (!isClientReady) {
+    if (!isCheckDone) {
         return <Loading/>;
     }
     console.log("Client Ready");
+
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>

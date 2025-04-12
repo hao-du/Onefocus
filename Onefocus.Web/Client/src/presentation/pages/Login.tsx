@@ -1,6 +1,6 @@
 import useLogin from "../../application/authentication/useLogin";
 import Button from "../components/controls/buttons/Button";
-import DefaultLayout from "../layouts/DefaultLayout";
+import SingleContentLayout from "../layouts/SingleContentLayout";
 import Fieldset from "../components/controls/panels/Fieldset";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {Password} from "../components/form-controls/inputs/Password";
@@ -24,7 +24,7 @@ const Login = () => {
     };
 
     return (
-        <DefaultLayout alignCenter={true} justifyContentCenter={true}>
+        <SingleContentLayout alignCenter={true} justifyContentCenter={true}>
             <p><span className="text-6xl">Wallet</span><span> by Onefocus</span></p>
             <Fieldset title="Login" className="pt-4">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -33,7 +33,7 @@ const Login = () => {
                     <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending} />
                 </form>
             </Fieldset>
-        </DefaultLayout>
+        </SingleContentLayout>
     );
 };
 

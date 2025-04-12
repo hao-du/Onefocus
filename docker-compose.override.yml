@@ -8,7 +8,6 @@ services:
         ports:
           - "8080"
 
-
     gateway:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
@@ -16,6 +15,12 @@ services:
         ports:
           - "8080"
 
+    home:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_HTTP_PORTS=8080
+        ports:
+          - "8080"
 
     identity:
         environment:

@@ -11,3 +11,8 @@ export const authenticate = async (client: AxiosInstance, request: Authenticatio
     return response.data;
 };
 
+export const check = async (client: AxiosInstance) => {
+    const response = await client.head('identity/check');
+    return response.data;
+};
+

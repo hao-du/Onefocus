@@ -5,11 +5,6 @@ using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var corsPolicyName = "Onefocus CORS policy";
-if (builder.Environment.IsDevelopment())
-{
-}
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -23,11 +18,6 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-}
 
 app.MapControllerRoute(
     name: "catch-all",

@@ -1,10 +1,10 @@
-import DefaultLayout from "../layouts/DefaultLayout";
+import SingleContentLayout from "../layouts/SingleContentLayout";
 
 function NotFound() {
     return (
-        <DefaultLayout>
+        <SingleContentLayout>
             Not found
-        </DefaultLayout>
+        </SingleContentLayout>
     );
 }
 
