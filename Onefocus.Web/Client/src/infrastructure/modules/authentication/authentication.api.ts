@@ -10,9 +10,3 @@ export const authenticate = async (client: AxiosInstance, request: Authenticatio
     const response = await client.post<AuthenticationResponse>('identity/authenticate', request);
     return response.data;
 };
-
-export const check = async (client: AxiosInstance) => {
-    const response = await client.head('identity/check');
-    return response.data;
-};
-

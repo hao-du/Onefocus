@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useClient} from "../../infrastructure/hooks/client/useClient";
-import {check} from "../../infrastructure/modules/authentication/authentication.api";
 import {useState} from "react";
+import {check} from "../../infrastructure/modules/home/home.api";
 
 const useCheck = () => {
     const {client, isClientReady} = useClient();
@@ -10,10 +10,13 @@ const useCheck = () => {
     useQuery({
         queryKey: ['useCheck'],
         queryFn: async () => {
-            const apiResponse = await check(client);
-            setIsCheckDone(true);
+            const response = await check(client);
+            if(response.status === 200) {
+                setIsCheckDone(true);
+            }
         },
-        enabled: isClientReady
+        enabled: isClientReady,
+        staleTime: Infinity
     });
 
     return { isCheckDone };
