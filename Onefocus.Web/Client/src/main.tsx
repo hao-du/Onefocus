@@ -7,7 +7,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import App from './App.tsx';
 import Login from "./presentation/pages/Login";
 
-import 'primereact/resources/themes/mira/theme.css';
+import 'primereact/resources/themes/saga-orange/theme.css';
 import './index.scss';
 import {AuthProvider} from "./infrastructure/hooks/authentication/useAuth";
 import {ClientProvider} from "./infrastructure/hooks/client/useClient";

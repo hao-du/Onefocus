@@ -5,3 +5,20 @@
 body {
   margin: 0;
 }
+
+:root {
+  --p-primary-color: var(--primary-500)
+}
+
+.surface-border-color {
+  border-color: var(--surface-border);
+}
+
+.surface-background-color {
+  background-color: var(--primary-200);
+}
+
+.of-sidemenu {
+  color:var(--gray-500);
+  border-right: 1px solid var(--surface-border);
+}

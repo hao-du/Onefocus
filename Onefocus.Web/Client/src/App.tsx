@@ -4,6 +4,7 @@ import Home from "./presentation/pages/Home";
 import Wallet from "./presentation/pages/Wallet";
 import NotFound from "./presentation/pages/NotFound";
 import useCheck from "./application/home/useCheck";
+import AppLayout from "./presentation/layouts/AppLayout";
 
 function App() {
     const {isCheckDone} = useCheck();
@@ -12,11 +13,13 @@ function App() {
     }
 
     return (
-        <Routes>
-            <Route path="/" element={<Home/>}/>
-            <Route path="wallet/*" element={<Wallet/>}/>
-            <Route path="*" element={<NotFound/>}/>
-        </Routes>
+        <AppLayout>
+            <Routes>
+                <Route path="/" element={<Home/>}/>
+                <Route path="wallet/*" element={<Wallet/>}/>
+                <Route path="*" element={<NotFound/>}/>
+            </Routes>
+        </AppLayout>
     );
 }
 

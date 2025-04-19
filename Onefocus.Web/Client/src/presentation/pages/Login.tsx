@@ -25,7 +25,7 @@ const Login = () => {
 
     return (
         <SingleContentLayout alignCenter={true} justifyContentCenter={true}>
-            <p><span className="text-6xl">Wallet</span><span> by Onefocus</span></p>
+            <p><span className="text-6xl">Onefocus</span><span> by HaoDu</span></p>
             <Fieldset title="Login" className="pt-4">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Text name="userName" control={control} label="Username"></Text>
