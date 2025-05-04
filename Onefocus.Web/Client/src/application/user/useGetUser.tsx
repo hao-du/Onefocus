@@ -1,8 +1,6 @@
-import {useQuery} from "@tanstack/react-query";
-
-import {useClient} from "../../infrastructure/hooks/client/useClient";
-import {toUserEntities} from "../../infrastructure/modules/user/user.adapters";
-import {getAllUsers} from "../../infrastructure/modules/user/user.api";
+import {useQuery} from '@tanstack/react-query';
+import {useClient} from '../../infrastructure/hooks';
+import {getAllUsers, toUserEntities} from '../../infrastructure/modules/user';
 
 const useGetUser = () => {
     const {client} = useClient();
@@ -15,7 +13,7 @@ const useGetUser = () => {
         }
     });
 
-    return { data, isLoading };
+    return {data, isLoading};
 };
 
 export default useGetUser;

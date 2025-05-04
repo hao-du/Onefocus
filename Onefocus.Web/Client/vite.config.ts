@@ -37,6 +37,7 @@ export default defineConfig(({mode}) => {
         ],
         build: {
             sourcemap: mode === 'development' ? true : false,
+            chunkSizeWarningLimit: 5120,
         },
         css: {
             preprocessorOptions: {

@@ -1,5 +1,5 @@
-import {AxiosInstance} from "axios";
-import {AuthenticationRequest, AuthenticationResponse} from "./authentication.interfaces";
+import {AxiosInstance} from 'axios';
+import {AuthenticationRequest, AuthenticationResponse} from './authentication.interfaces';
 
 export const refreshToken = async (client: AxiosInstance) => {
     const response = await client.get<AuthenticationResponse>('identity/refresh');

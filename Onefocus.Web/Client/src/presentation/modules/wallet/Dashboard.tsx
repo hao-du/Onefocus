@@ -1,72 +1,84 @@
-import useGetUser from "../../../application/user/useGetUser";
-import {useState} from "react";
-import WorkspaceLayout from "../../layouts/workspace-layout/WorkspaceLayout";
-import {InputText} from "primereact/inputtext";
-import {User} from "../../../domain/user";
-import {Column} from "primereact/column";
-import {Button} from "primereact/button";
-import {DataTable} from "primereact/datatable";
-import {useWorkspace} from "../../layouts/workspace-layout/useWorkspace";
+import {User} from '../../../domain/user';
+import {useWorkspace, Workspace} from '../../layouts/workspace';
+import useGetUser from '../../../application/user/useGetUser';
+import {Button, SplitButtonActionItem} from '../../components/controls/buttons';
+import {Text} from '../../components/form-controls';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {useForm} from 'react-hook-form';
 
-const Dashboard = () => {
-    const { data } = useGetUser();
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const { viewRightPanel, setViewRightPanel } = useWorkspace();
+interface IFormInput {
+    userName: string,
+}
 
-    const actionItems = [
-        { label: 'Export', icon: 'pi pi-upload', command: () => console.log('Export clicked') },
-        { label: 'Import', icon: 'pi pi-download', command: () => console.log('Import clicked') },
-        { label: 'Delete All', icon: 'pi pi-trash', command: () => console.log('Delete All clicked') }
+export const Dashboard = () => {
+
+    const {viewRightPanel, setViewRightPanel} = useWorkspace();
+    const {data} = useGetUser();
+
+    const actionItems: SplitButtonActionItem[] = [
+        {label: 'Export', icon: 'pi pi-upload', command: () => console.log('Export clicked')},
+        {label: 'Import', icon: 'pi pi-download', command: () => console.log('Import clicked')},
+        {label: 'Delete All', icon: 'pi pi-trash', command: () => console.log('Delete All clicked')}
     ];
 
+    const {control, reset, getValues } = useForm<IFormInput>({
+        defaultValues: undefined
+    });
+    
+    const hasUser = () => {
+        const value = getValues();
+        return value?.userName;
+    }
+
     return (
-        <>
-            <WorkspaceLayout
-                title="User Management"
-                actionItems={actionItems}
-                leftPanel={
-                    <div className="overflow-auto flex-1">
-                        <DataTable value={data} className="p-datatable-sm">
-                            <Column field="userName" header="User Name" />
-                            <Column field="email" header="Email" />
-                            <Column body={(user: User) => (
-                                <Button
-                                    icon="pi pi-pencil"
-                                    className="p-button-text"
-                                    onClick={() => {
-                                        setSelectedUser(user)
-                                        setViewRightPanel(true)
-                                    }}
-                                />
-                            )} header="" headerStyle={{ width: "4rem" }} />
-                        </DataTable>
-                    </div>
-                }
-                rightPanelProps={{
-                    viewRightPanel,
-                    setViewRightPanel,
-                    buttons: [
-                        {
-                            onClick: () => {},
-                            id: 'btnSave',
-                            label: 'Save',
-                            icon : 'pi pi-save'
-                        }
-                ]}}
-                rightPanel={
-                    selectedUser &&
-                    <>
-                        <h3 className="mt-0">Edit User</h3>
-                        <label className="block mb-2">User Name</label>
-                        <InputText
-                            className="w-full"
-                            value={selectedUser.userName}
+        <Workspace
+            title="User Management"
+            actionItems={actionItems}
+            leftPanel={
+                <div className="overflow-auto flex-1">
+                    <DataTable value={data} className="p-datatable-sm">
+                        <Column field="userName" header="User Name"/>
+                        <Column field="email" header="Email"/>
+                        <Column body={(user: User) => (
+                            <Button
+                                icon="pi pi-pencil"
+                                className="p-button-text"
+                                onClick={() => {
+                                    setViewRightPanel(true);
+                                    reset(user);
+                                }}
+                            />
+                        )} header="" headerStyle={{width: "4rem"}}/>
+                    </DataTable>
+                </div>
+            }
+            rightPanelProps={{
+                viewRightPanel,
+                setViewRightPanel,
+                buttons: hasUser() ? [
+                    {
+                        onClick: () => {
+                        },
+                        id: 'btnSave',
+                        label: 'Save',
+                        icon: 'pi pi-save'
+                    }
+                ] : []
+            }}
+            rightPanel={
+                hasUser() &&
+                <>
+                    <h3 className="mt-0 mb-5">Edit User</h3>
+                    <form>
+                        <Text
+                            control={control}
+                            name="userName"
+                            label="Username"
                         />
-                    </>
-                }
-            />
-        </>
+                    </form>
+                </>
+            }
+        />
     );
 };
-
-export default Dashboard;

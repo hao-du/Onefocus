@@ -1,27 +1,26 @@
-import { Splitter, SplitterPanel } from "primereact/splitter";
-import WorkspaceActionBar from "./WorkspaceActionBar";
-import WorkspaceRightPanel from "./WorkspaceRightPanel";
-import {BaseProps} from "../../props/BaseProps";
-import {SplitButtonProps} from "primereact/splitbutton";
-import {RightPanelProps} from "./workspace.interface";
+import {Splitter, SplitterPanel} from 'primereact/splitter';
+import {BaseProps} from '../../props/BaseProps';
+import {SplitButtonActionItem} from '../../components/controls/buttons';
+import {RightPanelProps, WorkspaceActionBar, WorkspaceRightPanel} from '.';
+
 
 type WorkspaceLayoutProps = BaseProps & {
     title: string;
-    actionItems: SplitButtonProps[];
+    actionItems: SplitButtonActionItem[];
     leftPanel: React.ReactNode;
     rightPanelProps?: RightPanelProps;
     rightPanel: React.ReactNode;
 };
 
-const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
+export const Workspace = (props: WorkspaceLayoutProps) => {
     return (
         <div className="h-full w-full">
             {/* Desktop View */}
             <div className="hidden md:block h-full w-full">
-                <Splitter className="border-none" style={{ height: "100%", width: "100%" }}>
+                <Splitter className="border-none" style={{height: "100%", width: "100%"}}>
                     <SplitterPanel size={70} minSize={20}>
                         <div className="flex flex-column h-full w-full p-3">
-                            <WorkspaceActionBar title={props.title} actionItems={props.actionItems} />
+                            <WorkspaceActionBar title={props.title} actionItems={props.actionItems}/>
                             {props.leftPanel}
                         </div>
                     </SplitterPanel>
@@ -59,5 +58,3 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
         </div>
     );
 };
-
-export default WorkspaceLayout;

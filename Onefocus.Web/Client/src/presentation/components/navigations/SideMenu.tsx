@@ -1,6 +1,6 @@
-import { PanelMenu } from 'primereact/panelmenu';
-import { useState} from "react";
-import {SideMenuItem, MobileSidebarVisibleState} from "./SideMenu.interface";
+import {PanelMenu} from 'primereact/panelmenu';
+import {useCallback, useMemo, useState} from "react";
+import {MobileSidebarVisibleState, SideMenuItem} from "./SideMenu.interface";
 import {Sidebar} from "primereact/sidebar";
 
 type SideMenuProps = {
@@ -9,17 +9,26 @@ type SideMenuProps = {
 };
 
 export const SideMenu = (props: SideMenuProps) => {
-    const [expandedKeys, setExpandedKeys] = useState<SideMenuItem>({key: -1});
+    const expandAllItems = useMemo((): SideMenuItem[] => {
+        return props?.items?.map(item => ({
+            ...item,
+            expanded: true,
+            items: item.items
+        }));
+    }, [props?.items]);
 
-    const renderSideMenu = () => {
+    const [expandedKeys, setExpandedKeys] = useState<SideMenuItem[]>(expandAllItems);
+
+    const renderSideMenu = useCallback(() => {
         return (
             <>
                 <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">Onefocus</h1>
-                <PanelMenu model={props.items} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys} className="w-full" multiple />
+                <PanelMenu model={props.items} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys}
+                           className="w-full" multiple/>
             </>
 
         );
-    };
+    }, [props.items, expandedKeys]);
 
     return (
         <>
@@ -29,7 +38,8 @@ export const SideMenu = (props: SideMenuProps) => {
             </div>
 
             {/* Mobile Sidebar */}
-            <Sidebar visible={props.mobileVisibleState.mobileSidebarVisible} onHide={() => props.mobileVisibleState.setMobileSidebarVisible(false)} className="md:hidden">
+            <Sidebar visible={props.mobileVisibleState.mobileSidebarVisible}
+                     onHide={() => props.mobileVisibleState.setMobileSidebarVisible(false)} className="md:hidden">
                 {renderSideMenu()}
             </Sidebar>
         </>

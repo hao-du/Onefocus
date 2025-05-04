@@ -1,6 +1,5 @@
-import * as React from "react";
-import {createContext, useContext, useMemo, useState} from "react";
-import {AuthContextValue} from "./useAuth.interfaces";
+import {createContext, useContext, useMemo, useState} from 'react';
+import {AuthContextValue} from './useAuth.interfaces';
 
 const AuthContext = createContext<AuthContextValue>({
     token: null,

@@ -1,16 +1,14 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
-import {BrowserRouter, Route, Routes} from "react-router";
-import {PrimeReactProvider} from "primereact/api";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-
-import App from './App.tsx';
-import Login from "./presentation/pages/Login";
+import {BrowserRouter, Route, Routes} from 'react-router';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {PrimeReactProvider} from 'primereact/api';
+import {AuthProvider, ClientProvider} from './infrastructure/hooks';
+import {Login} from './presentation/pages';
+import App from './App';
 
 import 'primereact/resources/themes/saga-orange/theme.css';
 import './index.scss';
-import {AuthProvider} from "./infrastructure/hooks/authentication/useAuth";
-import {ClientProvider} from "./infrastructure/hooks/client/useClient";
 
 const queryClient = new QueryClient();
 

@@ -1,17 +1,15 @@
-import { Button } from "primereact/button";
-import {SplitButton, SplitButtonProps} from "primereact/splitbutton";
-import {BaseProps} from "../../props/BaseProps";
-import {RightPanelProps} from "./workspace.interface";
+import {Button, SplitButton, SplitButtonActionItem} from '../../components/controls/buttons';
+import {BaseProps} from '../../props/BaseProps';
+import {RightPanelProps} from '.';
 
 type WorkspaceActionBarProps = BaseProps & {
     title: string
     showMinimizedButton?: boolean;
     rightPanelProps?: RightPanelProps;
-    actionItems: SplitButtonProps[]
+    actionItems: SplitButtonActionItem[]
 };
 
-const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
-
+export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
     return (
         <div className="flex justify-content-between align-items-center mb-3">
             <h2 className="m-0 text-xl font-bold">{props.title}</h2>
@@ -25,16 +23,12 @@ const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
                     />
                 )}
                 <SplitButton
-                    appendTo="self"
                     label="Actions"
                     icon="pi pi-bars"
-                    model={props.actionItems}
+                    actionItems={props.actionItems}
                     onClick={() => console.log("Primary Action")}
-                    menuClassName="left-auto right-0"
                 />
             </div>
         </div>
     );
 };
-
-export default WorkspaceActionBar;

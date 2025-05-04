@@ -1,7 +1,7 @@
-import {Button} from "primereact/button";
-import {useNavigate} from "react-router";
+import {useNavigate} from 'react-router';
+import {Button} from '../components/controls/buttons';
 
-const Home = () => {
+export const Home = () => {
     const navigate = useNavigate();
 
     return (
@@ -15,5 +15,3 @@ const Home = () => {
         </div>
     );
 };
-
-export default Home;

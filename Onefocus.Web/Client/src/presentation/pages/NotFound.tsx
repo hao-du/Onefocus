@@ -1,11 +1,9 @@
-import SingleContentLayout from "../layouts/SingleContentLayout";
+import {SingleContentLayout} from '../layouts';
 
-function NotFound() {
+export function NotFound() {
     return (
         <SingleContentLayout>
             Not found
         </SingleContentLayout>
     );
 }
-
-export default NotFound;

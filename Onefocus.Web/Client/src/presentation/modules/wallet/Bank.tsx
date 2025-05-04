@@ -1,9 +1,7 @@
-function Bank() {
+export function Bank() {
     return (
         <>
             Bank
         </>
     );
-}
-
-export default Bank;
+};

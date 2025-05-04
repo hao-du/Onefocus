@@ -1,10 +1,7 @@
-import {Route, Routes} from "react-router";
-import Loading from "./presentation/pages/Loading";
-import Home from "./presentation/pages/Home";
-import Wallet from "./presentation/pages/Wallet";
-import NotFound from "./presentation/pages/NotFound";
-import useCheck from "./application/home/useCheck";
-import AppLayout from "./presentation/layouts/AppLayout";
+import {Route, Routes} from 'react-router';
+import useCheck from './application/home/useCheck';
+import {AppLayout} from './presentation/layouts';
+import {Home, Loading, NotFound, Wallet} from './presentation/pages';
 
 function App() {
     const {isCheckDone} = useCheck();

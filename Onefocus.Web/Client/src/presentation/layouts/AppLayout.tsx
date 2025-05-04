@@ -1,15 +1,14 @@
-import {useState} from "react";
-import {BaseProps} from "../props/BaseProps";
-import { SideMenuItem } from "../components/navigations/SideMenu.interface";
-import {SideMenu} from "../components/navigations/SideMenu";
-import {useNavigate} from "react-router";
-import {Header} from "../components/navigations/Header";
+import {useState} from 'react';
+import {useNavigate} from 'react-router';
+import {BaseProps} from '../props/BaseProps';
+import {Header, SideMenu, SideMenuItem} from '../components/navigations';
+
 
 type AppLayoutProps = BaseProps & {
     children: React.ReactNode;
 };
 
-const AppLayout = (props: AppLayoutProps) => {
+export const AppLayout = (props: AppLayoutProps) => {
     const navigate = useNavigate();
 
     const items: SideMenuItem[] = [
@@ -69,20 +68,18 @@ const AppLayout = (props: AppLayoutProps) => {
 
     return (
         <div className="flex h-full">
-            <SideMenu items={items} mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
+            <SideMenu items={items} mobileVisibleState={{mobileSidebarVisible, setMobileSidebarVisible}}/>
 
             {/* Main Content Area */}
             <div className="flex flex-column flex-1 h-screen">
-                <Header mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
+                <Header mobileVisibleState={{mobileSidebarVisible, setMobileSidebarVisible}}/>
 
                 {/* Main Workspace */}
                 <div className="flex-1 overflow-auto bg-gray-50">
-                    { props.children }
+                    {props.children}
                 </div>
             </div>
         </div>
     );
 };
-
-export default AppLayout;
 

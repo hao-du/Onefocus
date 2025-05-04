@@ -1,10 +1,8 @@
-import {Route, Routes} from "react-router";
+import {Route, Routes} from 'react-router';
+import {NotFound} from '.';
+import {Bank, Dashboard} from '../modules/wallet';
 
-import Dashboard from "../modules/wallet/Dashboard";
-import Bank from "../modules/wallet/Bank";
-import NotFound from "./NotFound";
-
-function Wallet() {
+export function Wallet() {
     return (
         <Routes>
             <Route index element={<Dashboard/>}/>
@@ -13,5 +11,3 @@ function Wallet() {
         </Routes>
     );
 }
-
-export default Wallet;

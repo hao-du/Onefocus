@@ -19,6 +19,17 @@ body {
 }
 
 .of-sidemenu {
-  color:var(--gray-500);
+  color: var(--gray-500);
   border-right: 1px solid var(--surface-border);
+}
+
+.of-float-label {
+    &.p-float-label {
+      &:has(input:focus),
+      &:has(input.p-filled) {
+        label {
+          left: 0;
+        }
+      }
+    }
 }

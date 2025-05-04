@@ -1,17 +1,12 @@
-import {Button as PiButton} from "primereact/button";
-import {BaseProps} from "../../../props/BaseProps";
-import {MouseEventHandler} from "react";
+import {Button as PiButton} from 'primereact/button';
+import {BaseButtonProps} from '../../../props/BaseButtonProps';
 
-type ButtonProps = BaseProps & {
-    label?: string;
-    icon?: string;
-    disabled?: boolean;
-    onClick?: MouseEventHandler<HTMLButtonElement>;
-    isPending?: boolean;
+type ButtonProps = BaseButtonProps & {
+    link?: boolean | undefined;
     type?: 'submit' | 'button' | undefined;
 };
 
-const Button = (props: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
     return (
         <PiButton
             type={props.type ? props.type : 'button'}
@@ -19,8 +14,7 @@ const Button = (props: ButtonProps) => {
             label={props.label}
             icon={props.isPending && props.icon ? 'pi pi-spin pi-spinner' : 'pi ' + props.icon}
             disabled={props.disabled || props.isPending}
-            onClick={props.onClick}/>
+            onClick={props.onClick}
+            link={props.link}/>
     );
 };
-
-export default Button;

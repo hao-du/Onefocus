@@ -1,4 +1,4 @@
-import {PasswordProps as OneFocusPasswordProps, Password as OneFocusPassword} from "../../controls/inputs/Password";
+import {Password as OneFocusPassword, PasswordProps as OneFocusPasswordProps} from "../../controls/inputs/Password";
 import {Controller, FieldPath, FieldValues, UseControllerProps} from "react-hook-form";
 
 type PasswordProps<
@@ -14,9 +14,9 @@ export const Password = <
 >(props: PasswordProps<TFieldValues, TName, TTransformedValues>) => {
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
-            render={(controller) => {
-                return <OneFocusPassword {...props} {...controller.field} id={controller.field.name}/>
-            }}
+                    render={(controller) => {
+                        return <OneFocusPassword {...props} {...controller.field} id={controller.field.name}/>
+                    }}
         />
     );
 };

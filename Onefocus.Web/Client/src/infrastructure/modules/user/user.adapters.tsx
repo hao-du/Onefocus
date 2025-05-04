@@ -1,7 +1,7 @@
-import {UserResponse, UsersRepsonse} from "./user.interfaces";
-import {User} from "../../../domain/user";
+import {UserResponse, UsersRepsonse} from './user.interfaces';
+import {User} from '../../../domain/user';
 
-const toUserEntity = (response : UserResponse) : User => {
+const toUserEntity = (response: UserResponse): User => {
     return {
         id: response.id,
         userName: response.userName,
@@ -11,6 +11,6 @@ const toUserEntity = (response : UserResponse) : User => {
     };
 }
 
-export const toUserEntities = (response : UsersRepsonse) : User[] => {
+export const toUserEntities = (response: UsersRepsonse): User[] => {
     return response.users.map(user => toUserEntity(user));
 }

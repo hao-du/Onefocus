@@ -12,7 +12,7 @@ export const Header = (props: HeaderProps) => {
     const profilePanelRef = useRef<OverlayPanel>(null);
 
     const handleProfileClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-        if(profilePanelRef.current)
+        if (profilePanelRef.current)
             profilePanelRef.current.toggle(event);
     };
 
@@ -38,11 +38,12 @@ export const Header = (props: HeaderProps) => {
 
             {/* Profile avatar + panel */}
             <div>
-                <Avatar icon="pi pi-user" size="large" shape="circle" className="cursor-pointer" onClick={handleProfileClick} />
+                <Avatar icon="pi pi-user" size="large" shape="circle" className="cursor-pointer"
+                        onClick={handleProfileClick}/>
                 <OverlayPanel ref={profilePanelRef}>
                     <div className="p-2">
                         <div className="font-bold mb-2">John Doe</div>
-                        <Button label="Logout" icon="pi pi-sign-out" className="p-button-text p-0" />
+                        <Button label="Logout" icon="pi pi-sign-out" className="p-button-text p-0"/>
                     </div>
                 </OverlayPanel>
             </div>

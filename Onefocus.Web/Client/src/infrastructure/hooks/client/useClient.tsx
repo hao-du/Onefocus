@@ -1,11 +1,10 @@
-import * as React from "react";
-import {createContext, useContext, useState} from "react";
-import {useAuth} from "../../hooks/authentication/useAuth";
-import {useNavigate} from "react-router";
-import axios from "axios";
-import {useQuery} from "@tanstack/react-query";
-import {ClientContextValue} from "./useClient.interfaces";
-import {refreshToken} from "../../modules/authentication/authentication.api";
+import axios from 'axios';
+import {createContext, useContext, useState} from 'react';
+import {useNavigate} from 'react-router';
+import {useQuery} from '@tanstack/react-query';
+import {useAuth} from '../authentication/useAuth';
+import {refreshToken} from '../../modules/authentication/authentication.api';
+import { ClientContextValue } from "./useClient.interfaces";
 
 const client = axios.create({
     baseURL: 'http://localhost:5001',
@@ -30,9 +29,9 @@ const ClientProvider: React.FC<{ children: React.ReactNode }> = ({children}) => 
         queryKey: [token],
         queryFn: () => {
             if (token) {
-                client.defaults.headers.common["Authorization"] = "Bearer " + token;
+                client.defaults.headers.common["Authorization"] = 'Bearer ' + token;
             } else {
-                delete client.defaults.headers.common["Authorization"];
+                delete client.defaults.headers.common['Authorization'];
             }
 
             client.interceptors.response.use(

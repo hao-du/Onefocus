@@ -1,6 +1,6 @@
-import {InputText} from "primereact/inputtext";
-import {FloatLabel} from "primereact/floatlabel";
-import {InputProps} from "../../../props/InputProps";
+import {InputText} from 'primereact/inputtext';
+import {InputProps} from '../../../props/InputProps';
+import {FloatLabel} from '../panels';
 
 export type TextProps = InputProps & {
     floatClassName?: string;
@@ -8,10 +8,10 @@ export type TextProps = InputProps & {
 
 export const Text = (props: TextProps) => {
     return (
-        <FloatLabel className={'mb-5 ' + (props.floatClassName ? props.floatClassName : '')}>
+        <FloatLabel className={props.floatClassName}>
+            <label htmlFor={props.id}>{props.label}</label>
             <InputText className={props.className} id={props.id} value={props.value} onChange={props.onChange}
                        readOnly={props.isPending || props.readOnly}/>
-            <label htmlFor={props.id}>{props.label}</label>
         </FloatLabel>
     );
 };

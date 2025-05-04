@@ -1,11 +1,10 @@
-import {useMutation} from "@tanstack/react-query";
-import {useNavigate} from "react-router";
-import { useAuth } from "../../infrastructure/hooks/authentication/useAuth";
-import {AuthenticationRequest} from "../../infrastructure/modules/authentication/authentication.interfaces";
-import {authenticate} from "../../infrastructure/modules/authentication/authentication.api";
-import {useClient} from "../../infrastructure/hooks/client/useClient";
+import {useMutation} from '@tanstack/react-query';
+import {useNavigate} from 'react-router';
+import {useAuth, useClient} from '../../infrastructure/hooks';
+import {authenticate, AuthenticationRequest} from '../../infrastructure/modules/authentication';
 
-const useLogin = () => {
+
+export const useLogin = () => {
     const {setToken} = useAuth();
     const navigate = useNavigate();
     const {client} = useClient();
@@ -24,5 +23,3 @@ const useLogin = () => {
 
     return {mutateAsync, isPending};
 };
-
-export default useLogin;

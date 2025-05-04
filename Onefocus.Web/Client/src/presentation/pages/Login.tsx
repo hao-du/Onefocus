@@ -1,26 +1,27 @@
-import useLogin from "../../application/authentication/useLogin";
-import Button from "../components/controls/buttons/Button";
-import SingleContentLayout from "../layouts/SingleContentLayout";
-import Fieldset from "../components/controls/panels/Fieldset";
-import {SubmitHandler, useForm} from "react-hook-form";
-import {Password} from "../components/form-controls/inputs/Password";
-import {Text} from "../components/form-controls/inputs/Text";
+import {SubmitHandler, useForm} from 'react-hook-form';
+import {useLogin} from '../../application/authentication';
+import {SingleContentLayout} from '../layouts';
+import {Fieldset} from '../components/controls/panels';
+import {Password, Text} from '../components/form-controls';
+import {Button} from '../components/controls/buttons';
 
 interface IFormInput {
     userName: string,
     password: string
 }
 
-const Login = () => {
+export const Login = () => {
     const {mutateAsync, isPending} = useLogin();
 
-    const { control, handleSubmit } = useForm<IFormInput>({ defaultValues: {
-        userName: 'kevindu1986@gmail.com',
-        password: 'hao123'
-    }});
+    const {control, handleSubmit} = useForm<IFormInput>({
+        defaultValues: {
+            userName: 'kevindu1986@gmail.com',
+            password: 'hao123'
+        }
+    });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        return await mutateAsync({ email: data.userName, password: data.password });
+        return await mutateAsync({email: data.userName, password: data.password});
     };
 
     return (
@@ -30,11 +31,9 @@ const Login = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Text name="userName" control={control} label="Username"></Text>
                     <Password name="password" control={control} label="Password"></Password>
-                    <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending} />
+                    <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending}/>
                 </form>
             </Fieldset>
         </SingleContentLayout>
     );
 };
-
-export default Login;
