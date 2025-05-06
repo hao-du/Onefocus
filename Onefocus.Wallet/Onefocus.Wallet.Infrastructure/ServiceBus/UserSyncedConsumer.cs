@@ -1,10 +1,10 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Infrastructure.Repositories.Write;
+using Onefocus.Wallet.Domain.Messages.Write;
+using Onefocus.Wallet.Domain.Repositories.Write;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
 
         public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
         {
-            var result = await _userRepository.UpsertUserAsync(UpsertUserRepositoryRequest.CastFrom(context.Message));
+            var result = await _userRepository.UpsertUserAsync(UpsertUserRequest.CastFrom(context.Message));
             if (result.IsFailure)
             {
                 _logger.LogError($"Cannot upsert user through message queue with [Code: {result.Error.Code} Error: {result.Error.Description}]" );

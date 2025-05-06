@@ -1,4 +1,5 @@
 ﻿using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Models;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
@@ -12,7 +13,7 @@ public sealed class OutcomeTransaction : Transaction
     {
     }
 
-    public static Result<OutcomeTransaction> Create(DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public static Result<OutcomeTransaction> Create(DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(transactedOn, userId, currencyId);
         if (validationResult.IsFailure)
@@ -22,9 +23,9 @@ public sealed class OutcomeTransaction : Transaction
 
         var transaction = new OutcomeTransaction(transactedOn, userId, currencyId, description, actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = transaction.AddDetail(objectValueDetail);
+            var detailResult = transaction.AddDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure<OutcomeTransaction>(detailResult.Error);
@@ -34,7 +35,7 @@ public sealed class OutcomeTransaction : Transaction
         return transaction;
     }
 
-    public Result Update(DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public Result Update(DateTimeOffset transactedOn, Guid userId, Guid currencyId, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(transactedOn, userId, currencyId);
         if (validationResult.IsFailure)
@@ -49,9 +50,9 @@ public sealed class OutcomeTransaction : Transaction
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = UpsertDetail(objectValueDetail);
+            var detailResult = UpsertDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure(detailResult.Error);

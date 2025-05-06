@@ -1,4 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
+﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Dtos;
 using System;
 using System.Collections.Generic;

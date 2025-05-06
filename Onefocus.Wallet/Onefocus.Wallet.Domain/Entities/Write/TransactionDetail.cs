@@ -1,22 +1,19 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Models;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
 public sealed class TransactionDetail: WriteEntityBase
 {
+    public Guid TransactionId { get; private set; }
     public decimal Amount { get; private set; }
     public DateTimeOffset TransactedOn { get; private set; }
     public Enums.Action Action { get; private set; }
-    public Guid TransactionId { get; private set; }
-
+    public Guid ActionedBy { get; private set; }
     public Transaction Transaction { get; private set; } = default!;
 
-    private TransactionDetail()
-    {
-    }
-
-    private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string description, Guid actionedBy)
+    private TransactionDetail(Guid transactionId, decimal amount, DateTimeOffset transactedOn, Enums.Action action, string? description, Guid actionedBy)
     {
         TransactionId = transactionId;
         Amount = amount;
@@ -26,32 +23,32 @@ public sealed class TransactionDetail: WriteEntityBase
         Init(Guid.NewGuid(), description, actionedBy);
     }
 
-    internal static Result<TransactionDetail> Create(ObjectValues.TransactionDetail objectValue)
+    internal static Result<TransactionDetail> Create(TransactionDetailParams detailParams)
     {
-        var validationResult = Validate(objectValue.Amount);
+        var validationResult = Validate(detailParams.Amount);
         if (validationResult.IsFailure)
         {
             return Result.Failure<TransactionDetail>(validationResult.Error);
         }
 
-        return new TransactionDetail(objectValue.TransactionId, objectValue.Amount, objectValue.TransactedOn, objectValue.Action, objectValue.Description, objectValue.ActionedBy);
+        return new TransactionDetail(detailParams.TransactionId, detailParams.Amount, detailParams.TransactedOn, detailParams.Action, detailParams.Description, detailParams.ActionedBy);
     }
 
-    internal Result Update(ObjectValues.TransactionDetail objectValue)
+    internal Result Update(TransactionDetailParams detailParams)
     {
-        var validationResult = Validate(objectValue.Amount);
+        var validationResult = Validate(detailParams.Amount);
         if (validationResult.IsFailure)
         {
             return validationResult;
         }
 
-        Amount = objectValue.Amount;
-        TransactedOn = objectValue.TransactedOn;
-        Action = objectValue.Action;
-        Description = objectValue.Description;
+        Amount = detailParams.Amount;
+        TransactedOn = detailParams.TransactedOn;
+        Action = detailParams.Action;
+        Description = detailParams.Description;
 
-        if (objectValue.ActiveFlag) MarkActive(objectValue.ActionedBy);
-        else MarkInactive(objectValue.ActionedBy);
+        if (detailParams.ActiveFlag) MarkActive(detailParams.ActionedBy);
+        else MarkInactive(detailParams.ActionedBy);
 
         return Result.Success();
     }

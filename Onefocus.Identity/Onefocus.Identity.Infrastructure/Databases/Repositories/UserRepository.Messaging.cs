@@ -1,5 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+﻿using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Domain.Entities;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;

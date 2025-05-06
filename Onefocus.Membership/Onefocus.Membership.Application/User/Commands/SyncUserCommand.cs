@@ -1,5 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Common.Results;
+﻿using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
 using System.ComponentModel.DataAnnotations;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
@@ -8,6 +7,7 @@ using Onefocus.Membership.Infrastructure.ServiceBus;
 using System.IO.Pipelines;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Onefocus.Common.Abstractions.Messages;
 
 namespace Onefocus.Membership.Application.User.Commands;
 

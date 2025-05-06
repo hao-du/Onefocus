@@ -1,5 +1,6 @@
 ﻿using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Models;
 using Onefocus.Wallet.Domain.Entities.Write.ObjectValues;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
@@ -23,7 +24,7 @@ public sealed class BankingTransaction : Transaction
         BankId = bankId;
     }
 
-    public static Result<BankingTransaction> Create(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid bankId, BankAccount bankAccount, string description, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public static Result<BankingTransaction> Create(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid bankId, BankAccount bankAccount, string description, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(transactedOn, userId, currencyId, bankId, bankAccount);
         if (validationResult.IsFailure)
@@ -33,9 +34,9 @@ public sealed class BankingTransaction : Transaction
 
         var transaction = new BankingTransaction(transactedOn, userId, currencyId, bankId, bankAccount, description, actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = transaction.AddDetail(objectValueDetail);
+            var detailResult = transaction.AddDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure<BankingTransaction>(detailResult.Error);
@@ -45,7 +46,7 @@ public sealed class BankingTransaction : Transaction
         return transaction;
     }
 
-    public Result Update(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid bankId, BankAccount bankAccount, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public Result Update(DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid bankId, BankAccount bankAccount, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(transactedOn, userId, currencyId, bankId, bankAccount);
         if (validationResult.IsFailure)
@@ -64,9 +65,9 @@ public sealed class BankingTransaction : Transaction
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = UpsertDetail(objectValueDetail);
+            var detailResult = UpsertDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure(detailResult.Error);

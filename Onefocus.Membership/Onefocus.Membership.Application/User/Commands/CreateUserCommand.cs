@@ -1,5 +1,5 @@
 ﻿using MassTransit;
-using Onefocus.Common.Abstractions.Messaging;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;

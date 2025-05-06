@@ -1,4 +1,5 @@
 ﻿using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Models;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
 
@@ -19,7 +20,7 @@ public sealed class ExchangeTransaction : Transaction
         ExchangeRate = exchangeRate;
     }
 
-    public static Result<ExchangeTransaction> Create(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public static Result<ExchangeTransaction> Create(decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
         if (validationResult.IsFailure)
@@ -29,9 +30,9 @@ public sealed class ExchangeTransaction : Transaction
 
         var transaction = new ExchangeTransaction(exchangeRate, transactedOn, userId, exchangedCurrencyId, currencyId, description, actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = transaction.AddDetail(objectValueDetail);
+            var detailResult = transaction.AddDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure<ExchangeTransaction>(detailResult.Error);
@@ -41,7 +42,7 @@ public sealed class ExchangeTransaction : Transaction
         return transaction;
     }
 
-    public Result Update(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<ObjectValues.TransactionDetail> objectValueDetails)
+    public Result Update(decimal amount, decimal exchangeRate, DateTimeOffset transactedOn, Guid userId, Guid currencyId, Guid exchangedCurrencyId, string description, bool activeFlag, Guid actionedBy, IReadOnlyList<TransactionDetailParams> details)
     {
         var validationResult = Validate(exchangeRate, transactedOn, userId, currencyId, exchangedCurrencyId);
         if (validationResult.IsFailure)
@@ -59,9 +60,9 @@ public sealed class ExchangeTransaction : Transaction
         if (activeFlag) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        foreach (var objectValueDetail in objectValueDetails)
+        foreach (var detail in details)
         {
-            var detailResult = UpsertDetail(objectValueDetail);
+            var detailResult = UpsertDetail(detail);
             if (detailResult.IsFailure)
             {
                 return Result.Failure(detailResult.Error);

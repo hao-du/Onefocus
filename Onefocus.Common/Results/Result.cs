@@ -32,7 +32,7 @@ public class Result
 
     public static Result Success() => new(true, new List<Error>());
 
-    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, new List<Error>());
+    public static Result<TValue> Success<TValue>(TValue? value) => new(value, true, new List<Error>());
 
     public static Result Failure(Error error) => new(false, new List<Error>() { error });
 

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http;
-using Onefocus.Common.Abstractions.Messaging;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;

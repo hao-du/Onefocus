@@ -1,0 +1,6 @@
+﻿namespace Onefocus.Common.Abstractions.Messages
+{
+    public interface IResponse
+    {
+    }
+}

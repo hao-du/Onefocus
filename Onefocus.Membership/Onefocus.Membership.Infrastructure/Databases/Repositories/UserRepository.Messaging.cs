@@ -1,5 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+﻿using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Security;
 using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Domain.ValueObjects;

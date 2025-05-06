@@ -1,5 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Identity.Domain.Entities;
+﻿using Onefocus.Identity.Domain.Entities;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using Entity = Onefocus.Identity.Domain.Entities;

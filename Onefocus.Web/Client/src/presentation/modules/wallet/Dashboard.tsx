@@ -25,7 +25,7 @@ export const Dashboard = () => {
     const {control, reset, getValues } = useForm<IFormInput>({
         defaultValues: undefined
     });
-    
+
     const hasUser = () => {
         const value = getValues();
         return value?.userName;

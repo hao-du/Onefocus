@@ -2,36 +2,30 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
+using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Read;
+using Onefocus.Wallet.Domain.Messages.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
-namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
+namespace Onefocus.Wallet.Domain.Repositories.Write;
 
-public interface IUserWriteRepository
-{
-    Task<Result<UpsertUserRepositoryResponse>> UpsertUserAsync(UpsertUserRepositoryRequest request);
-}
-
-public sealed class UserWriteRepository : IUserWriteRepository
+public sealed class UserWriteRepository : BaseRepository<UserWriteRepository>, IUserWriteRepository
 {
     private readonly WalletWriteDbContext _context;
-
-    private readonly ILogger<UserWriteRepository> _logger;
 
     public UserWriteRepository(
         ILogger<UserWriteRepository> logger
         , WalletWriteDbContext context
-    )
+    ) : base(logger)
     {
         _context = context;
-        _logger = logger;
     }
 
-    public async Task<Result<UpsertUserRepositoryResponse>> UpsertUserAsync(UpsertUserRepositoryRequest request)
+    public async Task<Result<UpsertUserResponse>> UpsertUserAsync(UpsertUserRequest request)
     {
-        try
+        return await ExecuteAsync(async () =>
         {
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id == request.Id);
             if (user == null)
@@ -39,7 +33,7 @@ public sealed class UserWriteRepository : IUserWriteRepository
                 var userResult = request.ToObject();
                 if (userResult.IsFailure)
                 {
-                    return Result.Failure<UpsertUserRepositoryResponse>(userResult.Error);
+                    return Result.Failure<UpsertUserResponse>(userResult.Error);
                 }
                 user = userResult.Value;
 
@@ -52,12 +46,7 @@ public sealed class UserWriteRepository : IUserWriteRepository
 
             await _context.SaveChangesAsync();
 
-            return Result.Success<UpsertUserRepositoryResponse>(new(user.Id));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure<UpsertUserRepositoryResponse>(CommonErrors.InternalServer);
-        }
+            return Result.Success<UpsertUserResponse>(new(user.Id));
+        });
     }
 }

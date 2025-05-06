@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Write.Models;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
@@ -31,18 +32,18 @@ public abstract class Transaction : WriteEntityBase
         Init(Guid.NewGuid(), description, actionedBy);
     }
 
-    protected Result AddDetail(ObjectValues.TransactionDetail objectValue)
+    protected Result AddDetail(TransactionDetailParams detailParams)
     {
-        if(objectValue == null)
+        if(detailParams == null)
         {
             return Result.Failure(CommonErrors.NullReference);
         }
-        if (objectValue.Id != Guid.Empty)
+        if (detailParams.Id != Guid.Empty)
         {
             return Result.Failure(Errors.Transaction.Detail.DetailMustBeNew);
         }
 
-        var detailResult = TransactionDetail.Create(objectValue);
+        var detailResult = TransactionDetail.Create(detailParams);
         if (detailResult.IsFailure)
         {
             return detailResult;
@@ -53,24 +54,24 @@ public abstract class Transaction : WriteEntityBase
         return Result.Success();
     }
 
-    protected Result UpsertDetail(ObjectValues.TransactionDetail objectValue)
+    protected Result UpsertDetail(TransactionDetailParams detailParams)
     {
-        if (objectValue == null)
+        if (detailParams == null)
         {
             return Result.Failure(CommonErrors.NullReference);
         }
-        if (objectValue.Id == Guid.Empty)
+        if (detailParams.Id == Guid.Empty)
         {
-            return AddDetail(objectValue);
+            return AddDetail(detailParams);
         }
 
-        var detail = _transactionDetails.Find(td => td.Id == objectValue.Id);
+        var detail = _transactionDetails.Find(td => td.Id == detailParams.Id);
         if(detail == null)
         {
             return Result.Failure(CommonErrors.NullReference);
         }
 
-        detail.Update(objectValue);
+        detail.Update(detailParams);
 
         return Result.Success();
     }

@@ -1,4 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
+﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using System.Linq;

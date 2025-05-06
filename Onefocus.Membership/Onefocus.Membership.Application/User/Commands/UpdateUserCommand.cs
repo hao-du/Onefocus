@@ -1,11 +1,11 @@
-﻿using Onefocus.Common.Abstractions.Messaging;
-using Onefocus.Common.Results;
+﻿using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
 using System.ComponentModel.DataAnnotations;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Membership.Infrastructure.ServiceBus;
 using System.IO.Pipelines;
+using Onefocus.Common.Abstractions.Messages;
 
 namespace Onefocus.Membership.Application.User.Commands;
 

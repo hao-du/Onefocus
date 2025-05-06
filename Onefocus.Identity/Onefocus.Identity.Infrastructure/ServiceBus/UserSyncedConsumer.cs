@@ -1,6 +1,5 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Messaging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
