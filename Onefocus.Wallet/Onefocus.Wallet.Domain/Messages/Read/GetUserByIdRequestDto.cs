@@ -2,4 +2,4 @@
 
 namespace Onefocus.Wallet.Domain.Messages.Read;
 
-public sealed record GetUserByIdRequest(Guid Id) : IRequest;
+public sealed record GetUserByIdRequestDto(Guid Id);

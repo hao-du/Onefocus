@@ -22,7 +22,7 @@ public sealed class Currency : WriteEntityBase
         ShortName = default!;
     }
 
-    private Currency(string name, string shortName, string description, bool defaultFlag, Guid actionedBy)
+    private Currency(string name, string shortName, string? description, bool defaultFlag, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
@@ -31,7 +31,7 @@ public sealed class Currency : WriteEntityBase
         DefaultFlag = defaultFlag;
     }
 
-    public static Result<Currency> Create(string name, string shortName, string description, bool defaultFlag, Guid actionedBy)
+    public static Result<Currency> Create(string name, string shortName, string? description, bool defaultFlag, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
@@ -42,7 +42,7 @@ public sealed class Currency : WriteEntityBase
         return new Currency(name, shortName, description, defaultFlag, actionedBy);
     }
 
-    public Result Update(string name, string shortName, string description, bool defaultFlag, bool activeFlag, Guid actionedBy)
+    public Result Update(string name, string shortName, string? description, bool defaultFlag, bool activeFlag, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
@@ -51,7 +51,7 @@ public sealed class Currency : WriteEntityBase
         }
 
         Name = name;
-        ShortName = shortName;
+        ShortName = shortName.ToUpper();
         Description = description;
         DefaultFlag = defaultFlag;
 
@@ -76,6 +76,10 @@ public sealed class Currency : WriteEntityBase
         if (string.IsNullOrEmpty(shortName))
         {
             return Result.Failure<Currency>(Errors.Currency.ShortNameRequired);
+        }
+        if (shortName.Length < 3 || shortName.Length > 4)
+        {
+            return Result.Failure<Currency>(Errors.Currency.ShortNameLengthMustBeThreeOrFour);
         }
 
         return Result.Success();

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Entities.Read.Transactions;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations;
+using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations.Transactions;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
@@ -24,6 +26,13 @@ public class WalletReadDbContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfigurationsFromAssembly(typeof(WalletReadDbContext).Assembly);
+        builder.ApplyConfiguration(new UserConfiguration());
+        builder.ApplyConfiguration(new CurrencyConfiguration());
+        builder.ApplyConfiguration(new BankConfiguration());
+        builder.ApplyConfiguration(new TransactionConfiguration());
+        builder.ApplyConfiguration(new BankingTransactionConfiguration());
+        builder.ApplyConfiguration(new ExchangeTransactionConfiguration());
+        builder.ApplyConfiguration(new TransferTransactionConfiguration());
+        builder.ApplyConfiguration(new TransactionDetailConfiguration());
     }
 }

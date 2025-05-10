@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(option =>
 {
@@ -69,6 +70,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
 
+app.MapCurrencyEndpoints();
 app.MapTransactionEndpoints();
 
 app.Run();

@@ -50,7 +50,9 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUserReadRepository, UserReadRepository>();
-        services.AddScoped<IUserWriteRepository, Domain.Repositories.Write.UserWriteRepository>();
+        services.AddScoped<IUserWriteRepository, UserWriteRepository>();
+        services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
+        services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
 
         return services;
     }

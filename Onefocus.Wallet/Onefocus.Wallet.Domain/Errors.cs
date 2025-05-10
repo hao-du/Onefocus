@@ -11,6 +11,7 @@ public static class Errors
         public static readonly Error EmailRequired = new("EmailRequired", "Email is required.");
         public static readonly Error UserNotExist = new("UserNotExist", "User does not exist.");
         public static readonly Error UserRequired = new("UserRequired", "User is required.");
+        public static readonly Error AuthenticationIdRequired = new("AuthenticationIdRequired", "AuthenticationId is required.");
     }
 
     public static class Currency
@@ -18,6 +19,8 @@ public static class Errors
         public static readonly Error NameRequired = new("CurrencyNameRequired", "Name is required.");
         public static readonly Error ShortNameRequired = new("CurrencyShortNameRequired", "Short name is required.");
         public static readonly Error CurrencyRequired = new("CurrencyRequired", "Currency is required.");
+        public static readonly Error ShortNameLengthMustBeThreeOrFour = new("ShortNameLengthMustBeThreeOrFour", "Short name must have 3 to 4 characters.");
+        public static readonly Error NameOrShortNameIsExisted = new("NameOrShortNameIsExisted", "Either name or short name is existed.");
     }
 
     public static class Bank

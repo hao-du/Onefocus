@@ -2,7 +2,7 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
-public abstract class Transaction : WriteEntityBase
+public abstract class Transaction : ReadEntityBase
 {
     private List<TransactionDetail> _transactionDetails = new List<TransactionDetail>();
 

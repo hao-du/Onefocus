@@ -1,12 +1,12 @@
 ﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Wallet.Domain.Entities.Read;
-using static Onefocus.Wallet.Domain.Messages.Read.GetAllUsersResponse;
+using static Onefocus.Wallet.Domain.Messages.Read.GetAllUsersResponseDto;
 
 namespace Onefocus.Wallet.Domain.Messages.Read;
 
-public sealed record GetAllUsersResponse(List<UserResponse> Users) : IResponse
+public sealed record GetAllUsersResponseDto(List<UserResponse> Users)
 {
-    public static GetAllUsersResponse CastFrom(List<User> source)
+    public static GetAllUsersResponseDto CastFrom(List<User> source)
     {
         var users = new List<UserResponse>();
         if (source != null && source.Any())

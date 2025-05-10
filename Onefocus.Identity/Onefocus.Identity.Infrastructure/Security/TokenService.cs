@@ -40,7 +40,8 @@ namespace Onefocus.Identity.Infrastructure.Security
             }
 
             var claims = new List<Claim>();
-            claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, request.Email));
+            claims.Add(new Claim(ClaimTypes.Email, request.Email));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, request.MembershipUserId.ToString()));
 
             var token = new JwtSecurityToken(
                 issuer: _authenticationSettings.Issuer,

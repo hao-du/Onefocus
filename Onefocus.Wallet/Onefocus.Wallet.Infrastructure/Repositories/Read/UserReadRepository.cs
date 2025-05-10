@@ -20,21 +20,21 @@ public sealed class UserReadRepository : BaseRepository<UserReadRepository>, IUs
         _context = context;
     }
 
-    public async Task<Result<GetUserByIdResponse>> GetUserByIdAsync(GetUserByIdRequest request)
+    public async Task<Result<GetUserByIdResponseDto>> GetUserByIdAsync(GetUserByIdRequestDto request)
     {
-        return await ExecuteAsync<GetUserByIdResponse>(async () =>
+        return await ExecuteAsync<GetUserByIdResponseDto>(async () =>
         {
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id == request.Id);
-            return Result.Success(GetUserByIdResponse.CastFrom(user));
+            return Result.Success(GetUserByIdResponseDto.CastFrom(user));
         });
     }
 
-    public async Task<Result<GetAllUsersResponse>> GetAllUsersAsync()
+    public async Task<Result<GetAllUsersResponseDto>> GetAllUsersAsync()
     {
         return await ExecuteAsync(async () =>
         {
             var users = await _context.User.Where(u => u.ActiveFlag).ToListAsync();
-            return Result.Success(GetAllUsersResponse.CastFrom(users));
+            return Result.Success(GetAllUsersResponseDto.CastFrom(users));
         });
     }
 }

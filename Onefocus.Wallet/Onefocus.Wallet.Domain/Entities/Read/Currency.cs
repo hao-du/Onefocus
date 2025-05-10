@@ -3,7 +3,7 @@ using Onefocus.Wallet.Domain.Entities.Read.Transactions;
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
-public sealed class Currency : WriteEntityBase
+public sealed class Currency : ReadEntityBase
 {
     private List<Transaction> _transactions = new List<Transaction>();
     private List<ExchangeTransaction> _exchangeTransactions = new List<ExchangeTransaction>();

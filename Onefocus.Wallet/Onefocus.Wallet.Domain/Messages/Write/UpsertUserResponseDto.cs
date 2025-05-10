@@ -5,4 +5,4 @@ using Onefocus.Wallet.Domain.Entities.Read;
 
 namespace Onefocus.Wallet.Domain.Messages.Write;
 
-public sealed record UpsertUserResponse(Guid Id): IResponse;
+public sealed record UpsertUserResponseDto(Guid Id);

@@ -29,7 +29,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
 
         public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
         {
-            var result = await _userRepository.UpsertUserAsync(UpsertUserRequest.CastFrom(context.Message));
+            var result = await _userRepository.UpsertUserAsync(UpsertUserRequestDto.CastFrom(context.Message));
             if (result.IsFailure)
             {
                 _logger.LogError($"Cannot upsert user through message queue with [Code: {result.Error.Code} Error: {result.Error.Description}]" );

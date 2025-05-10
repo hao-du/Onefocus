@@ -1,6 +1,8 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using System;
+using static Onefocus.Wallet.Domain.Errors.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -23,16 +25,16 @@ public sealed class User : WriteEntityBase
         Email = default!;
     }
 
-    private User(string email, string firstName, string lastName, string? description, Guid actionedBy)
+    private User(Guid? id, string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(id ?? Guid.NewGuid(), description, actionedBy);
 
         FirstName = firstName;
         LastName = lastName;
         Email = email;
     }
 
-    public static Result<User> Create(string email, string firstName, string lastName, string? description, Guid actionedBy)
+    public static Result<User> Create(Guid? id, string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)
@@ -40,7 +42,7 @@ public sealed class User : WriteEntityBase
             return Result.Failure<User>(validationResult.Error);
         }
 
-        return new User(email, firstName, lastName, description, actionedBy);
+        return new User(id, email, firstName, lastName, description, actionedBy);
     }
 
     public Result<User> Update(string email, string firstName, string lastName, string? description, bool activeFlag, Guid actionedBy)

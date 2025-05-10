@@ -92,7 +92,7 @@ public sealed class UserRepository : IUserRepository
     {
         try
         {
-            var userResult = User.Create(request.Email);
+            var userResult = User.Create(request.Email, request.Id);
             if (userResult.IsFailure)
             {
                 return Result.Failure(userResult.Error);

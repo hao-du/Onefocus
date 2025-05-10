@@ -23,7 +23,7 @@ public sealed class UserWriteRepository : BaseRepository<UserWriteRepository>, I
         _context = context;
     }
 
-    public async Task<Result<UpsertUserResponse>> UpsertUserAsync(UpsertUserRequest request)
+    public async Task<Result<UpsertUserResponseDto>> UpsertUserAsync(UpsertUserRequestDto request)
     {
         return await ExecuteAsync(async () =>
         {
@@ -33,7 +33,7 @@ public sealed class UserWriteRepository : BaseRepository<UserWriteRepository>, I
                 var userResult = request.ToObject();
                 if (userResult.IsFailure)
                 {
-                    return Result.Failure<UpsertUserResponse>(userResult.Error);
+                    return Result.Failure<UpsertUserResponseDto>(userResult.Error);
                 }
                 user = userResult.Value;
 
@@ -46,7 +46,7 @@ public sealed class UserWriteRepository : BaseRepository<UserWriteRepository>, I
 
             await _context.SaveChangesAsync();
 
-            return Result.Success<UpsertUserResponse>(new(user.Id));
+            return Result.Success<UpsertUserResponseDto>(new(user.Id));
         });
     }
 }

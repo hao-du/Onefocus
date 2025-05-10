@@ -7,15 +7,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Transaction\Commands\**" />
+	  <EmbeddedResource Remove="Transaction\Commands\**" />
+	  <None Remove="Transaction\Commands\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="MediatR" Version="12.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Onefocus.Wallet.Infrastructure\Onefocus.Wallet.Infrastructure.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Transaction\Commands\" />
 	</ItemGroup>
 
 </Project>
