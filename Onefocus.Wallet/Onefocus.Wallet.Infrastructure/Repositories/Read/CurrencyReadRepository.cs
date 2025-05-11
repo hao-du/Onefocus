@@ -24,8 +24,8 @@ public sealed class CurrencyReadRepository : BaseRepository<CurrencyReadReposito
     {
         return await ExecuteAsync(async () =>
         {
-            var currencies = await _context.Currency.AsNoTracking().ToListAsync(cancellationToken);
-            return Result.Success(GetAllCurrenciesResponseDto.Cast(currencies));
+            var currencies = await _context.Currency.ToListAsync(cancellationToken);
+            return Result.Success<GetAllCurrenciesResponseDto>(new(currencies));
         });
     }
 
@@ -33,8 +33,8 @@ public sealed class CurrencyReadRepository : BaseRepository<CurrencyReadReposito
     {
         return await ExecuteAsync(async () =>
         {
-            var currency = await _context.Currency.AsNoTracking().FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
-            return Result.Success(GetCurrencyByIdResponseDto.Cast(currency));
+            var currency = await _context.Currency.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+            return Result.Success<GetCurrencyByIdResponseDto>(new(currency));
         });
     }
 
@@ -42,8 +42,8 @@ public sealed class CurrencyReadRepository : BaseRepository<CurrencyReadReposito
     {
         return await ExecuteAsync(async () =>
         {
-            var currencies = await _context.Currency.AsNoTracking().Where(request.Specification.ToExpression()).ToListAsync(cancellationToken);
-            return Result.Success(GetCurrenciesBySpecificationResponseDto.Cast(currencies));
+            var currencies = await _context.Currency.Where(request.Specification.ToExpression()).ToListAsync(cancellationToken);
+            return Result.Success<GetCurrenciesBySpecificationResponseDto>(new(currencies));
         });
     }
 }

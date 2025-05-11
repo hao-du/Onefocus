@@ -39,4 +39,30 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
             return Result.Failure<Y>(CommonErrors.InternalServer);
         }
     }
+
+    protected Result Execute(Func<Result> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Result.Failure(CommonErrors.InternalServer);
+        }
+    }
+
+    protected Result<Y> Execute<Y>(Func<Result<Y>> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Result.Failure<Y>(CommonErrors.InternalServer);
+        }
+    }
 }

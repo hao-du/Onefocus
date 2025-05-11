@@ -10,10 +10,4 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Wallet.Domain.Messages.Write;
 
-public sealed record CreateCurrencyRequestDto(string Name, string ShortName, bool DefaultFlag, string? Description, Guid CreatedBy)
-{
-    public Result<Currency> ToObject()
-    {
-        return Currency.Create(Name, ShortName, Description, DefaultFlag, CreatedBy);
-    }
-}
+public sealed record CreateCurrencyRequestDto(Currency Currency);

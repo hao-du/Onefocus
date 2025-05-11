@@ -3,6 +3,6 @@ using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Read;
 
-namespace Onefocus.Wallet.Domain.Messages.Write;
+namespace Onefocus.Wallet.Domain.Messages.Write.User;
 
-public sealed record UpsertUserResponseDto(Guid Id);
+public sealed record GetUserByIdRequestDto(Guid Id);

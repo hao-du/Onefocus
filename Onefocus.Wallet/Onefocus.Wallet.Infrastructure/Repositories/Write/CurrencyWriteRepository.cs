@@ -23,19 +23,26 @@ public sealed class CurrencyWriteRepository : BaseRepository<CurrencyWriteReposi
         _context = context;
     }
 
-    public async Task<Result> CreateCurrencyAsync(CreateCurrencyRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<Result> AddCurrencyAsync(CreateCurrencyRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
-            var result = request.ToObject();
-            if (result.IsFailure)
-            {
-                return Result.Failure(result.Error);
-            }
+            await _context.AddAsync(request.Currency, cancellationToken);
+            return Result.Success();
+        });
+    }
 
-            await _context.AddAsync(result.Value, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+    public async Task<Result> BulkMarkDefaultFlag(BulkMarkDefaultFlagRequestDto request, CancellationToken cancellationToken = default)
+    {
+        var updatedOn = DateTimeOffset.Now;
 
+        return await ExecuteAsync(async () =>
+        {
+            await _context.Currency.Where(c => !request.ExcludeIds.Contains(c.Id) && c.DefaultFlag == request.QueryValue).ExecuteUpdateAsync(setter => setter
+                .SetProperty(c => c.DefaultFlag, request.UpdatingValue)
+                .SetProperty(c => c.UpdatedBy, request.ActionedBy)
+                .SetProperty(c => c.UpdatedOn, updatedOn)
+            , cancellationToken);
             return Result.Success();
         });
     }

@@ -18,17 +18,17 @@ public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string S
 {
     public static GetCurrencyByIdQueryResponse? Cast(GetCurrencyByIdResponseDto source)
     {
-        if (source == null) return null;
+        if (source == null || source.Currency == null) return null;
 
         var currencyDto = new GetCurrencyByIdQueryResponse (
-            Id: source.Id,
-            Name: source.Name,
-            ShortName: source.ShortName,
-            DefaultFlag: source.DefaultFlag,
-            ActiveFlag: source.ActiveFlag,
-            Description: source.Description,
-            ActionedOn: source.ActionedOn,
-            ActionedBy: source.ActionedBy
+            Id: source.Currency.Id,
+            Name: source.Currency.Name,
+            ShortName: source.Currency.ShortName,
+            DefaultFlag: source.Currency.DefaultFlag,
+            ActiveFlag: source.Currency.ActiveFlag,
+            Description: source.Currency.Description,
+            ActionedOn: source.Currency.UpdatedOn ?? source.Currency.CreatedOn,
+            ActionedBy: source.Currency.UpdatedBy ?? source.Currency.CreatedBy
         );
 
         return currencyDto;

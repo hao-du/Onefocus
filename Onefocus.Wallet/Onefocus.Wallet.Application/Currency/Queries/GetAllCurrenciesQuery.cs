@@ -24,8 +24,8 @@ public sealed record GetAllCurrenciesQueryResponse(List<CurrencyQueryResponse> C
                 DefaultFlag: c.DefaultFlag,
                 ActiveFlag: c.ActiveFlag,
                 Description: c.Description,
-                ActionedOn: c.ActionedOn,
-                ActionedBy: c.ActionedBy
+                ActionedOn: c.UpdatedOn ?? c.CreatedOn,
+                ActionedBy: c.UpdatedBy ?? c.UpdatedBy
             )).ToList()
         );
 
