@@ -17,5 +17,6 @@ public static class Errors
     {
         public static readonly Error CannotCreateToken = new("CannotCreateToken", "Token is not able to be created.");
         public static readonly Error InvalidRefreshToken = new("InvalidRefreshToken", "Refresh token is invalid.");
+        public static readonly Error InvalidSessionInfo = new("InvalidSessionInfo", "Session information is invalid.");
     }
 }

@@ -53,7 +53,7 @@ public class WriteUnitOfWork : IWriteUnitOfWork
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error in transaction");
-            return Result.Failure(CommonErrors.InternalServer);
+            return Result.Failure(ex.ToErrors());
         }
     }
 }

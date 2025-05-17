@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
+using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
@@ -20,29 +21,28 @@ public interface IUserRepository
     Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
 }
 
-public sealed class UserRepository : IUserRepository
+public sealed class UserRepository : BaseRepository<UserRepository>, IUserRepository
 {
     private readonly UserManager<User> _userManager;
     private readonly IUserStore<User> _userStore;
     private readonly IUserEmailStore<User> _emailStore;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly ILogger<UserRepository> _logger;
 
     public UserRepository(UserManager<User> userManager
         , IUserStore<User> userStore
         , ILogger<UserRepository> logger
         , IPasswordHasher<User> passwordHasher)
+    : base(logger)
     {
         _userManager = userManager;
         _userStore = userStore;
         _emailStore = (IUserEmailStore<User>)userStore;
-        _logger = logger;
         _passwordHasher = passwordHasher;
     }
 
     public async Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync()
     {
-        try
+        return await ExecuteAsync<GetAllUsersRepositoryResponse>(async () =>
         {
             var users = await _userManager.Users
                 .Include(u => u.UserRoles)
@@ -58,17 +58,12 @@ public sealed class UserRepository : IUserRepository
                 .ToListAsync();
 
             return Result.Success(new GetAllUsersRepositoryResponse(users));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure<GetAllUsersRepositoryResponse>(CommonErrors.InternalServer);
-        }
+        });
     }
 
     public async Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request)
     {
-        try
+        return await ExecuteAsync<GetUserByIdRepositoryResponse>(async () =>
         {
             var user = await _userManager.Users
                 .Include(u => u.UserRoles)
@@ -82,25 +77,21 @@ public sealed class UserRepository : IUserRepository
             }
 
             return Result.Success(GetUserByIdRepositoryResponse.CastFrom(user));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure<GetUserByIdRepositoryResponse>(CommonErrors.InternalServer);
-        }
+        });
     }
 
     public async Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request)
     {
-        var userResult = User.Create(request.ToObject());
-        if (userResult.IsFailure)
+        return await ExecuteAsync<Guid>(async () =>
         {
-            return Result.Failure<Guid>(userResult.Error);
-        }
+            var userResult = User.Create(request.ToObject());
+            if (userResult.IsFailure)
+            {
+                return Result.Failure<Guid>(userResult.Error);
+            }
 
-        var user = userResult.Value;
-        try
-        {
+            var user = userResult.Value;
+
             await _userStore.SetUserNameAsync(user, request.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, request.Email, CancellationToken.None);
 
@@ -116,55 +107,39 @@ public sealed class UserRepository : IUserRepository
             }
 
             return Result.Success<Guid>(user.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure<Guid>(CommonErrors.InternalServer);
-        }
+        });
     }
 
     public async Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request)
     {
-        var user = await _userManager.FindByIdAsync(request.Id.ToString());
-        if (user == null)
+        return await ExecuteAsync(async () =>
         {
-            return Result.Failure(Errors.User.UserNotExist);
-        }
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if (user == null)
+            {
+                return Result.Failure(Errors.User.UserNotExist);
+            }
 
-        user.Update(request.ToObject());
+            user.Update(request.ToObject());
 
-        try
-        {
             IdentityResult result = await _userManager.UpdateAsync(user);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure(CommonErrors.InternalServer);
-        }
 
-        return Result.Success();
+            return Result.Success();
+        });
     }
 
     public async Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request)
     {
-        var user = await _userManager.FindByIdAsync(request.Id.ToString());
-        if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
-
-        var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
-        if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
-
-        try
+        return await ExecuteAsync<UpdatePasswordRepositoryResponse>(async () =>
         {
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
+
+            var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
+            if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
+
             IdentityResult result = await _userManager.UpdateAsync(user);
-
             return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.CastFrom(user));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return Result.Failure<UpdatePasswordRepositoryResponse>(CommonErrors.InternalServer);
-        }
+        });
     }
 }

@@ -43,7 +43,7 @@ namespace Onefocus.Membership.Infrastructure.ServiceBus
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Cannot sync user {message.FirstName} {message.LastName} - email: {message.Email} - id: {message.Id} with error: {ex.Message}");
-                return Result.Failure(CommonErrors.InternalServer);
+                return Result.Failure(ex.ToErrors());
             }
         }
     }

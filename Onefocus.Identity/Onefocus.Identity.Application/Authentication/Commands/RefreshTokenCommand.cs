@@ -45,7 +45,7 @@ internal sealed class RefreshTokenCommandHandler : ICommandHandler<RefreshTokenC
 
         if(string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(userId))
         {
-            return Result.Failure<RefreshTokenCommandReponse>(CommonErrors.InternalServer);
+            return Result.Failure<RefreshTokenCommandReponse>(Domain.Errors.Token.InvalidSessionInfo);
         }
 
         var userResult = await _userRepository.GetUserByIdAsync(new (Guid.Parse(userId)));

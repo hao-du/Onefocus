@@ -23,7 +23,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure(CommonErrors.InternalServer);
+            return Result.Failure(ex.ToErrors());
         }
     }
 
@@ -36,7 +36,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure<Y>(CommonErrors.InternalServer);
+            return Result.Failure<Y>(ex.ToErrors());
         }
     }
 
@@ -49,7 +49,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure(CommonErrors.InternalServer);
+            return Result.Failure(ex.ToErrors());
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return Result.Failure<Y>(CommonErrors.InternalServer);
+            return Result.Failure<Y>(ex.ToErrors());
         }
     }
 }

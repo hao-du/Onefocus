@@ -41,7 +41,7 @@ public static class ResultExtensions
             type: "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6",
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Error } }
+                { "errors", new[] { result.Errors } }
             });
     }
 
@@ -53,7 +53,7 @@ public static class ResultExtensions
             type: "https://tools.ietf.org/html/rfc7231#section-6.5.1",
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Error } }
+                { "errors", new[] { result.Errors } }
             });
     }
 }
