@@ -5,7 +5,7 @@ import {BaseButtonProps} from '../../../props/BaseButtonProps';
 type SplitButtonProps = BaseButtonProps & {
     appendTo?: 'self' | HTMLElement | undefined | null | (() => HTMLElement);
     menuClassName?: string;
-    actionItems: SplitButtonActionItem[]
+    actionItems?: SplitButtonActionItem[]
 };
 
 export const SplitButton = (props: SplitButtonProps) => {

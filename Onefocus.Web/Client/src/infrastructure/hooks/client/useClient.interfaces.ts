@@ -1,6 +1,6 @@
 import {AxiosInstance} from 'axios';
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = void> {
     status: number;
     title: string;
     type: string;

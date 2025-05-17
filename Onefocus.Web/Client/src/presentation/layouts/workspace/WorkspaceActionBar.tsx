@@ -6,7 +6,7 @@ type WorkspaceActionBarProps = BaseProps & {
     title: string
     showMinimizedButton?: boolean;
     rightPanelProps?: RightPanelProps;
-    actionItems: SplitButtonActionItem[]
+    actionItems?: SplitButtonActionItem[]
 };
 
 export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {

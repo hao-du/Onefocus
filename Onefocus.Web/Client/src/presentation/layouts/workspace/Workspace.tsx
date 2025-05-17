@@ -6,7 +6,7 @@ import {RightPanelProps, WorkspaceActionBar, WorkspaceRightPanel} from '.';
 
 type WorkspaceLayoutProps = BaseProps & {
     title: string;
-    actionItems: SplitButtonActionItem[];
+    actionItems?: SplitButtonActionItem[];
     leftPanel: React.ReactNode;
     rightPanelProps?: RightPanelProps;
     rightPanel: React.ReactNode;
