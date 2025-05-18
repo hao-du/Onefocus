@@ -10,11 +10,17 @@ type SideMenuProps = {
 
 export const SideMenu = (props: SideMenuProps) => {
     const expandAllItems = useMemo((): SideMenuItem[] => {
-        return props?.items?.map(item => ({
-            ...item,
-            expanded: true,
-            items: item.items
-        }));
+        return props?.items?.map(item => {
+            if(!item.items || item.items?.length == 0) {
+                return item;
+            }
+
+            return {
+                ...item,
+                expanded: true,
+                items: item.items
+            };
+        });
     }, [props?.items]);
 
     const [expandedKeys, setExpandedKeys] = useState<SideMenuItem[]>(expandAllItems);

@@ -1,11 +1,10 @@
 import {useForm} from 'react-hook-form';
 import {useWorkspace, Workspace} from '../../layouts/workspace';
 import useGetAllCurrencies from '../../../application/currency/useGetAllCurrencies';
-import {DataTable} from 'primereact/datatable';
-import {Column} from 'primereact/column';
-import {Button} from '../../components/controls/buttons';
+import {Button, SplitButtonActionItem} from '../../components/controls/buttons';
 import {Text} from '../../components/form-controls';
-import {Currency} from '../../../domain/currency';
+import {Currency as DomainCurrency } from '../../../domain/currency';
+import {Column, DataTable} from '../../components/data';
 
 
 interface IFormInput {
@@ -16,14 +15,17 @@ interface IFormInput {
     description?: string;
 }
 
-export const Dashboard = () => {
-
+export const Currency = () => {
     const {viewRightPanel, setViewRightPanel} = useWorkspace();
     const {data} = useGetAllCurrencies();
 
     const {control, reset, getValues } = useForm<IFormInput>({
         defaultValues: undefined
     });
+
+    const actionItems: SplitButtonActionItem[] = [
+        {label: 'Add', icon: 'pi pi-plus', command: () => { reset({ name: 'newname' }); }},
+    ];
 
     const hasCurrency = () => {
         const value = getValues();
@@ -32,13 +34,15 @@ export const Dashboard = () => {
 
     return (
         <Workspace
-            title="User Management"
+            title="Currency"
+            actionItems={actionItems}
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={data} className="p-datatable-sm">
-                        <Column field="userName" header="User Name"/>
-                        <Column field="email" header="Email"/>
-                        <Column body={(currency: Currency) => (
+                        <Column field="name" header="Name"/>
+                        <Column field="shortName" header="Short Name"/>
+                        <Column field="description" header="Description"/>
+                        <Column body={(currency: DomainCurrency) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"

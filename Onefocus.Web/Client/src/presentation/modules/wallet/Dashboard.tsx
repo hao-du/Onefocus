@@ -3,9 +3,8 @@ import {useWorkspace, Workspace} from '../../layouts/workspace';
 import useGetUser from '../../../application/user/useGetUser';
 import {Button, SplitButtonActionItem} from '../../components/controls/buttons';
 import {Text} from '../../components/form-controls';
-import {DataTable} from 'primereact/datatable';
-import {Column} from 'primereact/column';
 import {useForm} from 'react-hook-form';
+import {Column, DataTable} from '../../components/data';
 
 interface IFormInput {
     userName: string,

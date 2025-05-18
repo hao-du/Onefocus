@@ -12,7 +12,7 @@ export interface CreateCurrencyRequest {
 }
 
 export interface CurrencyResponse {
-    id: number;
+    id: string;
     name: string;
     shortName: string;
     defaultFlag: boolean;

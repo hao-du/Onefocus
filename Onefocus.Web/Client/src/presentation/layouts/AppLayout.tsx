@@ -38,6 +38,13 @@ export const AppLayout = (props: AppLayoutProps) => {
                     command: () => {
                         navigate("/wallet/traces");
                     }
+                },
+                {
+                    label: 'Currency',
+                    icon: 'pi pi-dollar',
+                    command: () => {
+                        navigate("/wallet/currency");
+                    }
                 }
             ]
         },
