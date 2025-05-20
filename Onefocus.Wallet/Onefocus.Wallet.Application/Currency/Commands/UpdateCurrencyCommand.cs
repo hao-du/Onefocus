@@ -12,25 +12,25 @@ using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 using System.Security.Claims;
 
 namespace Onefocus.Membership.Application.User.Commands;
-public sealed record CreateCurrencyCommandRequest(string Name, string ShortName, bool DefaultFlag, string? Description) : ICommand;
+public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool DefaultFlag, bool ActiveFlag, string? Description) : ICommand;
 
-internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurrencyCommandRequest>
+internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurrencyCommandRequest>
 {
     private readonly IReadUnitOfWork _readUnitOfWork;
     private readonly IWriteUnitOfWork _writeUnitOfWork;
 
-    public CreateCurrencyCommandHandler(
+    public UpdateCurrencyCommandHandler(
         IReadUnitOfWork readUnitOfWork
         , IWriteUnitOfWork writeUnitOfWork
         , IHttpContextAccessor httpContextAccessor
     )
-    : base( httpContextAccessor )
+    : base(httpContextAccessor)
     {
         _readUnitOfWork = readUnitOfWork;
         _writeUnitOfWork = writeUnitOfWork;
     }
 
-    public async Task<Result> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result> Handle(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await ValidateRequest(request, cancellationToken);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
@@ -38,24 +38,27 @@ internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurren
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return Result.Failure(actionByResult.Error);
 
-        var addCurrencyResult = Currency.Create(
-               name: request.Name,
-               shortName: request.ShortName,
-               description: request.Description,
-               defaultFlag: request.DefaultFlag,
-               actionedBy: actionByResult.Value
-            );
-        if(addCurrencyResult.IsFailure) return Result.Failure(addCurrencyResult.Error);
+        var currencyResult = await _writeUnitOfWork.Currency.GetCurrencyByIdAsync(new(request.Id));
+        if (currencyResult.IsFailure) return Result.Failure(currencyResult.Error);
+        if (currencyResult.Value.Currency == null) return Result.Failure(CommonErrors.NullReference);
 
-        var repoResult = await _writeUnitOfWork.Currency.AddCurrencyAsync(new(addCurrencyResult.Value), cancellationToken);
-        if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
+        var updateResult = currencyResult.Value.Currency.Update(
+            name: request.Name,
+            shortName: request.ShortName,
+            description: request.Description,
+            defaultFlag: request.DefaultFlag,
+            activeFlag: request.ActiveFlag,
+            actionedBy: actionByResult.Value
+        );
+
+        if (updateResult.IsFailure) return Result.Failure(updateResult.Error);
 
         var transactionResult = await _writeUnitOfWork.WithTransactionAsync(async (cancellationToken) =>
         {
             if (request.DefaultFlag)
             {
                 var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new(new List<Guid>(), true, false, actionByResult.Value));
-                if(bulkUpdateResult.IsFailure)
+                if (bulkUpdateResult.IsFailure)
                 {
                     return Result.Failure(bulkUpdateResult.Error);
                 }
@@ -67,12 +70,12 @@ internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurren
         if (transactionResult.IsFailure)
         {
             return Result.Failure(transactionResult.Error);
-        } 
+        }
 
         return Result.Success();
     }
 
-    private async Task<Result> ValidateRequest(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
+    private async Task<Result> ValidateRequest(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.Name)) return Result.Failure(Errors.Currency.NameRequired);
         if (string.IsNullOrEmpty(request.ShortName)) return Result.Failure(Errors.Currency.ShortNameRequired);

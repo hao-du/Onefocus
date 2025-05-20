@@ -5,7 +5,6 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Messages.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
@@ -21,6 +20,15 @@ public sealed class CurrencyWriteRepository : BaseRepository<CurrencyWriteReposi
     ) : base(logger)
     {
         _context = context;
+    }
+
+    public async Task<Result<GetCurrencyByIdResponseDto>> GetCurrencyByIdAsync(GetCurrencyByIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var currency = await _context.Currency.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+            return Result.Success<GetCurrencyByIdResponseDto>(new(currency));
+        });
     }
 
     public async Task<Result> AddCurrencyAsync(CreateCurrencyRequestDto request, CancellationToken cancellationToken = default)

@@ -2,4 +2,4 @@
 
 namespace Onefocus.Wallet.Domain.Messages.Write;
 
-public sealed record CreateCurrencyRequestDto(Entity.Currency Currency);
+public sealed record GetCurrencyByIdResponseDto(Entity.Currency? Currency);
