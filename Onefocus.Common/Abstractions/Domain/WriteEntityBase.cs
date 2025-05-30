@@ -15,7 +15,7 @@ public abstract class WriteEntityBase : EntityBase
     {
         Id = id.HasValue ? id.Value : Guid.NewGuid();
         Description = description;
-        ActiveFlag = true;
+        IsActive = true;
         CreatedBy = actionedBy;
         CreatedOn = DateTimeOffset.Now;
         Update(actionedBy);
@@ -29,13 +29,13 @@ public abstract class WriteEntityBase : EntityBase
 
     public void MarkActive(Guid actionedBy)
     {
-        ActiveFlag = true;
+        IsActive = true;
         Update(actionedBy);
     }
 
     public void MarkInactive(Guid actionedBy)
     {
-        ActiveFlag = false;
+        IsActive = false;
         Update(actionedBy);
     }
 }

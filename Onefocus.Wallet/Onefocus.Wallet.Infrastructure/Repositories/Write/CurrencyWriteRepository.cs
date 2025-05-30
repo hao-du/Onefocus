@@ -46,8 +46,8 @@ public sealed class CurrencyWriteRepository : BaseRepository<CurrencyWriteReposi
 
         return await ExecuteAsync(async () =>
         {
-            await _context.Currency.Where(c => !request.ExcludeIds.Contains(c.Id) && c.DefaultFlag == request.QueryValue).ExecuteUpdateAsync(setter => setter
-                .SetProperty(c => c.DefaultFlag, request.UpdatingValue)
+            await _context.Currency.Where(c => !request.ExcludeIds.Contains(c.Id) && c.IsDefault == request.QueryValue).ExecuteUpdateAsync(setter => setter
+                .SetProperty(c => c.IsDefault, request.UpdatingValue)
                 .SetProperty(c => c.UpdatedBy, request.ActionedBy)
                 .SetProperty(c => c.UpdatedOn, updatedOn)
             , cancellationToken);

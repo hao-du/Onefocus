@@ -13,7 +13,7 @@ namespace Onefocus.Common.Abstractions.ServiceBus.Membership
         string FirstName { get; }
         string LastName { get; }
         string? Description { get; }
-        bool ActiveFlag { get; }
+        bool IsActive { get; }
         string? EncryptedPassword { get; }
     }
 }

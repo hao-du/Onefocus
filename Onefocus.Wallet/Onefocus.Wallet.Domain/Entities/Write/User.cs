@@ -45,7 +45,7 @@ public sealed class User : WriteEntityBase
         return new User(id, email, firstName, lastName, description, actionedBy);
     }
 
-    public Result<User> Update(string email, string firstName, string lastName, string? description, bool activeFlag, Guid actionedBy)
+    public Result<User> Update(string email, string firstName, string lastName, string? description, bool isActive, Guid actionedBy)
     {
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)
@@ -58,7 +58,7 @@ public sealed class User : WriteEntityBase
         Email = email;
         Description = description;
 
-        if (activeFlag) MarkActive(actionedBy);
+        if (isActive) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
         return this;

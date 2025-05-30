@@ -29,7 +29,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("ActiveFlag")
+                    b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("CreatedBy")
@@ -64,7 +64,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("ActiveFlag")
+                    b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("CreatedBy")
@@ -73,7 +73,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<DateTimeOffset?>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("DefaultFlag")
+                    b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Description")
@@ -106,7 +106,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("ActiveFlag")
+                    b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("CreatedBy")
@@ -149,7 +149,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<int>("Action")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("ActiveFlag")
+                    b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.Property<decimal>("Amount")
@@ -188,7 +188,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("ActiveFlag")
+                    b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("CreatedBy")

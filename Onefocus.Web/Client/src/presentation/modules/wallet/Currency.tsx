@@ -12,7 +12,7 @@ interface IFormInput extends IFormInputProps {
     id?: string
     name: string;
     shortName: string;
-    defaultFlag: boolean;
+    isDefault: boolean;
     description?: string;
 }
 

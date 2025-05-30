@@ -11,7 +11,7 @@ public sealed class Currency : WriteEntityBase
 
     public string Name { get; private set; }
     public string ShortName { get; private set; }
-    public bool DefaultFlag { get; private set; }
+    public bool IsDefault { get; private set; }
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<ExchangeTransaction> ExchangeTransactions => _exchangeTransactions.AsReadOnly();
@@ -22,16 +22,16 @@ public sealed class Currency : WriteEntityBase
         ShortName = default!;
     }
 
-    private Currency(string name, string shortName, string? description, bool defaultFlag, Guid actionedBy)
+    private Currency(string name, string shortName, string? description, bool isDefault, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
         Name = name;
         ShortName = shortName;
-        DefaultFlag = defaultFlag;
+        IsDefault = isDefault;
     }
 
-    public static Result<Currency> Create(string name, string shortName, string? description, bool defaultFlag, Guid actionedBy)
+    public static Result<Currency> Create(string name, string shortName, string? description, bool isDefault, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
@@ -39,10 +39,10 @@ public sealed class Currency : WriteEntityBase
             return Result.Failure<Currency>(validationResult.Error);
         }
 
-        return new Currency(name, shortName, description, defaultFlag, actionedBy);
+        return new Currency(name, shortName, description, isDefault, actionedBy);
     }
 
-    public Result Update(string name, string shortName, string? description, bool defaultFlag, bool activeFlag, Guid actionedBy)
+    public Result Update(string name, string shortName, string? description, bool isDefault, bool isActive, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
@@ -53,18 +53,12 @@ public sealed class Currency : WriteEntityBase
         Name = name;
         ShortName = shortName.ToUpper();
         Description = description;
-        DefaultFlag = defaultFlag;
+        IsDefault = isDefault;
 
-        if (activeFlag) MarkActive(actionedBy);
+        if (isActive) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
         return Result.Success();
-    }
-
-    public void MarkDefault(bool defaultFlag, Guid actionedBy)
-    {
-        DefaultFlag = defaultFlag;
-        Update(actionedBy);
     }
 
     private static Result Validate(string name, string shortName)

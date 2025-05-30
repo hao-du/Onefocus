@@ -33,7 +33,7 @@ public sealed class UserReadRepository : BaseRepository<UserReadRepository>, IUs
     {
         return await ExecuteAsync(async () =>
         {
-            var users = await _context.User.Where(u => u.ActiveFlag).ToListAsync(cancellationToken);
+            var users = await _context.User.Where(u => u.IsActive).ToListAsync(cancellationToken);
             return Result.Success<GetAllUsersResponseDto>(new(users));
         });
     }
