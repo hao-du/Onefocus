@@ -1,15 +1,12 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Write.Models;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
 public class TransactionItem : WriteEntityBase
 {
-    public Guid TransactionId { get; set; }
+    public Guid TransactionId { get; private set; }
     public string Name { get; private set; }
     public decimal Amount { get; private set; }
 
@@ -69,7 +66,7 @@ public class TransactionItem : WriteEntityBase
         }
         if (amount < 0)
         {
-            return Result.Failure(Errors.TransactionItem.ItemAmountMustGreaterThanZero);
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
         }
 
         return Result.Success();

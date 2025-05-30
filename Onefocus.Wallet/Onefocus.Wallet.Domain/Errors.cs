@@ -39,7 +39,9 @@ public static class Errors
     public static class Transaction
     {
         public static readonly Error AmountMustEqualOrGreaterThanZero = new("AmountMustEqualOrGreaterThanZero", "Amount must be equal or greater than 0.");
-        public static readonly Error BankAccountExists = new("BankAccountExists", "Bank account exists.");
+        public static readonly Error TransactionExists = new("TransactionExists", "Transaction exists.");
+        public static readonly Error TransactedOnRequired = new("TransactedOnRequired", "Transaction date is required.");
+        public static readonly Error InvalidTransaction = new("InvalidTransaction", "Transaction is invalid.");
     }
 
     public static class CurrencyExchange
@@ -52,5 +54,6 @@ public static class Errors
     public static class TransactionItem
     {
         public static readonly Error ItemNameRequired = new("ItemNameRequired", "Item name is required.");
+        public static readonly Error InvalidTransactionItem = new("InvalidTransactionItem", "Item is invalid.");
     }
 }

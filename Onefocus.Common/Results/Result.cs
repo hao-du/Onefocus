@@ -13,7 +13,7 @@ public class Result
 {
     protected internal Result(bool isSuccess, List<Error> errors)
     {
-        if (isSuccess && errors.Any())
+        if (isSuccess && errors.Count > 0)
         {
             throw new ArgumentException("Invalid errors.", nameof(errors));
         }
@@ -26,17 +26,17 @@ public class Result
 
     public bool IsFailure => !IsSuccess;
 
-    private List<Error> _errors;
-    public IReadOnlyList<Error> Errors => _errors.ToList();
+    private readonly List<Error> _errors;
+    public IReadOnlyList<Error> Errors => [.. _errors];
     public Error Error => _errors.First();
 
-    public static Result Success() => new(true, new List<Error>());
+    public static Result Success() => new(true, []);
 
-    public static Result<TValue> Success<TValue>(TValue? value) => new(value, true, new List<Error>());
+    public static Result<TValue> Success<TValue>(TValue? value) => new(value, true, []);
 
-    public static Result Failure(Error error) => new(false, new List<Error>() { error });
+    public static Result Failure(Error error) => new(false, [error]);
 
-    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, new List<Error>() { error });
+    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, [error]);
 
     public static Result Failure(List<Error> errors) => new(false, errors);
 

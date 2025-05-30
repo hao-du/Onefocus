@@ -11,24 +11,17 @@ using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 using System.Security.Claims;
 
-namespace Onefocus.Membership.Application.User.Commands;
-public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool isActive, string? Description) : ICommand;
+namespace Onefocus.Wallet.Application.Currency.Commands;
+public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description) : ICommand;
 
-internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurrencyCommandRequest>
-{
-    private readonly IReadUnitOfWork _readUnitOfWork;
-    private readonly IWriteUnitOfWork _writeUnitOfWork;
-
-    public UpdateCurrencyCommandHandler(
-        IReadUnitOfWork readUnitOfWork
+internal sealed class UpdateCurrencyCommandHandler(
+    IReadUnitOfWork readUnitOfWork
         , IWriteUnitOfWork writeUnitOfWork
         , IHttpContextAccessor httpContextAccessor
-    )
-    : base(httpContextAccessor)
-    {
-        _readUnitOfWork = readUnitOfWork;
-        _writeUnitOfWork = writeUnitOfWork;
-    }
+    ) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor)
+{
+    private readonly IReadUnitOfWork _readUnitOfWork = readUnitOfWork;
+    private readonly IWriteUnitOfWork _writeUnitOfWork = writeUnitOfWork;
 
     public override async Task<Result> Handle(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
@@ -38,7 +31,7 @@ internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurren
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return Result.Failure(actionByResult.Error);
 
-        var currencyResult = await _writeUnitOfWork.Currency.GetCurrencyByIdAsync(new(request.Id));
+        var currencyResult = await _writeUnitOfWork.Currency.GetCurrencyByIdAsync(new(request.Id), cancellationToken);
         if (currencyResult.IsFailure) return Result.Failure(currencyResult.Error);
         if (currencyResult.Value.Currency == null) return Result.Failure(CommonErrors.NullReference);
 
@@ -57,7 +50,7 @@ internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurren
         {
             if (request.IsDefault)
             {
-                var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new(new List<Guid>(), true, false, actionByResult.Value));
+                var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new([], true, false, actionByResult.Value), cancellationToken);
                 if (bulkUpdateResult.IsFailure)
                 {
                     return Result.Failure(bulkUpdateResult.Error);

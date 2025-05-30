@@ -6,6 +6,7 @@ using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Messages.Write;
+using Onefocus.Wallet.Domain.Messages.Write.Currency;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
 namespace Onefocus.Wallet.Domain.Repositories.Write;

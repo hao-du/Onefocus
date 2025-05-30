@@ -1,5 +1,6 @@
 ﻿using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Messages.Write;
+using Onefocus.Wallet.Domain.Messages.Write.Currency;
 
 namespace Onefocus.Wallet.Domain.Repositories.Write;
 

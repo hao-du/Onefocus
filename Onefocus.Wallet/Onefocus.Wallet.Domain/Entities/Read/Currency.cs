@@ -1,17 +1,21 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Wallet.Domain.Entities.Read.Transactions;
+using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
 public sealed class Currency : ReadEntityBase
 {
-    private List<Transaction> _transactions = new List<Transaction>();
-    private List<ExchangeTransaction> _exchangeTransactions = new List<ExchangeTransaction>();
+    private readonly List<Transaction> _transactions = [];
+    private readonly List<BankAccount> _bankAccounts = [];
+    private readonly List<CurrencyExchange> _baseCurrencyExchanges = [];
+    private readonly List<CurrencyExchange> _targetCurrencyExchanges = [];
 
     public string Name { get; init; } = default!;
     public string ShortName { get; init; } = default!;
     public bool IsDefault { get; init; }
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
-    public IReadOnlyCollection<ExchangeTransaction> ExchangeTransactions => _exchangeTransactions.AsReadOnly();
+    public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
+    public IReadOnlyCollection<CurrencyExchange> BaseCurrencyExchanges => _baseCurrencyExchanges.AsReadOnly();
+    public IReadOnlyCollection<CurrencyExchange> TargetCurrencyExchanges => _targetCurrencyExchanges.AsReadOnly();
 }

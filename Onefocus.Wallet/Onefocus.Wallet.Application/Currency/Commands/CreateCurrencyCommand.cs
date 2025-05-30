@@ -4,33 +4,26 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Write;
+using Entity = Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Domain.Messages.Write;
 using Onefocus.Wallet.Domain.Specifications.Currency;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 using System.Security.Claims;
 
-namespace Onefocus.Membership.Application.User.Commands;
+namespace Onefocus.Wallet.Application.Currency.Commands;
 public sealed record CreateCurrencyCommandRequest(string Name, string ShortName, bool IsDefault, string? Description) : ICommand;
 
-internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurrencyCommandRequest>
-{
-    private readonly IReadUnitOfWork _readUnitOfWork;
-    private readonly IWriteUnitOfWork _writeUnitOfWork;
-
-    public CreateCurrencyCommandHandler(
-        IReadUnitOfWork readUnitOfWork
+internal sealed class CreateCurrencyCommandHandler(
+    IReadUnitOfWork readUnitOfWork
         , IWriteUnitOfWork writeUnitOfWork
         , IHttpContextAccessor httpContextAccessor
-    )
-    : base( httpContextAccessor )
-    {
-        _readUnitOfWork = readUnitOfWork;
-        _writeUnitOfWork = writeUnitOfWork;
-    }
+    ) : CommandHandler<CreateCurrencyCommandRequest>( httpContextAccessor )
+{
+    private readonly IReadUnitOfWork _readUnitOfWork = readUnitOfWork;
+    private readonly IWriteUnitOfWork _writeUnitOfWork = writeUnitOfWork;
 
-    public async Task<Result> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await ValidateRequest(request, cancellationToken);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
@@ -38,7 +31,7 @@ internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurren
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return Result.Failure(actionByResult.Error);
 
-        var addCurrencyResult = Currency.Create(
+        var addCurrencyResult = Entity.Currency.Create(
                name: request.Name,
                shortName: request.ShortName,
                description: request.Description,
@@ -54,7 +47,7 @@ internal sealed class CreateCurrencyCommandHandler : CommandHandler<CreateCurren
         {
             if (request.IsDefault)
             {
-                var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new(new List<Guid>(), true, false, actionByResult.Value));
+                var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new([], true, false, actionByResult.Value), cancellationToken);
                 if(bulkUpdateResult.IsFailure)
                 {
                     return Result.Failure(bulkUpdateResult.Error);

@@ -1,22 +1,23 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 using System;
+using System.Collections.Generic;
 using static Onefocus.Wallet.Domain.Errors.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public sealed class User : WriteEntityBase
+public sealed class User : WriteEntityBase, IAggregateRoot
 {
-    private List<Transaction> _transactions = new List<Transaction>();
-    private List<TransferTransaction> _transferTransactions = new List<TransferTransaction>();
+    private readonly List<Transaction> _transactions = [];
+    private readonly List<PeerTransfer> _peerTransfers = [];
 
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
-    public IReadOnlyCollection<TransferTransaction> TransferTransactions => _transferTransactions.AsReadOnly();
+    public IReadOnlyCollection<PeerTransfer> PeerTransfers => _peerTransfers.AsReadOnly();
 
     private User()
     {

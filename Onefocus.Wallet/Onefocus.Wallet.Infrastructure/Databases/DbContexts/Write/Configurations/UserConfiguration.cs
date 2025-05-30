@@ -8,13 +8,15 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(p => p.FirstName).HasMaxLength(50);
-            builder.Property(p => p.LastName).HasMaxLength(50);
-            builder.Property(p => p.Email).HasMaxLength(256);
-            builder.Property(p => p.Description).HasMaxLength(255);
+            builder.Property(u => u.FirstName).HasMaxLength(50);
+            builder.Property(u => u.LastName).HasMaxLength(50);
+            builder.Property(u => u.Email).HasMaxLength(256);
+            builder.Property(u => u.Description).HasMaxLength(255);
 
-            builder.HasMany(u => u.TransferTransactions).WithOne(tu => tu.TransferredUser).HasForeignKey(tu => tu.TransferredUserId);
             builder.HasMany(u => u.Transactions).WithOne(tu => tu.User).HasForeignKey(tu => tu.UserId);
+            builder.HasMany(u => u.PeerTransfers).WithOne(pt => pt.TransferredUser).HasForeignKey(pt => pt.TransferredUserId);
+
+            builder.HasQueryFilter(u => u.IsActive);
         }
     }
 }

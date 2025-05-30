@@ -1,60 +1,55 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
-using Onefocus.Wallet.Domain.Entities.Write.Models;
+using Onefocus.Wallet.Domain.Entities.Write.Params;
 
-namespace Onefocus.Wallet.Domain.Entities.Write.Transactions;
+namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
-public sealed class PeerTransfer : WriteEntityBase
+public sealed class PeerTransfer : BaseTransaction, IAggregateRoot
 {
-    private List<Transaction> _transactions = new List<Transaction>();
-
-    public decimal Amount { get; private set; }
-    public Guid CurrencyId { get; private set; }
     public Guid TransferredUserId { get; private set; }
     public PeerTransferStatus Status { get; private set; }
     public PeerTransferType Type { get; private set; }
 
     public User TransferredUser { get; private set; } = default!;
-    public Currency Currency { get; private set; } = default!;
-    public IReadOnlyCollection<Transaction> TransactionDetails => _transactions.AsReadOnly();
 
     private PeerTransfer() : base()
     {
     }
 
-    public PeerTransfer(decimal amount, Guid currencyId, Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
+    public PeerTransfer(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
-        Amount = amount;
-        CurrencyId = currencyId;
         TransferredUserId = transferredUserId;
         Status = status;
         Type = type;
     }
 
-    public static Result<PeerTransfer> Create(decimal amount, Guid currencyId, Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
+    public static Result<PeerTransfer> Create(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
     {
-        var validationResult = Validate(amount, currencyId, transferredUserId);
+        var validationResult = Validate(transferredUserId);
         if (validationResult.IsFailure)
         {
             return Result.Failure<PeerTransfer>(validationResult.Error);
         }
 
-        return new PeerTransfer(amount, currencyId, transferredUserId, status, type, description, actionedBy);
+        return new PeerTransfer(transferredUserId, status, type, description, actionedBy);
     }
 
-    public Result Update(decimal amount, Guid currencyId, Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, bool isActive, string? description, Guid actionedBy)
+    public Result CreateTransferTransaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid actionedBy)
     {
-        var validationResult = Validate(amount, currencyId, transferredUserId);
+        return CreateTransaction(amount, transactedOn, currencyId, description, actionedBy);
+    }
+
+    public Result Update(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, bool isActive, string? description, Guid actionedBy, IReadOnlyList<TransactionParams> transactions)
+    {
+        var validationResult = Validate(transferredUserId);
         if (validationResult.IsFailure)
         {
             return validationResult;
         }
 
-        Amount = amount;
-        CurrencyId = currencyId;
         TransferredUserId = transferredUserId;
         Status = status;
         Type = type;
@@ -62,6 +57,11 @@ public sealed class PeerTransfer : WriteEntityBase
 
         if (isActive) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
+
+        foreach (var transaction in transactions)
+        {
+            UpsertTransaction(transaction, actionedBy);
+        }
 
         return Result.Success();
     }
@@ -88,7 +88,7 @@ public sealed class PeerTransfer : WriteEntityBase
 
     private Result ChangeStatus(PeerTransferStatus status, Guid actionedBy)
     {
-        var validationResult = Validate(Amount, CurrencyId, TransferredUserId);
+        var validationResult = Validate(TransferredUserId);
         if (validationResult.IsFailure)
         {
             return validationResult;
@@ -100,16 +100,8 @@ public sealed class PeerTransfer : WriteEntityBase
         return Result.Success();
     }
 
-    private static Result Validate(decimal amount, Guid currencyId, Guid transferredUserId)
+    private static Result Validate(Guid transferredUserId)
     {
-        if (amount < 0)
-        {
-            return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
-        }
-        if (currencyId == default)
-        {
-            return Result.Failure(Errors.Currency.CurrencyRequired);
-        }
         if (transferredUserId == default)
         {
             return Result.Failure(Errors.User.UserRequired);

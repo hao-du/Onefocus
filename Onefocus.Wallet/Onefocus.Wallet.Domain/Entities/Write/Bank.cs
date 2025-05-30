@@ -1,16 +1,16 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Write.Transactions;
+using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
 public sealed class Bank : WriteEntityBase
 {
-    private List<BankingTransaction> _bankingTransactions = new List<BankingTransaction>();
+    private readonly List<BankAccount> _bankAccounts = [];
 
     public string Name { get; private set; }
 
-    public IReadOnlyCollection<BankingTransaction> BankingTransactions => _bankingTransactions.AsReadOnly();
+    public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
 
     private Bank()
     {

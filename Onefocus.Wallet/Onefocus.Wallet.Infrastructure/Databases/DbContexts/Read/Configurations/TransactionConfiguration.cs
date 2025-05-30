@@ -8,13 +8,18 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
-            builder.UseTpcMappingStrategy();
-
-            builder.Property(p => p.Description).HasMaxLength(255);
+            builder.Property(t => t.Description).HasMaxLength(255);
 
             builder.HasOne(t => t.User).WithMany(u => u.Transactions).HasForeignKey(t => t.Id);
             builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.Id);
-            builder.HasMany(t => t.TransactionDetails).WithOne(td => td.Transaction).HasForeignKey(td => td.Id);
+
+            builder.HasMany(t => t.TransactionItems).WithOne(ti => ti.Transaction).HasForeignKey(ti => ti.TransactionId);
+            builder.HasMany(t => t.PeerTransfers).WithMany(pt => pt.Transactions).UsingEntity(e => e.ToTable("PeerTransferTransaction"));
+            builder.HasMany(t => t.BankAccounts).WithMany(ba => ba.Transactions).UsingEntity(e => e.ToTable("BankAccountTransaction"));
+            builder.HasMany(t => t.CashFlows).WithMany(cf => cf.Transactions).UsingEntity(e => e.ToTable("CastFlowTransaction"));
+            builder.HasMany(t => t.CurrencyExchanges).WithMany(ce => ce.Transactions).UsingEntity(e => e.ToTable("CurrencyExchangeTransaction"));
+
+            builder.HasQueryFilter(t => t.IsActive);
         }
     }
 }

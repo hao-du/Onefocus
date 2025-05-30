@@ -13,7 +13,7 @@ public abstract class WriteEntityBase : EntityBase
 {
     protected void Init(Guid? id, string? description, Guid actionedBy)
     {
-        Id = id.HasValue ? id.Value : Guid.NewGuid();
+        Id = id ?? Guid.NewGuid();
         Description = description;
         IsActive = true;
         CreatedBy = actionedBy;

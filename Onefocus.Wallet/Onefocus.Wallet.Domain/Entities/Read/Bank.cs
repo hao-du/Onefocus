@@ -1,13 +1,13 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Wallet.Domain.Entities.Read.Transactions;
+using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
 public sealed class Bank : ReadEntityBase
 {
-    private List<BankingTransaction> _bankingTransactions = new List<BankingTransaction>();
+    private readonly List<BankAccount> _bankAccounts = [];
 
     public string Name { get; init; } = default!;
 
-    public IReadOnlyCollection<BankingTransaction> BankingTransactions => _bankingTransactions.AsReadOnly();
+    public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
 }
