@@ -1,10 +1,12 @@
 import {Password as PiPassword} from 'primereact/password';
 import {InputProps} from '../../../props/InputProps';
 import {FloatLabel} from '../panels';
+import {ChangeEventHandler} from 'react';
 
 export type PasswordProps = InputProps & {
     floatClassName?: string;
     feedback?: boolean;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const Password = (props: PasswordProps) => {

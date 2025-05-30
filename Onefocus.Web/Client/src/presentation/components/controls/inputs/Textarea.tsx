@@ -1,18 +1,18 @@
-import {InputText} from 'primereact/inputtext';
+import {InputTextarea } from 'primereact/inputtextarea';
 import {InputProps} from '../../../props/InputProps';
 import {FloatLabel} from '../panels';
 import {ChangeEventHandler} from 'react';
 
-export type TextProps = InputProps & {
+export type TextareaProps = InputProps & {
     floatClassName?: string;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onChange?: ChangeEventHandler<HTMLTextAreaElement>;
 };
 
-export const Text = (props: TextProps) => {
+export const Textarea = (props: TextareaProps) => {
     return (
         <FloatLabel className={props.floatClassName}>
             <label htmlFor={props.id}>{props.label}</label>
-            <InputText className={props.className} id={props.id} value={props.value} onChange={props.onChange}
+            <InputTextarea className={props.className} id={props.id} value={props.value} onChange={props.onChange}
                        readOnly={props.isPending || props.readOnly}/>
         </FloatLabel>
     );

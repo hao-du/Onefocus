@@ -5,10 +5,12 @@ export {
 
 export {
     createCurrency,
+    updateCurrency,
     getCurrencyById,
     getAllCurrencies
 } from './currency.api';
 
 export type {
-    CreateCurrencyRequest
+    CreateCurrencyRequest,
+    UpdateCurrencyRequest
 } from './currency.interfaces'

@@ -2,12 +2,13 @@ import {useForm} from 'react-hook-form';
 import {useWorkspace, Workspace} from '../../layouts/workspace';
 import useGetAllCurrencies from '../../../application/currency/useGetAllCurrencies';
 import {Button, SplitButtonActionItem} from '../../components/controls/buttons';
-import {Text} from '../../components/form-controls';
+import {Text, Textarea} from '../../components/form-controls';
 import {Currency as DomainCurrency } from '../../../domain/currency';
 import {Column, DataTable} from '../../components/data';
+import {IFormInputProps} from '../../props/FormInputProps';
 
 
-interface IFormInput {
+interface IFormInput extends IFormInputProps {
     id?: string
     name: string;
     shortName: string;
@@ -20,16 +21,20 @@ export const Currency = () => {
     const {data} = useGetAllCurrencies();
 
     const {control, reset, getValues } = useForm<IFormInput>({
-        defaultValues: undefined
+        defaultValues: { showForm: false }
     });
 
     const actionItems: SplitButtonActionItem[] = [
-        {label: 'Add', icon: 'pi pi-plus', command: () => { reset({ name: 'newname' }); }},
+        {
+            label: 'Add',
+            icon: 'pi pi-plus',
+            command: () => reset({ showForm: true })
+        }
     ];
 
-    const hasCurrency = () => {
+    const showForm = () => {
         const value = getValues();
-        return value?.name;
+        return value.showForm;
     }
 
     return (
@@ -48,7 +53,7 @@ export const Currency = () => {
                                 className="p-button-text"
                                 onClick={() => {
                                     setViewRightPanel(true);
-                                    reset(currency);
+                                    reset({ ...currency, showForm: true });
                                 }}
                             />
                         )} header="" headerStyle={{width: "4rem"}}/>
@@ -58,7 +63,7 @@ export const Currency = () => {
             rightPanelProps={{
                 viewRightPanel,
                 setViewRightPanel,
-                buttons: hasCurrency() ? [
+                buttons: showForm() ? [
                     {
                         onClick: () => {
                         },
@@ -69,7 +74,7 @@ export const Currency = () => {
                 ] : []
             }}
             rightPanel={
-                hasCurrency() &&
+                showForm() &&
                 <>
                     <h3 className="mt-0 mb-5">Edit User</h3>
                     <form>
@@ -83,7 +88,7 @@ export const Currency = () => {
                             name="shortName"
                             label="Short Name"
                         />
-                        <Text
+                        <Textarea
                             control={control}
                             name="description"
                             label="Description"
