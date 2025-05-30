@@ -21,8 +21,8 @@ public sealed record GetAllCurrenciesQueryResponse(List<CurrencyQueryResponse> C
                 Id: c.Id,
                 Name: c.Name,
                 ShortName: c.ShortName,
-                DefaultFlag: c.DefaultFlag,
-                ActiveFlag: c.ActiveFlag,
+                IsDefault: c.IsDefault,
+                isActive: c.IsActive,
                 Description: c.Description,
                 ActionedOn: c.UpdatedOn ?? c.CreatedOn,
                 ActionedBy: c.UpdatedBy ?? c.UpdatedBy
@@ -32,7 +32,7 @@ public sealed record GetAllCurrenciesQueryResponse(List<CurrencyQueryResponse> C
         return currencyResponses;
     }
 
-    public record CurrencyQueryResponse(Guid Id, string Name, string ShortName, bool DefaultFlag, bool ActiveFlag, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
+    public record CurrencyQueryResponse(Guid Id, string Name, string ShortName, bool IsDefault, bool isActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 }
 
 

@@ -56,7 +56,7 @@ namespace Onefocus.Wallet.Application.User.ServiceBus
                         firstName: context.Message.FirstName,
                         lastName: context.Message.LastName,
                         description: context.Message.Description,
-                        activeFlag: context.Message.ActiveFlag,
+                        isActive: context.Message.IsActive,
                         actionedBy: Guid.Empty
                     );
                 if (updateUserResult.IsFailure)

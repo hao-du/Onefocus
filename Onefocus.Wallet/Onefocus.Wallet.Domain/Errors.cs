@@ -32,28 +32,25 @@ public static class Errors
     public static class BankAccount
     {
         public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
+        public static readonly Error ClosedOnRequired = new("ClosedOnRequired", "Close account date is required.");
+        public static readonly Error IssuedOnRequired = new("IssuedOnRequired", "Issued date is required.");
     }
 
     public static class Transaction
     {
-        public static readonly Error AmountMustGreaterThanZero = new("AmountMustGreaterThanZero", "Amount must be greater than 0.");
+        public static readonly Error AmountMustEqualOrGreaterThanZero = new("AmountMustEqualOrGreaterThanZero", "Amount must be equal or greater than 0.");
+        public static readonly Error BankAccountExists = new("BankAccountExists", "Bank account exists.");
+    }
 
-        public static class Transfer 
-        {
-            public static readonly Error TransferredUserRequired = new("TransferredUserRequired", "Transferred user is required.");
-            public static readonly Error RequireDefaultActionInDetailList = new("RequireDefaultActionInDetailList", "Default action must be defined in transaction action list.");
-        }
+    public static class CurrencyExchange
+    {
+        public static readonly Error BaseCurrencyRequired = new("BaseCurrencyRequired", "Base currency is required.");
+        public static readonly Error TargetCurrencyRequired = new("TargetCurrencyRequired", "Target currency is required.");
+        public static readonly Error ExchangeRateMustGreaterThanZero = new("ExchangeRateMustGreaterThanZero", "Exchange rate must be greater than 0.");
+    }
 
-        public static class Exchange
-        {
-            public static readonly Error ExchangedCurrencyRequired = new("ExchangedCurrencyRequired", "Exchanged currency is required.");
-            public static readonly Error ExchangeRateMustGreaterThanZero = new("ExchangeRateMustGreaterThanZero", "Exchange rate must be greater than 0.");
-        }
-
-        public static class Detail
-        {
-            public static readonly Error DetailRequired = new("DetailRequired", "Cannot insert empty transaction action.");
-            public static readonly Error DetailMustBeNew = new("DetailMustBeNew", "Cannot insert an existing transaction action.");
-        }
+    public static class TransactionItem
+    {
+        public static readonly Error ItemNameRequired = new("ItemNameRequired", "Item name is required.");
     }
 }

@@ -7,7 +7,7 @@ export type GetCurrencyByIdResponse = CurrencyResponse;
 export interface CreateCurrencyRequest {
     name: string;
     shortName: string;
-    defaultFlag: boolean;
+    isDefault: boolean;
     description?: string;
 }
 
@@ -15,8 +15,8 @@ export interface CurrencyResponse {
     id: string;
     name: string;
     shortName: string;
-    defaultFlag: boolean;
-    activeFlag: boolean;
+    isDefault: boolean;
+    isActive: boolean;
     description?: string;
     actionedOn: Date;
     actionedBy: string;

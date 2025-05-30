@@ -12,7 +12,7 @@ using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 using System.Security.Claims;
 
 namespace Onefocus.Membership.Application.User.Commands;
-public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool DefaultFlag, bool ActiveFlag, string? Description) : ICommand;
+public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool isActive, string? Description) : ICommand;
 
 internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurrencyCommandRequest>
 {
@@ -46,8 +46,8 @@ internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurren
             name: request.Name,
             shortName: request.ShortName,
             description: request.Description,
-            defaultFlag: request.DefaultFlag,
-            activeFlag: request.ActiveFlag,
+            isDefault: request.IsDefault,
+            isActive: request.IsActive,
             actionedBy: actionByResult.Value
         );
 
@@ -55,7 +55,7 @@ internal sealed class UpdateCurrencyCommandHandler : CommandHandler<UpdateCurren
 
         var transactionResult = await _writeUnitOfWork.WithTransactionAsync(async (cancellationToken) =>
         {
-            if (request.DefaultFlag)
+            if (request.IsDefault)
             {
                 var bulkUpdateResult = await _writeUnitOfWork.Currency.BulkMarkDefaultFlag(new(new List<Guid>(), true, false, actionByResult.Value));
                 if (bulkUpdateResult.IsFailure)

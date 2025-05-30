@@ -14,7 +14,7 @@ public sealed record GetCurrencyByIdQueryRequest(Guid Id) : IQuery<GetCurrencyBy
     internal GetCurrencyByIdRequestDto CastToDto() => new(Id);
 }
 
-public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string ShortName, bool DefaultFlag, bool ActiveFlag, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy)
+public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string ShortName, bool IsDefault, bool isActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy)
 {
     public static GetCurrencyByIdQueryResponse? Cast(GetCurrencyByIdResponseDto source)
     {
@@ -24,8 +24,8 @@ public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string S
             Id: source.Currency.Id,
             Name: source.Currency.Name,
             ShortName: source.Currency.ShortName,
-            DefaultFlag: source.Currency.DefaultFlag,
-            ActiveFlag: source.Currency.ActiveFlag,
+            IsDefault: source.Currency.IsDefault,
+            isActive: source.Currency.IsActive,
             Description: source.Currency.Description,
             ActionedOn: source.Currency.UpdatedOn ?? source.Currency.CreatedOn,
             ActionedBy: source.Currency.UpdatedBy ?? source.Currency.CreatedBy

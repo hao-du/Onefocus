@@ -35,7 +35,7 @@ public sealed class Bank : WriteEntityBase
         return new Bank(name, description, actionedBy);
     }
 
-    public Result Update(string name, string description, bool activeFlag, Guid actionedBy)
+    public Result Update(string name, string description, bool isActive, Guid actionedBy)
     {
         var validationResult = Validate(name);
         if (validationResult.IsFailure)
@@ -45,7 +45,7 @@ public sealed class Bank : WriteEntityBase
 
         Description = description;
 
-        if (activeFlag) MarkActive(actionedBy);
+        if (isActive) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
         return Result.Success();
