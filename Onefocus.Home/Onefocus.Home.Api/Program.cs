@@ -6,8 +6,11 @@ using Onefocus.Common.Infrastructure;
 using Onefocus.Home.Infrastructure;
 using Onefocus.Home.Application;
 using Onefocus.Home.Api.Endpoints;
+using Onefocus.Common.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
@@ -56,7 +59,9 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.MapDefaultEndpoints();
+
+if (app.Environment.IsDevelopmentLike())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

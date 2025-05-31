@@ -12,7 +12,7 @@ services:
             context: .
             dockerfile: Onefocus.Web/Dockerfile
         ports:
-            - "5000:8080"
+            - "4000:8080"
         networks:
             - proxybackend
 
@@ -23,7 +23,7 @@ services:
             context: .
             dockerfile: Onefocus.Gateway/Dockerfile
         ports:
-            - "5001:8080"
+            - "4001:8080"
         networks:
             - proxybackend
 
@@ -66,17 +66,6 @@ services:
             dockerfile: Onefocus.Wallet/Onefocus.Wallet.Api/Dockerfile
         ports:
             - "8080"
-        networks:
-            - proxybackend
-
-    message:
-        image: rabbitmq:management-alpine
-        environment:
-            RABBITMQ_DEFAULT_USER: "onefocus"
-            RABBITMQ_DEFAULT_PASS: "onefocus"
-        ports:
-            - 5672:5672
-            - 15672:15672
         networks:
             - proxybackend
 

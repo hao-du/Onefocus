@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Onefocus.Identity.Application\Onefocus.Identity.Application.csproj" />
     <ProjectReference Include="..\Onefocus.Identity.Domain\Onefocus.Identity.Domain.csproj" />
     <ProjectReference Include="..\Onefocus.Identity.Infrastructure\Onefocus.Identity.Infrastructure.csproj" />

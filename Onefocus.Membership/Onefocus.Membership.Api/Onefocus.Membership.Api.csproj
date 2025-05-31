@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Onefocus.Membership.Application\Onefocus.Membership.Application.csproj" />
     <ProjectReference Include="..\Onefocus.Membership.Infrastructure\Onefocus.Membership.Infrastructure.csproj" />
   </ItemGroup>

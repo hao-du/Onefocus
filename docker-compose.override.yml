@@ -3,28 +3,28 @@ version: '3.4'
 services:
     web:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_ENVIRONMENT=Docker
           - ASPNETCORE_HTTP_PORTS=8080
         ports:
           - "8080"
 
     gateway:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_ENVIRONMENT=Docker
           - ASPNETCORE_HTTP_PORTS=8080
         ports:
           - "8080"
 
     home:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_ENVIRONMENT=Docker
           - ASPNETCORE_HTTP_PORTS=8080
         ports:
           - "8080"
 
     identity:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_ENVIRONMENT=Docker
           - ASPNETCORE_HTTP_PORTS=8080
         ports:
           - "8080"
@@ -32,14 +32,14 @@ services:
 
     membership:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_ENVIRONMENT=Docker
           - ASPNETCORE_HTTP_PORTS=8080
         ports:
           - "8080"
 
     wallet:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_HTTP_PORTS=8080
         ports:
             - "8080"

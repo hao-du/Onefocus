@@ -8,6 +8,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
     {
         public void Configure(EntityTypeBuilder<CurrencyExchange> builder)
         {
+            builder.Property(ce => ce.Description).HasMaxLength(255);
+
             builder.HasOne(ce => ce.BaseCurrency).WithMany(c => c.BaseCurrencyExchanges).HasForeignKey(ce => ce.BaseCurrencyId);
             builder.HasOne(ce => ce.TargetCurrency).WithMany(c => c.TargetCurrencyExchanges).HasForeignKey(ce => ce.TargetCurrencyId);
             builder.HasMany(ce => ce.Transactions).WithMany(t => t.CurrencyExchanges).UsingEntity(e => e.ToTable("CurrencyExchangeTransaction"));

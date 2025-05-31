@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>ea5afcbd-0e4a-4904-8bae-8213d6b59688</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Onefocus.Gateway\Onefocus.Gateway.csproj" />
+    <ProjectReference Include="..\Onefocus.Home\Onefocus.Home.Api\Onefocus.Home.Api.csproj" />
+    <ProjectReference Include="..\Onefocus.Identity\Onefocus.Identity.Api\Onefocus.Identity.Api.csproj" />
+    <ProjectReference Include="..\Onefocus.Membership\Onefocus.Membership.Api\Onefocus.Membership.Api.csproj" />
+    <ProjectReference Include="..\Onefocus.Wallet\Onefocus.Wallet.Api\Onefocus.Wallet.Api.csproj" />
+    <ProjectReference Include="..\Onefocus.Web\Onefocus.Web.csproj" />
+  </ItemGroup>
+
+</Project>

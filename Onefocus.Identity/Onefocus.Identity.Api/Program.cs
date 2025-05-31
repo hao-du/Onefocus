@@ -4,16 +4,19 @@ using Onefocus.Common;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
+using Onefocus.Common.Utilities;
 using Onefocus.Identity.Api.Endpoints;
 using Onefocus.Identity.Application;
 using Onefocus.Identity.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
 var corsPolicyName = "Onefocus CORS policy";
-if (builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopmentLike())
 {
     builder.Services.AddCors(options =>
     {
@@ -48,7 +51,9 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.MapDefaultEndpoints();
+
+if (app.Environment.IsDevelopmentLike())
 {
     app.UseCors(corsPolicyName);
     app.UseSwagger();

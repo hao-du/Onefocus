@@ -6,8 +6,10 @@ import {useAuth} from '../authentication/useAuth';
 import {refreshToken} from '../../modules/authentication/authentication.api';
 import { ClientContextValue } from "./useClient.interfaces";
 
+const apiUrl = process.env.API_URL;
+
 const client = axios.create({
-    baseURL: 'http://localhost:5001',
+    baseURL: apiUrl,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json'

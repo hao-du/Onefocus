@@ -8,6 +8,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configuratio
     {
         public void Configure(EntityTypeBuilder<PeerTransfer> builder)
         {
+            builder.Property(pt => pt.Description).HasMaxLength(255);
+
             builder.HasOne(pt => pt.TransferredUser).WithMany(u => u.PeerTransfers).HasForeignKey(pt => pt.TransferredUserId);
             builder.HasMany(pt => pt.Transactions).WithMany(t => t.PeerTransfers).UsingEntity(e => e.ToTable("PeerTransferTransaction"));
 

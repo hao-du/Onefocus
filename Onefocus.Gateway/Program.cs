@@ -4,14 +4,17 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
+using Onefocus.Common.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 var corsPolicyName = "Onefocus CORS policy";
-if (builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopmentLike())
 {
     builder.Services.AddCors(options =>
     {
@@ -44,7 +47,9 @@ builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+
+app.MapDefaultEndpoints();
+if (app.Environment.IsDevelopmentLike())
 {
     app.UseCors(corsPolicyName);
     app.UseSwagger();

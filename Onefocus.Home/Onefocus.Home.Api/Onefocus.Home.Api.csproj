@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
+    <ProjectReference Include="..\..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Onefocus.Home.Application\Onefocus.Home.Application.csproj" />
     <ProjectReference Include="..\Onefocus.Home.Infrastructure\Onefocus.Home.Infrastructure.csproj" />
   </ItemGroup>

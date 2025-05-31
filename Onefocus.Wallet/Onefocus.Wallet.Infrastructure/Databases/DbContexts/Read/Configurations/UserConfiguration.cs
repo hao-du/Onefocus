@@ -8,11 +8,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(u => u.FirstName).HasMaxLength(50);
-            builder.Property(u => u.LastName).HasMaxLength(50);
-            builder.Property(u => u.Email).HasMaxLength(256);
-            builder.Property(u => u.Description).HasMaxLength(255);
-
             builder.HasMany(u => u.Transactions).WithOne(tu => tu.User).HasForeignKey(tu => tu.UserId);
             builder.HasMany(u => u.PeerTransfers).WithOne(pt => pt.TransferredUser).HasForeignKey(pt => pt.TransferredUserId);
 

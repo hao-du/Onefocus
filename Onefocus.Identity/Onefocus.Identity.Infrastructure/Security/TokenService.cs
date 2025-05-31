@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
+using Onefocus.Common.Utilities;
 using Onefocus.Identity.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Onefocus.Identity.Infrastructure.Security
             var token = new JwtSecurityToken(
                 issuer: _authenticationSettings.Issuer,
                 audience: _authenticationSettings.Audience,
-                expires: DateTime.UtcNow.AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds),
+                expires: DateTimeExtensions.Now().AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds).DateTime,
                 claims: claims,
                 signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(_authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
             );

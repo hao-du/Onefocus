@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,13 @@ public abstract class WriteEntityBase : EntityBase
         Description = description;
         IsActive = true;
         CreatedBy = actionedBy;
-        CreatedOn = DateTimeOffset.Now;
+        CreatedOn = DateTimeExtensions.Now();
         Update(actionedBy);
     }
 
     protected void Update(Guid actionedBy)
     {
-        UpdatedOn = DateTimeOffset.Now;
+        UpdatedOn = DateTimeExtensions.Now();
         UpdatedBy = actionedBy;
     }
 

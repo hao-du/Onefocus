@@ -9,8 +9,11 @@ using Onefocus.Wallet.Application;
 using Onefocus.Wallet.Infrastructure;
 using Onefocus.Wallet.Api.Endpoints;
 using System;
+using Onefocus.Common.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
@@ -60,7 +63,9 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.MapDefaultEndpoints();
+
+if (app.Environment.IsDevelopmentLike())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Onefocus.Common\Onefocus.Common.csproj" />
+    <ProjectReference Include="..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

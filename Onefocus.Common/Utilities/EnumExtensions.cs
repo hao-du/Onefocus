@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Common.Utilities
 {
-    public static class EnumHelper
+    public static class EnumExtensions
     {
         public static TAttribute? GetAttribute<TAttribute>(this Enum value) where TAttribute : Attribute
         {

@@ -5,9 +5,13 @@ using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 app.MapStaticAssets();
 

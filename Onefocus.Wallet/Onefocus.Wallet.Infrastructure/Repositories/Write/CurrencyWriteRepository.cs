@@ -4,6 +4,7 @@ using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Messages.Write;
 using Onefocus.Wallet.Domain.Messages.Write.Currency;
@@ -43,7 +44,7 @@ public sealed class CurrencyWriteRepository : BaseRepository<CurrencyWriteReposi
 
     public async Task<Result> BulkMarkDefaultFlag(BulkMarkDefaultFlagRequestDto request, CancellationToken cancellationToken = default)
     {
-        var updatedOn = DateTimeOffset.Now;
+        var updatedOn = DateTimeExtensions.Now();
 
         return await ExecuteAsync(async () =>
         {
