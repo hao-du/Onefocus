@@ -31,7 +31,7 @@ public sealed class PeerTransfer : BaseTransaction, IAggregateRoot
         var validationResult = Validate(transferredUserId);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<PeerTransfer>(validationResult.Error);
+            return Result.Failure<PeerTransfer>(validationResult.Errors);
         }
 
         return new PeerTransfer(transferredUserId, status, type, description, actionedBy);

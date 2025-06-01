@@ -1,10 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
-using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -49,14 +46,14 @@ public class Transaction : WriteEntityBase
         var validationResult = Validate(amount, currencyId, transactedOn);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<Transaction>(validationResult.Error);
+            return Result.Failure<Transaction>(validationResult.Errors);
         }
 
         var transaction = new Transaction(amount, transactedOn, currencyId, description, actionedBy);
-        var itemCreationResult  = transaction.UpsertTransactionItems(transactionItems, actionedBy);
+        var itemCreationResult = transaction.UpsertTransactionItems(transactionItems, actionedBy);
         if (itemCreationResult.IsFailure)
         {
-            return Result.Failure<Transaction>(itemCreationResult.Error);
+            return Result.Failure<Transaction>(itemCreationResult.Errors);
         }
 
         return transaction;

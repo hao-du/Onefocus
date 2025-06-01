@@ -11,6 +11,7 @@ using Onefocus.Common.Utilities;
 using Onefocus.Membership.Api.Endpoints;
 using Onefocus.Membership.Application;
 using Onefocus.Membership.Infrastructure;
+using Onefocus.ServiceDefaults;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);

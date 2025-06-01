@@ -1,7 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using System.Linq;
 using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.GetUserByIdRepositoryResponse;
 
 namespace Onefocus.Membership.Application.User.Commands;
@@ -44,7 +43,7 @@ internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRe
         var userResult = await _userRepository.GetUserByIdAsync(request.ToObject());
         if (userResult.IsFailure)
         {
-            return Result.Failure<GetUserByIdQueryResponse>(userResult.Error);
+            return Result.Failure<GetUserByIdQueryResponse>(userResult.Errors);
         }
 
         return Result.Success<GetUserByIdQueryResponse>(GetUserByIdQueryResponse.CastFrom(userResult.Value));

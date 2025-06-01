@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Onefocus.Common.Abstractions.Messages;
+﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 
@@ -16,7 +15,7 @@ public sealed record GetAllUsersQueryResponse(List<GetAllUsersQueryResponse.User
             u.Roles.Select(r => new RoleRepsonse(r.Id, r.RoleName)).ToList()
         )).ToList();
 
-        return new (users);
+        return new(users);
     }
     public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles);
     public sealed record RoleRepsonse(Guid Id, string? RoleName);
@@ -37,7 +36,7 @@ internal sealed class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQueryRe
         var userResult = await _userRepository.GetAllUsersAsync();
         if (userResult.IsFailure)
         {
-            return Result.Failure<GetAllUsersQueryResponse>(userResult.Error);
+            return Result.Failure<GetAllUsersQueryResponse>(userResult.Errors);
         }
 
         return Result.Success<GetAllUsersQueryResponse>(GetAllUsersQueryResponse.CastFrom(userResult.Value));

@@ -1,18 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 
 namespace Onefocus.Common.Repositories;
 
-public abstract class BaseRepository<T>: IBaseRepository where T : class
+public abstract class BaseRepository<TRepository>(ILogger<TRepository> logger) : IBaseRepository
 {
-    protected ILogger<T> _logger { get; }
-
-    protected BaseRepository(ILogger<T> logger)
-    {
-        _logger = logger;
-    }
+    private ILogger<TRepository> Logger { get; } = logger;
 
     protected async Task<Result> ExecuteAsync(Func<Task<Result>> action)
     {
@@ -22,7 +16,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, CommonErrors.InternalErrorMessage);
             return Result.Failure(ex.ToErrors());
         }
     }
@@ -35,7 +29,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, CommonErrors.InternalErrorMessage);
             return Result.Failure<Y>(ex.ToErrors());
         }
     }
@@ -48,7 +42,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, CommonErrors.InternalErrorMessage);
             return Result.Failure(ex.ToErrors());
         }
     }
@@ -61,7 +55,7 @@ public abstract class BaseRepository<T>: IBaseRepository where T : class
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, CommonErrors.InternalErrorMessage);
             return Result.Failure<Y>(ex.ToErrors());
         }
     }

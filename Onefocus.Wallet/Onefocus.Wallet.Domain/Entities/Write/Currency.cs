@@ -1,10 +1,11 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
+using Onefocus.Common.Abstractions.Domain.Fields;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public sealed class Currency : WriteEntityBase
+public class Currency : WriteEntityBase, INameField
 {
     private readonly List<Transaction> _transactions = [];
     private readonly List<BankAccount> _bankAccounts = [];
@@ -40,7 +41,7 @@ public sealed class Currency : WriteEntityBase
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<Currency>(validationResult.Error);
+            return Result.Failure<Currency>(validationResult.Errors);
         }
 
         return new Currency(name, shortName, description, isDefault, actionedBy);

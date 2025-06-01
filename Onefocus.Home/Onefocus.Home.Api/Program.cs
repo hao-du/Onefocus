@@ -7,6 +7,7 @@ using Onefocus.Home.Infrastructure;
 using Onefocus.Home.Application;
 using Onefocus.Home.Api.Endpoints;
 using Onefocus.Common.Utilities;
+using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 

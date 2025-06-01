@@ -1,7 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
-using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -15,10 +14,10 @@ public sealed class BankAccount : BaseTransaction, IAggregateRoot
     public DateTimeOffset IssuedOn { get; private set; }
     public DateTimeOffset? ClosedOn { get; private set; }
     public bool CloseFlag { get; private set; } = false;
-    
+
     public Bank Bank { get; private set; } = default!;
     public Currency Currency { get; private set; } = default!;
-    
+
 
     private BankAccount()
     {
@@ -43,7 +42,7 @@ public sealed class BankAccount : BaseTransaction, IAggregateRoot
         var validationResult = Validate(amount, currencyId, issuedOn);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<BankAccount>(validationResult.Error);
+            return Result.Failure<BankAccount>(validationResult.Errors);
         }
 
         return new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, closedOn, bankId, actionedBy);

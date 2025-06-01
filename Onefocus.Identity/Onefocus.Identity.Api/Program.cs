@@ -8,6 +8,7 @@ using Onefocus.Common.Utilities;
 using Onefocus.Identity.Api.Endpoints;
 using Onefocus.Identity.Application;
 using Onefocus.Identity.Infrastructure;
+using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 

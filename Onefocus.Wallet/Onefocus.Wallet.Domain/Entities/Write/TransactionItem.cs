@@ -1,5 +1,4 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
@@ -34,7 +33,7 @@ public class TransactionItem : WriteEntityBase
         var validationResult = Validate(name, amount);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<TransactionItem>(validationResult.Error);
+            return Result.Failure<TransactionItem>(validationResult.Errors);
         }
 
         return new TransactionItem(name, amount, description, actionedBy, transactionId);

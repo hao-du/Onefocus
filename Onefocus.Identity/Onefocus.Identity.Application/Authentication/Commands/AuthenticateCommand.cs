@@ -1,13 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using System.Linq;
 
 namespace Onefocus.Identity.Application.Authentication.Commands;
 
@@ -44,19 +41,19 @@ internal sealed class AuthenticateCommandHandler : ICommandHandler<AuthenticateC
         var checkPasswordResult = await _userRepository.CheckPasswordAsync(request.ToObject());
         if (checkPasswordResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(checkPasswordResult.Error);
+            return Result.Failure<AuthenticateCommandResponse>(checkPasswordResult.Errors);
         }
 
         var accessTokenResult = _tokenService.GenerateAccessToken(GenerateTokenServiceRequest.CastFrom(checkPasswordResult.Value));
         if (accessTokenResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(accessTokenResult.Error);
+            return Result.Failure<AuthenticateCommandResponse>(accessTokenResult.Errors);
         }
 
         var refreshTokenResult = await _tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(checkPasswordResult.Value.User));
         if (refreshTokenResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(refreshTokenResult.Error);
+            return Result.Failure<AuthenticateCommandResponse>(refreshTokenResult.Errors);
         }
 
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("r", refreshTokenResult.Value.RefreshToken, new CookieOptions

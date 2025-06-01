@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
+using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 

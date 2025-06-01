@@ -1,31 +1,27 @@
-﻿using MediatR;
-using Onefocus.Common.Abstractions.Messages;
-using Onefocus.Common.Exceptions.Errors;
+﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Messages.Read.Currency;
-using Onefocus.Wallet.Domain.Repositories.Read;
-using static Onefocus.Membership.Application.User.Commands.GetAllCurrenciesQueryResponse;
+using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 
-namespace Onefocus.Membership.Application.User.Commands;
+namespace Onefocus.Wallet.Application.Currency.Queries;
 
 public sealed record GetCurrencyByIdQueryRequest(Guid Id) : IQuery<GetCurrencyByIdQueryResponse>
 {
     internal GetCurrencyByIdRequestDto CastToDto() => new(Id);
 }
 
-public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string ShortName, bool IsDefault, bool isActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy)
+public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy)
 {
     public static GetCurrencyByIdQueryResponse? Cast(GetCurrencyByIdResponseDto source)
     {
         if (source == null || source.Currency == null) return null;
 
-        var currencyDto = new GetCurrencyByIdQueryResponse (
+        var currencyDto = new GetCurrencyByIdQueryResponse(
             Id: source.Currency.Id,
             Name: source.Currency.Name,
             ShortName: source.Currency.ShortName,
             IsDefault: source.Currency.IsDefault,
-            isActive: source.Currency.IsActive,
+            IsActive: source.Currency.IsActive,
             Description: source.Currency.Description,
             ActionedOn: source.Currency.UpdatedOn ?? source.Currency.CreatedOn,
             ActionedBy: source.Currency.UpdatedBy ?? source.Currency.CreatedBy
@@ -36,24 +32,17 @@ public sealed record GetCurrencyByIdQueryResponse(Guid Id, string Name, string S
 }
 
 
-internal sealed class GetCurrencyByIdQueryHandler : IQueryHandler<GetCurrencyByIdQueryRequest, GetCurrencyByIdQueryResponse>
+internal sealed class GetCurrencyByIdQueryHandler(IReadUnitOfWork unitOfWork) : IQueryHandler<GetCurrencyByIdQueryRequest, GetCurrencyByIdQueryResponse>
 {
-    private readonly ICurrencyReadRepository _currencyRepository;
-
-    public GetCurrencyByIdQueryHandler(ICurrencyReadRepository currencyRepository)
-    {
-        _currencyRepository = currencyRepository;
-    }
-
     public async Task<Result<GetCurrencyByIdQueryResponse>> Handle(GetCurrencyByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var currencyDtoResult = await _currencyRepository.GetCurrencyByIdAsync(request.CastToDto(), cancellationToken);
+        var currencyDtoResult = await unitOfWork.Currency.GetCurrencyByIdAsync(request.CastToDto(), cancellationToken);
         if (currencyDtoResult.IsFailure)
         {
-            return Result.Failure<GetCurrencyByIdQueryResponse>(currencyDtoResult.Error);
+            return Result.Failure<GetCurrencyByIdQueryResponse>(currencyDtoResult.Errors);
         }
 
-        return Result.Success<GetCurrencyByIdQueryResponse>(GetCurrencyByIdQueryResponse.Cast(currencyDtoResult.Value));
+        return Result.Success(GetCurrencyByIdQueryResponse.Cast(currencyDtoResult.Value));
     }
 }
 

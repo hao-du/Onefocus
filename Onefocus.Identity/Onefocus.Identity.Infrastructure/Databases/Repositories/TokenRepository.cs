@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Exceptions.Errors;
@@ -8,8 +7,6 @@ using Onefocus.Common.Results;
 using Onefocus.Identity.Domain;
 using Onefocus.Identity.Domain.Entities;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 
@@ -19,17 +16,11 @@ public interface ITokenRepository
     Task<Result> MatchTokenAsync(MatchRefreshTokenRepositoryRequest request);
 }
 
-public sealed class TokenRepository : BaseRepository<TokenRepository>, ITokenRepository
+public sealed class TokenRepository(
+    UserManager<User> userManager,
+    ILogger<TokenRepository> logger
+    ) : BaseRepository<TokenRepository>(logger), ITokenRepository
 {
-    private readonly UserManager<User> _userManager;
-
-    public TokenRepository(UserManager<User> userManager
-        , ILogger<TokenRepository> logger)
-    : base(logger)
-    {
-        _userManager = userManager;
-    }
-
     public async Task<Result<GenerateRefreshTokenRepositoryResponse>> GenerateRefreshTokenAsync(GenerateRefreshTokenRepositoryRequest request)
     {
         return await ExecuteAsync<GenerateRefreshTokenRepositoryResponse>(async () =>
@@ -39,7 +30,7 @@ public sealed class TokenRepository : BaseRepository<TokenRepository>, ITokenRep
                 return Result.Failure<GenerateRefreshTokenRepositoryResponse>(Errors.User.UserNotExist);
             }
 
-            var refreshToken = await _userManager.GenerateUserTokenAsync(request.User, Commons.TokenProviderName, "RefreshToken");
+            var refreshToken = await userManager.GenerateUserTokenAsync(request.User, Commons.TokenProviderName, "RefreshToken");
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Result.Failure<GenerateRefreshTokenRepositoryResponse>(Errors.Token.CannotCreateToken);
@@ -47,13 +38,13 @@ public sealed class TokenRepository : BaseRepository<TokenRepository>, ITokenRep
 
             var composedTokenName = $"RefreshToken_{request.User.Email}";
 
-            var removeIdentityResult = await _userManager.RemoveAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
+            var removeIdentityResult = await userManager.RemoveAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
             if (!removeIdentityResult.Succeeded)
             {
                 return removeIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
             }
 
-            var setIdentityResult = await _userManager.SetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName, refreshToken);
+            var setIdentityResult = await userManager.SetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName, refreshToken);
             if (!setIdentityResult.Succeeded)
             {
                 return setIdentityResult.ToResult<GenerateRefreshTokenRepositoryResponse>();
@@ -73,7 +64,7 @@ public sealed class TokenRepository : BaseRepository<TokenRepository>, ITokenRep
             }
 
             var composedTokenName = $"RefreshToken_{request.User.Email}";
-            var storedToken = await _userManager.GetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
+            var storedToken = await userManager.GetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
 
             if (storedToken != request.RefreshToken)
             {

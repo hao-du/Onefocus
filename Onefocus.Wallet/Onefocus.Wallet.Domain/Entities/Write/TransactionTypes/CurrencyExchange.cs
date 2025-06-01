@@ -1,8 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
-using System.ComponentModel.DataAnnotations;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -34,7 +32,7 @@ public sealed class CurrencyExchange : BaseTransaction, IAggregateRoot
         var validationResult = Validate(baseCurrencyId, targetCurrencyId, exchangeRate);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<CurrencyExchange>(validationResult.Error);
+            return Result.Failure<CurrencyExchange>(validationResult.Errors);
         }
 
         return new CurrencyExchange(baseCurrencyId, targetCurrencyId, exchangeRate, description, actionedBy);

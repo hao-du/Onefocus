@@ -10,6 +10,7 @@ using Onefocus.Wallet.Infrastructure;
 using Onefocus.Wallet.Api.Endpoints;
 using System;
 using Onefocus.Common.Utilities;
+using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +47,7 @@ services.AddSwaggerGen(option =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });

@@ -11,6 +11,7 @@ namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 public interface IWriteUnitOfWork
 {
     IUserWriteRepository User { get; }
+    IBankWriteRepository Bank { get; }
     ICurrencyWriteRepository Currency { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

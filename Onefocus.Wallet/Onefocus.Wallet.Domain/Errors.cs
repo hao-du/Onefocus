@@ -27,6 +27,7 @@ public static class Errors
     {
         public static readonly Error NameRequired = new("BankNameRequired", "Bank name is required.");
         public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
+        public static readonly Error NameIsExisted = new("NameIsExisted", "Bank name is existed.");
     }
 
     public static class BankAccount

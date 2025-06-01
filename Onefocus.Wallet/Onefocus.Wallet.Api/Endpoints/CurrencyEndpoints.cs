@@ -1,14 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Application.User.Commands;
 using Onefocus.Wallet.Application.Currency.Commands;
-using Onefocus.Wallet.Application.Transaction.Queries;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Onefocus.Wallet.Application.Currency.Queries;
 
 namespace Onefocus.Wallet.Api.Endpoints;
 

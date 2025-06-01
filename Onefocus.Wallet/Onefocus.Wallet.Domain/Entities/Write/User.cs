@@ -1,9 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
-using System;
-using System.Collections.Generic;
-using static Onefocus.Wallet.Domain.Errors.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -21,8 +18,8 @@ public sealed class User : WriteEntityBase, IAggregateRoot
 
     private User()
     {
-        FirstName = default!; 
-        LastName = default!; 
+        FirstName = default!;
+        LastName = default!;
         Email = default!;
     }
 
@@ -40,7 +37,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<User>(validationResult.Error);
+            return Result.Failure<User>(validationResult.Errors);
         }
 
         return new User(id, email, firstName, lastName, description, actionedBy);
@@ -51,7 +48,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
         var validationResult = Validate(email, firstName, lastName);
         if (validationResult.IsFailure)
         {
-            return Result.Failure<User>(validationResult.Error);
+            return Result.Failure<User>(validationResult.Errors);
         }
 
         FirstName = firstName;

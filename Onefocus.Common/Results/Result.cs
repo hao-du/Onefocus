@@ -11,7 +11,7 @@ public record Error(string Code, string Description)
 
 public class Result
 {
-    protected internal Result(bool isSuccess, List<Error> errors)
+    protected internal Result(bool isSuccess, IReadOnlyList<Error> errors)
     {
         if (isSuccess && errors.Count > 0)
         {
@@ -26,7 +26,7 @@ public class Result
 
     public bool IsFailure => !IsSuccess;
 
-    private readonly List<Error> _errors;
+    private readonly IReadOnlyList<Error> _errors;
     public IReadOnlyList<Error> Errors => [.. _errors];
     public Error Error => _errors.First();
 
@@ -38,16 +38,16 @@ public class Result
 
     public static Result<TValue> Failure<TValue>(Error error) => new(default, false, [error]);
 
-    public static Result Failure(List<Error> errors) => new(false, errors);
+    public static Result Failure(IReadOnlyList<Error> errors) => new(false, errors);
 
-    public static Result<TValue> Failure<TValue>(List<Error> errors) => new(default, false, errors);
+    public static Result<TValue> Failure<TValue>(IReadOnlyList<Error> errors) => new(default, false, errors);
 }
 
 public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    protected internal Result(TValue? value, bool isSuccess, List<Error> errors) : base(isSuccess, errors)
+    protected internal Result(TValue? value, bool isSuccess, IReadOnlyList<Error> errors) : base(isSuccess, errors)
     {
         _value = value;
     }

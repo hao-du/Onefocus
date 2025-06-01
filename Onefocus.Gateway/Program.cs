@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Utilities;
+using Onefocus.ServiceDefaults;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

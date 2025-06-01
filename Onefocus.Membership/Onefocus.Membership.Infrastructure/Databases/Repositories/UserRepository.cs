@@ -4,11 +4,8 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
 using Onefocus.Membership.Domain.Entities;
-using System.Linq;
-using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 
@@ -87,7 +84,7 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
             var userResult = User.Create(request.ToObject());
             if (userResult.IsFailure)
             {
-                return Result.Failure<Guid>(userResult.Error);
+                return Result.Failure<Guid>(userResult.Errors);
             }
 
             var user = userResult.Value;

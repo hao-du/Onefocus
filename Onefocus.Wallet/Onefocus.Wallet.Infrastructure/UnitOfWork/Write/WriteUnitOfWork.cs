@@ -13,24 +13,18 @@ using System.Threading.Tasks;
 
 namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
-public class WriteUnitOfWork : IWriteUnitOfWork
-{
-    protected ILogger<WriteUnitOfWork> _logger { get; }
-    private readonly WalletWriteDbContext _context;
-    public IUserWriteRepository User { get; }
-    public ICurrencyWriteRepository Currency { get; }
-
-    public WriteUnitOfWork(WalletWriteDbContext context
+public class WriteUnitOfWork(WalletWriteDbContext context
         , ILogger<WriteUnitOfWork> logger
         , IUserWriteRepository userRepository
+        , IBankWriteRepository bankRepository
         , ICurrencyWriteRepository currencyRepository
-    )
-    {
-        _context = context;
-        _logger = logger;
-        User = userRepository;
-        Currency = currencyRepository;
-    }
+    ) : IWriteUnitOfWork
+{
+    private readonly WalletWriteDbContext _context = context;
+    protected ILogger<WriteUnitOfWork> Logger { get; } = logger;
+    public IUserWriteRepository User { get; } = userRepository;
+    public IBankWriteRepository Bank { get; } = bankRepository;
+    public ICurrencyWriteRepository Currency { get; } = currencyRepository;
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -52,7 +46,7 @@ public class WriteUnitOfWork : IWriteUnitOfWork
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in transaction");
+            Logger.LogError(ex, "Error in transaction");
             return Result.Failure(ex.ToErrors());
         }
     }
