@@ -27,7 +27,7 @@ public static class DependencyInjection
             .AddApiEndpoints()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(Commons.TokenProviderName);
 
-        MessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
+        var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
 
         services.AddMassTransit(busConfigure =>
         {

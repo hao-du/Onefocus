@@ -1,16 +1,12 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
-using Onefocus.Wallet.Application;
-using Onefocus.Wallet.Infrastructure;
-using Onefocus.Wallet.Api.Endpoints;
-using System;
 using Onefocus.Common.Utilities;
 using Onefocus.ServiceDefaults;
+using Onefocus.Wallet.Api.Endpoints;
+using Onefocus.Wallet.Application;
+using Onefocus.Wallet.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

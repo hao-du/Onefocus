@@ -20,7 +20,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<MembershipDbContext>(option => option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
 
-        MessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
+        var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
 
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
