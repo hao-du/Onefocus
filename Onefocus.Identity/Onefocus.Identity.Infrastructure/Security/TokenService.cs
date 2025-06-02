@@ -47,7 +47,7 @@ namespace Onefocus.Identity.Infrastructure.Security
             var token = new JwtSecurityToken(
                 issuer: _authenticationSettings.Issuer,
                 audience: _authenticationSettings.Audience,
-                expires: DateTimeExtensions.Now().AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds).DateTime,
+                expires: DateTimeExtensions.Now().AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds).UtcDateTime,
                 claims: claims,
                 signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(_authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
             );

@@ -6,7 +6,10 @@ import {useAuth} from '../authentication/useAuth';
 import {refreshToken} from '../../modules/authentication/authentication.api';
 import { ClientContextValue } from "./useClient.interfaces";
 
-const apiUrl = process.env.API_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
+console.log(import.meta);
+console.log(import.meta.env);
+console.log(apiUrl)
 
 const client = axios.create({
     baseURL: apiUrl,

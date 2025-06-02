@@ -11,7 +11,7 @@ internal static class UserEndpoints
 {
     public static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        var routes = app.MapGroup(prefix: string.Empty);//.RequireAuthorization();
+        var routes = app.MapGroup(prefix: string.Empty).RequireAuthorization();
 
         routes.MapGet("user/all", async (ISender sender) =>
         {

@@ -41,6 +41,9 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
         services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
 
+        services.AddScoped<IBankReadRepository, BankReadRepository>();
+        services.AddScoped<IBankWriteRepository, BankWriteRepository>();
+
         return services;
     }
 }
