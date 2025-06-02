@@ -1,8 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.ServiceBus.Membership;
-using Onefocus.Common.Results;
 using Onefocus.Identity.Domain.Entities;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Entity = Onefocus.Identity.Domain.Entities;
 
 namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 

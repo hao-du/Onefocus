@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using static Onefocus.Common.Results.ExceptionExtensions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using HttpResults = Microsoft.AspNetCore.Http.Results;
+﻿using Onefocus.Common.Results;
 
-namespace Onefocus.Common.Results;
+namespace Onefocus.Common.Exceptions;
 
 public static class ExceptionExtensions
 {

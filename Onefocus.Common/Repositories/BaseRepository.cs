@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Onefocus.Common.Exceptions;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 

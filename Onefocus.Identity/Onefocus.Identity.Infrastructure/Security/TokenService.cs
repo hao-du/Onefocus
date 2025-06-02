@@ -1,17 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
 using Onefocus.Common.Utilities;
-using Onefocus.Identity.Domain.Entities;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Onefocus.Identity.Infrastructure.Security
 {
@@ -20,19 +13,9 @@ namespace Onefocus.Identity.Infrastructure.Security
         Result<GenerateTokenServiceResponse> GenerateAccessToken(GenerateTokenServiceRequest request);
     }
 
-    public sealed class TokenService : ITokenService
+    public sealed class TokenService(
+        IAuthenticationSettings authenticationSettings) : ITokenService
     {
-        private readonly IAuthenticationSettings _authenticationSettings;
-        private readonly UserManager<User> _userManager;
-
-        public TokenService(
-            IAuthenticationSettings authenticationSettings
-            , UserManager<User> userManager)
-        {
-            _authenticationSettings = authenticationSettings;
-            _userManager = userManager;
-        }
-
         public Result<GenerateTokenServiceResponse> GenerateAccessToken(GenerateTokenServiceRequest request)
         {
             if (string.IsNullOrEmpty(request.Email))
@@ -40,19 +23,21 @@ namespace Onefocus.Identity.Infrastructure.Security
                 return Result.Failure<GenerateTokenServiceResponse>(Errors.TokenService.EmailRequired);
             }
 
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Email, request.Email));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, request.MembershipUserId.ToString()));
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Email, request.Email),
+                new(ClaimTypes.NameIdentifier, request.MembershipUserId.ToString())
+            };
 
             var token = new JwtSecurityToken(
-                issuer: _authenticationSettings.Issuer,
-                audience: _authenticationSettings.Audience,
-                expires: DateTimeExtensions.Now().AddSeconds(_authenticationSettings.AuthTokenExpirySpanSeconds).UtcDateTime,
+                issuer: authenticationSettings.Issuer,
+                audience: authenticationSettings.Audience,
+                expires: DateTimeExtensions.Now().AddSeconds(authenticationSettings.AuthTokenExpirySpanSeconds).UtcDateTime,
                 claims: claims,
-                signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(_authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
             );
 
-            return Result.Success<GenerateTokenServiceResponse>(new (new JwtSecurityTokenHandler().WriteToken(token)));
+            return Result.Success<GenerateTokenServiceResponse>(new(new JwtSecurityTokenHandler().WriteToken(token)));
         }
     }
 }

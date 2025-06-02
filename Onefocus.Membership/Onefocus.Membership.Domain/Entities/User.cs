@@ -2,13 +2,12 @@
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Domain.ValueObjects;
-using System.Collections.ObjectModel;
 
 namespace Onefocus.Membership.Domain.Entities;
 
 public class User : IdentityUser<Guid>
 {
-    private readonly List<UserRole> _userRoles = new();
+    private readonly List<UserRole> _userRoles = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public virtual IReadOnlyList<UserRole> UserRoles => _userRoles;

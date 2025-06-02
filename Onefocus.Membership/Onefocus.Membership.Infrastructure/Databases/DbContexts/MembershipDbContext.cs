@@ -5,12 +5,8 @@ using Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.DbContexts;
 
-internal class MembershipDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
+internal class MembershipDbContext(DbContextOptions<MembershipDbContext> options) : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>(options)
 {
-    public MembershipDbContext(DbContextOptions<MembershipDbContext> options) : base(options)
-    {
-    }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -1,9 +1,7 @@
 ﻿using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Application.User.Commands;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+using Onefocus.Membership.Application.User.Queries;
 
 namespace Onefocus.Membership.Api.Endpoints;
 

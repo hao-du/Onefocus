@@ -18,30 +18,18 @@ public interface IUserRepository
     Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
 }
 
-public sealed class UserRepository : BaseRepository<UserRepository>, IUserRepository
-{
-    private readonly UserManager<User> _userManager;
-    private readonly IUserStore<User> _userStore;
-    private readonly IUserEmailStore<User> _emailStore;
-    private readonly IPasswordHasher<User> _passwordHasher;
-
-    public UserRepository(UserManager<User> userManager
+public sealed class UserRepository(UserManager<User> userManager
         , IUserStore<User> userStore
         , ILogger<UserRepository> logger
-        , IPasswordHasher<User> passwordHasher)
-    : base(logger)
-    {
-        _userManager = userManager;
-        _userStore = userStore;
-        _emailStore = (IUserEmailStore<User>)userStore;
-        _passwordHasher = passwordHasher;
-    }
+        , IPasswordHasher<User> passwordHasher) : BaseRepository<UserRepository>(logger), IUserRepository
+{
+    private readonly IUserEmailStore<User> _emailStore = (IUserEmailStore<User>)userStore;
 
     public async Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync()
     {
         return await ExecuteAsync<GetAllUsersRepositoryResponse>(async () =>
         {
-            var users = await _userManager.Users
+            var users = await userManager.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .Select(u => new GetAllUsersRepositoryResponse.UserReponse(
@@ -62,7 +50,7 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
     {
         return await ExecuteAsync<GetUserByIdRepositoryResponse>(async () =>
         {
-            var user = await _userManager.Users
+            var user = await userManager.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .AsNoTracking()
@@ -89,10 +77,10 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
 
             var user = userResult.Value;
 
-            await _userStore.SetUserNameAsync(user, request.Email, CancellationToken.None);
+            await userStore.SetUserNameAsync(user, request.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, request.Email, CancellationToken.None);
 
-            var identityResult = await _userManager.CreateAsync(user, request.Password);
+            var identityResult = await userManager.CreateAsync(user, request.Password);
             if (!identityResult.Succeeded)
             {
                 var identityError = identityResult.Errors.FirstOrDefault();
@@ -111,7 +99,7 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
     {
         return await ExecuteAsync(async () =>
         {
-            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            var user = await userManager.FindByIdAsync(request.Id.ToString());
             if (user == null)
             {
                 return Result.Failure(Errors.User.UserNotExist);
@@ -119,7 +107,7 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
 
             user.Update(request.ToObject());
 
-            IdentityResult result = await _userManager.UpdateAsync(user);
+            IdentityResult result = await userManager.UpdateAsync(user);
 
             return Result.Success();
         });
@@ -129,13 +117,13 @@ public sealed class UserRepository : BaseRepository<UserRepository>, IUserReposi
     {
         return await ExecuteAsync<UpdatePasswordRepositoryResponse>(async () =>
         {
-            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            var user = await userManager.FindByIdAsync(request.Id.ToString());
             if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
 
-            var updatePasswordResult = user.Update(request.ToObject(), _passwordHasher);
+            var updatePasswordResult = user.Update(request.ToObject(), passwordHasher);
             if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
 
-            IdentityResult result = await _userManager.UpdateAsync(user);
+            IdentityResult result = await userManager.UpdateAsync(user);
             return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.CastFrom(user));
         });
     }

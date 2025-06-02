@@ -28,7 +28,7 @@ public class Result
 
     private readonly IReadOnlyList<Error> _errors;
     public IReadOnlyList<Error> Errors => [.. _errors];
-    public Error Error => _errors.First();
+    public Error Error => _errors[0];
 
     public static Result Success() => new(true, []);
 

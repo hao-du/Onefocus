@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
+using Onefocus.Common.Exceptions;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using System;

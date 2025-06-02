@@ -3,14 +3,9 @@ using Onefocus.Common.Results;
 
 namespace Onefocus.Identity.Domain.Entities;
 
-public class User : IdentityUser<Guid>
+public class User(string userName, Guid membershipUserId) : IdentityUser<Guid>(userName)
 {
-    public Guid MembershipUserId { get; private set; }
-
-    public User(string userName, Guid membershipUserId) : base(userName)
-    {
-        MembershipUserId = membershipUserId;
-    }
+    public Guid MembershipUserId { get; private set; } = membershipUserId;
 
     public static Result<User> Create(string email, Guid membershipUserId)
     {

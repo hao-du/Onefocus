@@ -3,7 +3,6 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Infrastructure.Databases.Repositories;
 using Onefocus.Identity.Infrastructure.Security;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
 
 namespace Onefocus.Identity.Application.Authentication.Commands;
 

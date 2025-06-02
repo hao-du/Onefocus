@@ -1,7 +1,6 @@
 ﻿namespace Onefocus.Common.Exceptions.Domain;
 
-public sealed class NotEmptyException : DomainException
+public sealed class NotEmptyException(string message) : DomainException(message)
 {
-    public NotEmptyException(string message) : base(message) { }
 }
 

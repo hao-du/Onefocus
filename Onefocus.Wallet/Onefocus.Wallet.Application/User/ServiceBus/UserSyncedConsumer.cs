@@ -2,32 +2,22 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
-using Entity = Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
-using Microsoft.AspNetCore.Identity;
+using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.User.ServiceBus
 {
-    internal class UserSyncedConsumer : IConsumer<IUserSyncedMessage>
-    {
-        private readonly IWriteUnitOfWork _unitOfWork;
-        private readonly ILogger<UserSyncedConsumer> _logger;
-
-        public UserSyncedConsumer(
-            IWriteUnitOfWork unitOfWork
+    internal class UserSyncedConsumer(
+        IWriteUnitOfWork unitOfWork
             , ILogger<UserSyncedConsumer> logger
-        )
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
-
+        ) : IConsumer<IUserSyncedMessage>
+    {
         public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
         {
-            var getUserResult = await _unitOfWork.User.GetUserByIdAsync(new(context.Message.Id));
+            var getUserResult = await unitOfWork.User.GetUserByIdAsync(new(context.Message.Id));
             if (getUserResult.IsFailure)
             {
-                ErrorLog(getUserResult, _logger, context.Message);
+                ErrorLog(getUserResult, logger, context.Message);
                 return;
             }
 
@@ -42,12 +32,12 @@ namespace Onefocus.Wallet.Application.User.ServiceBus
                         description: context.Message.Description,
                         actionedBy: Guid.Empty
                     );
-                if (createUserResult.IsFailure) 
+                if (createUserResult.IsFailure)
                 {
-                    ErrorLog(createUserResult, _logger, context.Message);
+                    ErrorLog(createUserResult, logger, context.Message);
                     return;
                 }
-                await _unitOfWork.User.AddUserAsync(new(createUserResult.Value));
+                await unitOfWork.User.AddUserAsync(new(createUserResult.Value));
             }
             else
             {
@@ -61,17 +51,23 @@ namespace Onefocus.Wallet.Application.User.ServiceBus
                     );
                 if (updateUserResult.IsFailure)
                 {
-                    ErrorLog(updateUserResult, _logger, context.Message);
+                    ErrorLog(updateUserResult, logger, context.Message);
                     return;
                 }
             }
 
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
         private static void ErrorLog(Result result, ILogger logger, IUserSyncedMessage message)
         {
-            logger.LogError($"Cannot insert or update user '{message.FirstName} {message.LastName} - {message.Id} - {message.Email}' through message queue with [Code: {result.Error.Code} Error: {result.Error.Description}]");
+            logger.LogError("Cannot insert or update user '{param1} {param2} - {param3} - {param4}' through message queue with [Code: {param5} Error: {param6}]",
+               message.FirstName,
+               message.LastName,
+               message.Id,
+               message.Email,
+               result.Error.Code,
+               result.Error.Description);
         }
     }
 }

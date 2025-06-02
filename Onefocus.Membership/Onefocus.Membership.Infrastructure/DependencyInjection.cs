@@ -20,12 +20,12 @@ public static class DependencyInjection
     {
         services.AddDbContext<MembershipDbContext>(option => option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
 
-        IMessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
+        MessageBrokerSettings messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
 
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
             .AddDefaultTokenProviders()
-            .AddTokenProvider(Commons.TokenProviderName, typeof(DataProtectorTokenProvider<User>));
+            .AddTokenProvider<DataProtectorTokenProvider<User>>(Commons.TokenProviderName);
 
         services.AddScoped<IUserRepository, UserRepository>();
 

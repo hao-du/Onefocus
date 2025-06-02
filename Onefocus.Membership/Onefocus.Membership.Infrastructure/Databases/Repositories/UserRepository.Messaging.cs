@@ -1,10 +1,8 @@
 ﻿using Onefocus.Common.Abstractions.ServiceBus.Membership;
-using Onefocus.Common.Security;
 using Onefocus.Membership.Domain.Entities;
 using Onefocus.Membership.Domain.ValueObjects;
 using Onefocus.Membership.Infrastructure.ServiceBus;
 using static Onefocus.Membership.Infrastructure.Databases.Repositories.GetAllUsersRepositoryResponse;
-using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 
@@ -22,7 +20,7 @@ public sealed record UpdatePasswordRepositoryRequest(Guid Id, string Password)
 }
 public sealed record UpdatePasswordRepositoryResponse(Guid Id, string Email, string FirstName, string LastName)
 {
-    public static UpdatePasswordRepositoryResponse CastFrom(User source) => new(source.Id, source.Email??string.Empty, source.FirstName, source.LastName);
+    public static UpdatePasswordRepositoryResponse CastFrom(User source) => new(source.Id, source.Email ?? string.Empty, source.FirstName, source.LastName);
 
     public IUserSyncedMessage ToObject(string encryptedPassword) => new UserSyncedPublishMessage(Id, Email, FirstName, LastName, null, true, encryptedPassword);
 }
@@ -31,7 +29,7 @@ public sealed record GetAllUsersRepositoryResponse(List<UserReponse> Users)
 {
     public sealed record UserReponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName, IReadOnlyList<RoleRepsonse> Roles)
     {
-        public IUserSyncedMessage ToObject() => new UserSyncedPublishMessage(Id, Email??string.Empty, FirstName, LastName, null, true, null);
+        public IUserSyncedMessage ToObject() => new UserSyncedPublishMessage(Id, Email ?? string.Empty, FirstName, LastName, null, true, null);
     }
 
     public sealed record RoleRepsonse(Guid Id, string? RoleName)
@@ -53,7 +51,7 @@ public sealed record GetUserByIdRepositoryResponse(GetUserByIdRepositoryResponse
             , source.Email
             , source.FirstName
             , source.LastName
-            , source.UserRoles.Select(r => r.Role != null ? new RoleResponse(r.Role.Id, r.Role.Name) : new RoleResponse(Guid.Empty, string.Empty)).ToList()
+            , [.. source.UserRoles.Select(r => r.Role != null ? new RoleResponse(r.Role.Id, r.Role.Name) : new RoleResponse(Guid.Empty, string.Empty))]
         );
 
         return new(user);

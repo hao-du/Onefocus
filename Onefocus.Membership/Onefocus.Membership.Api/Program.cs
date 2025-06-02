@@ -1,10 +1,5 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Scaffolding;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
-using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
 using Onefocus.Common.Utilities;
@@ -12,7 +7,6 @@ using Onefocus.Membership.Api.Endpoints;
 using Onefocus.Membership.Application;
 using Onefocus.Membership.Infrastructure;
 using Onefocus.ServiceDefaults;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,7 +42,7 @@ services.AddSwaggerGen(option =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });

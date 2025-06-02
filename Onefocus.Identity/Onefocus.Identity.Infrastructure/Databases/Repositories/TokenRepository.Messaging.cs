@@ -1,6 +1,6 @@
 ﻿using Onefocus.Identity.Domain.Entities;
 
-namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
+namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 
 public sealed record GenerateRefreshTokenRepositoryRequest(User User);
 public sealed record GenerateRefreshTokenRepositoryResponse(string RefreshToken);

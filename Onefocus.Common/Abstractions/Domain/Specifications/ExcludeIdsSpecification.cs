@@ -1,26 +1,25 @@
-﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Abstractions.Domain.Specification;
+﻿using Onefocus.Common.Abstractions.Domain.Specification;
 using System.Linq.Expressions;
 
-namespace Onefocus.Wallet.Domain.Specifications
+namespace Onefocus.Common.Abstractions.Domain.Specifications;
+
+public class ExcludeIdsSpecification<T> : Specification<T> where T : EntityBase
 {
-    public class ExcludeIdsSpecification<T> : Specification<T> where T : EntityBase
+    private readonly List<Guid> _ids;
+
+    private ExcludeIdsSpecification(List<Guid> ids)
     {
-        private readonly List<Guid> _ids;
+        _ids = ids;
+    }
 
-        private ExcludeIdsSpecification(List<Guid> ids)
-        {
-            _ids = ids;
-        }
+    public static ExcludeIdsSpecification<T> Create(List<Guid> ids)
+    {
+        return new ExcludeIdsSpecification<T>(ids);
+    }
 
-        public static ExcludeIdsSpecification<T> Create(List<Guid> ids)
-        {
-            return new ExcludeIdsSpecification<T>(ids);
-        }
-
-        public override Expression<Func<T, bool>> ToExpression()
-        {
-            return c => !_ids.Contains(c.Id);
-        }
+    public override Expression<Func<T, bool>> ToExpression()
+    {
+        return c => !_ids.Contains(c.Id);
     }
 }
+

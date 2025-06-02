@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useWorkspace, Workspace } from '../../layouts/workspace';
 import { useGetAllBanks, useGetBankById, useCreateBank, useUpdateBank } from '../../../application/bank';
-import { Button, SplitButtonActionItem } from '../../components/controls/buttons';
+import { Button } from '../../components/controls/buttons';
 import { Text, Textarea, Switch } from '../../components/form-controls';
 import { Bank as DomainBank } from '../../../domain/bank';
 import { Column, DataTable } from '../../components/data';

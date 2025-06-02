@@ -1,14 +1,8 @@
-using MediatR;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Utilities;
 using Onefocus.ServiceDefaults;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +16,7 @@ if (builder.Environment.IsDevelopmentLike())
         options.AddPolicy(name: corsPolicyName,
                           policy =>
                           {
-                              policy.WithOrigins("http://localhost:5000").AllowCredentials().AllowAnyHeader();
+                              policy.WithOrigins("http://localhost:5000", "http://localhost:4000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
                           });
     });
 }

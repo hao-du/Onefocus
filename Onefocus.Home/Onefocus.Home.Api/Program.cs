@@ -1,12 +1,11 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
-using Onefocus.Home.Infrastructure;
-using Onefocus.Home.Application;
-using Onefocus.Home.Api.Endpoints;
 using Onefocus.Common.Utilities;
+using Onefocus.Home.Api.Endpoints;
+using Onefocus.Home.Application;
+using Onefocus.Home.Infrastructure;
 using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +42,7 @@ services.AddSwaggerGen(option =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
@@ -52,7 +51,7 @@ services.AddAuthenticationSettings(configuration);
 services.AddAuthorization();
 
 services
-    .AddInfrastructure(configuration)
+    .AddInfrastructure()
     .AddApplication();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();

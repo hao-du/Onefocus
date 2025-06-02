@@ -6,7 +6,6 @@ using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Domain;
 using Onefocus.Identity.Domain.Entities;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
 
 namespace Onefocus.Identity.Infrastructure.Databases.Repositories;
 

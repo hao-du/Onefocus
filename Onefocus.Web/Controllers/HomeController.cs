@@ -1,19 +1,26 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Onefocus.Common.Exceptions.Errors;
 
 namespace Onefocus.Web.Controllers;
 
-public class HomeController : Controller
+public class HomeController(ILogger<HomeController> logger) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
+        try
+        {
+            string scriptPath = System.IO.Path.Combine("Client/dist/assets/");
+            string scriptWildcardPattern = "index-*.js";
+            ViewBag.ScriptFiles = Directory.GetFiles(scriptPath, scriptWildcardPattern);
+
+            string styleWildcardPattern = "index-*.css";
+            ViewBag.StyleFiles = Directory.GetFiles(scriptPath, styleWildcardPattern);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, CommonErrors.InternalErrorMessage);
+        }
+
         return View();
     }
 }

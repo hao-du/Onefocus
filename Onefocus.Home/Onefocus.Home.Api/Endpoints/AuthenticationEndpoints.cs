@@ -1,11 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Results;
 using static Onefocus.Common.Results.ResultExtensions;
 
@@ -17,7 +10,7 @@ internal static class HomeEndpoints
     {
         var routes = app.MapGroup(prefix: string.Empty).RequireAuthorization();
 
-        routes.MapMethods("check", new[] { "HEAD" }, (ISender sender) =>
+        routes.MapMethods("check", ["HEAD"], (ISender sender) =>
         {
             return Result.Success().ToResult();
         });

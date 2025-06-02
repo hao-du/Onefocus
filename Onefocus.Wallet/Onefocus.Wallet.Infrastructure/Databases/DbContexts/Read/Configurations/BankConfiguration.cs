@@ -9,6 +9,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
         public void Configure(EntityTypeBuilder<Bank> builder)
         {
             builder.HasMany(b => b.BankAccounts).WithOne(bt => bt.Bank).HasForeignKey(bt => bt.BankId);
+
+            builder.HasQueryFilter(b => b.IsActive);
         }
     }
 }

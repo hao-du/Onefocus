@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using Onefocus.Common.Abstractions.Messages;
+﻿using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
@@ -12,43 +11,32 @@ using System.ComponentModel.DataAnnotations;
 namespace Onefocus.Membership.Application.User.Commands;
 public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand
 {
-    public CreateUserRepositoryRequest ToObject() => new (Email, FirstName, LastName, Password);
+    public CreateUserRepositoryRequest ToObject() => new(Email, FirstName, LastName, Password);
     public IUserSyncedMessage ToObject(Guid id, string encryptedPassword) => new UserSyncedPublishMessage(id, Email, FirstName, LastName, null, true, encryptedPassword);
 
 }
 
-internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommandRequest>
-{
-    private readonly IUserRepository _userRepository;
-    private readonly IUserSyncedPublisher _userSyncePdublisher;
-    private readonly IAuthenticationSettings _authenticationSettings;
-
-    public CreateUserCommandHandler(
-        IUserRepository userRepository
+internal sealed class CreateUserCommandHandler(
+    IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
         , IAuthenticationSettings authenticationSettings
-    )
-    {
-        _userRepository = userRepository;
-        _userSyncePdublisher = userSyncedPublisher;
-        _authenticationSettings = authenticationSettings;
-    }
-
+    ) : ICommandHandler<CreateUserCommandRequest>
+{
     public async Task<Result> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
 
-        var repoResult = await _userRepository.CreateUserAsync(request.ToObject());
+        var repoResult = await userRepository.CreateUserAsync(request.ToObject());
         if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
 
-        var encryptedPassword = await Cryptography.Encrypt(request.Password, _authenticationSettings.SymmetricSecurityKey);
+        var encryptedPassword = await Cryptography.Encrypt(request.Password, authenticationSettings.SymmetricSecurityKey);
 
-        var eventPublishResult = await _userSyncePdublisher.Publish(request.ToObject(repoResult.Value, encryptedPassword));
+        var eventPublishResult = await userSyncedPublisher.Publish(request.ToObject(repoResult.Value, encryptedPassword), cancellationToken);
         return eventPublishResult;
     }
 
-    private Result ValidateRequest(CreateUserCommandRequest request)
+    private static Result ValidateRequest(CreateUserCommandRequest request)
     {
         if (string.IsNullOrEmpty(request.FirstName)) return Result.Failure(Errors.User.FirstNameRequired);
         if (string.IsNullOrEmpty(request.LastName)) return Result.Failure(Errors.User.LastNameRequired);

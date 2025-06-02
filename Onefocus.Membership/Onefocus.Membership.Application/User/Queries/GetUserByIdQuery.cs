@@ -3,7 +3,7 @@ using Onefocus.Common.Results;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using RepoRes = Onefocus.Membership.Infrastructure.Databases.Repositories.GetUserByIdRepositoryResponse;
 
-namespace Onefocus.Membership.Application.User.Commands;
+namespace Onefocus.Membership.Application.User.Queries;
 
 public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserResponse User)
 {
@@ -17,7 +17,7 @@ public sealed record GetUserByIdQueryResponse(GetUserByIdQueryResponse.UserRespo
             , source.User.Email
             , source.User.FirstName
             , source.User.LastName
-            , source.User.Roles.Select(r => new RoleResponse(r.Id, r.RoleName)).ToList()
+            , [.. source.User.Roles.Select(r => new RoleResponse(r.Id, r.RoleName))]
         );
 
         return new(user);
@@ -29,24 +29,17 @@ public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryR
     public GetUserByIdRepositoryRequest ToObject() => new(Id);
 }
 
-internal sealed class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQueryRequest, GetUserByIdQueryResponse>
+internal sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : IQueryHandler<GetUserByIdQueryRequest, GetUserByIdQueryResponse>
 {
-    private readonly IUserRepository _userRepository;
-
-    public GetUserByIdQueryHandler(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
     public async Task<Result<GetUserByIdQueryResponse>> Handle(GetUserByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var userResult = await _userRepository.GetUserByIdAsync(request.ToObject());
+        var userResult = await userRepository.GetUserByIdAsync(request.ToObject());
         if (userResult.IsFailure)
         {
             return Result.Failure<GetUserByIdQueryResponse>(userResult.Errors);
         }
 
-        return Result.Success<GetUserByIdQueryResponse>(GetUserByIdQueryResponse.CastFrom(userResult.Value));
+        return Result.Success(GetUserByIdQueryResponse.CastFrom(userResult.Value));
     }
 }
 

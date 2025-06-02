@@ -4,7 +4,6 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Specifications;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
