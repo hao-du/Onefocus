@@ -45,6 +45,13 @@ export const AppLayout = (props: AppLayoutProps) => {
                     command: () => {
                         navigate("/wallet/currency");
                     }
+                },
+                {
+                    label: 'Bank',
+                    icon: 'pi pi-credit-card',
+                    command: () => {
+                        navigate("/wallet/bank");
+                    }
                 }
             ]
         },

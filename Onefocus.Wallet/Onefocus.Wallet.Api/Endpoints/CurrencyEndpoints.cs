@@ -29,7 +29,7 @@ internal static class CurrencyEndpoints
             return result.ToResult();
         });
 
-        routes.MapPut("currency/update", async (CreateCurrencyCommandRequest command, ISender sender) =>
+        routes.MapPut("currency/update", async (UpdateCurrencyCommandRequest command, ISender sender) =>
         {
             Result result = await sender.Send(command);
             return result.ToResult();

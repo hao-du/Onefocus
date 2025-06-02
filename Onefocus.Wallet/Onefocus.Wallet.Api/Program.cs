@@ -76,6 +76,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
 
+app.MapBankEndpoints();
 app.MapCurrencyEndpoints();
 app.MapTransactionEndpoints();
 

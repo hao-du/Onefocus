@@ -8,8 +8,8 @@ type WorkspaceLayoutProps = BaseProps & {
     title: string;
     actionItems?: SplitButtonActionItem[];
     leftPanel: React.ReactNode;
-    rightPanelProps?: RightPanelProps;
     rightPanel: React.ReactNode;
+    rightPanelProps?: RightPanelProps;
 };
 
 export const Workspace = (props: WorkspaceLayoutProps) => {
