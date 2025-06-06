@@ -31,7 +31,7 @@ export const Workspace = (props: WorkspaceLayoutProps) => {
                         {props.rightPanel}
                     </SplitterPanel>
                 </Splitter>
-            )};
+            )}
 
             {isMobile && (
                 <div className="flex flex-column h-full w-full p-3">
@@ -41,7 +41,7 @@ export const Workspace = (props: WorkspaceLayoutProps) => {
                     </div>
                     {props.rightPanel}
                 </div>
-            )};
+            )}
         </div>
     );
 };

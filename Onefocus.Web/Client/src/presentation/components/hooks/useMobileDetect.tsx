@@ -9,10 +9,10 @@ export const MobileDetectProvider: React.FC<{ children: React.ReactNode }> = ({c
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth < 768 && !isMobile) {
+            if (window.innerWidth < 768) {
                 setIsMobile(true);
             }
-            if (window.innerWidth >= 768 && isMobile) {
+            else {
                 setIsMobile(false);
             }
         }
