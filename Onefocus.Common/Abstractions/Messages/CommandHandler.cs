@@ -5,13 +5,24 @@ using System.Security.Claims;
 
 namespace Onefocus.Common.Abstractions.Messages;
 
-public abstract class CommandHandler<TRequest>(IHttpContextAccessor httpContextAccessor) : ICommandHandler<TRequest> where TRequest : ICommand
+public abstract class CommandHandler<TRequest>(IHttpContextAccessor httpContextAccessor) : CommandHandler(httpContextAccessor), ICommandHandler<TRequest> where TRequest : ICommand
 {
-    public virtual async Task<Result> Handle(TRequest request, CancellationToken cancellationToken)
+    public virtual Task<Result> Handle(TRequest request, CancellationToken cancellationToken)
     {
-        return await Task.Run(() => Result.Success());
+        return Task.Run(() => Result.Failure(CommonErrors.NotImplemented));
     }
+}
 
+public abstract class CommandHandler<TRequest, TResponse>(IHttpContextAccessor httpContextAccessor) : CommandHandler(httpContextAccessor), ICommandHandler<TRequest, TResponse> where TRequest : ICommand<TResponse>
+{
+    public virtual Task<Result<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
+    {
+        return Task.Run(() => Result.Failure<TResponse>(CommonErrors.NotImplemented));
+    }
+}
+
+public abstract class CommandHandler(IHttpContextAccessor httpContextAccessor)
+{
     protected Result<Guid> GetUserId()
     {
         if (!Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))

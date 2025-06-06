@@ -5,7 +5,7 @@ import {getAllBanks, getAllBanksAdapter} from '../../infrastructure/modules/bank
 export const useGetAllBanks = () => {
     const {client} = useClient();
 
-    const {data, isLoading} = useQuery({
+    const {data,  isLoading, refetch, isFetching} = useQuery({
         queryKey: ['getAllBanks'],
         queryFn: async () => {
             const apiResponse = await getAllBanks(client);
@@ -13,5 +13,5 @@ export const useGetAllBanks = () => {
         }
     });
 
-    return {banks: data, isLoading};
+    return {banks: data, isListLoading: isLoading || isFetching, refetch};
 };

@@ -11,5 +11,6 @@ public static class CommonErrors
     public static readonly Error InternalServer = new("InternalServerError", InternalErrorMessage);
     public static readonly Error NullReference = new("NullReference", InternalErrorMessage);
     public static readonly Error UserClaimInvalid = new("UserClaimInvalid", InternalErrorMessage);
+    public static readonly Error NotImplemented = new("NotImplemented", InternalErrorMessage);
 }
 

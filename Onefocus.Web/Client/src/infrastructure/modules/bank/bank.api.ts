@@ -2,6 +2,7 @@ import {AxiosInstance} from 'axios';
 import {ApiResponse} from '../../hooks';
 import {
     CreateBankRequest,
+    CreateBankResponse,
     GetAllBanksResponse,
     GetBankByIdResponse,
     UpdateBankRequest
@@ -13,12 +14,12 @@ export const getAllBanks = async (client: AxiosInstance) => {
 };
 
 export const getBankById = async (client: AxiosInstance, id: string) => {
-    const response = await client.get<ApiResponse<GetBankByIdResponse>>(`wallet/bank/${id}}`);
+    const response = await client.get<ApiResponse<GetBankByIdResponse>>(`wallet/bank/${id}`);
     return response.data;
 };
 
 export const createBank = async (client: AxiosInstance, request: CreateBankRequest) => {
-    const response = await client.post<ApiResponse>(`wallet/bank/create`, request);
+    const response = await client.post<ApiResponse<CreateBankResponse>>(`wallet/bank/create`, request);
     return response.data;
 };
 

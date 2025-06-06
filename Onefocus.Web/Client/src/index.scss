@@ -23,13 +23,10 @@ body {
   border-right: 1px solid var(--surface-border);
 }
 
-.of-float-label {
-    &.p-float-label {
-      &:has(input:focus),
-      &:has(input.p-filled) {
-        label {
-          left: 0;
-        }
-      }
-    }
+.of-center-panel-width {
+  width: 20rem;
+}
+
+.of-w-max {
+  max-width: 30rem;
 }

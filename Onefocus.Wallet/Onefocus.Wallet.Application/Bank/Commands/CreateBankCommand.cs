@@ -9,33 +9,34 @@ using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.Bank.Commands;
 
-public sealed record CreateBankCommandRequest(string Name, string? Description) : ICommand;
+public sealed record CreateBankCommandRequest(string Name, string? Description) : ICommand<CreateBankCommandResponse>;
+public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateBankCommandHandler(
     IWriteUnitOfWork writeUnitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : CommandHandler<CreateBankCommandRequest>(httpContextAccessor)
+) : CommandHandler<CreateBankCommandRequest, CreateBankCommandResponse>(httpContextAccessor)
 {
-    public override async Task<Result> Handle(CreateBankCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<CreateBankCommandResponse>> Handle(CreateBankCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await ValidateRequest(request, cancellationToken);
-        if (validationResult.IsFailure) return validationResult;
+        if (validationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(validationResult.Errors);
 
         var actionByResult = GetUserId();
-        if (actionByResult.IsFailure) return actionByResult;
+        if (actionByResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(actionByResult.Errors); ;
 
         var bankCreationResult = Entity.Bank.Create(
             request.Name,
             request.Description,
             actionByResult.Value
         );
-        if (bankCreationResult.IsFailure) return bankCreationResult;
+        if (bankCreationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(bankCreationResult.Errors); ;
 
         var createResult = await writeUnitOfWork.Bank.AddBankAsync(new CreateBankRequestDto(bankCreationResult.Value), cancellationToken);
-        if (createResult.IsFailure) return createResult;
+        if (createResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(createResult.Errors); ;
 
         await writeUnitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success();
+        return Result.Success<CreateBankCommandResponse>(new(bankCreationResult.Value.Id));
     }
 
     private async Task<Result> ValidateRequest(CreateBankCommandRequest request, CancellationToken cancellationToken)

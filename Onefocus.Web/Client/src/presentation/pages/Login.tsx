@@ -11,7 +11,7 @@ interface IFormInput {
 }
 
 export const Login = () => {
-    const {mutateAsync, isPending} = useLogin();
+    const {onLoginAsync, isPending} = useLogin();
 
     const {control, handleSubmit} = useForm<IFormInput>({
         defaultValues: {
@@ -21,16 +21,17 @@ export const Login = () => {
     });
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-        return await mutateAsync({email: data.userName, password: data.password});
+        return await onLoginAsync({email: data.userName, password: data.password});
     };
 
     return (
         <SingleContentLayout alignCenter={true} justifyContentCenter={true}>
-            <p><span className="text-6xl">Onefocus</span><span> by HaoDu</span></p>
-            <Fieldset title="Login" className="pt-4">
+            <p><span className="text-6xl font-normal text-primary">Onefocus</span><span className="text-black-alpha-40"> by HaoDu</span>
+            </p>
+            <Fieldset title="Login" className="pt-4 of-center-panel-width">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Text name="userName" control={control} label="Username"></Text>
-                    <Password name="password" control={control} label="Password"></Password>
+                    <Text name="userName" control={control} label="Username" className="w-full"></Text>
+                    <Password name="password" control={control} label="Password" className="w-full"></Password>
                     <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending}/>
                 </form>
             </Fieldset>

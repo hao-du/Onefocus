@@ -44,6 +44,7 @@ public sealed class Bank : WriteEntityBase, INameField
             return validationResult;
         }
 
+        Name = name;
         Description = description;
 
         if (isActive) MarkActive(actionedBy);

@@ -9,6 +9,10 @@ export interface CreateBankRequest {
     description?: string;
 }
 
+export interface CreateBankResponse{
+    id: string;
+}
+
 export interface UpdateBankRequest {
     id: string;
     name: string;

@@ -19,19 +19,19 @@ internal static class BankEndpoints
 
         routes.MapGet("bank/{id}", async (Guid id, ISender sender) =>
         {
-            Result result = await sender.Send(new GetBankByIdQueryRequest(id));
+            var result = await sender.Send(new GetBankByIdQueryRequest(id));
             return result.ToResult();
         });
 
         routes.MapPost("bank/create", async (CreateBankCommandRequest command, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            var result = await sender.Send(command);
             return result.ToResult();
         });
 
         routes.MapPut("bank/update", async (UpdateBankCommandRequest command, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            var result = await sender.Send(command);
             return result.ToResult();
         });
     }

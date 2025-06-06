@@ -4,5 +4,5 @@ export interface SplitButtonActionItem extends MenuItem {
     label?: string;
     icon?: string;
 
-    command?(event: MenuItemCommandEvent): void;
+    command?(event?: MenuItemCommandEvent): void;
 }

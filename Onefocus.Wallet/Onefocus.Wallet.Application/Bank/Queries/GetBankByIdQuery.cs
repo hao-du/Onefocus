@@ -16,7 +16,7 @@ public sealed record GetBankByIdQueryResponse(Guid Id, string Name, bool IsActiv
     {
         if (source == null || source.Bank == null) return null;
 
-        var BankDto = new GetBankByIdQueryResponse(
+        var bankDto = new GetBankByIdQueryResponse(
             Id: source.Bank.Id,
             Name: source.Bank.Name,
             IsActive: source.Bank.IsActive,
@@ -25,7 +25,7 @@ public sealed record GetBankByIdQueryResponse(Guid Id, string Name, bool IsActiv
             ActionedBy: source.Bank.UpdatedBy ?? source.Bank.CreatedBy
         );
 
-        return BankDto;
+        return bankDto;
     }
 }
 

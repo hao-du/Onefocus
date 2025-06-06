@@ -40,14 +40,14 @@ export const AppLayout = (props: AppLayoutProps) => {
                     }
                 },
                 {
-                    label: 'Currency',
+                    label: 'Currencies',
                     icon: 'pi pi-dollar',
                     command: () => {
                         navigate("/wallet/currency");
                     }
                 },
                 {
-                    label: 'Bank',
+                    label: 'Banks',
                     icon: 'pi pi-credit-card',
                     command: () => {
                         navigate("/wallet/bank");

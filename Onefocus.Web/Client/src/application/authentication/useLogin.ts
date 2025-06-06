@@ -21,5 +21,5 @@ export const useLogin = () => {
         }
     });
 
-    return {mutateAsync, isPending};
+    return {onLoginAsync: mutateAsync, isPending};
 };

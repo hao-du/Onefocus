@@ -4,9 +4,3 @@ export interface EditPanelButton {
     label?: string,
     icon?: string
 }
-
-export interface RightPanelProps {
-    viewRightPanel?: boolean;
-    setViewRightPanel?: React.Dispatch<React.SetStateAction<boolean>>;
-    buttons?: EditPanelButton[];
-}

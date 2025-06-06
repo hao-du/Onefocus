@@ -1,20 +1,22 @@
 import {useQuery} from '@tanstack/react-query';
 import {useClient} from '../../infrastructure/hooks';
-import {
-    getBankById,
-    getBankByIdAdapter
-} from '../../infrastructure/modules/bank';
+import {getBankById, getBankByIdAdapter} from '../../infrastructure/modules/bank';
+import {useState} from 'react';
 
-export const useGetBankById = (id: string) => {
+export const useGetBankById = () => {
     const {client} = useClient();
+    const [bankId, setbankId] = useState<string | null>(null);
 
     const {data, isLoading} = useQuery({
-        queryKey: [`useGetBankById-${id}`],
+        queryKey: [`useGetBankById-${bankId}`],
         queryFn: async () => {
-            const apiResponse = await getBankById(client, id);
+            if (!bankId) return null;
+
+            const apiResponse = await getBankById(client, bankId);
             return getBankByIdAdapter().toBankEntity(apiResponse.value);
-        }
+        },
+        enabled: Boolean(bankId)
     });
 
-    return {bank: data, isLoading};
+    return {bank: data, isEntityLoading: isLoading, setbankId};
 };

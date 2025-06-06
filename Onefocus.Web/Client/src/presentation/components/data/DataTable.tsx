@@ -1,13 +1,11 @@
-import {
-    DataTable as PiDataTable,
-    DataTableValueArray
-} from 'primereact/datatable';
+import {DataTable as PiDataTable, DataTableValueArray} from 'primereact/datatable';
 import {BaseProps} from '../../props/BaseProps';
 import * as React from 'react';
 
 type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     value?: TValue | undefined;
     children: React.ReactNode;
+    isPending?: boolean;
 }
 
 export const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<TValue>) => {
@@ -15,6 +13,9 @@ export const DataTable = <TValue extends DataTableValueArray> (props : DataTable
         <PiDataTable
             value={props.value}
             className={props.className}
+            loading={props.isPending}
+            loadingIcon="pi pi-spinner pi-spin"
+            emptyMessage={props.isPending ? null : "Nothing to show right now."}
         >
             {props.children}
         </PiDataTable>
