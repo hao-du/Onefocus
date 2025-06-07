@@ -25,10 +25,10 @@ internal sealed class CreateUserCommandHandler(
     public async Task<Result> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
-        if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
+        if (validationResult.IsFailure) return validationResult;
 
         var repoResult = await userRepository.CreateUserAsync(request.ToObject());
-        if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
+        if (repoResult.IsFailure) return repoResult.Error;
 
         var encryptedPassword = await Cryptography.Encrypt(request.Password, authenticationSettings.SymmetricSecurityKey);
 
