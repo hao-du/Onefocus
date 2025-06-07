@@ -17,7 +17,12 @@ public abstract class CommandHandler<TRequest, TResponse>(IHttpContextAccessor h
 {
     public virtual Task<Result<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
     {
-        return Task.Run(() => Result.Failure<TResponse>(CommonErrors.NotImplemented));
+        return Task.Run(() => Failure(CommonErrors.NotImplemented));
+    }
+
+    protected Result<TResponse> Failure(Result failure)
+    {
+        return Result.Failure<TResponse>(failure.Errors);
     }
 }
 
@@ -31,5 +36,19 @@ public abstract class CommandHandler(IHttpContextAccessor httpContextAccessor)
         }
 
         return userId;
+    }
+
+    protected string? GetCookie(string key)
+    {
+        return httpContextAccessor.HttpContext?.Request.Cookies[key];
+    }
+
+    protected void AppendCookie(string key, string value, SameSiteMode mode = SameSiteMode.Unspecified, bool httpOnly = true)
+    {
+        httpContextAccessor.HttpContext?.Response.Cookies.Append(key, value, new CookieOptions
+        {
+            SameSite = mode,
+            HttpOnly = httpOnly
+        });
     }
 }

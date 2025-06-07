@@ -1,11 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Application.Authentication.Commands;
 using static Onefocus.Common.Results.ResultExtensions;

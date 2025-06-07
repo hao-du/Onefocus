@@ -21,10 +21,10 @@ internal sealed class UpdatePasswordCommandHandler(
     public async Task<Result> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
-        if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
+        if (validationResult.IsFailure) return validationResult;
 
         var responseResult = await userRepository.UpdatePasswordAsync(request.ToObject());
-        if (responseResult.IsFailure) return Result.Failure(responseResult.Error);
+        if (responseResult.IsFailure) return responseResult;
 
         var encryptedPassword = await Cryptography.Encrypt(request.Password, authSettings.SymmetricSecurityKey);
 

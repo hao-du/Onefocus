@@ -22,10 +22,10 @@ internal sealed class UpdateUserCommandHandler(
     public async Task<Result> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
-        if (validationResult.IsFailure) return Result.Failure(validationResult.Error);
+        if (validationResult.IsFailure) return validationResult;
 
         var repoResult = await userRepository.UpdateUserAsync(request.ToObject());
-        if (repoResult.IsFailure) return Result.Failure(repoResult.Error);
+        if (repoResult.IsFailure) return repoResult.Error;
 
         var eventPublishResult = await userSyncedPublisher.Publish(request.ToObject(request.Id), cancellationToken);
         return eventPublishResult;

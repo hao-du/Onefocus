@@ -16,38 +16,31 @@ internal sealed class AuthenticateCommandHandler(
     ITokenService tokenService
         , IUserRepository userRepository
         , ITokenRepository tokenRepository
-        , IHttpContextAccessor httpContextAccessor) : ICommandHandler<AuthenticateCommandRequest, AuthenticateCommandResponse>
+        , IHttpContextAccessor httpContextAccessor
+    ) : CommandHandler<AuthenticateCommandRequest, AuthenticateCommandResponse>(httpContextAccessor)
 {
-    public async Task<Result<AuthenticateCommandResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<AuthenticateCommandResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken)
     {
         var checkPasswordResult = await userRepository.CheckPasswordAsync(request.ToObject());
         if (checkPasswordResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(checkPasswordResult.Errors);
+            return Failure(checkPasswordResult);
         }
 
         var accessTokenResult = tokenService.GenerateAccessToken(GenerateTokenServiceRequest.CastFrom(checkPasswordResult.Value));
         if (accessTokenResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(accessTokenResult.Errors);
+            return Failure(accessTokenResult);
         }
 
         var refreshTokenResult = await tokenRepository.GenerateRefreshTokenAsync(new GenerateRefreshTokenRepositoryRequest(checkPasswordResult.Value.User));
         if (refreshTokenResult.IsFailure)
         {
-            return Result.Failure<AuthenticateCommandResponse>(refreshTokenResult.Errors);
+            return Failure(refreshTokenResult);
         }
 
-        httpContextAccessor.HttpContext?.Response.Cookies.Append("r", refreshTokenResult.Value.RefreshToken, new CookieOptions
-        {
-            SameSite = SameSiteMode.Unspecified,
-            HttpOnly = true
-        });
-        httpContextAccessor.HttpContext?.Response.Cookies.Append("i", checkPasswordResult.Value.User.Id.ToString(), new CookieOptions
-        {
-            SameSite = SameSiteMode.Unspecified,
-            HttpOnly = true
-        });
+        AppendCookie("r", refreshTokenResult.Value.RefreshToken);
+        AppendCookie("i", checkPasswordResult.Value.User.Id.ToString());
 
         return Result.Success(new AuthenticateCommandResponse(accessTokenResult.Value.AccessToken));
     }
