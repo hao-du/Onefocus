@@ -6,17 +6,17 @@ import {PrimeReactProvider} from 'primereact/api';
 import {AuthProvider, ClientProvider} from './infrastructure/hooks';
 import {Login} from './presentation/pages';
 import App from './App';
+import {WindowsProvider} from './presentation/components/hooks/useWindows';
 
 import 'primereact/resources/themes/mira/theme.css';
 import './index.scss';
-import {MobileDetectProvider} from './presentation/components/hooks/useMobileDetect';
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
-            <MobileDetectProvider>
+            <WindowsProvider>
                 <PrimeReactProvider>
                     <QueryClientProvider client={queryClient}>
                         <AuthProvider>
@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')!).render(
                         </AuthProvider>
                     </QueryClientProvider>
                 </PrimeReactProvider>
-            </MobileDetectProvider>
+            </WindowsProvider>
         </BrowserRouter>
     </StrictMode>,
 );

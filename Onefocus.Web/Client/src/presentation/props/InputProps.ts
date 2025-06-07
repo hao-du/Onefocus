@@ -7,5 +7,7 @@ export type InputProps = BaseProps & {
     readOnly?: boolean;
     isPending?: boolean;
     required?: boolean;
+    invalid?: boolean;
     description?: string;
+    errorMessage?: string;
 };

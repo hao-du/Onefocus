@@ -1,9 +1,18 @@
 import {AxiosInstance} from 'axios';
 
-export interface ApiResponse<T = void> {
+interface Error {
+    code: string;
+    description:string;
+}
+
+export interface ApiResponseBase {
     status: number;
     title: string;
     type: string;
+    errors?: Error[];
+}
+
+export interface ApiResponse<T = void>  extends ApiResponseBase {
     value: T;
 }
 

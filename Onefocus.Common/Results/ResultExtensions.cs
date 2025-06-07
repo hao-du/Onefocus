@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using static Onefocus.Common.Results.ResultExtensions;
 using HttpResults = Microsoft.AspNetCore.Http.Results;
 
 namespace Onefocus.Common.Results;
@@ -41,7 +40,7 @@ public static class ResultExtensions
             type: "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6",
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Errors } }
+                { "errors", result.Errors }
             });
     }
 
@@ -53,7 +52,7 @@ public static class ResultExtensions
             type: "https://tools.ietf.org/html/rfc7231#section-6.5.1",
             extensions: new Dictionary<string, object?>
             {
-                { "errors", new[] { result.Errors } }
+                { "errors", result.Errors }
             });
     }
 }

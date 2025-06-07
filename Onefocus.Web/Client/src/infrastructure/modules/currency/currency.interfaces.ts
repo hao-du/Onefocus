@@ -11,11 +11,16 @@ export interface CreateCurrencyRequest {
     description?: string;
 }
 
+export interface CreateCurrencyResponse{
+    id: string;
+}
+
 export interface UpdateCurrencyRequest {
     id: string;
     name: string;
     shortName: string;
-    defaultFlag: boolean;
+    isDefault: boolean;
+    isActive: boolean;
     description?: string;
 }
 

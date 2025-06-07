@@ -13,5 +13,5 @@ export const useGetAllBanks = () => {
         }
     });
 
-    return {banks: data, isListLoading: isLoading || isFetching, refetch};
+    return {entities: data, isListLoading: isLoading || isFetching, refetch};
 };

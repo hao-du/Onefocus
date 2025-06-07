@@ -4,17 +4,16 @@ import {
     createCurrency,
     CreateCurrencyRequest,
 } from '../../infrastructure/modules/currency';
+import {CreateBankResponse} from '../../infrastructure/modules/bank/bank.interfaces';
 
-const useCreateCurrency = () => {
+export const useCreateCurrency = () => {
     const {client} = useClient();
 
-    const {mutateAsync, isPending} = useMutation<ApiResponse, unknown, CreateCurrencyRequest>({
+    const {mutateAsync, isPending} = useMutation<ApiResponse<CreateBankResponse>, unknown, CreateCurrencyRequest>({
         mutationFn: async (request) => {
             return await createCurrency(client, request);
         }
     });
 
-    return {mutateAsync, isPending};
+    return {onCreateAsync: mutateAsync, isCreating: isPending};
 };
-
-export default useCreateCurrency;

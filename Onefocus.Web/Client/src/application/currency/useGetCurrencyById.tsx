@@ -4,19 +4,22 @@ import {
     getCurrencyById,
     getCurrencyByIdAdapter
 } from '../../infrastructure/modules/currency';
+import {useState} from 'react';
 
-const useGetCurrencyById = (id: string) => {
+export const useGetCurrencyById = () => {
     const {client} = useClient();
+    const [currencyId, setCurrencyId] = useState<string | null>(null);
 
     const {data, isLoading} = useQuery({
-        queryKey: [`useGetCurrencyById-${id}`],
+        queryKey: [`useGetCurrencyById-${currencyId}`],
         queryFn: async () => {
-            const apiResponse = await getCurrencyById(client, id);
+            if (!currencyId) return null;
+
+            const apiResponse = await getCurrencyById(client, currencyId);
             return getCurrencyByIdAdapter().toCurrencyEntity(apiResponse.value);
-        }
+        },
+        enabled: Boolean(currencyId)
     });
 
-    return {data, isLoading};
+    return {entity: data, isEntityLoading: isLoading, setCurrencyId   : setCurrencyId};
 };
-
-export default useGetCurrencyById;

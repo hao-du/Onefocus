@@ -18,5 +18,5 @@ export const useGetBankById = () => {
         enabled: Boolean(bankId)
     });
 
-    return {bank: data, isEntityLoading: isLoading, setbankId};
+    return {entity: data, isEntityLoading: isLoading, setBankId: setbankId};
 };

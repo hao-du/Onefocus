@@ -1,7 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {useNavigate} from 'react-router';
-import {useAuth, useClient} from '../../infrastructure/hooks';
-import {authenticate, AuthenticationRequest} from '../../infrastructure/modules/authentication';
+import {ApiResponse, useAuth, useClient} from '../../infrastructure/hooks';
+import {authenticate, AuthenticationRequest, AuthenticationResponse} from '../../infrastructure/modules/authentication';
 
 
 export const useLogin = () => {
@@ -9,7 +9,7 @@ export const useLogin = () => {
     const navigate = useNavigate();
     const {client} = useClient();
 
-    const {mutateAsync, isPending} = useMutation<void, unknown, AuthenticationRequest>({
+    const {mutateAsync, isPending} = useMutation<ApiResponse<AuthenticationResponse>, unknown, AuthenticationRequest>({
         mutationFn: async (request) => {
             const response = await authenticate(client, request);
             if (response.status === 200) {
@@ -18,6 +18,7 @@ export const useLogin = () => {
             } else {
                 setToken(null);
             }
+            return response;
         }
     });
 

@@ -19,19 +19,19 @@ internal static class CurrencyEndpoints
 
         routes.MapGet("currency/{id}", async (Guid id, ISender sender) =>
         {
-            Result result = await sender.Send(new GetCurrencyByIdQueryRequest(id));
+            var result = await sender.Send(new GetCurrencyByIdQueryRequest(id));
             return result.ToResult();
         });
 
         routes.MapPost("currency/create", async (CreateCurrencyCommandRequest command, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            var result = await sender.Send(command);
             return result.ToResult();
         });
 
         routes.MapPut("currency/update", async (UpdateCurrencyCommandRequest command, ISender sender) =>
         {
-            Result result = await sender.Send(command);
+            var result = await sender.Send(command);
             return result.ToResult();
         });
     }

@@ -2,10 +2,10 @@ import {useQuery} from '@tanstack/react-query';
 import {useClient} from '../../infrastructure/hooks';
 import {getAllCurrencies, getAllCurrenciesAdapter} from '../../infrastructure/modules/currency';
 
-const useGetAllCurrencies = () => {
+export const useGetAllCurrencies = () => {
     const {client} = useClient();
 
-    const {data, isLoading} = useQuery({
+    const {data,  isLoading, refetch, isFetching} = useQuery({
         queryKey: ['getAllCurrencies'],
         queryFn: async () => {
             const apiResponse = await getAllCurrencies(client);
@@ -13,7 +13,5 @@ const useGetAllCurrencies = () => {
         }
     });
 
-    return {data, isLoading};
+    return {entities: data, isListLoading: isLoading || isFetching, refetch};
 };
-
-export default useGetAllCurrencies;

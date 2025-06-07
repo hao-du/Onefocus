@@ -6,6 +6,7 @@ import {
     GetCurrencyByIdResponse,
     UpdateCurrencyRequest
 } from './currency.interfaces';
+import {CreateBankResponse} from '../bank/bank.interfaces';
 
 export const getAllCurrencies = async (client: AxiosInstance) => {
     const response = await client.get<ApiResponse<GetAllCurrenciesResponse>>(`wallet/currency/all`);
@@ -13,16 +14,16 @@ export const getAllCurrencies = async (client: AxiosInstance) => {
 };
 
 export const getCurrencyById = async (client: AxiosInstance, id: string) => {
-    const response = await client.get<ApiResponse<GetCurrencyByIdResponse>>(`wallet/currency/${id}}`);
+    const response = await client.get<ApiResponse<GetCurrencyByIdResponse>>(`wallet/currency/${id}`);
     return response.data;
 };
 
 export const createCurrency = async (client: AxiosInstance, request: CreateCurrencyRequest) => {
-    const response = await client.post<ApiResponse>(`wallet/currency/create`, request);
+    const response = await client.post<ApiResponse<CreateBankResponse>>(`wallet/currency/create`, request);
     return response.data;
 };
 
 export const updateCurrency = async (client: AxiosInstance, request: UpdateCurrencyRequest) => {
-    const response = await client.post<ApiResponse>(`wallet/currency/update`, request);
+    const response = await client.put<ApiResponse>(`wallet/currency/update`, request);
     return response.data;
 };

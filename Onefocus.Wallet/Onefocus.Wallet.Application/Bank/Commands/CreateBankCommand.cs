@@ -46,7 +46,7 @@ internal sealed class CreateBankCommandHandler(
         var spec = FindNameSpecification<Entity.Bank>.Create(request.Name);
         var queryResult = await writeUnitOfWork.Bank.GetBySpecificationAsync<Entity.Bank>(new(spec), cancellationToken);
         if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value.Entity != null) return Result.Failure(Errors.Bank.NameIsExisted);
+        if (queryResult.Value.Entity is not null) return Result.Failure(Errors.Bank.NameIsExisted);
 
         return Result.Success();
     }

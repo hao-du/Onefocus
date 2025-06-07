@@ -5,7 +5,7 @@ import {
     UpdateCurrencyRequest,
 } from '../../infrastructure/modules/currency';
 
-const useUpdateCurrency = () => {
+export const useUpdateCurrency = () => {
     const {client} = useClient();
 
     const {mutateAsync, isPending} = useMutation<ApiResponse, unknown, UpdateCurrencyRequest>({
@@ -14,7 +14,5 @@ const useUpdateCurrency = () => {
         }
     });
 
-    return {mutateAsync, isPending};
+    return { onUpdateAsync: mutateAsync, isUpdating: isPending};
 };
-
-export default useUpdateCurrency;

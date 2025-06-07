@@ -7,9 +7,6 @@ import {refreshToken} from '../../modules/authentication/authentication.api';
 import { ClientContextValue } from "./useClient.interfaces";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-console.log(import.meta);
-console.log(import.meta.env);
-console.log(apiUrl)
 
 const client = axios.create({
     baseURL: apiUrl,
@@ -50,12 +47,15 @@ const ClientProvider: React.FC<{ children: React.ReactNode }> = ({children}) => 
 
                         const response = await refreshToken(client);
                         setToken(response.value.token);
+
+                        //to force it throws exception in order to get response http status for retry.
+                        return Promise.reject(error);
                     }
                     if (error.response.status === 406) {
                         navigate('/login');
                     }
 
-                    return Promise.reject(error);
+                    return {... error.response, ignoredError: true  };
                 }
             );
 

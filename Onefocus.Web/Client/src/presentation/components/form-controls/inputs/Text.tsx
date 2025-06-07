@@ -13,10 +13,19 @@ export const Text = <
     TTransformedValues = TFieldValues
 >(props: TextProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <Controller name={props.name} control={props.control} rules={props.rules}
-                    render={(controller) => {
-                        return <OneFocusText {...props} {...controller.field} id={controller.field.name}/>
-                    }}
+        <Controller
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return <OneFocusText
+                    {...props}
+                    {...controller.field}
+                    id={controller.field.name}
+                    invalid={controller.fieldState.invalid}
+                    errorMessage={controller.fieldState.error?.message}
+                />
+            }}
         />
     );
 };

@@ -68,7 +68,7 @@ internal sealed class UpdateCurrencyCommandHandler(
 
         var queryResult = await unitOfWork.Currency.GetBySpecificationAsync<Entity.Currency>(new(spec), cancellationToken);
         if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value != null) return Result.Failure(Errors.Currency.NameOrShortNameIsExisted);
+        if (queryResult.Value.Entity != null) return Result.Failure(Errors.Currency.NameOrShortNameIsExisted);
 
         return Result.Success();
     }

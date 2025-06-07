@@ -4,6 +4,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({mode}) => {
     return {
+        server: {
+            hmr: false //disable auto-refresh
+        },
         plugins: [
             react(),
             {

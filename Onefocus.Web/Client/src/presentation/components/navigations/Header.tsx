@@ -3,6 +3,7 @@ import {Avatar} from "primereact/avatar";
 import {OverlayPanel} from "primereact/overlaypanel";
 import {useRef} from "react";
 import {MobileSidebarVisibleState} from "./SideMenu.interface";
+import {useWindows} from '../hooks/useWindows';
 
 type HeaderProps = {
     mobileVisibleState: MobileSidebarVisibleState;
@@ -10,6 +11,7 @@ type HeaderProps = {
 
 export const Header = (props: HeaderProps) => {
     const profilePanelRef = useRef<OverlayPanel>(null);
+    const {isMobile} = useWindows();
 
     const handleProfileClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         if (profilePanelRef.current)
@@ -19,13 +21,14 @@ export const Header = (props: HeaderProps) => {
     return (
         <div className="flex justify-content-between align-items-center surface-background-color px-3 py-3">
             <div className="flex align-items-center gap-2">
-                {/* Hamburger menu for mobile */}
-                <Button
-                    text
-                    icon="pi pi-bars"
-                    className="md:hidden"
-                    onClick={() => props.mobileVisibleState.setMobileSidebarVisible(true)}
-                />
+                {isMobile && (
+                    <Button
+                        text
+                        icon="pi pi-bars"
+                        className="text-primary-900"
+                        onClick={() => props.mobileVisibleState.setMobileSidebarVisible(true)}
+                    />
+                )}
 
                 {/* Action buttons (hidden on small screens if needed)
                 <div className="hidden md:flex gap-2">

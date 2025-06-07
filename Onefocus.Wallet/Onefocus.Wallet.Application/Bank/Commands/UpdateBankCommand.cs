@@ -40,8 +40,9 @@ internal sealed class UpdateBankCommandHandler(
         if (string.IsNullOrWhiteSpace(request.Name)) return Result.Failure(Errors.Bank.NameRequired);
 
         var spec = FindNameSpecification<Entity.Bank>.Create(request.Name).And(ExcludeIdsSpecification<Entity.Bank>.Create([request.Id]));
-        var queryResult = await unitOfWork.Bank.GetListBySpecificationAsync<Entity.Bank>(new(spec), cancellationToken);
+        var queryResult = await unitOfWork.Bank.GetBySpecificationAsync<Entity.Bank>(new(spec), cancellationToken);
         if (queryResult.IsFailure) return queryResult;
+        if (queryResult.Value.Entity is not null) return Result.Failure(Errors.Bank.NameIsExisted);
 
         return Result.Success();
     }

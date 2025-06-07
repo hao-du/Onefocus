@@ -2,7 +2,7 @@ import {Splitter, SplitterPanel} from 'primereact/splitter';
 import {BaseProps} from '../../props/BaseProps';
 import {SplitButtonActionItem} from '../../components/controls/buttons';
 import {WorkspaceActionBar} from '.';
-import {useMobileDetect} from '../../components/hooks/useMobileDetect';
+import {useWindows} from '../../components/hooks/useWindows';
 
 
 type WorkspaceLayoutProps = BaseProps & {
@@ -14,7 +14,7 @@ type WorkspaceLayoutProps = BaseProps & {
 };
 
 export const Workspace = (props: WorkspaceLayoutProps) => {
-    const isMobile = useMobileDetect();
+    const  { isMobile } = useWindows();
 
     return (
         <div className="h-full w-full">

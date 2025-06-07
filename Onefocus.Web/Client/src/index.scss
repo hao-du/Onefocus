@@ -1,6 +1,24 @@
 @use "primeflex/primeflex";
 @use "primeicons/primeicons.css";
 
+@mixin placement-class($positions, $value-map) {
+  @each $position in $positions {
+    @each $name, $value in $value-map {
+      .#{$position}-#{$name} {
+        #{$position}: #{$value};
+      }
+    }
+  }
+};
+$positions: ('top', 'bottom', 'left', 'right');
+$placement-dimensions: (
+  '1': 1rem,
+  '2': 2rem,
+  '3': 3rem,
+  '4': 4rem
+);
+@include placement-class($positions, $placement-dimensions);
+
 //normalize styles
 body {
   margin: 0;
@@ -15,7 +33,7 @@ body {
 }
 
 .surface-background-color {
-  background-color: var(--primary-200);
+  background-color: var(--primary-50);
 }
 
 .of-sidemenu {

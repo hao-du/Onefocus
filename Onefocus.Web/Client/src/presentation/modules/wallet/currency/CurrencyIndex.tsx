@@ -1,40 +1,44 @@
 import {Workspace} from '../../../layouts/workspace';
-import {useCreateBank, useGetAllBanks, useGetBankById, useUpdateBank} from '../../../../application/bank';
+import {useCreateCurrency, useGetAllCurrencies, useGetCurrencyById, useUpdateCurrency} from '../../../../application/currency';
 import {Button} from '../../../components/controls/buttons';
-import {Bank as DomainBank} from '../../../../domain/bank';
+import {Currency as DomainCurrency} from '../../../../domain/currency';
 import {Column, DataTable} from '../../../components/data';
-import {BankFormInput} from './BankFormInput';
-import {BankForm} from './BankForm';
+import {CurrencyFormInput} from './CurrencyFormInput';
+import {CurrencyForm} from './CurrencyForm';
 import React, {useCallback, useState} from 'react';
 import {useWindows} from '../../../components/hooks/useWindows';
 
-export const BankIndex = React.memo(() => {
+export const CurrencyIndex = React.memo(() => {
     const [showForm, setShowForm] = useState(false);
     const { showResponseToast } = useWindows();
 
-    const {entities: banks, isListLoading, refetch} = useGetAllBanks();
-    const { onCreateAsync, isCreating } = useCreateBank();
-    const { onUpdateAsync, isUpdating } = useUpdateBank();
-    const {entity: selectedBank, isEntityLoading, setBankId} = useGetBankById();
+    const { entities: currencies, isListLoading, refetch} = useGetAllCurrencies();
+    const { onCreateAsync, isCreating } = useCreateCurrency();
+    const { onUpdateAsync, isUpdating } = useUpdateCurrency();
+    const { entity: selectedCurrency, isEntityLoading, setCurrencyId} = useGetCurrencyById();
 
     const isPending = isListLoading || isEntityLoading || isCreating || isUpdating;
 
-    const onSubmit = useCallback(async (data: BankFormInput) => {
+    const onSubmit = useCallback(async (data: CurrencyFormInput) => {
         if (!data.id) {
             const response = await onCreateAsync({
-                name: data.name ?? '',
-                description: data.description
+                name: data.name!,
+                shortName: data.shortName!,
+                description: data.description,
+                isDefault: data.isDefault
             });
             showResponseToast(response, 'Saved successfully.');
             if(response.status === 200 && response.value.id) {
-                setBankId(response.value.id);
+                setCurrencyId(response.value.id);
             }
         }
         else {
             const response = await onUpdateAsync({
                 id: data.id,
-                name: data.name ?? '',
+                name: data.name!,
+                shortName: data.shortName!,
                 isActive: data.isActive,
+                isDefault: data.isDefault,
                 description: data.description
             });
             showResponseToast(response, 'Updated successfully.');
@@ -47,29 +51,33 @@ export const BankIndex = React.memo(() => {
 
     return (
         <Workspace
-            title="Banks"
+            title="Currencies"
             isPending={isPending}
             actionItems={[
                 {
                     label: 'Add',
                     icon: 'pi pi-plus',
                     command: () => {
-                        setBankId(null);
+                        setCurrencyId(null);
                         setShowForm(true);
                     }
                 }
             ]}
             leftPanel={
                 <div className="overflow-auto flex-1">
-                    <DataTable value={banks} isPending={isPending} className="p-datatable-sm">
+                    <DataTable value={currencies} isPending={isPending} className="p-datatable-sm">
                         <Column field="name" header="Name" />
+                        <Column field="shortName" header="Short name" />
+                        <Column field="isDefault" header="Default" body={(rowData: DomainCurrency) => {
+                            return rowData.isDefault ? <i className='pi pi-check-circle'></i> : <></>;
+                        }}/>
                         <Column field="description" header="Description" />
-                        <Column body={(bank: DomainBank) => (
+                        <Column body={(currency: DomainCurrency) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"
                                 onClick={() => {
-                                    setBankId(bank.id);
+                                    setCurrencyId(currency.id);
                                     setShowForm(true);
                                 }}
                             />
@@ -78,7 +86,7 @@ export const BankIndex = React.memo(() => {
                 </div>
             }
             rightPanel={
-                showForm ? <BankForm selectedBank={selectedBank} isPending={isPending} onSubmit={onSubmit}/> : <></>
+                showForm ? <CurrencyForm selectedCurrency={selectedCurrency} isPending={isPending} onSubmit={onSubmit}/> : <></>
             }
         />
     );

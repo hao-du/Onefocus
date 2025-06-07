@@ -12,5 +12,6 @@ export {
 
 export type {
     CreateCurrencyRequest,
-    UpdateCurrencyRequest
+    UpdateCurrencyRequest,
+    CreateCurrencyResponse
 } from './currency.interfaces'

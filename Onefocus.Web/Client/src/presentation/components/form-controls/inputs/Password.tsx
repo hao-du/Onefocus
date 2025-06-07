@@ -14,9 +14,15 @@ export const Password = <
 >(props: PasswordProps<TFieldValues, TName, TTransformedValues>) => {
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
-                    render={(controller) => {
-                        return <OneFocusPassword {...props} {...controller.field} id={controller.field.name}/>
-                    }}
+            render={(controller) => {
+                return <OneFocusPassword
+                    {...props}
+                    {...controller.field}
+                    id={controller.field.name}
+                    invalid={controller.fieldState.invalid}
+                    errorMessage={controller.fieldState.error?.message}
+                />
+            }}
         />
     );
 };
