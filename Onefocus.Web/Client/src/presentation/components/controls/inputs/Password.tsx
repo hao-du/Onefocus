@@ -21,7 +21,7 @@ export const Password = (props: PasswordProps) => {
                 invalid={props.invalid}
                 autoComplete="current-password"
             />
-            {props.description && (<small>{props.description}</small>)}
+            {props.description && (<small className="of-text-200">{props.description}</small>)}
             {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
         </div>
     );

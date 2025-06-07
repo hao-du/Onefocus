@@ -19,7 +19,7 @@ export const Switch = (props: SwitchProps) => {
                 disabled={props.isPending || props.readOnly}
                 invalid={props.invalid}
             />
-            {props.description && (<small>{props.description}</small>)}
+            {props.description && (<small className="of-text-200">{props.description}</small>)}
         </div>
     );
 };

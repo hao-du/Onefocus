@@ -1,7 +1,8 @@
-@use "primeflex/primeflex";
+@use 'sass:math';
+@use "primeflex/primeflex" as primeflex;
 @use "primeicons/primeicons.css";
 
-@mixin placement-class($positions, $value-map) {
+@mixin of-placement-class($positions, $value-map) {
   @each $position in $positions {
     @each $name, $value in $value-map {
       .#{$position}-#{$name} {
@@ -17,7 +18,17 @@ $placement-dimensions: (
   '3': 3rem,
   '4': 4rem
 );
-@include placement-class($positions, $placement-dimensions);
+@include of-placement-class($positions, $placement-dimensions);
+
+@mixin of-surface-class($name, $prop, $shades) {
+  @each $shade in $shades {
+    $i: index($shades, $shade);
+    .#{$name}-#{$shade} {
+      #{$prop}: light-dark(var(--surface-#{$shade}), var(--surface-#{nth($shades, 12 - $i)})) !important;
+    }
+  }
+}
+@include of-surface-class('of-text', 'color', primeflex.$surfaceShades);
 
 //normalize styles
 body {

@@ -21,7 +21,7 @@ export const Textarea = (props: TextareaProps) => {
                 rows={props.rows ?? 5}
                 invalid={props.invalid}
             />
-            {props.description && (<small>{props.description}</small>)}
+            {props.description && (<small className="of-text-200">{props.description}</small>)}
             {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
         </div>
     );

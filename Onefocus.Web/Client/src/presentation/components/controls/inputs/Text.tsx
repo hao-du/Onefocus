@@ -21,7 +21,7 @@ export const Text = (props: TextProps) => {
                 readOnly={props.isPending || props.readOnly}
                 autoComplete={props.autoComplete}
             />
-            {props.description && (<small>{props.description}</small>)}
+            {props.description && (<small className="of-text-200">{props.description}</small>)}
             {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
         </div>
     );
