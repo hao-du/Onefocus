@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Currency.Commands;
-using Onefocus.Wallet.Application.Currency.Queries;
+using Onefocus.Wallet.Application.UseCases.Currency.Commands;
+using Onefocus.Wallet.Application.UseCases.Currency.Queries;
 
 namespace Onefocus.Wallet.Api.Endpoints;
 

@@ -5,12 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
-using Onefocus.Membership.Application.ServiceBus;
 using Onefocus.Membership.Domain.Entities;
-using Onefocus.Membership.Domain.Repositories;
 using Onefocus.Membership.Infrastructure.Databases.DbContexts;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure;
 
@@ -42,9 +38,6 @@ public static class DependencyInjection
                 configure.ConfigureEndpoints(context);
             });
         });
-
-        services.AddScoped<IUserSyncedPublisher, UserSyncedPublisher>();
-        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

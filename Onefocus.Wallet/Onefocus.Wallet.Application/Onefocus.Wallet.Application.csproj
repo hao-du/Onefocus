@@ -7,9 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Transaction\Commands\**" />
-	  <EmbeddedResource Remove="Transaction\Commands\**" />
-	  <None Remove="Transaction\Commands\**" />
+	  <Compile Remove="UseCases\Transaction\Commands\**" />
+	  <EmbeddedResource Remove="UseCases\Transaction\Commands\**" />
+	  <None Remove="UseCases\Transaction\Commands\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Onefocus.Wallet.Infrastructure\Onefocus.Wallet.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Onefocus.Wallet.Domain\Onefocus.Wallet.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

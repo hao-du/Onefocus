@@ -1,16 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onefocus.Common.Configurations;
-using Onefocus.Wallet.Domain.Repositories.Read;
-using Onefocus.Wallet.Domain.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
-using Onefocus.Wallet.Infrastructure.Repositories.Read;
-using Onefocus.Wallet.Infrastructure.Repositories.Write;
-using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
-using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
-using System.Runtime.Serialization;
+using Onefocus.Wallet.Infrastructure.ServiceBus;
 
 namespace Onefocus.Wallet.Infrastructure;
 
@@ -32,17 +27,25 @@ public static class DependencyInjection
             option.UseNpgsql(writeDatabaseConnectionString)
         );
 
-        services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
-        services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
+        var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
+        services.AddMassTransit(busConfigure =>
+        {
+            busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
+            {
+                configure.InstanceId = messageBrokerSettings.InstanceId;
+            });
 
-        services.AddScoped<IUserReadRepository, UserReadRepository>();
-        services.AddScoped<IUserWriteRepository, UserWriteRepository>();
+            busConfigure.UsingRabbitMq((context, configure) =>
+            {
+                configure.Host(new Uri(messageBrokerSettings.Host), host =>
+                {
+                    host.Username(messageBrokerSettings.UserName);
+                    host.Password(messageBrokerSettings.Password);
+                });
 
-        services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
-        services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
-
-        services.AddScoped<IBankReadRepository, BankReadRepository>();
-        services.AddScoped<IBankWriteRepository, BankWriteRepository>();
+                configure.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }

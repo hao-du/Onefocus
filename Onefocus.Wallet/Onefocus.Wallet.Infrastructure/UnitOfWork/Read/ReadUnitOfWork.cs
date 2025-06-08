@@ -1,4 +1,5 @@
-﻿using Onefocus.Wallet.Domain.Repositories.Read;
+﻿using Onefocus.Wallet.Application.Interfaces.Repositories.Read;
+using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
 namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Read;

@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 using Onefocus.Wallet.Domain.Messages.Read.User;
-using Onefocus.Wallet.Domain.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Read;

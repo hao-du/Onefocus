@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
+using Onefocus.Membership.Application.Contracts;
+using Onefocus.Membership.Application.Interfaces.Repositories;
 using Onefocus.Membership.Domain;
 using Onefocus.Membership.Domain.Entities;
-using Onefocus.Membership.Domain.Messages;
-using Onefocus.Membership.Domain.Repositories;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 

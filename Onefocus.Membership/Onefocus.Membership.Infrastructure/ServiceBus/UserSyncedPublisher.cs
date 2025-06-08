@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Application.ServiceBus;
+using Onefocus.Membership.Application.Interfaces.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure.ServiceBus
 {

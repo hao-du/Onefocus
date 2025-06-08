@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Repositories.Write;
+using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
+using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
 namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Write;

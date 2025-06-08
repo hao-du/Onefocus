@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Application.User.Commands;
-using Onefocus.Membership.Application.User.Queries;
+using Onefocus.Membership.Application.UseCases.User.Commands;
+using Onefocus.Membership.Application.UseCases.User.Queries;
 
 namespace Onefocus.Membership.Api.Endpoints;
 

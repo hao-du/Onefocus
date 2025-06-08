@@ -5,7 +5,11 @@ using Onefocus.Common.Infrastructure;
 using Onefocus.Common.Utilities;
 using Onefocus.Membership.Api.Endpoints;
 using Onefocus.Membership.Application;
+using Onefocus.Membership.Application.Interfaces.Repositories;
+using Onefocus.Membership.Application.Interfaces.ServiceBus;
 using Onefocus.Membership.Infrastructure;
+using Onefocus.Membership.Infrastructure.Databases.Repositories;
+using Onefocus.Membership.Infrastructure.ServiceBus;
 using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +58,9 @@ services.AddAuthorization();
 services
     .AddInfrastructure(configuration)
     .AddApplication();
+
+services.AddScoped<IUserSyncedPublisher, UserSyncedPublisher>();
+services.AddScoped<IUserRepository, UserRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();
