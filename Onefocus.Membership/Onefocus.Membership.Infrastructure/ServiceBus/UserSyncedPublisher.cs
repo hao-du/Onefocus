@@ -1,26 +1,12 @@
 ﻿using MassTransit;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Exceptions;
-using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
+using Onefocus.Membership.Application.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure.ServiceBus
 {
-    public record UserSyncedPublishMessage(Guid Id, string Email, string FirstName, string LastName, string? Description, bool IsActive, string? EncryptedPassword): IUserSyncedMessage;
-
-    public interface IUserSyncedPublisher
-    {
-        Task<Result> Publish(IUserSyncedMessage message, CancellationToken cancellationToken = default);
-    }
-
     public class UserSyncedPublisher(
         IPublishEndpoint publishEndpoint
         , ILogger<UserSyncedPublisher> logger) : IUserSyncedPublisher

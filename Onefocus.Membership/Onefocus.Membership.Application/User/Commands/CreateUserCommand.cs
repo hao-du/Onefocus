@@ -1,39 +1,63 @@
-﻿using Onefocus.Common.Abstractions.Messages;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+﻿using Microsoft.AspNetCore.Http;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
 using Onefocus.Common.Security;
+using Onefocus.Membership.Application.ServiceBus;
+using Onefocus.Membership.Application.ServiceBus.Messages;
 using Onefocus.Membership.Domain;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.ServiceBus;
+using Onefocus.Membership.Domain.Repositories;
 using System.ComponentModel.DataAnnotations;
+using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Application.User.Commands;
-public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand
-{
-    public CreateUserRepositoryRequest ToObject() => new(Email, FirstName, LastName, Password);
-    public IUserSyncedMessage ToObject(Guid id, string encryptedPassword) => new UserSyncedPublishMessage(id, Email, FirstName, LastName, null, true, encryptedPassword);
 
-}
+public sealed record CreateUserCommandRequest(string Email, string FirstName, string LastName, string Password) : ICommand<CreateUserCommandResponse>;
+public sealed record CreateUserCommandResponse(Guid Id);
 
 internal sealed class CreateUserCommandHandler(
     IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
         , IAuthenticationSettings authenticationSettings
-    ) : ICommandHandler<CreateUserCommandRequest>
+        , IHttpContextAccessor httpContextAccessor
+    ) : CommandHandler<CreateUserCommandRequest, CreateUserCommandResponse>(httpContextAccessor)
 {
-    public async Task<Result> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<CreateUserCommandResponse>> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
-        if (validationResult.IsFailure) return validationResult;
+        if (validationResult.IsFailure) return Failure(validationResult);
 
-        var repoResult = await userRepository.CreateUserAsync(request.ToObject());
-        if (repoResult.IsFailure) return repoResult.Error;
+        var createUserResult = Entity.User.Create(
+            email: request.Email,
+            firstName: request.FirstName,
+            lastName: request.LastName
+        );
+        if (createUserResult.IsFailure) return Failure(createUserResult);
 
-        var encryptedPassword = await Cryptography.Encrypt(request.Password, authenticationSettings.SymmetricSecurityKey);
+        var repoResult = await userRepository.CreateUserAsync(new(createUserResult.Value, request.Password), cancellationToken);
+        if (repoResult.IsFailure) return Failure(repoResult);
 
-        var eventPublishResult = await userSyncedPublisher.Publish(request.ToObject(repoResult.Value, encryptedPassword), cancellationToken);
-        return eventPublishResult;
+        var eventPublishResult = await PublishUserCreationEvent(createUserResult.Value, request.Password, authenticationSettings.SymmetricSecurityKey, cancellationToken);
+        if (eventPublishResult.IsFailure) return Failure(eventPublishResult);
+
+        return Result.Success<CreateUserCommandResponse>(new(createUserResult.Value.Id));
+    }
+
+    private async Task<Result> PublishUserCreationEvent(Entity.User user, string password, string securityKey, CancellationToken cancellationToken = default)
+    {
+        var encryptedPassword = await Cryptography.Encrypt(password, securityKey);
+        var eventPublishResult = await userSyncedPublisher.Publish(new UserSyncedPublishMessage(
+            Id: user.Id,
+            Email: user.Email!,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Description: null,
+            IsActive: true,
+            EncryptedPassword: encryptedPassword
+        ), cancellationToken);
+        if (eventPublishResult.IsFailure) return Failure(eventPublishResult);
+
+        return Result.Success();
     }
 
     private static Result ValidateRequest(CreateUserCommandRequest request)

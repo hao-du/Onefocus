@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
+using Onefocus.Membership.Application.ServiceBus;
 using Onefocus.Membership.Domain.Entities;
+using Onefocus.Membership.Domain.Repositories;
 using Onefocus.Membership.Infrastructure.Databases.DbContexts;
 using Onefocus.Membership.Infrastructure.Databases.Repositories;
 using Onefocus.Membership.Infrastructure.ServiceBus;
@@ -19,16 +21,12 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<MembershipDbContext>(option => option.UseNpgsql(configuration.GetConnectionString("MembershipDatabase")));
-
-        var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
-
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(Commons.TokenProviderName);
 
-        services.AddScoped<IUserRepository, UserRepository>();
-
+        var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
         services.AddMassTransit(busConfigure =>
         {
             busConfigure.SetKebabCaseEndpointNameFormatter();
@@ -46,6 +44,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IUserSyncedPublisher, UserSyncedPublisher>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

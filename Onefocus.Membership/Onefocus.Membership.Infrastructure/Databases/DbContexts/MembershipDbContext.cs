@@ -5,7 +5,7 @@ using Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Infrastructure.Databases.DbContexts;
 
-internal class MembershipDbContext(DbContextOptions<MembershipDbContext> options) : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>(options)
+internal class MembershipDbContext(DbContextOptions<MembershipDbContext> options) : IdentityDbContext<User, IdentityRole<Guid>, Guid, IdentityUserClaim<Guid>, IdentityUserRole<Guid>, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -15,18 +15,6 @@ internal class MembershipDbContext(DbContextOptions<MembershipDbContext> options
         {
             user.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
             user.Property(u => u.LastName).IsRequired().HasMaxLength(50);
-            user.HasMany(u => u.UserRoles)
-                .WithOne(ur => ur.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
-        });
-
-        builder.Entity<Role>(role =>
-        {
-            role.HasMany(r => r.UserRoles)
-                .WithOne(ur => ur.Role)
-                .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
         });
     }
 }

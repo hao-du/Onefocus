@@ -1,34 +1,53 @@
-﻿using Onefocus.Common.Abstractions.Messages;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+﻿using Microsoft.AspNetCore.Http;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Membership.Application.ServiceBus;
+using Onefocus.Membership.Application.ServiceBus.Messages;
 using Onefocus.Membership.Domain;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.ServiceBus;
+using Onefocus.Membership.Domain.Repositories;
 using System.ComponentModel.DataAnnotations;
+using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand
-{
-    public UpdateUserRepositoryRequest ToObject() => new(Id, Email, FirstName, LastName);
-
-    public IUserSyncedMessage ToObject(Guid? id = null) => new UserSyncedPublishMessage(id ?? Id, Email, FirstName, LastName, null, true, null);
-}
+public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand;
 
 internal sealed class UpdateUserCommandHandler(
     IUserRepository userRepository
-        , IUserSyncedPublisher userSyncedPublisher) : ICommandHandler<UpdateUserCommandRequest>
+    , IUserSyncedPublisher userSyncedPublisher
+    , IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdateUserCommandRequest>(httpContextAccessor)
 {
-    public async Task<Result> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return validationResult;
 
-        var repoResult = await userRepository.UpdateUserAsync(request.ToObject());
-        if (repoResult.IsFailure) return repoResult.Error;
+        var userResult = await userRepository.GetUserByIdAsync(new(request.Id), cancellationToken);
+        if (userResult.IsFailure) return userResult;
+        if (userResult.Value.User is null) return Result.Failure(Errors.User.UserNotExist);
 
-        var eventPublishResult = await userSyncedPublisher.Publish(request.ToObject(request.Id), cancellationToken);
+        var updateUserResult = await userRepository.UpdateUserAsync(new(userResult.Value.User), cancellationToken);
+        if (updateUserResult.IsFailure) return updateUserResult;
+
+        var eventPublishResult = await PublishUserUpdateEvent(userResult.Value.User, cancellationToken);
         return eventPublishResult;
+    }
+
+    private async Task<Result> PublishUserUpdateEvent(Entity.User user, CancellationToken cancellationToken = default)
+    {
+        var eventPublishResult = await userSyncedPublisher.Publish(new UserSyncedPublishMessage(
+            Id: user.Id,
+            Email: user.Email!,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Description: null,
+            IsActive: true,
+            EncryptedPassword: null
+        ), cancellationToken);
+        if (eventPublishResult.IsFailure) return eventPublishResult;
+
+        return Result.Success();
     }
 
     private static Result ValidateRequest(UpdateUserCommandRequest request)

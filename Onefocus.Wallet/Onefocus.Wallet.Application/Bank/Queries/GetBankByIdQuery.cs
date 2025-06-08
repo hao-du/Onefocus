@@ -1,46 +1,30 @@
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Messages.Read.Bank;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 
 namespace Onefocus.Wallet.Application.Bank.Queries;
 
-public sealed record GetBankByIdQueryRequest(Guid Id) : IQuery<GetBankByIdQueryResponse>
-{
-    internal GetBankByIdRequestDto CastToDto() => new(Id);
-}
-
-public sealed record GetBankByIdQueryResponse(Guid Id, string Name, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy)
-{
-    public static GetBankByIdQueryResponse? Cast(GetBankByIdResponseDto source)
-    {
-        if (source == null || source.Bank == null) return null;
-
-        var bankDto = new GetBankByIdQueryResponse(
-            Id: source.Bank.Id,
-            Name: source.Bank.Name,
-            IsActive: source.Bank.IsActive,
-            Description: source.Bank.Description,
-            ActionedOn: source.Bank.UpdatedOn ?? source.Bank.CreatedOn,
-            ActionedBy: source.Bank.UpdatedBy ?? source.Bank.CreatedBy
-        );
-
-        return bankDto;
-    }
-}
-
+public sealed record GetBankByIdQueryRequest(Guid Id) : IQuery<GetBankByIdQueryResponse>;
+public sealed record GetBankByIdQueryResponse(Guid Id, string Name, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
 internal sealed class GetBankByIdQueryHandler(IReadUnitOfWork unitOfWork) : IQueryHandler<GetBankByIdQueryRequest, GetBankByIdQueryResponse>
 {
     public async Task<Result<GetBankByIdQueryResponse>> Handle(GetBankByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var BankDtoResult = await unitOfWork.Bank.GetBankByIdAsync(request.CastToDto(), cancellationToken);
-        if (BankDtoResult.IsFailure)
-        {
-            return Result.Failure<GetBankByIdQueryResponse>(BankDtoResult.Errors);
-        }
+        var bankDtoResult = await unitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
+        if (bankDtoResult.IsFailure) return Result.Failure<GetBankByIdQueryResponse>(bankDtoResult.Errors);
 
-        return Result.Success(GetBankByIdQueryResponse.Cast(BankDtoResult.Value));
+        var bank = bankDtoResult.Value.Bank;
+        if (bank == null) return Result.Success<GetBankByIdQueryResponse>(null);
+
+        return Result.Success(new GetBankByIdQueryResponse(
+            Id: bank.Id,
+            Name: bank.Name,
+            IsActive: bank.IsActive,
+            Description: bank.Description,
+            ActionedOn: bank.UpdatedOn ?? bank.CreatedOn,
+            ActionedBy: bank.UpdatedBy ?? bank.CreatedBy
+        ));
     }
 }
 

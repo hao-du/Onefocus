@@ -6,125 +6,75 @@ using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Domain;
 using Onefocus.Membership.Domain.Entities;
+using Onefocus.Membership.Domain.Messages;
+using Onefocus.Membership.Domain.Repositories;
 
 namespace Onefocus.Membership.Infrastructure.Databases.Repositories;
 
-public interface IUserRepository
-{
-    Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync();
-    Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request);
-    Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request);
-    Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request);
-    Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request);
-}
-
 public sealed class UserRepository(UserManager<User> userManager
         , IUserStore<User> userStore
-        , ILogger<UserRepository> logger
-        , IPasswordHasher<User> passwordHasher) : BaseRepository<UserRepository>(logger), IUserRepository
+        , ILogger<UserRepository> logger) : BaseRepository<UserRepository>(logger), IUserRepository
 {
     private readonly IUserEmailStore<User> _emailStore = (IUserEmailStore<User>)userStore;
 
-    public async Task<Result<GetAllUsersRepositoryResponse>> GetAllUsersAsync()
+    public async Task<Result<GetAllUsersResponseDto>> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync<GetAllUsersRepositoryResponse>(async () =>
+        return await ExecuteAsync<GetAllUsersResponseDto>(async () =>
         {
-            var users = await userManager.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                .Select(u => new GetAllUsersRepositoryResponse.UserReponse(
-                    u.Id
-                    , u.UserName
-                    , u.Email
-                    , u.FirstName
-                    , u.LastName
-                    , u.UserRoles.Select(c => GetAllUsersRepositoryResponse.RoleRepsonse.CastFrom(c.Role)).ToList())
-                )
-                .ToListAsync();
+            var users = await userManager.Users.AsNoTracking().ToListAsync(cancellationToken);
 
-            return Result.Success(new GetAllUsersRepositoryResponse(users));
+            return Result.Success<GetAllUsersResponseDto>(new(users));
         });
     }
 
-    public async Task<Result<GetUserByIdRepositoryResponse>> GetUserByIdAsync(GetUserByIdRepositoryRequest request)
+    public async Task<Result<GetUserByIdResponseDto>> GetUserByIdAsync(GetUserByIdRequestDto request, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync<GetUserByIdRepositoryResponse>(async () =>
+        return await ExecuteAsync<GetUserByIdResponseDto>(async () =>
         {
-            var user = await userManager.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == request.Id);
-
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
             if (user == null)
             {
-                return Result.Failure<GetUserByIdRepositoryResponse>(Errors.User.UserNotExist);
+                return Result.Failure<GetUserByIdResponseDto>(Errors.User.UserNotExist);
             }
 
-            return Result.Success(GetUserByIdRepositoryResponse.CastFrom(user));
+            return Result.Success<GetUserByIdResponseDto>(new(user));
         });
     }
 
-    public async Task<Result<Guid>> CreateUserAsync(CreateUserRepositoryRequest request)
-    {
-        return await ExecuteAsync<Guid>(async () =>
-        {
-            var userResult = User.Create(request.ToObject());
-            if (userResult.IsFailure)
-            {
-                return Result.Failure<Guid>(userResult.Errors);
-            }
-
-            var user = userResult.Value;
-
-            await userStore.SetUserNameAsync(user, request.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, request.Email, CancellationToken.None);
-
-            var identityResult = await userManager.CreateAsync(user, request.Password);
-            if (!identityResult.Succeeded)
-            {
-                var identityError = identityResult.Errors.FirstOrDefault();
-                if (identityError != null)
-                {
-                    return Result.Failure<Guid>(new Error(identityError.Code, identityError.Description));
-                }
-                return Result.Failure<Guid>(CommonErrors.Unknown);
-            }
-
-            return Result.Success<Guid>(user.Id);
-        });
-    }
-
-    public async Task<Result> UpdateUserAsync(UpdateUserRepositoryRequest request)
+    public async Task<Result> CreateUserAsync(CreateUserRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
-            var user = await userManager.FindByIdAsync(request.Id.ToString());
-            if (user == null)
-            {
-                return Result.Failure(Errors.User.UserNotExist);
-            }
+            var user = request.User;
 
-            user.Update(request.ToObject());
+            await userStore.SetUserNameAsync(user, request.User.Email, cancellationToken);
+            await _emailStore.SetEmailAsync(user, request.User.Email, cancellationToken);
 
-            IdentityResult result = await userManager.UpdateAsync(user);
+            var identityResult = await userManager.CreateAsync(user, request.Password);
+            if (!identityResult.Succeeded) return GetIdentityErrorResult(identityResult);
 
             return Result.Success();
         });
     }
 
-    public async Task<Result<UpdatePasswordRepositoryResponse>> UpdatePasswordAsync(UpdatePasswordRepositoryRequest request)
+    public async Task<Result> UpdateUserAsync(UpdateUserRequestDto request, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync<UpdatePasswordRepositoryResponse>(async () =>
+        return await ExecuteAsync(async () =>
         {
-            var user = await userManager.FindByIdAsync(request.Id.ToString());
-            if (user == null) return Result.Failure<UpdatePasswordRepositoryResponse>(Errors.User.UserNotExist);
+            var identityResult = await userManager.UpdateAsync(request.User);
+            if (!identityResult.Succeeded) return GetIdentityErrorResult(identityResult);
 
-            var updatePasswordResult = user.Update(request.ToObject(), passwordHasher);
-            if (updatePasswordResult.IsFailure) return Result.Failure<UpdatePasswordRepositoryResponse>(updatePasswordResult.Error);
-
-            IdentityResult result = await userManager.UpdateAsync(user);
-            return Result.Success<UpdatePasswordRepositoryResponse>(UpdatePasswordRepositoryResponse.CastFrom(user));
+            return Result.Success();
         });
+    }
+
+    private static Result GetIdentityErrorResult(IdentityResult identityResult)
+    {
+        var identityErrors = identityResult.Errors.Select(e => new Error(e.Code, e.Description)).ToList();
+        if (identityErrors.Count > 0)
+        {
+            return Result.Failure(identityErrors);
+        }
+        return Result.Failure(CommonErrors.Unknown);
     }
 }

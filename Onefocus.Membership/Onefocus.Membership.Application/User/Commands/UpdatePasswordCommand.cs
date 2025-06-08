@@ -1,35 +1,35 @@
-﻿using Onefocus.Common.Abstractions.Messages;
-using Onefocus.Common.Configurations;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
-using Onefocus.Common.Security;
 using Onefocus.Membership.Domain;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.ServiceBus;
+using Onefocus.Membership.Domain.Repositories;
+using Entity = Onefocus.Membership.Domain.Entities;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
-public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand
-{
-    public UpdatePasswordRepositoryRequest ToObject() => new(Id, Password);
-}
+public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand;
 internal sealed class UpdatePasswordCommandHandler(
     IUserRepository userRepository
-        , IUserSyncedPublisher userSyncedPublisher
-        , IAuthenticationSettings authSettings
-    ) : ICommandHandler<UpdatePasswordCommandRequest>
+        , IPasswordHasher<Entity.User> passwordHasher
+        , IHttpContextAccessor httpContextAccessor
+    ) : CommandHandler<UpdatePasswordCommandRequest>(httpContextAccessor)
 {
-    public async Task<Result> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return validationResult;
 
-        var responseResult = await userRepository.UpdatePasswordAsync(request.ToObject());
-        if (responseResult.IsFailure) return responseResult;
+        var userResult = await userRepository.GetUserByIdAsync(new(request.Id), cancellationToken);
+        if (userResult.IsFailure) return userResult;
+        if (userResult.Value.User is null) return Result.Failure(Errors.User.UserNotExist);
 
-        var encryptedPassword = await Cryptography.Encrypt(request.Password, authSettings.SymmetricSecurityKey);
+        var hashedPassword = passwordHasher.HashPassword(userResult.Value.User, request.Password);
+        var updatePasswordResult = userResult.Value.User.Update(hashedPassword);
+        if (updatePasswordResult.IsFailure) return updatePasswordResult;
 
-        var eventPublishResult = await userSyncedPublisher.Publish(responseResult.Value.ToObject(encryptedPassword), cancellationToken);
-        return eventPublishResult;
+        var updateUserResult = await userRepository.UpdateUserAsync(new(userResult.Value.User), cancellationToken);
+        return updateUserResult;
     }
 
     private static Result ValidateRequest(UpdatePasswordCommandRequest request)

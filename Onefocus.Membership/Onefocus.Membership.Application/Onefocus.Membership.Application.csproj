@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Onefocus.Membership.Infrastructure\Onefocus.Membership.Infrastructure.csproj" />
+    <ProjectReference Include="..\Onefocus.Membership.Domain\Onefocus.Membership.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Domain.ValueObjects;
 
 namespace Onefocus.Membership.Domain.Entities;
 
 public class User : IdentityUser<Guid>
 {
-    private readonly List<UserRole> _userRoles = [];
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public virtual IReadOnlyList<UserRole> UserRoles => _userRoles;
 
     private User(string userName, string firstName, string lastName) : base(userName)
     {
@@ -18,31 +14,41 @@ public class User : IdentityUser<Guid>
         LastName = lastName;
     }
 
-    public static Result<User> Create(UserCommandObject createCommandObject)
+    public static Result<User> Create(string email, string firstName, string lastName)
     {
-        return new User(createCommandObject.Email, createCommandObject.FirstName, createCommandObject.LastName);
+        var validationResult = Validate(email, firstName, lastName);
+        if (validationResult.IsFailure) return Result.Failure<User>(validationResult.Errors);
+
+        return new User(email, firstName, lastName);
     }
 
-    public void Update(UserCommandObject valueObject)
+    public Result Update(string email, string firstName, string lastName)
     {
-        Email = valueObject.Email;
-        FirstName = valueObject.FirstName;
-        LastName = valueObject.LastName;
+        var validationResult = Validate(email, firstName, lastName);
+        if (validationResult.IsFailure) return validationResult;
+
+        Email = email;
+        FirstName = firstName;
+        LastName = lastName;
+
+        return Result.Success();
     }
 
-    public Result Update(PasswordCommandObject valueObject, IPasswordHasher<User> passwordHash)
+    public Result Update(string hashedPassword)
     {
-        if (passwordHash == null)
-        {
-            return Result.Failure(CommonErrors.NullReference);
-        }
+        if (hashedPassword == null) return Result.Failure(Errors.User.PasswordRequired);
+        if (Id == Guid.Empty) return Result.Failure(Errors.User.UserNotExist);
 
-        if (valueObject.Id == Guid.Empty)
-        {
-            return Result.Failure(Errors.User.IdRequired);
-        }
+        PasswordHash = hashedPassword;
 
-        PasswordHash = passwordHash.HashPassword(this, valueObject.Password);
+        return Result.Success();
+    }
+
+    private static Result Validate(string email, string firstName, string lastName)
+    {
+        if (string.IsNullOrEmpty(email)) return Result.Failure(Errors.User.EmailRequired);
+        if (string.IsNullOrEmpty(firstName)) return Result.Failure(Errors.User.FirstNameRequired);
+        if (string.IsNullOrEmpty(lastName)) return Result.Failure(Errors.User.LastNameRequired);
 
         return Result.Success();
     }

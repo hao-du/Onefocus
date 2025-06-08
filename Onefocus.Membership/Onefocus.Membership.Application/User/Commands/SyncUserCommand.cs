@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Infrastructure.Databases.Repositories;
-using Onefocus.Membership.Infrastructure.ServiceBus;
+using Onefocus.Membership.Application.ServiceBus;
+using Onefocus.Membership.Application.ServiceBus.Messages;
+using Onefocus.Membership.Domain.Repositories;
 
 namespace Onefocus.Membership.Application.User.Commands;
 
@@ -12,13 +14,14 @@ public sealed record SyncUserCommandRequest() : ICommand;
 internal sealed class SyncUserCommandHandler(
     IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
-        , ILogger<SyncUserCommandHandler> logger) : ICommandHandler<SyncUserCommandRequest>
+        , IHttpContextAccessor httpContextAccessor
+        , ILogger<SyncUserCommandHandler> logger) : CommandHandler<SyncUserCommandRequest>(httpContextAccessor)
 {
-    public async Task<Result> Handle(SyncUserCommandRequest request, CancellationToken cancellationToken)
+    public override async Task<Result> Handle(SyncUserCommandRequest request, CancellationToken cancellationToken)
     {
-        var allUsersResult = await userRepository.GetAllUsersAsync();
-        if (allUsersResult.IsFailure) return Result.Failure(allUsersResult.Error);
-        if (allUsersResult.Value == null)
+        var allUsersResult = await userRepository.GetAllUsersAsync(cancellationToken);
+        if (allUsersResult.IsFailure) return allUsersResult;
+        if (allUsersResult.Value.Users.Count <= 0)
         {
             logger.LogInformation("There are no users to sync.");
             return Result.Success();
@@ -28,7 +31,15 @@ internal sealed class SyncUserCommandHandler(
         var errors = new List<Error>();
         foreach (var user in allUsersResult.Value.Users)
         {
-            tasks.Add(Publish(user.ToObject(), errors));
+            tasks.Add(Publish(new UserSyncedPublishMessage(
+                Id: user.Id,
+                Email: user.Email!,
+                FirstName: user.FirstName,
+                LastName: user.LastName,
+                Description: null,
+                IsActive: true,
+                EncryptedPassword: null
+            ), errors, cancellationToken));
         }
         await Task.WhenAll(tasks);
 
@@ -39,9 +50,9 @@ internal sealed class SyncUserCommandHandler(
         return Result.Success();
     }
 
-    public async Task Publish(IUserSyncedMessage message, List<Error> errors)
+    private async Task Publish(IUserSyncedMessage message, List<Error> errors, CancellationToken cancellationToken)
     {
-        var eventResult = await userSyncedPublisher.Publish(message);
+        var eventResult = await userSyncedPublisher.Publish(message, cancellationToken);
         if (eventResult.IsFailure)
         {
             errors.Add(eventResult.Error);
