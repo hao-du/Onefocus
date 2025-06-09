@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Onefocus.Common.Abstractions.Messages;
+using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
+using Onefocus.Common.Security;
+using Onefocus.Membership.Application.Contracts.ServiceBus;
 using Onefocus.Membership.Application.Interfaces.Repositories;
+using Onefocus.Membership.Application.Interfaces.ServiceBus;
 using Onefocus.Membership.Domain;
 using Entity = Onefocus.Membership.Domain.Entities;
 
@@ -11,7 +15,9 @@ namespace Onefocus.Membership.Application.UseCases.User.Commands;
 public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand;
 internal sealed class UpdatePasswordCommandHandler(
     IUserRepository userRepository
+        , IUserSyncedPublisher userSyncedPublisher
         , IPasswordHasher<Entity.User> passwordHasher
+        , IAuthenticationSettings authenticationSettings
         , IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<UpdatePasswordCommandRequest>(httpContextAccessor)
 {
@@ -29,7 +35,26 @@ internal sealed class UpdatePasswordCommandHandler(
         if (updatePasswordResult.IsFailure) return updatePasswordResult;
 
         var updateUserResult = await userRepository.UpdateUserAsync(new(userResult.Value.User), cancellationToken);
-        return updateUserResult;
+        if (updateUserResult.IsFailure) return updateUserResult;
+
+        var eventPublishResult = await PublishUserCreationEvent(userResult.Value.User, request.Password, authenticationSettings.SymmetricSecurityKey, cancellationToken);
+        return eventPublishResult;
+    }
+
+    private async Task<Result> PublishUserCreationEvent(Entity.User user, string password, string securityKey, CancellationToken cancellationToken = default)
+    {
+        var encryptedPassword = await Cryptography.Encrypt(password, securityKey);
+        var eventPublishResult = await userSyncedPublisher.Publish(new UserSyncedPublishMessage(
+            Id: user.Id,
+            Email: user.Email!,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Description: null,
+            IsActive: true,
+            EncryptedPassword: encryptedPassword
+        ), cancellationToken);
+
+        return eventPublishResult;
     }
 
     private static Result ValidateRequest(UpdatePasswordCommandRequest request)

@@ -45,9 +45,8 @@ internal sealed class UpdateUserCommandHandler(
             IsActive: true,
             EncryptedPassword: null
         ), cancellationToken);
-        if (eventPublishResult.IsFailure) return eventPublishResult;
 
-        return Result.Success();
+        return eventPublishResult;
     }
 
     private static Result ValidateRequest(UpdateUserCommandRequest request)

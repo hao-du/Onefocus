@@ -19,22 +19,24 @@ internal sealed class CreateBankCommandHandler(
     public override async Task<Result<CreateBankCommandResponse>> Handle(CreateBankCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await ValidateRequest(request, cancellationToken);
-        if (validationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(validationResult.Errors);
+        if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
-        if (actionByResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(actionByResult.Errors); ;
+        if (actionByResult.IsFailure) return Failure(actionByResult); ;
 
         var bankCreationResult = Entity.Bank.Create(
             request.Name,
             request.Description,
             actionByResult.Value
         );
-        if (bankCreationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(bankCreationResult.Errors); ;
+        if (bankCreationResult.IsFailure) return Failure(bankCreationResult); ;
 
         var createResult = await writeUnitOfWork.Bank.AddBankAsync(new(bankCreationResult.Value), cancellationToken);
-        if (createResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(createResult.Errors); ;
+        if (createResult.IsFailure) return Failure(createResult); ;
 
-        await writeUnitOfWork.SaveChangesAsync(cancellationToken);
+        var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
+        if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
         return Result.Success<CreateBankCommandResponse>(new(bankCreationResult.Value.Id));
     }
 

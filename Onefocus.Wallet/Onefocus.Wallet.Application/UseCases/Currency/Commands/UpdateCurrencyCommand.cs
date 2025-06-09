@@ -47,8 +47,8 @@ internal sealed class UpdateCurrencyCommandHandler(
                 if (bulkUpdateResult.IsFailure) return bulkUpdateResult.Error;
             }
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return Result.Success();
+            var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
+            return saveChangesResult;
         }, cancellationToken);
 
         return transactionResult;

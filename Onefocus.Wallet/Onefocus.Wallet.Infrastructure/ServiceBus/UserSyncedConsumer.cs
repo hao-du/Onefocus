@@ -17,8 +17,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
             var getUserResult = await unitOfWork.User.GetUserByIdAsync(new(context.Message.Id));
             if (getUserResult.IsFailure)
             {
-                ErrorLog(getUserResult, logger, context.Message);
-                return;
+                LogError(getUserResult, context.Message);
             }
 
             var user = getUserResult.Value.User;
@@ -34,8 +33,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
                     );
                 if (createUserResult.IsFailure)
                 {
-                    ErrorLog(createUserResult, logger, context.Message);
-                    return;
+                    LogError(createUserResult, context.Message);
                 }
                 await unitOfWork.User.AddUserAsync(new(createUserResult.Value));
             }
@@ -51,23 +49,24 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
                     );
                 if (updateUserResult.IsFailure)
                 {
-                    ErrorLog(updateUserResult, logger, context.Message);
-                    return;
+                    LogError(updateUserResult, context.Message);
                 }
             }
 
-            await unitOfWork.SaveChangesAsync();
+            var saveChangesResult = await unitOfWork.SaveChangesAsync(context.CancellationToken);
+            if (saveChangesResult.IsFailure)
+            {
+                LogError(saveChangesResult, context.Message);
+            }
         }
 
-        private static void ErrorLog(Result result, ILogger logger, IUserSyncedMessage message)
+        private void LogError(Result result, IUserSyncedMessage message)
         {
-            logger.LogError("Cannot insert or update user '{param1} {param2} - {param3} - {param4}' through message queue with [Code: {param5} Error: {param6}]",
-               message.FirstName,
-               message.LastName,
-               message.Id,
-               message.Email,
-               result.Error.Code,
-               result.Error.Description);
+            foreach (var error in result.Errors)
+            {
+                logger.LogError("Error when synching User: {Email} with Code: {Code}, Description: {Description}", message.Email, error.Code, error.Description);
+            }
+            throw new InvalidOperationException($"Error when synching User: {message.Email} with Code: {result.Error.Code}, Description: {result.Error.Description}");
         }
     }
 }

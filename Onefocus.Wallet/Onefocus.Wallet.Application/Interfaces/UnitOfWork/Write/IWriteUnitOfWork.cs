@@ -9,7 +9,7 @@ public interface IWriteUnitOfWork
     IBankWriteRepository Bank { get; }
     ICurrencyWriteRepository Currency { get; }
 
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task<Result> WithTransactionAsync(Func<CancellationToken, Task<Result>> action, CancellationToken cancellationToken = default);
     Task<Result<TRepsonse>> WithTransactionAsync<TRepsonse>(Func<CancellationToken, Task<Result<TRepsonse>>> action, CancellationToken cancellationToken = default);
 }

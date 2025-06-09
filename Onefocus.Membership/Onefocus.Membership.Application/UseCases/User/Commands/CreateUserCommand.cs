@@ -55,9 +55,8 @@ internal sealed class CreateUserCommandHandler(
             IsActive: true,
             EncryptedPassword: encryptedPassword
         ), cancellationToken);
-        if (eventPublishResult.IsFailure) return Failure(eventPublishResult);
 
-        return Result.Success();
+        return eventPublishResult;
     }
 
     private static Result ValidateRequest(CreateUserCommandRequest request)

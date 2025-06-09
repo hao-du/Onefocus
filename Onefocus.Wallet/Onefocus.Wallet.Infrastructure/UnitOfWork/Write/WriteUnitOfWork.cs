@@ -20,48 +20,62 @@ public class WriteUnitOfWork(WalletWriteDbContext context
     public IBankWriteRepository Bank { get; } = bankRepository;
     public ICurrencyWriteRepository Currency { get; } = currencyRepository;
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            var effectedRows = await _context.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(effectedRows);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error in saving changes.");
+            return Result.Failure<int>(ex.ToErrors());
+        }
     }
 
     public async Task<Result> WithTransactionAsync(Func<CancellationToken, Task<Result>> action, CancellationToken cancellationToken = default)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-        try
+        using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
         {
-            var result = await action(cancellationToken);
-            if (result.IsSuccess)
+            try
             {
-                await transaction.CommitAsync(cancellationToken);
-            }
+                var result = await action(cancellationToken);
+                if (result.IsSuccess)
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                }
 
-            return result;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error in transaction");
-            return Result.Failure(ex.ToErrors());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error in transaction");
+                return Result.Failure(ex.ToErrors());
+            }
         }
     }
 
     public async Task<Result<TRepsonse>> WithTransactionAsync<TRepsonse>(Func<CancellationToken, Task<Result<TRepsonse>>> action, CancellationToken cancellationToken = default)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
-        try
+        using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
         {
-            var result = await action(cancellationToken);
-            if (result.IsSuccess)
+            try
             {
-                await transaction.CommitAsync(cancellationToken);
-            }
+                var result = await action(cancellationToken);
+                if (result.IsSuccess)
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                }
 
-            return result;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error in transaction");
-            return Result.Failure<TRepsonse>(ex.ToErrors());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error in transaction");
+                return Result.Failure<TRepsonse>(ex.ToErrors());
+            }
         }
     }
 }

@@ -18,19 +18,6 @@ builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-var corsPolicyName = "Onefocus CORS policy";
-if (builder.Environment.IsDevelopmentLike())
-{
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy(name: corsPolicyName,
-                          policy =>
-                          {
-                              policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                          });
-    });
-}
-
 services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(option =>
@@ -62,7 +49,6 @@ app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopmentLike())
 {
-    app.UseCors(corsPolicyName);
     app.UseSwagger();
     app.UseSwaggerUI();
 }

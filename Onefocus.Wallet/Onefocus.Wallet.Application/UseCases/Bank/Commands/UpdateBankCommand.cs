@@ -31,7 +31,9 @@ internal sealed class UpdateBankCommandHandler(
         var updateResult = getBankResult.Value.Bank.Update(request.Name, request.Description, request.IsActive, actionByResult.Value);
         if (updateResult.IsFailure) return updateResult;
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (saveChangesResult.IsFailure) return saveChangesResult;
+
         return Result.Success();
     }
 

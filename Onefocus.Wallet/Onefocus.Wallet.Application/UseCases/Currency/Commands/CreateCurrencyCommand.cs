@@ -20,10 +20,10 @@ internal sealed class CreateCurrencyCommandHandler(
     public override async Task<Result<CreateBankCommandResponse>> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await ValidateRequest(request, cancellationToken);
-        if (validationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(validationResult.Errors);
+        if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
-        if (actionByResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(actionByResult.Errors);
+        if (actionByResult.IsFailure) return Failure(actionByResult);
 
         var addCurrencyResult = Entity.Currency.Create(
                name: request.Name,
@@ -32,20 +32,22 @@ internal sealed class CreateCurrencyCommandHandler(
                isDefault: request.IsDefault,
                actionedBy: actionByResult.Value
             );
-        if (addCurrencyResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(addCurrencyResult.Errors);
+        if (addCurrencyResult.IsFailure) return Failure(addCurrencyResult);
 
         var repoResult = await unitOfWork.Currency.AddCurrencyAsync(new(addCurrencyResult.Value), cancellationToken);
-        if (repoResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(repoResult.Errors);
+        if (repoResult.IsFailure) return Failure(repoResult);
 
         var transactionResult = await unitOfWork.WithTransactionAsync<CreateBankCommandResponse>(async (cancellationToken) =>
         {
             if (request.IsDefault)
             {
                 var bulkUpdateResult = await unitOfWork.Currency.BulkMarkDefaultFlag(new([], true, false, actionByResult.Value), cancellationToken);
-                if (bulkUpdateResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(bulkUpdateResult.Errors);
+                if (bulkUpdateResult.IsFailure) return Failure(bulkUpdateResult);
             }
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
             return Result.Success<CreateBankCommandResponse>(new(addCurrencyResult.Value.Id));
         }, cancellationToken);
 
