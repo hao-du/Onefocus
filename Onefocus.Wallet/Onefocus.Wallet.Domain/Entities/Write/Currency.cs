@@ -5,7 +5,7 @@ using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class Currency : WriteEntityBase, INameField
+public class Currency : WriteEntityBase, INameField, IAggregateRoot
 {
     private readonly List<Transaction> _transactions = [];
     private readonly List<BankAccount> _bankAccounts = [];

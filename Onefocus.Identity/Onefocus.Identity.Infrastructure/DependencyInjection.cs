@@ -7,8 +7,6 @@ using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Identity.Domain.Entities;
 using Onefocus.Identity.Infrastructure.Databases.DbContexts;
-using Onefocus.Identity.Infrastructure.Databases.Repositories;
-using Onefocus.Identity.Infrastructure.Security;
 using Onefocus.Identity.Infrastructure.ServiceBus;
 
 namespace Onefocus.Identity.Infrastructure;
@@ -47,10 +45,6 @@ public static class DependencyInjection
                 configure.ConfigureEndpoints(context);
             });
         });
-
-        services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ITokenRepository, TokenRepository>();
 
         return services;
     }

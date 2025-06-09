@@ -4,7 +4,6 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Messages.Write.Bank;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
@@ -32,7 +31,7 @@ internal sealed class CreateBankCommandHandler(
         );
         if (bankCreationResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(bankCreationResult.Errors); ;
 
-        var createResult = await writeUnitOfWork.Bank.AddBankAsync(new CreateBankRequestDto(bankCreationResult.Value), cancellationToken);
+        var createResult = await writeUnitOfWork.Bank.AddBankAsync(new(bankCreationResult.Value), cancellationToken);
         if (createResult.IsFailure) return Result.Failure<CreateBankCommandResponse>(createResult.Errors); ;
 
         await writeUnitOfWork.SaveChangesAsync(cancellationToken);

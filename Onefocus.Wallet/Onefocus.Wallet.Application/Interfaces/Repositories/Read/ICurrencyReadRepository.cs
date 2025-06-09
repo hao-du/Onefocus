@@ -1,6 +1,6 @@
 ﻿using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Messages.Read.Currency;
+using Onefocus.Wallet.Application.Contracts.Read.Currency;
 
 namespace Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 

@@ -1,6 +1,6 @@
 ﻿using Onefocus.Common.Results;
 
-namespace Onefocus.Identity.Infrastructure.Security;
+namespace Onefocus.Identity.Infrastructure;
 
 public static class Errors
 {

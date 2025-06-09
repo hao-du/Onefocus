@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Onefocus.Common.Results;
-using Onefocus.Identity.Application.Authentication.Commands;
+using Onefocus.Identity.Application.UseCases.Authentication.Commands;
 using static Onefocus.Common.Results.ResultExtensions;
 
 namespace Onefocus.Identity.Api.Endpoints;

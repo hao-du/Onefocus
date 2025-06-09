@@ -12,9 +12,14 @@ public class User(string userName, Guid membershipUserId) : IdentityUser<Guid>(u
         return new User(email, membershipUserId);
     }
 
-    public void Update(string email)
+    public void Update(string email, string? hashedPassword)
     {
         Email = email;
+
+        if (!string.IsNullOrEmpty(hashedPassword))
+        {
+            PasswordHash = hashedPassword;
+        }
     }
 }
 

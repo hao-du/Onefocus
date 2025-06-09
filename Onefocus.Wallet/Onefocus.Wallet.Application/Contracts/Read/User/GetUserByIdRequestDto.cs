@@ -1,5 +1,3 @@
-﻿using Onefocus.Common.Abstractions.Messages;
-
-namespace Onefocus.Wallet.Domain.Messages.Read.User;
+﻿namespace Onefocus.Wallet.Application.Contracts.Read.User;
 
 public sealed record GetUserByIdRequestDto(Guid Id);

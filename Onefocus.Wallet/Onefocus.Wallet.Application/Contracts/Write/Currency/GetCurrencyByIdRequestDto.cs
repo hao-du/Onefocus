@@ -1,3 +1,3 @@
-﻿namespace Onefocus.Wallet.Domain.Messages.Write.Currency;
+﻿namespace Onefocus.Wallet.Application.Contracts.Write.Currency;
 
 public sealed record GetCurrencyByIdRequestDto(Guid Id);

@@ -1,6 +1,6 @@
 ﻿using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Messages.Read.Bank;
+using Onefocus.Wallet.Application.Contracts.Read.Bank;
 
 namespace Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 

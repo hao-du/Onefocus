@@ -1,13 +1,15 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Onefocus.Common;
-using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
 using Onefocus.Common.Utilities;
 using Onefocus.Identity.Api.Endpoints;
 using Onefocus.Identity.Application;
+using Onefocus.Identity.Application.Interfaces.Repositories;
+using Onefocus.Identity.Application.Interfaces.Services;
 using Onefocus.Identity.Infrastructure;
+using Onefocus.Identity.Infrastructure.Databases.Repositories;
+using Onefocus.Identity.Infrastructure.Services;
 using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,10 @@ services.AddSwaggerGen(option =>
 
 services.AddAuthenticationSettings(configuration);
 services.AddAuthorization();
+
+services.AddScoped<ITokenService, TokenService>();
+services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<ITokenRepository, TokenRepository>();
 
 services
     .AddInfrastructure(configuration)
