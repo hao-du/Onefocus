@@ -22,7 +22,7 @@ internal sealed class CreateBankCommandHandler(
         if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
-        if (actionByResult.IsFailure) return Failure(actionByResult); ;
+        if (actionByResult.IsFailure) return Failure(actionByResult);
 
         var bankCreationResult = Entity.Bank.Create(
             request.Name,

@@ -8,7 +8,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
     {
         public void Configure(EntityTypeBuilder<TransactionItem> builder)
         {
-            builder.HasOne(ti => ti.Transaction).WithMany(t => t.TransactionItems).HasForeignKey(ti => ti.TransactionId);
+            builder.HasOne(ti => ti.Transaction)
+                .WithMany(t => t.TransactionItems)
+                .HasForeignKey(ti => ti.TransactionId);
 
             builder.HasQueryFilter(ti => ti.IsActive);
         }

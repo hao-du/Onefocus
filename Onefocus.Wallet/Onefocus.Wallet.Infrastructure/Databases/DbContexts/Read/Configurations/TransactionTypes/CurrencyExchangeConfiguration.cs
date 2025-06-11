@@ -8,9 +8,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
     {
         public void Configure(EntityTypeBuilder<CurrencyExchange> builder)
         {
-            builder.HasOne(ce => ce.BaseCurrency).WithMany(c => c.BaseCurrencyExchanges).HasForeignKey(ce => ce.BaseCurrencyId);
-            builder.HasOne(ce => ce.TargetCurrency).WithMany(c => c.TargetCurrencyExchanges).HasForeignKey(ce => ce.TargetCurrencyId);
-            builder.HasMany(ce => ce.Transactions).WithMany(t => t.CurrencyExchanges).UsingEntity(e => e.ToTable("CurrencyExchangeTransaction"));
+            builder.HasMany(ce => ce.CurrencyExchangeTransactions)
+                .WithOne(cet => cet.CurrencyExchange)
+                .HasForeignKey(ce => ce.CurrencyExchangeId);
 
             builder.HasQueryFilter(ce => ce.IsActive);
         }

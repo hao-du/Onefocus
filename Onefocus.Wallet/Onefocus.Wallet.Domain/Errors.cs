@@ -30,6 +30,17 @@ public static class Errors
         public static readonly Error NameIsExisted = new("NameIsExisted", "Bank name is existed.");
     }
 
+    public static class Counterparty
+    {
+        public static readonly Error FullNameRequired = new("FullNameRequired", "Full name is required.");
+    }
+
+    public static class Option
+    {
+        public static readonly Error NameRequired = new("NameRequired", "Option name is required.");
+    }
+
+
     public static class BankAccount
     {
         public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
@@ -43,6 +54,7 @@ public static class Errors
         public static readonly Error TransactionExists = new("TransactionExists", "Transaction exists.");
         public static readonly Error TransactedOnRequired = new("TransactedOnRequired", "Transaction date is required.");
         public static readonly Error InvalidTransaction = new("InvalidTransaction", "Transaction is invalid.");
+        public static readonly Error ClosedOnCannotBeAFutureDate = new("ClosedOnCannotBeAFutureDate", "This bank account cannot be closed before the effective date.");
     }
 
     public static class CurrencyExchange

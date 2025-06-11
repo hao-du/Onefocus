@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Onefocus.Wallet.Domain.Entities.Enums
 {
     public enum PeerTransferType
     {
-        [Description("Lend")]
+        [Description("Lent")]
         Lend = 100,
-        [Description("Borrow")]
+        [Description("Borrowed")]
         Borrow = 200,
-        [Description("Give")]
+        [Description("Gave")]
         Give = 300,
-        [Description("Receive")]
+        [Description("Received")]
         Receive = 400,
     }
 }

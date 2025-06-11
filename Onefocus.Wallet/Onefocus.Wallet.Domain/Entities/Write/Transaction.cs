@@ -1,29 +1,30 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
-public class Transaction : WriteEntityBase
+public class Transaction : WriteEntityBase, IOwnerUserField
 {
-    private readonly List<BankAccount> _bankAccounts = [];
-    private readonly List<PeerTransfer> _peerTransfers = [];
-    private readonly List<CurrencyExchange> _currencyExchanges = [];
+    private readonly List<BankAccountTransaction> _bankAccountTransactions = [];
+    private readonly List<PeerTransferTransaction> _peerTransferTransactions = [];
+    private readonly List<CurrencyExchangeTransaction> _currencyExchangeTransactions = [];
     private readonly List<CashFlow> _cashFlows = [];
     private readonly List<TransactionItem> _transactionItems = [];
 
     public decimal Amount { get; private set; }
-    public DateTimeOffset TransactedOn { get; protected set; }
-    public Guid UserId { get; protected set; }
-    public Guid CurrencyId { get; protected set; }
+    public DateTimeOffset TransactedOn { get; private set; }
+    public Guid CurrencyId { get; private set; }
+    public Guid OwnerUserId { get; private set; }
 
-    public User User { get; protected set; } = default!;
-    public Currency Currency { get; protected set; } = default!;
+    public User OwnerUser { get; private set; } = default!;
+    public Currency Currency { get; private set; } = default!;
 
-    public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
-    public IReadOnlyCollection<PeerTransfer> PeerTransfers => _peerTransfers.AsReadOnly();
-    public IReadOnlyCollection<CurrencyExchange> CurrencyExchanges => _currencyExchanges.AsReadOnly();
+    public IReadOnlyCollection<BankAccountTransaction> BankAccountTransactions => _bankAccountTransactions.AsReadOnly();
+    public IReadOnlyCollection<PeerTransferTransaction> PeerTransferTransactions => _peerTransferTransactions.AsReadOnly();
+    public IReadOnlyCollection<CurrencyExchangeTransaction> CurrencyExchangeTransactions => _currencyExchangeTransactions.AsReadOnly();
     public IReadOnlyCollection<CashFlow> CashFlows => _cashFlows.AsReadOnly();
     public IReadOnlyCollection<TransactionItem> TransactionItems => _transactionItems.AsReadOnly();
 
@@ -31,17 +32,17 @@ public class Transaction : WriteEntityBase
     {
     }
 
-    protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid actionedBy)
+    protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
         Amount = amount;
         TransactedOn = transactedOn;
-        UserId = actionedBy;
+        OwnerUserId = ownerId;
         CurrencyId = currencyId;
     }
 
-    public static Result<Transaction> Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
+    public static Result<Transaction> Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
     {
         var validationResult = Validate(amount, currencyId, transactedOn);
         if (validationResult.IsFailure)
@@ -49,7 +50,7 @@ public class Transaction : WriteEntityBase
             return Result.Failure<Transaction>(validationResult.Errors);
         }
 
-        var transaction = new Transaction(amount, transactedOn, currencyId, description, actionedBy);
+        var transaction = new Transaction(amount, transactedOn, currencyId, description, ownerId, actionedBy);
         var itemCreationResult = transaction.UpsertTransactionItems(transactionItems, actionedBy);
         if (itemCreationResult.IsFailure)
         {

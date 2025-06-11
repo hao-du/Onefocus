@@ -9,17 +9,16 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
 {
     private readonly List<Transaction> _transactions = [];
     private readonly List<BankAccount> _bankAccounts = [];
-    private readonly List<CurrencyExchange> _baseCurrencyExchanges = [];
-    private readonly List<CurrencyExchange> _targetCurrencyExchanges = [];
 
     public string Name { get; private set; }
     public string ShortName { get; private set; }
     public bool IsDefault { get; private set; }
+    public Guid OwnerUserId { get; init; }
+
+    public User OwnerUser { get; init; } = default!;
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
-    public IReadOnlyCollection<CurrencyExchange> BaseCurrencyExchanges => _baseCurrencyExchanges.AsReadOnly();
-    public IReadOnlyCollection<CurrencyExchange> TargetCurrencyExchanges => _targetCurrencyExchanges.AsReadOnly();
 
     private Currency()
     {
@@ -27,16 +26,17 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
         ShortName = default!;
     }
 
-    private Currency(string name, string shortName, string? description, bool isDefault, Guid actionedBy)
+    private Currency(string name, string shortName, string? description, bool isDefault, Guid ownerId, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
         Name = name;
         ShortName = shortName;
         IsDefault = isDefault;
+        OwnerUserId = ownerId;
     }
 
-    public static Result<Currency> Create(string name, string shortName, string? description, bool isDefault, Guid actionedBy)
+    public static Result<Currency> Create(string name, string shortName, string? description, bool isDefault, Guid ownerId, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure)
@@ -44,7 +44,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
             return Result.Failure<Currency>(validationResult.Errors);
         }
 
-        return new Currency(name, shortName, description, isDefault, actionedBy);
+        return new Currency(name, shortName, description, isDefault, ownerId, actionedBy);
     }
 
     public Result Update(string name, string shortName, string? description, bool isDefault, bool isActive, Guid actionedBy)

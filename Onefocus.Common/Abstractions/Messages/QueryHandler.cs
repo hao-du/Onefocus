@@ -4,7 +4,7 @@ using Onefocus.Common.Results;
 
 namespace Onefocus.Common.Abstractions.Messages;
 
-public abstract class CommandHandler<TRequest>(IHttpContextAccessor httpContextAccessor) : MediatorHandler(httpContextAccessor), ICommandHandler<TRequest> where TRequest : ICommand
+public abstract class QueryHandler<TRequest>(IHttpContextAccessor httpContextAccessor) : MediatorHandler(httpContextAccessor), IQueryHandler<TRequest> where TRequest : IQuery
 {
     public virtual Task<Result> Handle(TRequest request, CancellationToken cancellationToken)
     {
@@ -12,7 +12,7 @@ public abstract class CommandHandler<TRequest>(IHttpContextAccessor httpContextA
     }
 }
 
-public abstract class CommandHandler<TRequest, TResponse>(IHttpContextAccessor httpContextAccessor) : MediatorHandler(httpContextAccessor), ICommandHandler<TRequest, TResponse> where TRequest : ICommand<TResponse>
+public abstract class QueryHandler<TRequest, TResponse>(IHttpContextAccessor httpContextAccessor) : MediatorHandler(httpContextAccessor), IQueryHandler<TRequest, TResponse> where TRequest : IQuery<TResponse>
 {
     public virtual Task<Result<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
     {

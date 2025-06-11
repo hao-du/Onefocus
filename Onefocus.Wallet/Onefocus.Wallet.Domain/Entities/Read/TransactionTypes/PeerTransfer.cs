@@ -1,15 +1,14 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
 
 namespace Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 
-public sealed class PeerTransfer : BaseTransaction
+public sealed class PeerTransfer : ReadEntityBase
 {
-    public Guid TransferredUserId { get; init; }
+    private readonly List<PeerTransferTransaction> _peerTransferTransactions = [];
+
     public PeerTransferStatus Status { get; init; }
     public PeerTransferType Type { get; init; }
 
-    public User TransferredUser { get; init; } = default!;
+    public IReadOnlyCollection<PeerTransferTransaction> PeerTransferTransactions => _peerTransferTransactions.AsReadOnly();
 }
-

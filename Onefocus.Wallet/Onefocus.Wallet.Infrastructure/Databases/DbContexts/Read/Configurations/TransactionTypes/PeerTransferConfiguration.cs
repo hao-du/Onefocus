@@ -8,8 +8,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
     {
         public void Configure(EntityTypeBuilder<PeerTransfer> builder)
         {
-            builder.HasOne(pt => pt.TransferredUser).WithMany(u => u.PeerTransfers).HasForeignKey(pt => pt.TransferredUserId);
-            builder.HasMany(pt => pt.Transactions).WithMany(t => t.PeerTransfers).UsingEntity(e => e.ToTable("PeerTransferTransaction"));
+            builder.HasMany(pt => pt.PeerTransferTransactions)
+                .WithOne(ptt => ptt.PeerTransfer)
+                .HasForeignKey(ptt => ptt.PeerTransferId);
 
             builder.HasQueryFilter(pt => pt.IsActive);
         }
