@@ -1,4 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
+using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -15,7 +16,7 @@ public sealed class BankAccountTransaction : WriteEntityBase
         Transaction = transaction;
     }
 
-    public static BankAccountTransaction Create(Transaction transaction)
+    public static Result<BankAccountTransaction> Create(Transaction transaction)
     {
         return new BankAccountTransaction(transaction);
     }

@@ -14,7 +14,7 @@ internal sealed class GetAllBanksQueryHandler(IReadUnitOfWork readUnitOfWork) : 
     public async Task<Result<GetAllBanksQueryResponse>> Handle(GetAllBanksQueryRequest request, CancellationToken cancellationToken)
     {
         var bankDtosResult = await readUnitOfWork.Bank.GetAllBanksAsync(cancellationToken);
-        if (bankDtosResult.IsFailure) return Result.Failure<GetAllBanksQueryResponse>(bankDtosResult.Errors);
+        if (bankDtosResult.IsFailure) return bankDtosResult.Failure<GetAllBanksQueryResponse>();
         var bankDtos = bankDtosResult.Value.Banks;
         return Result.Success(new GetAllBanksQueryResponse(
             Banks: [.. bankDtos.Select(c => new BankQueryResponse(

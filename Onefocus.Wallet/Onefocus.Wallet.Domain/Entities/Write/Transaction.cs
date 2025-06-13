@@ -45,17 +45,11 @@ public class Transaction : WriteEntityBase, IOwnerUserField
     public static Result<Transaction> Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
     {
         var validationResult = Validate(amount, currencyId, transactedOn);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<Transaction>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<Transaction>)validationResult;
 
         var transaction = new Transaction(amount, transactedOn, currencyId, description, ownerId, actionedBy);
         var itemCreationResult = transaction.UpsertTransactionItems(transactionItems, actionedBy);
-        if (itemCreationResult.IsFailure)
-        {
-            return Result.Failure<Transaction>(itemCreationResult.Errors);
-        }
+        if (itemCreationResult.IsFailure) return (Result<Transaction>)itemCreationResult;
 
         return transaction;
     }

@@ -30,10 +30,7 @@ public sealed class Option : WriteEntityBase, INameField, IOwnerUserField, IAggr
     public static Result<Option> Create(string name, string? description, Guid ownerId, Guid actionedBy)
     {
         var validationResult = Validate(name);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<Option>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<Option>)validationResult;
 
         return new Option(name, description, ownerId, actionedBy);
     }
@@ -59,7 +56,7 @@ public sealed class Option : WriteEntityBase, INameField, IOwnerUserField, IAggr
     {
         if (string.IsNullOrEmpty(name))
         {
-            return Result.Failure<Bank>(Errors.Option.NameRequired);
+            return Result.Failure(Errors.Option.NameRequired);
         }
 
         return Result.Success();

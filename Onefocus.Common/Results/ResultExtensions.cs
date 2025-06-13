@@ -8,6 +8,11 @@ public static class ResultExtensions
     public sealed record HttpOkResults(int Status, string Title, string Type);
     public sealed record HttpOkResults<TResponse>(int Status, string Title, string Type, TResponse Value);
 
+    public static Result<TResultTarget> Failure<TResultTarget>(this Result result)
+    {
+        return Result.Failure<TResultTarget>(result.Errors);
+    }
+
     public static IResult ToResult(this Result result)
     {
         if (result.IsFailure)

@@ -46,7 +46,7 @@ internal sealed class RefreshTokenCommandHandler(
 
         AppendCookie("r", refreshTokenResult.Value.RefreshToken);
 
-        return Result.Success(new RefreshTokenCommandReponse(accessTokenResult.Value.AccessToken));
+        return Result.Success<RefreshTokenCommandReponse>(new(accessTokenResult.Value.AccessToken));
     }
 }
 

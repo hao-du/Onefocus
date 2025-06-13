@@ -29,10 +29,7 @@ public sealed class PeerTransfer : BaseTransaction, IAggregateRoot
     public static Result<PeerTransfer> Create(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
     {
         var validationResult = Validate(transferredUserId);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<PeerTransfer>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
 
         return new PeerTransfer(transferredUserId, status, type, description, actionedBy);
     }

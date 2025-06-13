@@ -30,6 +30,7 @@ internal sealed class CreateCurrencyCommandHandler(
                shortName: request.ShortName,
                description: request.Description,
                isDefault: request.IsDefault,
+               ownerId: actionByResult.Value,
                actionedBy: actionByResult.Value
             );
         if (addCurrencyResult.IsFailure) return Failure(addCurrencyResult);
@@ -37,7 +38,7 @@ internal sealed class CreateCurrencyCommandHandler(
         var repoResult = await unitOfWork.Currency.AddCurrencyAsync(new(addCurrencyResult.Value), cancellationToken);
         if (repoResult.IsFailure) return Failure(repoResult);
 
-        var transactionResult = await unitOfWork.WithTransactionAsync<CreateBankCommandResponse>(async (cancellationToken) =>
+        var transactionResult = await unitOfWork.WithTransactionAsync(async (cancellationToken) =>
         {
             if (request.IsDefault)
             {
@@ -51,7 +52,7 @@ internal sealed class CreateCurrencyCommandHandler(
             return Result.Success<CreateBankCommandResponse>(new(addCurrencyResult.Value.Id));
         }, cancellationToken);
 
-        return Result.Failure<CreateBankCommandResponse>(transactionResult.Errors);
+        return transactionResult;
     }
 
     private async Task<Result> ValidateRequest(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)

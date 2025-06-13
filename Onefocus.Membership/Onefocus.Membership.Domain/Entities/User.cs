@@ -17,7 +17,7 @@ public class User : IdentityUser<Guid>
     public static Result<User> Create(string email, string firstName, string lastName)
     {
         var validationResult = Validate(email, firstName, lastName);
-        if (validationResult.IsFailure) return Result.Failure<User>(validationResult.Errors);
+        if (validationResult.IsFailure) return (Result<User>)validationResult;
 
         return new User(email, firstName, lastName);
     }

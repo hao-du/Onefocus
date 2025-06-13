@@ -31,10 +31,7 @@ public class TransactionItem : WriteEntityBase
     public static Result<TransactionItem> Create(string name, decimal amount, string? description, Guid actionedBy, Guid? transactionId = null)
     {
         var validationResult = Validate(name, amount);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<TransactionItem>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<TransactionItem>)validationResult;
 
         return new TransactionItem(name, amount, description, actionedBy, transactionId);
     }

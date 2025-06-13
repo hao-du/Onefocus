@@ -19,7 +19,7 @@ public sealed class UserRepository(UserManager<User> userManager
 
     public async Task<Result<GetAllUsersResponseDto>> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync<GetAllUsersResponseDto>(async () =>
+        return await ExecuteAsync(async () =>
         {
             var users = await userManager.Users.AsNoTracking().ToListAsync(cancellationToken);
 
@@ -29,7 +29,7 @@ public sealed class UserRepository(UserManager<User> userManager
 
     public async Task<Result<GetUserByIdResponseDto>> GetUserByIdAsync(GetUserByIdRequestDto request, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync<GetUserByIdResponseDto>(async () =>
+        return await ExecuteAsync(async () =>
         {
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
             if (user == null)

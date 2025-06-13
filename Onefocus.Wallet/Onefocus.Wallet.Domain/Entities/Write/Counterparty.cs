@@ -30,10 +30,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
     public static Result<Counterparty> Create(string fullName, string? email, string? phoneNumber, string? description, Guid ownerId, Guid actionedBy)
     {
         var validationResult = Validate(fullName);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<Counterparty>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<Counterparty>)validationResult;
 
         return new Counterparty(fullName, email, phoneNumber, description, ownerId, actionedBy);
     }
@@ -61,7 +58,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
     {
         if (string.IsNullOrEmpty(fullName))
         {
-            return Result.Failure<Bank>(Errors.Counterparty.FullNameRequired);
+            return Result.Failure(Errors.Counterparty.FullNameRequired);
         }
 
         return Result.Success();

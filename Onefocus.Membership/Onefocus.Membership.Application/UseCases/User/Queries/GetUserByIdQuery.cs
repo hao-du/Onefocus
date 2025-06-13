@@ -12,7 +12,7 @@ internal sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : 
     public async Task<Result<GetUserByIdQueryResponse>> Handle(GetUserByIdQueryRequest request, CancellationToken cancellationToken)
     {
         var userResult = await userRepository.GetUserByIdAsync(new(request.Id), cancellationToken);
-        if (userResult.IsFailure) return Result.Failure<GetUserByIdQueryResponse>(userResult.Errors);
+        if (userResult.IsFailure) return userResult.Failure<GetUserByIdQueryResponse>();
 
         var user = userResult.Value.User;
         if (user == null) return Result.Success<GetUserByIdQueryResponse>(null);

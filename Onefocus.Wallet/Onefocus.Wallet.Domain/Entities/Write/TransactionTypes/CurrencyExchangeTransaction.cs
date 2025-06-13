@@ -1,18 +1,25 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Wallet.Domain.Entities.Enums;
-using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
+using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
-public sealed class CurrencyExchangeTransaction : ReadEntityBase
+public sealed class CurrencyExchangeTransaction : WriteEntityBase
 {
     public Guid CurrencyExchangeId { get; init; }
     public Guid TransactionId { get; init; }
-    public Guid CurrencyId { get; init; }
-    public CurrencyExchangeType ExchangeType { get; init; } = default!;
+    public bool IsTarget { get; init; }
 
     public CurrencyExchange CurrencyExchange { get; init; } = default!;
     public Transaction Transaction { get; init; } = default!;
-    public Currency Currency { get; init; } = default!;
+
+    private CurrencyExchangeTransaction(Transaction transaction)
+    {
+        Transaction = transaction;
+    }
+
+    public static Result<CurrencyExchangeTransaction> Create(Transaction transaction)
+    {
+        return new CurrencyExchangeTransaction(transaction);
+    }
 }
 

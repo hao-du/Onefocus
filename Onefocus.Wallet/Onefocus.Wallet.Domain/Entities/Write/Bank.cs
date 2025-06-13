@@ -33,10 +33,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
     public static Result<Bank> Create(string name, string? description, Guid ownerId, Guid actionedBy)
     {
         var validationResult = Validate(name);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<Bank>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<Bank>)validationResult;
 
         return new Bank(name, description, ownerId, actionedBy);
     }
@@ -62,7 +59,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
     {
         if (string.IsNullOrEmpty(name))
         {
-            return Result.Failure<Bank>(Errors.Bank.NameRequired);
+            return Result.Failure(Errors.Bank.NameRequired);
         }
 
         return Result.Success();

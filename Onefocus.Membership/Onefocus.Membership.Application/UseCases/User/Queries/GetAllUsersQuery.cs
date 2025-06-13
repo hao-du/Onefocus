@@ -13,10 +13,7 @@ internal sealed class GetAllUsersQueryHandler(IUserRepository userRepository) : 
     public async Task<Result<GetAllUsersQueryResponse>> Handle(GetAllUsersQueryRequest request, CancellationToken cancellationToken)
     {
         var userResult = await userRepository.GetAllUsersAsync(cancellationToken);
-        if (userResult.IsFailure)
-        {
-            return Result.Failure<GetAllUsersQueryResponse>(userResult.Errors);
-        }
+        if (userResult.IsFailure) return userResult.Failure<GetAllUsersQueryResponse>();
 
         var users = userResult.Value.Users;
         return Result.Success<GetAllUsersQueryResponse>(new(

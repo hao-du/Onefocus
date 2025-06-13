@@ -39,10 +39,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
     public static Result<Currency> Create(string name, string shortName, string? description, bool isDefault, Guid ownerId, Guid actionedBy)
     {
         var validationResult = Validate(name, shortName);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<Currency>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<Currency>)validationResult;
 
         return new Currency(name, shortName, description, isDefault, ownerId, actionedBy);
     }
@@ -70,15 +67,15 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
     {
         if (string.IsNullOrEmpty(name))
         {
-            return Result.Failure<Currency>(Errors.Currency.NameRequired);
+            return Result.Failure(Errors.Currency.NameRequired);
         }
         if (string.IsNullOrEmpty(shortName))
         {
-            return Result.Failure<Currency>(Errors.Currency.ShortNameRequired);
+            return Result.Failure(Errors.Currency.ShortNameRequired);
         }
         if (shortName.Length < 3 || shortName.Length > 4)
         {
-            return Result.Failure<Currency>(Errors.Currency.ShortNameLengthMustBeThreeOrFour);
+            return Result.Failure(Errors.Currency.ShortNameLengthMustBeThreeOrFour);
         }
 
         return Result.Success();

@@ -25,7 +25,6 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     public IReadOnlyCollection<BankAccountTransaction> BankAccountTransactions => _bankAccountTransactions.AsReadOnly();
 
-
     private BankAccount()
     {
         AccountNumber = default!;
@@ -46,29 +45,17 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         OwnerUserId = ownerId;
     }
 
-    public static Result<BankAccount> Create(decimal amount, decimal? interestRate, Guid currencyId, string? accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool closeFlag, Guid bankId, Guid ownerId, Guid actionedBy)
+    public static Result<BankAccount> Create(decimal amount, decimal? interestRate, Guid currencyId, string? accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool closeFlag, Guid bankId, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
         var validationResult = Validate(amount, currencyId, issuedOn);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<BankAccount>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<BankAccount>)validationResult;
 
-        return new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, closedOn, closeFlag, bankId, ownerId, actionedBy);
-    }
+        var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, closedOn, closeFlag, bankId, ownerId, actionedBy);
 
-    public Result CreateInterest(decimal interest, DateTimeOffset transactedOn, string? description, Guid actionedBy)
-    {
-        var createTransactionResult = Transaction.Create(interest, transactedOn, CurrencyId, description, OwnerUserId, actionedBy);
-        if (createTransactionResult.IsFailure)
-        {
-            return createTransactionResult;
-        }
+        var upsertInterestsResult = bankAccount.UpsertInterests(actionedBy, transactionParams);
+        if (upsertInterestsResult.IsFailure) return (Result<BankAccount>)upsertInterestsResult;
 
-        var bankAccountTransaction = BankAccountTransaction.Create(createTransactionResult.Value);
-        _bankAccountTransactions.Add(bankAccountTransaction);
-
-        return Result.Success();
+        return Result.Success(bankAccount);
     }
 
     public Result Update(decimal amount, decimal? interestRate, Guid currencyId, string? accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, Guid bankId, bool isActive, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
@@ -91,28 +78,66 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         if (isActive) MarkActive(actionedBy);
         else MarkInactive(actionedBy);
 
-        var bankAccountTransactions = _bankAccountTransactions
-            .Where(bat => transactionParams.Any(param => param.Id == bat.TransactionId))
-            .ToList();
-        foreach (var bankAccountTransaction in bankAccountTransactions)
-        {
-            if (isActive) bankAccountTransaction.MarkActive(actionedBy);
-            else bankAccountTransaction.MarkInactive(actionedBy);
-        }
-        foreach (var transaction in bankAccountTransactions.Select(bat => bat.Transaction))
-        {
-            var param = transactionParams.FirstOrDefault(param => param.Id == transaction.Id);
-            if (param == null)
-            {
-                return Result.Failure(Errors.Transaction.InvalidTransaction);
-            }
+        var upsertInterestsResult = UpsertInterests(actionedBy, transactionParams);
+        if (upsertInterestsResult.IsFailure) return upsertInterestsResult;
 
-            var upsertResult = transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
-            if (upsertResult.IsFailure)
+        return Result.Success();
+    }
+
+    private Result UpsertInterests(Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
+    {
+        foreach (var param in transactionParams)
+        {
+            var isNew = param.Id.HasValue && param.Id != Guid.Empty;
+            if (isNew)
             {
-                return upsertResult;
+                var createDetailResult = CreateInterests(actionedBy, param);
+                if (createDetailResult.IsFailure) return createDetailResult;
+            }
+            else
+            {
+                var updateDetailResult = UpdateInterests(actionedBy, param);
+                if (updateDetailResult.IsFailure) return updateDetailResult;
             }
         }
+
+        return Result.Success();
+    }
+
+    private Result CreateInterests(Guid actionedBy, TransactionParams param)
+    {
+        var createTransactionResult = Transaction.Create(
+                    amount: param.Amount,
+                    transactedOn: param.TransactedOn,
+                    currencyId: param.CurrencyId,
+                    description: param.Description,
+                    ownerId: OwnerUserId,
+                    actionedBy: actionedBy,
+                    transactionItems: param.TransactionItems
+                );
+        if (createTransactionResult.IsFailure) return createTransactionResult;
+
+        var createBankAccountTransactionResult = BankAccountTransaction.Create(createTransactionResult.Value);
+        if (createBankAccountTransactionResult.IsFailure) return createBankAccountTransactionResult;
+
+        _bankAccountTransactions.Add(createBankAccountTransactionResult.Value);
+
+        return Result.Success();
+    }
+
+    private Result UpdateInterests(Guid actionedBy, TransactionParams param)
+    {
+        var bankAccountTransaction = _bankAccountTransactions.Find(bat => bat.TransactionId == param.Id);
+        if (bankAccountTransaction == null)
+        {
+            return Result.Failure(Errors.Transaction.InvalidTransaction);
+        }
+
+        if (param.IsActive) bankAccountTransaction.MarkActive(actionedBy);
+        else bankAccountTransaction.MarkInactive(actionedBy);
+
+        var updateResult = bankAccountTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
+        if (updateResult.IsFailure) return updateResult;
 
         return Result.Success();
     }

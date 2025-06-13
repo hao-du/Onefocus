@@ -43,10 +43,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     public static Result<User> Create(Guid? id, string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
         var validationResult = Validate(email, firstName, lastName);
-        if (validationResult.IsFailure)
-        {
-            return Result.Failure<User>(validationResult.Errors);
-        }
+        if (validationResult.IsFailure) return (Result<User>)validationResult;
 
         return new User(id, email, firstName, lastName, description, actionedBy);
     }
@@ -73,15 +70,15 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     {
         if (string.IsNullOrEmpty(email))
         {
-            return Result.Failure<User>(Errors.User.EmailRequired);
+            return Result.Failure(Errors.User.EmailRequired);
         }
         if (string.IsNullOrEmpty(firstName))
         {
-            return Result.Failure<User>(Errors.User.FirstNameRequired);
+            return Result.Failure(Errors.User.FirstNameRequired);
         }
         if (string.IsNullOrEmpty(lastName))
         {
-            return Result.Failure<User>(Errors.User.LastNameRequired);
+            return Result.Failure(Errors.User.LastNameRequired);
         }
 
         return Result.Success();

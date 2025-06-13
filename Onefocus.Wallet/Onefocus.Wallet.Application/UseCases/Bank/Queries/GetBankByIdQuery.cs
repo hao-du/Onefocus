@@ -12,7 +12,7 @@ internal sealed class GetBankByIdQueryHandler(IReadUnitOfWork unitOfWork) : IQue
     public async Task<Result<GetBankByIdQueryResponse>> Handle(GetBankByIdQueryRequest request, CancellationToken cancellationToken)
     {
         var bankDtoResult = await unitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
-        if (bankDtoResult.IsFailure) return Result.Failure<GetBankByIdQueryResponse>(bankDtoResult.Errors);
+        if (bankDtoResult.IsFailure) return bankDtoResult.Failure<GetBankByIdQueryResponse>();
 
         var bank = bankDtoResult.Value.Bank;
         if (bank == null) return Result.Success<GetBankByIdQueryResponse>(null);

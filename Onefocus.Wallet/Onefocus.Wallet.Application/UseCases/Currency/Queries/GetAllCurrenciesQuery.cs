@@ -13,7 +13,7 @@ internal sealed class GetAllCurrenciesQueryHandler(IReadUnitOfWork unitOfWork) :
     public async Task<Result<GetAllCurrenciesQueryResponse>> Handle(GetAllCurrenciesQueryRequest request, CancellationToken cancellationToken)
     {
         var currencyDtosResult = await unitOfWork.Currency.GetAllCurrenciesAsync(cancellationToken);
-        if (currencyDtosResult.IsFailure) return Result.Failure<GetAllCurrenciesQueryResponse>(currencyDtosResult.Errors);
+        if (currencyDtosResult.IsFailure) return currencyDtosResult.Failure<GetAllCurrenciesQueryResponse>();
         var currencyDtos = currencyDtosResult.Value.Currencies;
         return Result.Success(new GetAllCurrenciesQueryResponse(
             Currencies: [.. currencyDtos.Select(c => new CurrencyQueryResponse(
