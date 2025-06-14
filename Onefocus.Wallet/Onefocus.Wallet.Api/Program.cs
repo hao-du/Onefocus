@@ -68,6 +68,7 @@ services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
 services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
 services.AddScoped<IBankReadRepository, BankReadRepository>();
 services.AddScoped<IBankWriteRepository, BankWriteRepository>();
+services.AddScoped<ITransactionReadRepository, TransactionReadRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();

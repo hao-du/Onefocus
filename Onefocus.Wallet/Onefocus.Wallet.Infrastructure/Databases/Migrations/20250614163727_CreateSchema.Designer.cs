@@ -12,63 +12,18 @@ using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 {
     [DbContext(typeof(WalletWriteDbContext))]
-    [Migration("20250531074550_InitWalletSchema")]
-    partial class InitWalletSchema
+    [Migration("20250614163727_CreateSchema")]
+    partial class CreateSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BankAccountTransaction", b =>
-                {
-                    b.Property<Guid>("BankAccountsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TransactionsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("BankAccountsId", "TransactionsId");
-
-                    b.HasIndex("TransactionsId");
-
-                    b.ToTable("BankAccountTransaction", (string)null);
-                });
-
-            modelBuilder.Entity("CashFlowTransaction", b =>
-                {
-                    b.Property<Guid>("CashFlowsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TransactionsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("CashFlowsId", "TransactionsId");
-
-                    b.HasIndex("TransactionsId");
-
-                    b.ToTable("CastFlowTransaction", (string)null);
-                });
-
-            modelBuilder.Entity("CurrencyExchangeTransaction", b =>
-                {
-                    b.Property<Guid>("CurrencyExchangesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TransactionsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("CurrencyExchangesId", "TransactionsId");
-
-                    b.HasIndex("TransactionsId");
-
-                    b.ToTable("CurrencyExchangeTransaction", (string)null);
-                });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Bank", b =>
                 {
@@ -94,6 +49,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
@@ -102,7 +60,57 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerUserId");
+
                     b.ToTable("Bank");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Counterparty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId");
+
+                    b.ToTable("Counterparty");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Currency", b =>
@@ -132,6 +140,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasMaxLength(4)
@@ -145,16 +156,61 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerUserId");
+
                     b.ToTable("Currency");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Option", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OptionType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId");
+
+                    b.ToTable("Option");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
@@ -172,6 +228,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset>("TransactedOn")
                         .HasColumnType("timestamp with time zone");
 
@@ -181,12 +240,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<DateTimeOffset?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("Transaction");
                 });
@@ -198,7 +254,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
@@ -215,8 +272,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
@@ -241,17 +298,16 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("AccountNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<Guid>("BankId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool>("CloseFlag")
-                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("ClosedOn")
                         .HasColumnType("timestamp with time zone");
@@ -269,14 +325,21 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<decimal?>("InterestRate")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("InterestRate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTimeOffset>("IssuedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -290,7 +353,48 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.HasIndex("CurrencyId");
 
+                    b.HasIndex("OwnerUserId");
+
                     b.ToTable("BankAccount");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.BankAccountTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankAccountId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("BankAccountTransaction");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CashFlow", b =>
@@ -309,11 +413,14 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<int>("Direction")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<bool>("IsIncome")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -322,6 +429,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionId");
 
                     b.ToTable("CashFlow");
                 });
@@ -332,7 +441,37 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BaseCurrencyId")
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("ExchangeRate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CurrencyExchange");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchangeTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreatedBy")
@@ -341,17 +480,19 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<DateTimeOffset?>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<Guid>("CurrencyExchangeId")
+                        .HasColumnType("uuid");
 
-                    b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("numeric");
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("TargetCurrencyId")
+                    b.Property<bool>("IsTarget")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("UpdatedBy")
@@ -362,17 +503,20 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseCurrencyId");
+                    b.HasIndex("CurrencyExchangeId");
 
-                    b.HasIndex("TargetCurrencyId");
+                    b.HasIndex("TransactionId");
 
-                    b.ToTable("CurrencyExchange");
+                    b.ToTable("CurrencyExchangeTransaction");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransfer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CounterpartyId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CreatedBy")
@@ -391,9 +535,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("TransferredUserId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
@@ -405,9 +546,51 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TransferredUserId");
+                    b.HasIndex("CounterpartyId");
 
                     b.ToTable("PeerTransfer");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransferTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsInFlow")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("PeerTransferId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PeerTransferId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("PeerTransferTransaction");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.User", b =>
@@ -428,21 +611,21 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -455,83 +638,67 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("PeerTransferTransaction", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Bank", b =>
                 {
-                    b.Property<Guid>("PeerTransfersId")
-                        .HasColumnType("uuid");
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
+                        .WithMany("Banks")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<Guid>("TransactionsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("PeerTransfersId", "TransactionsId");
-
-                    b.HasIndex("TransactionsId");
-
-                    b.ToTable("PeerTransferTransaction", (string)null);
+                    b.Navigation("OwnerUser");
                 });
 
-            modelBuilder.Entity("BankAccountTransaction", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Counterparty", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.BankAccount", null)
-                        .WithMany()
-                        .HasForeignKey("BankAccountsId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
+                        .WithMany("Counterparties")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("OwnerUser");
                 });
 
-            modelBuilder.Entity("CashFlowTransaction", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Currency", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CashFlow", null)
-                        .WithMany()
-                        .HasForeignKey("CashFlowsId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
+                        .WithMany("Currencies")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("OwnerUser");
                 });
 
-            modelBuilder.Entity("CurrencyExchangeTransaction", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Option", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchange", null)
-                        .WithMany()
-                        .HasForeignKey("CurrencyExchangesId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
+                        .WithMany("Options")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("OwnerUser");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Transaction", b =>
                 {
                     b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Currency", "Currency")
                         .WithMany("Transactions")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "User")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
                         .WithMany("Transactions")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Currency");
 
-                    b.Navigation("User");
+                    b.Navigation("OwnerUser");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionItem", b =>
@@ -559,54 +726,96 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "OwnerUser")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Bank");
 
                     b.Navigation("Currency");
+
+                    b.Navigation("OwnerUser");
                 });
 
-            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchange", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.BankAccountTransaction", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Currency", "BaseCurrency")
-                        .WithMany("BaseCurrencyExchanges")
-                        .HasForeignKey("BaseCurrencyId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.BankAccount", "BankAccount")
+                        .WithMany("BankAccountTransactions")
+                        .HasForeignKey("BankAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Currency", "TargetCurrency")
-                        .WithMany("TargetCurrencyExchanges")
-                        .HasForeignKey("TargetCurrencyId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", "Transaction")
+                        .WithMany("BankAccountTransactions")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BaseCurrency");
+                    b.Navigation("BankAccount");
 
-                    b.Navigation("TargetCurrency");
+                    b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CashFlow", b =>
+                {
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", "Transaction")
+                        .WithMany("CashFlows")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchangeTransaction", b =>
+                {
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchange", "CurrencyExchange")
+                        .WithMany("CurrencyExchangeTransactions")
+                        .HasForeignKey("CurrencyExchangeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", "Transaction")
+                        .WithMany("CurrencyExchangeTransactions")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurrencyExchange");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransfer", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.User", "TransferredUser")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Counterparty", "Counterparty")
                         .WithMany("PeerTransfers")
-                        .HasForeignKey("TransferredUserId")
+                        .HasForeignKey("CounterpartyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TransferredUser");
+                    b.Navigation("Counterparty");
                 });
 
-            modelBuilder.Entity("PeerTransferTransaction", b =>
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransferTransaction", b =>
                 {
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransfer", null)
-                        .WithMany()
-                        .HasForeignKey("PeerTransfersId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransfer", "PeerTransfer")
+                        .WithMany("PeerTransferTransactions")
+                        .HasForeignKey("PeerTransferId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionsId")
+                    b.HasOne("Onefocus.Wallet.Domain.Entities.Write.Transaction", "Transaction")
+                        .WithMany("PeerTransferTransactions")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PeerTransfer");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Bank", b =>
@@ -614,25 +823,57 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                     b.Navigation("BankAccounts");
                 });
 
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Counterparty", b =>
+                {
+                    b.Navigation("PeerTransfers");
+                });
+
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Currency", b =>
                 {
                     b.Navigation("BankAccounts");
-
-                    b.Navigation("BaseCurrencyExchanges");
-
-                    b.Navigation("TargetCurrencyExchanges");
 
                     b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.Transaction", b =>
                 {
+                    b.Navigation("BankAccountTransactions");
+
+                    b.Navigation("CashFlows");
+
+                    b.Navigation("CurrencyExchangeTransactions");
+
+                    b.Navigation("PeerTransferTransactions");
+
                     b.Navigation("TransactionItems");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.BankAccount", b =>
+                {
+                    b.Navigation("BankAccountTransactions");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.CurrencyExchange", b =>
+                {
+                    b.Navigation("CurrencyExchangeTransactions");
+                });
+
+            modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.TransactionTypes.PeerTransfer", b =>
+                {
+                    b.Navigation("PeerTransferTransactions");
                 });
 
             modelBuilder.Entity("Onefocus.Wallet.Domain.Entities.Write.User", b =>
                 {
-                    b.Navigation("PeerTransfers");
+                    b.Navigation("BankAccounts");
+
+                    b.Navigation("Banks");
+
+                    b.Navigation("Counterparties");
+
+                    b.Navigation("Currencies");
+
+                    b.Navigation("Options");
 
                     b.Navigation("Transactions");
                 });

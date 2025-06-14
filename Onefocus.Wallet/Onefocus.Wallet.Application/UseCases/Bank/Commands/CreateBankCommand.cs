@@ -27,6 +27,7 @@ internal sealed class CreateBankCommandHandler(
         var bankCreationResult = Entity.Bank.Create(
             request.Name,
             request.Description,
+            ownerId: actionByResult.Value,
             actionByResult.Value
         );
         if (bankCreationResult.IsFailure) return Failure(bankCreationResult); ;

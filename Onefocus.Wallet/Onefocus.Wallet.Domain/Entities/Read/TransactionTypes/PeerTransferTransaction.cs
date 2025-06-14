@@ -6,12 +6,9 @@ public sealed class PeerTransferTransaction : ReadEntityBase
 {
     public Guid PeerTransferId { get; init; }
     public Guid TransactionId { get; init; }
-    public Guid CounterpartyId { get; init; }
     public bool IsInFlow { get; init; }
 
     public PeerTransfer PeerTransfer { get; init; } = default!;
     public Transaction Transaction { get; init; } = default!;
-    public Counterparty Counterparty { get; init; } = default!;
-
 }
 

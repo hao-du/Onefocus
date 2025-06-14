@@ -1,12 +1,4 @@
-﻿using Onefocus.Common.Abstractions.Messages;
-using Onefocus.Common.Exceptions.Errors;
-using Onefocus.Common.Results;
-using Onefocus.Common.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Onefocus.Common.Utilities;
 
 namespace Onefocus.Common.Abstractions.Domain;
 
@@ -28,15 +20,9 @@ public abstract class WriteEntityBase : EntityBase
         UpdatedBy = actionedBy;
     }
 
-    public void MarkActive(Guid actionedBy)
+    public void SetActiveFlag(bool isActive, Guid actionedBy)
     {
-        IsActive = true;
-        Update(actionedBy);
-    }
-
-    public void MarkInactive(Guid actionedBy)
-    {
-        IsActive = false;
+        IsActive = isActive;
         Update(actionedBy);
     }
 }

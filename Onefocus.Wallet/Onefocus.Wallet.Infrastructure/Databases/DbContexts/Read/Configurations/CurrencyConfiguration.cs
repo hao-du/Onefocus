@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations
 {
-    internal class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
+    internal class CurrencyConfiguration : BaseConfiguration<Currency>
     {
-        public void Configure(EntityTypeBuilder<Currency> builder)
+        public override void Configure(EntityTypeBuilder<Currency> builder)
         {
+            base.Configure(builder);
+
             builder.HasMany(c => c.Transactions)
                 .WithOne(t => t.Currency)
                 .HasForeignKey(t => t.CurrencyId);
@@ -19,8 +20,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
             builder.HasOne(c => c.OwnerUser)
                 .WithMany(u => u.Currencies)
                 .HasForeignKey(c => c.OwnerUserId);
-
-            builder.HasQueryFilter(c => c.IsActive);
         }
     }
 }

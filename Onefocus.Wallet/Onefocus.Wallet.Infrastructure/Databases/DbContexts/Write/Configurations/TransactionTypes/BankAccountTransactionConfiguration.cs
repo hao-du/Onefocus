@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
+using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
-namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations.TransactionTypes
+namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations.TransactionTypes
 {
     internal class BankAccountTransactionConfiguration : BaseConfiguration<BankAccountTransaction>
     {
         public override void Configure(EntityTypeBuilder<BankAccountTransaction> builder)
         {
             base.Configure(builder);
+
+            builder.Property(f => f.BankAccountId).IsRequired();
+            builder.Property(f => f.TransactionId).IsRequired();
 
             builder.HasOne(bat => bat.Transaction)
                 .WithMany(t => t.BankAccountTransactions)

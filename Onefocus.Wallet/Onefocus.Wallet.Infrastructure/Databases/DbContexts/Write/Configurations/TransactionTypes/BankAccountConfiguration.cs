@@ -1,21 +1,38 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations.TransactionTypes
 {
-    internal class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
+    internal class BankAccountConfiguration : BaseConfiguration<BankAccount>
     {
-        public void Configure(EntityTypeBuilder<BankAccount> builder)
+        public override void Configure(EntityTypeBuilder<BankAccount> builder)
         {
-            builder.Property(ba => ba.AccountNumber).HasMaxLength(50);
-            builder.Property(ba => ba.Description).HasMaxLength(255);
+            base.Configure(builder);
 
-            builder.HasOne(ba => ba.Bank).WithMany(b => b.BankAccounts).HasForeignKey(ba => ba.BankId);
-            builder.HasOne(ba => ba.Currency).WithMany(c => c.BankAccounts).HasForeignKey(ba => ba.CurrencyId);
-            builder.HasMany(ba => ba.Transactions).WithMany(t => t.BankAccounts).UsingEntity(e => e.ToTable("BankAccountTransaction"));
+            builder.Property(f => f.AccountNumber).HasMaxLength(50).IsRequired();
+            builder.Property(f => f.Amount).HasPrecision(18, 2).IsRequired();
+            builder.Property(f => f.InterestRate).HasPrecision(18, 2).IsRequired();
+            builder.Property(f => f.CurrencyId).IsRequired();
+            builder.Property(f => f.IssuedOn).IsRequired();
+            builder.Property(f => f.IsClosed).IsRequired();
+            builder.Property(f => f.BankId).IsRequired();
+            builder.Property(f => f.OwnerUserId).IsRequired();
 
-            builder.HasQueryFilter(ba => ba.IsActive);
+            builder.HasOne(ba => ba.OwnerUser)
+                .WithMany(u => u.BankAccounts)
+                .HasForeignKey(ba => ba.OwnerUserId);
+
+            builder.HasOne(ba => ba.Bank)
+                .WithMany(b => b.BankAccounts)
+                .HasForeignKey(ba => ba.BankId);
+
+            builder.HasOne(ba => ba.Currency)
+                .WithMany(c => c.BankAccounts)
+                .HasForeignKey(ba => ba.CurrencyId);
+
+            builder.HasMany(ba => ba.BankAccountTransactions)
+                .WithOne(bat => bat.BankAccount)
+                .HasForeignKey(bat => bat.BankAccountId);
         }
     }
 }

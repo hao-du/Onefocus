@@ -10,4 +10,8 @@
 	  <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="DomainServices\" />
+	</ItemGroup>
+
 </Project>

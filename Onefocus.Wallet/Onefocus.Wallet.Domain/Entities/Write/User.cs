@@ -13,9 +13,9 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     private readonly List<Currency> _currencies = [];
     private readonly List<Option> _options = [];
 
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string Email { get; private set; }
+    public string FirstName { get; private set; } = default!;
+    public string LastName { get; private set; } = default!;
+    public string Email { get; private set; } = default!;
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
@@ -26,9 +26,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
 
     private User()
     {
-        FirstName = default!;
-        LastName = default!;
-        Email = default!;
+        // Required for EF Core
     }
 
     private User(Guid? id, string email, string firstName, string lastName, string? description, Guid actionedBy)
@@ -61,8 +59,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
         Email = email;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return this;
     }

@@ -18,15 +18,18 @@ public sealed class TransactionReadRepository(
         return await ExecuteAsync(async () =>
         {
             var transactions = await context.Transaction
-                .Include(t => t.BankAccounts)
-                    .ThenInclude(ba => ba.Bank)
+                .Include(t => t.BankAccountTransactions)
+                    .ThenInclude(ba => ba.BankAccount)
+                        .ThenInclude(b => b.Bank)
                 .Include(t => t.CashFlows)
-                .Include(t => t.PeerTransfers)
-                    .ThenInclude(u => u.TransferredUser)
-                .Include(t => t.CurrencyExchanges)
-                    .ThenInclude(ce => ce.TargetCurrency)
-                    .ThenInclude(ce => ce.BaseCurrencyExchanges)
-                .Where(t => t.UserId == request.UserId)
+                .Include(t => t.PeerTransferTransactions)
+                    .ThenInclude(pt => pt.PeerTransfer)
+                        .ThenInclude(p => p.Counterparty)
+                .Include(t => t.CurrencyExchangeTransactions)
+                    .ThenInclude(et => et.CurrencyExchange)
+                .Include(t => t.TransactionItems)
+                .Include(t => t.Currency)
+                .Where(t => t.OwnerUserId == request.UserId)
                 .ToListAsync(cancellationToken);
 
             return Result.Success<GetAllTransactionsResponseDto>(new(transactions));

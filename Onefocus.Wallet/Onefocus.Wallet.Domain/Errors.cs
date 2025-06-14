@@ -62,6 +62,13 @@ public static class Errors
         public static readonly Error BaseCurrencyRequired = new("BaseCurrencyRequired", "Base currency is required.");
         public static readonly Error TargetCurrencyRequired = new("TargetCurrencyRequired", "Target currency is required.");
         public static readonly Error ExchangeRateMustGreaterThanZero = new("ExchangeRateMustGreaterThanZero", "Exchange rate must be greater than 0.");
+        public static readonly Error BaseAmountMustGreaterThanZero = new("BaseAmountMustGreaterThanZero", "Base amount must be greater than 0.");
+        public static readonly Error TargetAmountMustGreaterThanZero = new("TargetAmountMustGreaterThanZero", "Target amount must be greater than 0.");
+    }
+
+    public static class PeerTransfer
+    {
+        public static readonly Error CounterpartyRequired = new("CounterpartyRequired", "Counterparty is required.");
     }
 
     public static class TransactionItem

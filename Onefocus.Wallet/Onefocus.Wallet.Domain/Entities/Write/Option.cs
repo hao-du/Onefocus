@@ -17,6 +17,7 @@ public sealed class Option : WriteEntityBase, INameField, IOwnerUserField, IAggr
 
     private Option()
     {
+        // Required for EF Core
     }
 
     private Option(string name, string? description, Guid ownerId, Guid actionedBy)
@@ -46,8 +47,7 @@ public sealed class Option : WriteEntityBase, INameField, IOwnerUserField, IAggr
         Name = name;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return Result.Success();
     }

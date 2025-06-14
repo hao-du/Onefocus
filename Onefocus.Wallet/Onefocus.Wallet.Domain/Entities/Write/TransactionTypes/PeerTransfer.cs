@@ -5,103 +5,107 @@ using Onefocus.Wallet.Domain.Entities.Write.Params;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
-public sealed class PeerTransfer : BaseTransaction, IAggregateRoot
+public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 {
-    public Guid TransferredUserId { get; private set; }
-    public PeerTransferStatus Status { get; private set; }
-    public PeerTransferType Type { get; private set; }
+    private readonly List<PeerTransferTransaction> _peerTransferTransactions = [];
 
-    public User TransferredUser { get; private set; } = default!;
+    public Guid CounterpartyId { get; init; }
+    public PeerTransferStatus Status { get; init; }
+    public PeerTransferType Type { get; init; }
 
-    private PeerTransfer() : base()
+    public Counterparty Counterparty { get; init; } = default!;
+
+    public IReadOnlyCollection<PeerTransferTransaction> PeerTransferTransactions => _peerTransferTransactions.AsReadOnly();
+
+    private PeerTransfer()
     {
+        // Required for EF Core
     }
 
-    public PeerTransfer(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
+    private PeerTransfer(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
-        TransferredUserId = transferredUserId;
         Status = status;
         Type = type;
+        CounterpartyId = counterpartyId;
     }
 
-    public static Result<PeerTransfer> Create(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, string? description, Guid actionedBy)
+    public static Result<PeerTransfer> Create(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, Guid transferredUserId, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
         var validationResult = Validate(transferredUserId);
         if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
 
-        return new PeerTransfer(transferredUserId, status, type, description, actionedBy);
+        var peerTransfer = new PeerTransfer(status, type, counterpartyId, description, actionedBy);
+
+        peerTransfer.UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+
+        return Result.Success(peerTransfer);
     }
 
-    public Result CreateTransferTransaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid actionedBy)
+
+    private Result UpsertTransferDetails(Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        return CreateTransaction(amount, transactedOn, currencyId, description, actionedBy);
-    }
-
-    public Result Update(Guid transferredUserId, PeerTransferStatus status, PeerTransferType type, bool isActive, string? description, Guid actionedBy, IReadOnlyList<TransactionParams> transactions)
-    {
-        var validationResult = Validate(transferredUserId);
-        if (validationResult.IsFailure)
+        foreach (var param in transactionParams)
         {
-            return validationResult;
-        }
-
-        TransferredUserId = transferredUserId;
-        Status = status;
-        Type = type;
-        Description = description;
-
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
-
-        foreach (var transaction in transactions)
-        {
-            UpsertTransaction(transaction, actionedBy);
+            var isNew = param.Id.HasValue && param.Id != Guid.Empty;
+            if (isNew)
+            {
+                var createDetailResult = CreateTransferDetails(ownerId, actionedBy, param);
+                if (createDetailResult.IsFailure) return createDetailResult;
+            }
+            else
+            {
+                var updateDetailResult = UpdateTransferDetails(actionedBy, param);
+                if (updateDetailResult.IsFailure) return updateDetailResult;
+            }
         }
 
         return Result.Success();
     }
 
-    public Result Complete(Guid actionedBy)
+    private Result CreateTransferDetails(Guid ownerId, Guid actionedBy, TransferTransactionParams param)
     {
-        return ChangeStatus(PeerTransferStatus.Completed, actionedBy);
-    }
+        var createTransactionResult = Transaction.Create(
+            amount: param.Amount,
+            transactedOn: param.TransactedOn,
+            currencyId: param.CurrencyId,
+            description: param.Description,
+            ownerId: ownerId,
+            actionedBy: actionedBy,
+            transactionItems: param.TransactionItems
+        );
+        if (createTransactionResult.IsFailure) return createTransactionResult;
 
-    public Result MarkAsFailed(Guid actionedBy)
-    {
-        return ChangeStatus(PeerTransferStatus.Failed, actionedBy);
-    }
+        var createPeerTransferTransactionResult = PeerTransferTransaction.Create(createTransactionResult.Value, param.IsInFlow);
+        if (createPeerTransferTransactionResult.IsFailure) return createPeerTransferTransactionResult;
 
-    public Result MarkAsProcessing(Guid actionedBy)
-    {
-        return ChangeStatus(PeerTransferStatus.Processing, actionedBy);
-    }
-
-    public Result MarkAsPending(Guid actionedBy)
-    {
-        return ChangeStatus(PeerTransferStatus.Pending, actionedBy);
-    }
-
-    private Result ChangeStatus(PeerTransferStatus status, Guid actionedBy)
-    {
-        var validationResult = Validate(TransferredUserId);
-        if (validationResult.IsFailure)
-        {
-            return validationResult;
-        }
-
-        Status = status;
-        Update(actionedBy);
+        _peerTransferTransactions.Add(createPeerTransferTransactionResult.Value);
 
         return Result.Success();
     }
 
-    private static Result Validate(Guid transferredUserId)
+    private Result UpdateTransferDetails(Guid actionedBy, TransferTransactionParams param)
     {
-        if (transferredUserId == default)
+        var peerTransferTransaction = _peerTransferTransactions.Find(bat => bat.TransactionId == param.Id);
+        if (peerTransferTransaction == null)
         {
-            return Result.Failure(Errors.User.UserRequired);
+            return Result.Failure(Errors.Transaction.InvalidTransaction);
+        }
+
+        peerTransferTransaction.Update(isInFlow: param.IsInFlow, param.IsActive, actionedBy);
+
+        var updateResult = peerTransferTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
+        if (updateResult.IsFailure) return updateResult;
+
+        return Result.Success();
+    }
+
+    private static Result Validate(Guid counterpartyId)
+    {
+        if (counterpartyId == default)
+        {
+            return Result.Failure(Errors.PeerTransfer.CounterpartyRequired);
         }
 
         return Result.Success();

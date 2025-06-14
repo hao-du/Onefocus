@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations.TransactionTypes
 {
-    internal class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
+    internal class BankAccountConfiguration : BaseConfiguration<BankAccount>
     {
-        public void Configure(EntityTypeBuilder<BankAccount> builder)
+        public override void Configure(EntityTypeBuilder<BankAccount> builder)
         {
+            base.Configure(builder);
+
             builder.HasOne(ba => ba.OwnerUser)
                 .WithMany(u => u.BankAccounts)
                 .HasForeignKey(ba => ba.OwnerUserId);
@@ -23,8 +24,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
             builder.HasMany(ba => ba.BankAccountTransactions)
                 .WithOne(bat => bat.BankAccount)
                 .HasForeignKey(bat => bat.BankAccountId);
-
-            builder.HasQueryFilter(ba => ba.IsActive);
         }
     }
 }

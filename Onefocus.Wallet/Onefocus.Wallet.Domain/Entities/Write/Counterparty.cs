@@ -1,17 +1,22 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
+using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
 public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateRoot
 {
+    private readonly List<PeerTransfer> _peerTransfers = [];
+
     public string FullName { get; private set; } = default!;
     public string? Email { get; private set; }
     public string? PhoneNumber { get; private set; }
     public Guid OwnerUserId { get; private set; }
 
     public User OwnerUser { get; private set; } = default!;
+
+    public IReadOnlyCollection<PeerTransfer> PeerTransfers => _peerTransfers.AsReadOnly();
 
     private Counterparty()
     {
@@ -48,8 +53,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
         PhoneNumber = phoneNumber;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return Result.Success();
     }

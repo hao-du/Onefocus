@@ -11,6 +11,11 @@ public sealed class BankAccountTransaction : WriteEntityBase
     public BankAccount BankAccount { get; private set; } = default!;
     public Transaction Transaction { get; private set; } = default!;
 
+    private BankAccountTransaction()
+    {
+        // Required for EF Core
+    }
+
     private BankAccountTransaction(Transaction transaction)
     {
         Transaction = transaction;

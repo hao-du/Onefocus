@@ -1,9 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Enums;
-using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
-using System.Data;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
@@ -15,7 +12,12 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
 
     public Entity.Transaction Transaction { get; private set; } = default!;
 
-    public CashFlow(bool isIncome, string? description, Guid actionedBy)
+    private CashFlow()
+    {
+        // Required for EF Core
+    }
+
+    private CashFlow(bool isIncome, string? description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
@@ -28,7 +30,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
 
         var createTransactionResult = cashFlow.CreateTransaction(ownerId, actionedBy, TransactionParams.Create(
                 id: null,
-                amount: amount, 
+                amount: amount,
                 transactedOn: transactedOn,
                 currencyId: currencyId,
                 description: description,
@@ -45,8 +47,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
         IsIncome = isIncome;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         var updateTransactionResult = UpdateTransaction(actionedBy, TransactionParams.Create(
                 id: null,

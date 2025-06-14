@@ -9,8 +9,8 @@ public sealed class BankAccount : ReadEntityBase, IOwnerUserField
 
     public decimal Amount { get; init; }
     public Guid CurrencyId { get; init; }
-    public decimal? InterestRate { get; init; }
-    public string? AccountNumber { get; init; } = default!;
+    public decimal InterestRate { get; init; }
+    public string AccountNumber { get; init; } = default!;
 
     public DateTimeOffset IssuedOn { get; init; }
     public DateTimeOffset? ClosedOn { get; init; }

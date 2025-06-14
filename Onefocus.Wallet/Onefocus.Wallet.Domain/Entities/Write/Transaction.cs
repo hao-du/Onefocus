@@ -30,6 +30,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
     private Transaction()
     {
+        // Required for EF Core
     }
 
     protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy)
@@ -67,8 +68,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         TransactedOn = transactedOn;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return UpsertTransactionItems(transactionItems, actionedBy);
     }

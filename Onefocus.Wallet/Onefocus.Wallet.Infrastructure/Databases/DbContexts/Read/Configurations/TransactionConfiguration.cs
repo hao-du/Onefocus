@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Read;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations
 {
-    internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
+    internal class TransactionConfiguration : BaseConfiguration<Transaction>
     {
-        public void Configure(EntityTypeBuilder<Transaction> builder)
+        public override void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            base.Configure(builder);
             builder.HasMany(t => t.BankAccountTransactions).WithOne(bat => bat.Transaction).HasForeignKey(bat => bat.TransactionId);
             builder.HasMany(t => t.PeerTransferTransactions).WithOne(pt => pt.Transaction).HasForeignKey(pt => pt.TransactionId);
             builder.HasMany(t => t.CurrencyExchangeTransactions).WithOne(ce => ce.Transaction).HasForeignKey(ce => ce.TransactionId);
@@ -15,8 +15,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
             builder.HasMany(t => t.TransactionItems).WithOne(ti => ti.Transaction).HasForeignKey(ti => ti.TransactionId);
             builder.HasOne(t => t.OwnerUser).WithMany(u => u.Transactions).HasForeignKey(t => t.OwnerUserId);
             builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.OwnerUserId);
-
-            builder.HasQueryFilter(t => t.IsActive);
         }
     }
 }

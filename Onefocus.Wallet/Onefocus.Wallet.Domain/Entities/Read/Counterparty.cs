@@ -6,7 +6,7 @@ namespace Onefocus.Wallet.Domain.Entities.Read;
 
 public sealed class Counterparty : ReadEntityBase, IOwnerUserField
 {
-    private readonly List<PeerTransferTransaction> _peerTransferTransactions = [];
+    private readonly List<PeerTransfer> _peerTransfers = [];
 
     public string FullName { get; init; } = default!;
     public string? Email { get; init; }
@@ -15,5 +15,5 @@ public sealed class Counterparty : ReadEntityBase, IOwnerUserField
 
     public User OwnerUser { get; init; } = default!;
 
-    public IReadOnlyCollection<PeerTransferTransaction> PeerTransferTransactions => _peerTransferTransactions.AsReadOnly();
+    public IReadOnlyCollection<PeerTransfer> PeerTransfers => _peerTransfers.AsReadOnly();
 }

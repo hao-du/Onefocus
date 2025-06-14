@@ -1,25 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations
 {
-    internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
+    internal class TransactionConfiguration : BaseConfiguration<Transaction>
     {
-        public void Configure(EntityTypeBuilder<Transaction> builder)
+        public override void Configure(EntityTypeBuilder<Transaction> builder)
         {
-            builder.Property(t => t.Description).HasMaxLength(255);
+            base.Configure(builder);
+            builder.Property(t => t.Amount).HasPrecision(18, 2).IsRequired();
+            builder.Property(t => t.TransactedOn).IsRequired();
+            builder.Property(t => t.CurrencyId).IsRequired();
+            builder.Property(t => t.OwnerUserId).IsRequired();
 
-            builder.HasOne(t => t.User).WithMany(u => u.Transactions).HasForeignKey(t => t.Id);
-            builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.Id);
 
+            builder.HasMany(t => t.BankAccountTransactions).WithOne(bat => bat.Transaction).HasForeignKey(bat => bat.TransactionId);
+            builder.HasMany(t => t.PeerTransferTransactions).WithOne(pt => pt.Transaction).HasForeignKey(pt => pt.TransactionId);
+            builder.HasMany(t => t.CurrencyExchangeTransactions).WithOne(ce => ce.Transaction).HasForeignKey(ce => ce.TransactionId);
+            builder.HasMany(t => t.CashFlows).WithOne(cf => cf.Transaction).HasForeignKey(cf => cf.TransactionId);
             builder.HasMany(t => t.TransactionItems).WithOne(ti => ti.Transaction).HasForeignKey(ti => ti.TransactionId);
-            builder.HasMany(t => t.PeerTransfers).WithMany(pt => pt.Transactions).UsingEntity(e => e.ToTable("PeerTransferTransaction"));
-            builder.HasMany(t => t.BankAccounts).WithMany(ba => ba.Transactions).UsingEntity(e => e.ToTable("BankAccountTransaction"));
-            builder.HasMany(t => t.CashFlows).WithMany(cf => cf.Transactions).UsingEntity(e => e.ToTable("CastFlowTransaction"));
-            builder.HasMany(t => t.CurrencyExchanges).WithMany(ce => ce.Transactions).UsingEntity(e => e.ToTable("CurrencyExchangeTransaction"));
-
-            builder.HasQueryFilter(t => t.IsActive);
+            builder.HasOne(t => t.OwnerUser).WithMany(u => u.Transactions).HasForeignKey(t => t.OwnerUserId);
+            builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.OwnerUserId);
         }
     }
 }

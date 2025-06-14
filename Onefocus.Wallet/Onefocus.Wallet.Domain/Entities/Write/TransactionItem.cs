@@ -6,17 +6,17 @@ namespace Onefocus.Wallet.Domain.Entities.Write;
 public class TransactionItem : WriteEntityBase
 {
     public Guid TransactionId { get; private set; }
-    public string Name { get; private set; }
+    public string Name { get; private set; } = default!;
     public decimal Amount { get; private set; }
 
     public Transaction Transaction { get; private set; } = default!;
 
-    protected TransactionItem()
+    private TransactionItem()
     {
-        Name = default!;
+        // Required for EF Core
     }
 
-    protected TransactionItem(string name, decimal amount, string? description, Guid actionedBy, Guid? transactionId = null)
+    private TransactionItem(string name, decimal amount, string? description, Guid actionedBy, Guid? transactionId = null)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
@@ -48,8 +48,7 @@ public class TransactionItem : WriteEntityBase
         Amount = amount;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return Result.Success();
     }

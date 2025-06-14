@@ -10,7 +10,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 {
     private readonly List<BankAccount> _bankAccounts = [];
 
-    public string Name { get; private set; }
+    public string Name { get; private set; } = default!;
     public Guid OwnerUserId { get; private set; }
 
     public User OwnerUser { get; private set; } = default!;
@@ -19,7 +19,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
     private Bank()
     {
-        Name = default!;
+        // Required for EF Core
     }
 
     private Bank(string name, string? description, Guid ownerId, Guid actionedBy)
@@ -49,8 +49,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
         Name = name;
         Description = description;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return Result.Success();
     }

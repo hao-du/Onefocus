@@ -12,14 +12,20 @@ public sealed class CurrencyExchangeTransaction : WriteEntityBase
     public CurrencyExchange CurrencyExchange { get; init; } = default!;
     public Transaction Transaction { get; init; } = default!;
 
-    private CurrencyExchangeTransaction(Transaction transaction)
+    private CurrencyExchangeTransaction()
     {
-        Transaction = transaction;
+        // Required for EF Core
     }
 
-    public static Result<CurrencyExchangeTransaction> Create(Transaction transaction)
+    private CurrencyExchangeTransaction(Transaction transaction, bool isTarget)
     {
-        return new CurrencyExchangeTransaction(transaction);
+        Transaction = transaction;
+        IsTarget = isTarget;
+    }
+
+    public static Result<CurrencyExchangeTransaction> Create(Transaction transaction, bool isTarget)
+    {
+        return new CurrencyExchangeTransaction(transaction, isTarget);
     }
 }
 

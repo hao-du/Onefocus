@@ -1,18 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations.TransactionTypes
 {
-    internal class CashFlowConfiguration : IEntityTypeConfiguration<CashFlow>
+    internal class CashFlowConfiguration : BaseConfiguration<CashFlow>
     {
-        public void Configure(EntityTypeBuilder<CashFlow> builder)
+        public override void Configure(EntityTypeBuilder<CashFlow> builder)
         {
-            builder.Property(cf => cf.Description).HasMaxLength(255);
+            base.Configure(builder);
 
-            builder.HasMany(cf => cf.Transactions).WithMany(t => t.CashFlows).UsingEntity(e => e.ToTable("CastFlowTransaction"));
+            builder.Property(f => f.TransactionId).IsRequired();
+            builder.Property(f => f.IsIncome).IsRequired();
 
-            builder.HasQueryFilter(cf => cf.IsActive);
+            builder.HasOne(bat => bat.Transaction)
+                .WithMany(t => t.CashFlows)
+                .HasForeignKey(cf => cf.TransactionId);
         }
     }
 }

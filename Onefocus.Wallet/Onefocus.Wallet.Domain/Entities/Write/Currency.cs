@@ -10,20 +10,19 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
     private readonly List<Transaction> _transactions = [];
     private readonly List<BankAccount> _bankAccounts = [];
 
-    public string Name { get; private set; }
-    public string ShortName { get; private set; }
+    public string Name { get; private set; } = default!;
+    public string ShortName { get; private set; } = default!;
     public bool IsDefault { get; private set; }
-    public Guid OwnerUserId { get; init; }
+    public Guid OwnerUserId { get; private set; }
 
-    public User OwnerUser { get; init; } = default!;
+    public User OwnerUser { get; private set; } = default!;
 
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
     public IReadOnlyCollection<BankAccount> BankAccounts => _bankAccounts.AsReadOnly();
 
     private Currency()
     {
-        Name = default!;
-        ShortName = default!;
+        // Required for EF Core
     }
 
     private Currency(string name, string shortName, string? description, bool isDefault, Guid ownerId, Guid actionedBy)
@@ -57,8 +56,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
         Description = description;
         IsDefault = isDefault;
 
-        if (isActive) MarkActive(actionedBy);
-        else MarkInactive(actionedBy);
+        SetActiveFlag(isActive, actionedBy);
 
         return Result.Success();
     }

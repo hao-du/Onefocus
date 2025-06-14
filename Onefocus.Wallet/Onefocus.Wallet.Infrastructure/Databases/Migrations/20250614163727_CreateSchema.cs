@@ -6,18 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 {
     /// <inheritdoc />
-    public partial class InitWalletSchema : Migration
+    public partial class CreateSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Bank",
+                name: "CurrencyExchange",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ExchangeRate = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -26,45 +26,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bank", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CashFlow",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Direction = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CashFlow", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Currency",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ShortName = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Currency", x => x.Id);
+                    table.PrimaryKey("PK_CurrencyExchange", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,9 +34,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(254)", maxLength: 254, nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -88,18 +50,150 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bank",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bank", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bank_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Counterparty",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(254)", maxLength: 254, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Counterparty", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Counterparty_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Currency",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ShortName = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Currency", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Currency_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Option",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OptionType = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Option", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Option_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PeerTransfer",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CounterpartyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PeerTransfer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PeerTransfer_Counterparty_CounterpartyId",
+                        column: x => x.CounterpartyId,
+                        principalTable: "Counterparty",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BankAccount",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     CurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BankId = table.Column<Guid>(type: "uuid", nullable: false),
-                    InterestRate = table.Column<decimal>(type: "numeric", nullable: true),
-                    AccountNumber = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    InterestRate = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    AccountNumber = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     IssuedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ClosedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CloseFlag = table.Column<bool>(type: "boolean", nullable: false),
+                    IsClosed = table.Column<bool>(type: "boolean", nullable: false),
+                    BankId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -122,61 +216,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                         principalTable: "Currency",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CurrencyExchange",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    BaseCurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TargetCurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExchangeRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CurrencyExchange", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CurrencyExchange_Currency_BaseCurrencyId",
-                        column: x => x.BaseCurrencyId,
-                        principalTable: "Currency",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CurrencyExchange_Currency_TargetCurrencyId",
-                        column: x => x.TargetCurrencyId,
-                        principalTable: "Currency",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PeerTransfer",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransferredUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PeerTransfer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PeerTransfer_User_TransferredUserId",
-                        column: x => x.TransferredUserId,
+                        name: "FK_BankAccount_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -187,10 +229,10 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     TransactedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CurrencyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -202,14 +244,14 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 {
                     table.PrimaryKey("PK_Transaction", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transaction_Currency_Id",
-                        column: x => x.Id,
+                        name: "FK_Transaction_Currency_OwnerUserId",
+                        column: x => x.OwnerUserId,
                         principalTable: "Currency",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transaction_User_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Transaction_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -219,45 +261,53 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 name: "BankAccountTransaction",
                 columns: table => new
                 {
-                    BankAccountsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransactionsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BankAccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccountTransaction", x => new { x.BankAccountsId, x.TransactionsId });
+                    table.PrimaryKey("PK_BankAccountTransaction", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BankAccountTransaction_BankAccount_BankAccountsId",
-                        column: x => x.BankAccountsId,
+                        name: "FK_BankAccountTransaction_BankAccount_BankAccountId",
+                        column: x => x.BankAccountId,
                         principalTable: "BankAccount",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BankAccountTransaction_Transaction_TransactionsId",
-                        column: x => x.TransactionsId,
+                        name: "FK_BankAccountTransaction_Transaction_TransactionId",
+                        column: x => x.TransactionId,
                         principalTable: "Transaction",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CastFlowTransaction",
+                name: "CashFlow",
                 columns: table => new
                 {
-                    CashFlowsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransactionsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsIncome = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CastFlowTransaction", x => new { x.CashFlowsId, x.TransactionsId });
+                    table.PrimaryKey("PK_CashFlow", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CastFlowTransaction_CashFlow_CashFlowsId",
-                        column: x => x.CashFlowsId,
-                        principalTable: "CashFlow",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CastFlowTransaction_Transaction_TransactionsId",
-                        column: x => x.TransactionsId,
+                        name: "FK_CashFlow_Transaction_TransactionId",
+                        column: x => x.TransactionId,
                         principalTable: "Transaction",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -267,21 +317,29 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 name: "CurrencyExchangeTransaction",
                 columns: table => new
                 {
-                    CurrencyExchangesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransactionsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CurrencyExchangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsTarget = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CurrencyExchangeTransaction", x => new { x.CurrencyExchangesId, x.TransactionsId });
+                    table.PrimaryKey("PK_CurrencyExchangeTransaction", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CurrencyExchangeTransaction_CurrencyExchange_CurrencyExchan~",
-                        column: x => x.CurrencyExchangesId,
+                        column: x => x.CurrencyExchangeId,
                         principalTable: "CurrencyExchange",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CurrencyExchangeTransaction_Transaction_TransactionsId",
-                        column: x => x.TransactionsId,
+                        name: "FK_CurrencyExchangeTransaction_Transaction_TransactionId",
+                        column: x => x.TransactionId,
                         principalTable: "Transaction",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -291,21 +349,29 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 name: "PeerTransferTransaction",
                 columns: table => new
                 {
-                    PeerTransfersId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransactionsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PeerTransferId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsInFlow = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PeerTransferTransaction", x => new { x.PeerTransfersId, x.TransactionsId });
+                    table.PrimaryKey("PK_PeerTransferTransaction", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PeerTransferTransaction_PeerTransfer_PeerTransfersId",
-                        column: x => x.PeerTransfersId,
+                        name: "FK_PeerTransferTransaction_PeerTransfer_PeerTransferId",
+                        column: x => x.PeerTransferId,
                         principalTable: "PeerTransfer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PeerTransferTransaction_Transaction_TransactionsId",
-                        column: x => x.TransactionsId,
+                        name: "FK_PeerTransferTransaction_Transaction_TransactionId",
+                        column: x => x.TransactionId,
                         principalTable: "Transaction",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -317,8 +383,8 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -338,6 +404,11 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bank_OwnerUserId",
+                table: "Bank",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BankAccount_BankId",
                 table: "BankAccount",
                 column: "BankId");
@@ -348,44 +419,69 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BankAccountTransaction_TransactionsId",
+                name: "IX_BankAccount_OwnerUserId",
+                table: "BankAccount",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BankAccountTransaction_BankAccountId",
                 table: "BankAccountTransaction",
-                column: "TransactionsId");
+                column: "BankAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CastFlowTransaction_TransactionsId",
-                table: "CastFlowTransaction",
-                column: "TransactionsId");
+                name: "IX_BankAccountTransaction_TransactionId",
+                table: "BankAccountTransaction",
+                column: "TransactionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrencyExchange_BaseCurrencyId",
-                table: "CurrencyExchange",
-                column: "BaseCurrencyId");
+                name: "IX_CashFlow_TransactionId",
+                table: "CashFlow",
+                column: "TransactionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrencyExchange_TargetCurrencyId",
-                table: "CurrencyExchange",
-                column: "TargetCurrencyId");
+                name: "IX_Counterparty_OwnerUserId",
+                table: "Counterparty",
+                column: "OwnerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrencyExchangeTransaction_TransactionsId",
+                name: "IX_Currency_OwnerUserId",
+                table: "Currency",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CurrencyExchangeTransaction_CurrencyExchangeId",
                 table: "CurrencyExchangeTransaction",
-                column: "TransactionsId");
+                column: "CurrencyExchangeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PeerTransfer_TransferredUserId",
+                name: "IX_CurrencyExchangeTransaction_TransactionId",
+                table: "CurrencyExchangeTransaction",
+                column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Option_OwnerUserId",
+                table: "Option",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PeerTransfer_CounterpartyId",
                 table: "PeerTransfer",
-                column: "TransferredUserId");
+                column: "CounterpartyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PeerTransferTransaction_TransactionsId",
+                name: "IX_PeerTransferTransaction_PeerTransferId",
                 table: "PeerTransferTransaction",
-                column: "TransactionsId");
+                column: "PeerTransferId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_UserId",
+                name: "IX_PeerTransferTransaction_TransactionId",
+                table: "PeerTransferTransaction",
+                column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_OwnerUserId",
                 table: "Transaction",
-                column: "UserId");
+                column: "OwnerUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TransactionItem_TransactionId",
@@ -400,10 +496,13 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
                 name: "BankAccountTransaction");
 
             migrationBuilder.DropTable(
-                name: "CastFlowTransaction");
+                name: "CashFlow");
 
             migrationBuilder.DropTable(
                 name: "CurrencyExchangeTransaction");
+
+            migrationBuilder.DropTable(
+                name: "Option");
 
             migrationBuilder.DropTable(
                 name: "PeerTransferTransaction");
@@ -413,9 +512,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
             migrationBuilder.DropTable(
                 name: "BankAccount");
-
-            migrationBuilder.DropTable(
-                name: "CashFlow");
 
             migrationBuilder.DropTable(
                 name: "CurrencyExchange");
@@ -428,6 +524,9 @@ namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bank");
+
+            migrationBuilder.DropTable(
+                name: "Counterparty");
 
             migrationBuilder.DropTable(
                 name: "Currency");
