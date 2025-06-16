@@ -20,6 +20,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
 
     private Counterparty()
     {
+        // Required for EF Core
     }
 
     private Counterparty(string fullName, string? email, string? phoneNumber, string? description, Guid ownerId, Guid actionedBy)

@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'sass:list';
 @use "primeflex/primeflex" as primeflex;
 @use "primeicons/primeicons.css";
 
@@ -22,9 +23,15 @@ $placement-dimensions: (
 
 @mixin of-surface-class($name, $prop, $shades) {
   @each $shade in $shades {
-    $i: index($shades, $shade);
+    $i: list.index($shades, $shade);
     .#{$name}-#{$shade} {
-      #{$prop}: light-dark(var(--surface-#{$shade}), var(--surface-#{nth($shades, 12 - $i)})) !important;
+      #{$prop}: var(--surface-#{$shade}) !important;
+
+      @media (prefers-color-scheme: dark) {
+        .#{$name}-#{$shade} {
+          #{$prop}: var(--surface-#{list.nth($shades, 12 - $i)}) !important;
+        }
+      }
     }
   }
 }

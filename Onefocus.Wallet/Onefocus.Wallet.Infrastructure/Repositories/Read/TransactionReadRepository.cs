@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Contracts.Read.Bank;
+using Onefocus.Wallet.Application.Contracts.Read.Transaction;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
@@ -33,6 +33,21 @@ public sealed class TransactionReadRepository(
                 .ToListAsync(cancellationToken);
 
             return Result.Success<GetAllTransactionsResponseDto>(new(transactions));
+        });
+    }
+
+    public async Task<Result<GetCashFlowByIdResponseDto>> GetCashFlowByIdAsync(GetCashFlowByIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var transaction = await context.Transaction
+                .Include(t => t.CashFlows)
+                .Include(t => t.TransactionItems)
+                .Include(t => t.Currency)
+                .Where(t => t.OwnerUserId == request.UserId && t.Id == request.Id)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return Result.Success<GetCashFlowByIdResponseDto>(new(transaction));
         });
     }
 }

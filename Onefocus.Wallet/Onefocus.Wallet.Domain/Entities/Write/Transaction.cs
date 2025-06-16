@@ -33,7 +33,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         // Required for EF Core
     }
 
-    protected Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy)
+    private Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 

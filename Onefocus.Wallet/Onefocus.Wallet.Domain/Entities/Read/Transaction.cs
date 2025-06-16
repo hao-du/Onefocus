@@ -52,26 +52,42 @@ public class Transaction : ReadEntityBase, IOwnerUserField, IAggregateRoot
                 tags.Add("Interest");
                 break;
             case TransactionType.PeerTransfer:
-                var peerTransfer = _peerTransferTransactions.FirstOrDefault()?.PeerTransfer;
+                var peerTransferTransaction = _peerTransferTransactions.Single();
+                var peerTransfer = peerTransferTransaction.PeerTransfer;
                 if (peerTransfer == null) return [];
 
-                var transferType = peerTransfer.Type.GetAttribute<DescriptionAttribute>()?.Description;
-                var transferStatus = peerTransfer.Status.GetAttribute<DescriptionAttribute>()?.Description;
-
-                if (!string.IsNullOrEmpty(transferType))
-                    tags.Add(transferType);
+                switch (peerTransfer.Type)
+                {
+                    case PeerTransferType.Lend:
+                        tags.Add(peerTransferTransaction.IsInFlow ? "Collection" : "Lending");
+                        break;
+                    case PeerTransferType.Borrow:
+                        tags.Add(peerTransferTransaction.IsInFlow ? "Borrowing" : "Repayment");
+                        break;
+                    case PeerTransferType.Give:
+                        tags.Add("Giving");
+                        break;
+                    case PeerTransferType.Receive:
+                        tags.Add("Receiving");
+                        break;
+                }
 
                 if (!string.IsNullOrEmpty(peerTransfer.Counterparty?.FullName))
                     tags.Add(peerTransfer.Counterparty.FullName);
 
+                var transferStatus = peerTransfer.Status.GetAttribute<DescriptionAttribute>()?.Description;
                 if (!string.IsNullOrEmpty(transferStatus))
                     tags.Add(transferStatus);
                 break;
             case TransactionType.CurrencyExchange:
-                var exchange = CurrencyExchangeTransactions.First();
+                var exchange = CurrencyExchangeTransactions.Single();
+                tags.Add("Exchange");
+                tags.Add(exchange.IsTarget ? "Target" : "Source");
+                break;
+            case TransactionType.CashFlow:
+                var cashFlow = CashFlows.Single();
+                tags.Add(cashFlow.IsIncome ? "Income" : "Expense");
 
-                if (exchange.IsTarget) tags.Add("Target");
-                if (!exchange.IsTarget) tags.Add("Source");
 
                 break;
         }

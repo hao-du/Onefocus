@@ -10,9 +10,15 @@ internal static class TransactionEndpoints
     {
         var routes = app.MapGroup(prefix: string.Empty).RequireAuthorization();
 
-        routes.MapGet("trace/all", async (ISender sender) =>
+        routes.MapGet("transaction/all", async (ISender sender) =>
         {
             var result = await sender.Send(new GetAllTransactionsQueryRequest());
+            return result.ToResult();
+        });
+
+        routes.MapGet("transaction/cashflow/{id}", async (Guid id, ISender sender) =>
+        {
+            var result = await sender.Send(new GetCashFlowByIdQueryRequest(id));
             return result.ToResult();
         });
     }

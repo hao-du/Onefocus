@@ -9,7 +9,7 @@ namespace Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 public sealed record GetAllTransactionsQueryRequest() : IQuery<GetAllTransactionsQueryResponse>;
 
 public sealed record GetAllTransactionsQueryResponse(IReadOnlyList<TransactionQueryResponse> Transactions);
-public sealed record TransactionQueryResponse(Guid Id, DateTimeOffset TransactedOn, Guid CurrencyId, TransactionType Type, IReadOnlyList<string> Tags, decimal Amount, string? Description);
+public sealed record TransactionQueryResponse(Guid Id, DateTimeOffset TransactedOn, string CurrencyName, TransactionType Type, IReadOnlyList<string> Tags, decimal Amount, string? Description);
 
 internal sealed class GetAllTransactionsQueryHandler(
     IReadUnitOfWork unitOfWork,
@@ -29,7 +29,7 @@ internal sealed class GetAllTransactionsQueryHandler(
         var transactions = getTransactionsResult.Value.Transactions.Select(t => new TransactionQueryResponse(
             Id: t.Id,
             TransactedOn: t.TransactedOn,
-            CurrencyId: t.CurrencyId,
+            CurrencyName: t.Currency.ShortName,
             Type: t.GetTransactionType(),
             Tags: t.GetTransactionTags(),
             Amount: t.Amount,
