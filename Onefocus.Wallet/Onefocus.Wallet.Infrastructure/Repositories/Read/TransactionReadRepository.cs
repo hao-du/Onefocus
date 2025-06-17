@@ -9,9 +9,9 @@ using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
 
 public sealed class TransactionReadRepository(
-    ILogger<BankReadRepository> logger
+    ILogger<TransactionReadRepository> logger
         , WalletReadDbContext context
-    ) : BaseContextRepository<BankReadRepository>(logger, context), ITransactionReadRepository
+    ) : BaseContextRepository<TransactionReadRepository>(logger, context), ITransactionReadRepository
 {
     public async Task<Result<GetAllTransactionsResponseDto>> GetAllTransactionsAsync(GetAllTransactionsRequestDto request, CancellationToken cancellationToken = default)
     {
