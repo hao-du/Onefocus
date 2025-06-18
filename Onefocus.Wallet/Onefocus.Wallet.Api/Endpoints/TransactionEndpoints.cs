@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands;
 using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Api.Endpoints;
@@ -19,6 +20,18 @@ internal static class TransactionEndpoints
         routes.MapGet("transaction/cashflow/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetCashFlowByIdQueryRequest(id));
+            return result.ToResult();
+        });
+
+        routes.MapPost("transaction/cashflow/create", async (CreateCashFlowCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
+            return result.ToResult();
+        });
+
+        routes.MapPut("transaction/cashflow/update", async (UpdateCashFlowCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
             return result.ToResult();
         });
     }

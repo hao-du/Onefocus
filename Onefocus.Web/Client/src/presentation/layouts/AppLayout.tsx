@@ -36,7 +36,7 @@ export const AppLayout = (props: AppLayoutProps) => {
                     label: 'Your traces',
                     icon: 'pi pi-calculator',
                     command: () => {
-                        navigate("/wallet/traces");
+                        navigate("/wallet/transaction");
                     }
                 },
                 {

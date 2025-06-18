@@ -60,15 +60,18 @@ services.AddAuthenticationSettings(configuration);
 services.AddAuthorization();
 
 services.AddInfrastructure(configuration).AddApplication();
+
 services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
-services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
 services.AddScoped<IUserReadRepository, UserReadRepository>();
-services.AddScoped<IUserWriteRepository, UserWriteRepository>();
 services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
-services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
 services.AddScoped<IBankReadRepository, BankReadRepository>();
-services.AddScoped<IBankWriteRepository, BankWriteRepository>();
 services.AddScoped<ITransactionReadRepository, TransactionReadRepository>();
+
+services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
+services.AddScoped<IUserWriteRepository, UserWriteRepository>();
+services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
+services.AddScoped<IBankWriteRepository, BankWriteRepository>();
+services.AddScoped<ITransactionWriteRepository, TransactionWriteRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();
