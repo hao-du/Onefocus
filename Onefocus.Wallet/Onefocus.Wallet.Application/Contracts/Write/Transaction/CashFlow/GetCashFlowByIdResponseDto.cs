@@ -2,4 +2,4 @@
 
 namespace Onefocus.Wallet.Application.Contracts.Write.Transaction.CashFlow;
 
-public sealed record GetCashFlowByIdResponseDto(Entity.Transaction? Transaction);
+public sealed record GetCashFlowByIdResponseDto(Entity.TransactionTypes.CashFlow? CashFlow);

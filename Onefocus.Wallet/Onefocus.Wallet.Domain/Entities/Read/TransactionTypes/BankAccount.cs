@@ -14,7 +14,7 @@ public sealed class BankAccount : ReadEntityBase, IOwnerUserField
 
     public DateTimeOffset IssuedOn { get; init; }
     public DateTimeOffset? ClosedOn { get; init; }
-    public bool CloseFlag { get; init; }
+    public bool IsClosed { get; init; }
     public Guid BankId { get; init; }
     public Guid OwnerUserId { get; init; }
 
