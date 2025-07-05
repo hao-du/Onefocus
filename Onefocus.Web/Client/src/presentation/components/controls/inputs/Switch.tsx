@@ -1,5 +1,6 @@
 import {InputSwitch, InputSwitchChangeEvent} from 'primereact/inputswitch';
 import {InputProps} from '../../../props/InputProps';
+import {InputWrapper} from './InputWrapper';
 
 export type SwitchProps = InputProps & {
     checked: boolean;
@@ -9,8 +10,7 @@ export type SwitchProps = InputProps & {
 
 export const Switch = (props: SwitchProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label htmlFor={props.id}>{props.label}</label>
+        <InputWrapper {...props}>
             <InputSwitch
                 id={props.id}
                 className={`${props.className} p-inputwrapper-filled`}
@@ -19,7 +19,6 @@ export const Switch = (props: SwitchProps) => {
                 disabled={props.isPending || props.readOnly}
                 invalid={props.invalid}
             />
-            {props.description && (<small className="of-text-200">{props.description}</small>)}
-        </div>
+        </InputWrapper>
     );
 };

@@ -1,8 +1,9 @@
 import {useForm} from 'react-hook-form';
-import {Switch, Text, Textarea} from '../../../../components/form-controls';
-import {CashFlow as DomainCashFlow} from '../../../../../domain/bank';
-import {CashFlowFormInput} from './../CashFlowFormInput';
+import {Switch, Textarea} from '../../../../components/form-controls';
+import {CashFlow as DomainCashFlow} from '../../../../../domain/transactions/cashFlow';
+import {CashFlowFormInput} from './CashFlowFormInput';
 import {WorkspaceRightPanel} from '../../../../layouts/workspace';
+import {Number} from '../../../../components/form-controls/inputs/Number';
 
 export type CashFlowFormProps = {
     selectedCashFlow: DomainCashFlow | null | undefined;
@@ -15,9 +16,12 @@ export const CashFlowForm = (props: CashFlowFormProps) => {
         values: props.selectedCashFlow ? {...props.selectedCashFlow} :
             {
                 id: undefined,
-                name: '',
-                isActive: false,
+                transactedOn: new Date(),
+                amount: undefined,
+                currencyId: undefined,
                 description: '',
+                isIncome: true,
+                isActive: true,
             }
     });
 
@@ -38,11 +42,12 @@ export const CashFlowForm = (props: CashFlowFormProps) => {
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
             <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} CashFlow`}</h3>
             <form>
-                <Text control={control} name="name" label="Name" className="w-full of-w-max" rules={{
-                    required: 'Name is required.',
-                    maxLength: {value: 100, message: 'Name cannot exceed 100 characters.'}
+                <Number control={control} name="amount" label="Amount" className="w-full of-w-max" rules={{
+                    required: 'Amount is required.',
+                    min: { value: 0, message: "Minimum amount is 0" },
                 }}/>
                 <Textarea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
+                    required: 'Amount is required.',
                     maxLength: {value: 255, message: 'Name cannot exceed 255 characters.'}
                 }}/>
                 {isEditMode && <Switch control={control} name="isActive" label="Is active"/>}

@@ -36,7 +36,7 @@ public sealed class TransactionReadRepository(
         });
     }
 
-    public async Task<Result<GetCashFlowByIdResponseDto>> GetCashFlowByIdAsync(GetCashFlowByIdRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<Result<GetCashFlowByTransactionIdResponseDto>> GetCashFlowByTransactionIdAsync(GetCashFlowByTransactionIdRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
@@ -44,10 +44,10 @@ public sealed class TransactionReadRepository(
                 .Include(t => t.CashFlows)
                 .Include(t => t.TransactionItems)
                 .Include(t => t.Currency)
-                .Where(t => t.OwnerUserId == request.UserId && t.Id == request.Id)
+                .Where(t => t.OwnerUserId == request.UserId && t.Id == request.TransactionId)
                 .SingleOrDefaultAsync(cancellationToken);
 
-            return Result.Success<GetCashFlowByIdResponseDto>(new(transaction));
+            return Result.Success<GetCashFlowByTransactionIdResponseDto>(new(transaction));
         });
     }
 }

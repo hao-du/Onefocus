@@ -1,6 +1,7 @@
 import {Password as PiPassword} from 'primereact/password';
 import {InputProps} from '../../../props/InputProps';
 import {ChangeEventHandler} from 'react';
+import {InputWrapper} from './InputWrapper';
 
 export type PasswordProps = InputProps & {
     floatClassName?: string;
@@ -10,8 +11,7 @@ export type PasswordProps = InputProps & {
 
 export const Password = (props: PasswordProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label className={props.invalid ? 'p-error' : ''} htmlFor={props.id}>{props.label}</label>
+        <InputWrapper {...props}>
             <PiPassword
                 inputClassName={props.className}
                 inputId={props.id}
@@ -21,8 +21,6 @@ export const Password = (props: PasswordProps) => {
                 invalid={props.invalid}
                 autoComplete="current-password"
             />
-            {props.description && (<small className="of-text-200">{props.description}</small>)}
-            {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
-        </div>
+        </InputWrapper>
     );
 };

@@ -1,6 +1,7 @@
 import {InputText} from 'primereact/inputtext';
 import {InputProps} from '../../../props/InputProps';
 import {ChangeEventHandler} from 'react';
+import {InputWrapper} from './InputWrapper';
 
 export type TextProps = InputProps & {
     floatClassName?: string;
@@ -10,8 +11,7 @@ export type TextProps = InputProps & {
 
 export const Text = (props: TextProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label className={props.invalid ? 'p-error' : ''} htmlFor={props.id}>{props.label}</label>
+        <InputWrapper {...props}>
             <InputText
                 className={props.className}
                 id={props.id}
@@ -21,8 +21,6 @@ export const Text = (props: TextProps) => {
                 readOnly={props.isPending || props.readOnly}
                 autoComplete={props.autoComplete}
             />
-            {props.description && (<small className="of-text-200">{props.description}</small>)}
-            {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
-        </div>
+        </InputWrapper>
     );
 };

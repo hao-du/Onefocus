@@ -1,5 +1,6 @@
 import { Calendar } from 'primereact/calendar';
 import { InputProps } from '../../../props/InputProps';
+import {InputWrapper} from './InputWrapper';
 
 export type DatePickerProps = InputProps & {
     value?: Date | null;
@@ -15,10 +16,7 @@ export type DatePickerProps = InputProps & {
 
 export const DatePicker = (props: DatePickerProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label className={props.invalid ? 'p-error' : ''} htmlFor={props.id}>
-                {props.label}
-            </label>
+        <InputWrapper {...props}>
             <Calendar
                 id={props.id}
                 className={props.className}
@@ -37,8 +35,6 @@ export const DatePicker = (props: DatePickerProps) => {
                 readOnlyInput={props.readOnly}
                 disabled={props.isPending}
             />
-            {props.description && <small className="of-text-200">{props.description}</small>}
-            {props.errorMessage && <small className="p-error">{props.errorMessage}</small>}
-        </div>
+        </InputWrapper>
     );
 };

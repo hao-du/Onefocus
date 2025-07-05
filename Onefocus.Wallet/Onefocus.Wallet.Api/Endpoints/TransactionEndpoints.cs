@@ -19,7 +19,7 @@ internal static class TransactionEndpoints
 
         routes.MapGet("transaction/cashflow/{id}", async (Guid id, ISender sender) =>
         {
-            var result = await sender.Send(new GetCashFlowByIdQueryRequest(id));
+            var result = await sender.Send(new GetCashFlowByTransactionIdQueryRequest(id));
             return result.ToResult();
         });
 

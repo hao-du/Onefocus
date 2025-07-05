@@ -1,4 +1,4 @@
-import {GetAllTransactionsResponse, GetCashFlowByIdResponse, TransactionResponse} from './transaction.interfaces';
+import {GetAllTransactionsResponse, GetCashFlowByTransactionIdResponse, TransactionResponse} from './transaction.interfaces';
 import {Transaction} from '../../../domain/transaction';
 import {CashFlow} from '../../../domain/transactions/cashFlow';
 
@@ -23,9 +23,10 @@ export const getAllTransactionsAdapter = () => {
 }
 
 export const getCashFlowByIdAdapter = () => {
-    const toCashFlowEntity = (response: GetCashFlowByIdResponse): CashFlow => {
+    const toCashFlowEntity = (response: GetCashFlowByTransactionIdResponse): CashFlow => {
         return {
             id : response.id,
+            transactionId: response.transactionId,
             transactedOn : response.transactedOn,
             amount : response.amount,
             currencyId: response.currencyId,

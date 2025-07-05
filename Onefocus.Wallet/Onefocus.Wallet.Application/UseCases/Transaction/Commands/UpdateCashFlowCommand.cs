@@ -23,7 +23,7 @@ internal sealed class UpdateCashFlowCommandHandler(
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return actionByResult;
 
-        var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByIdAsync(new(request.Id), cancellationToken);
+        var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByTransactionIdAsync(new(request.Id), cancellationToken);
         if (getCashFlowResult.IsFailure) return getCashFlowResult;
 
         var cashFlow = getCashFlowResult.Value.CashFlow;

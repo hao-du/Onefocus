@@ -12,8 +12,9 @@ export interface TransactionResponse {
     tags: string[];
 }
 
-export interface GetCashFlowByIdResponse {
+export interface GetCashFlowByTransactionIdResponse {
     id: string;
+    transactionId: string;
     transactedOn: Date;
     amount: number;
     currencyId: string;

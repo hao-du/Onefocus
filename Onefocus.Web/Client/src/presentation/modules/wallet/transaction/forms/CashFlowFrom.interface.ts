@@ -1,0 +1,1 @@
+export type TransactionType = undefined | 'CashFlow' | 'BankAccount' |  'CurrencyExchange' | 'PeerTransfer';

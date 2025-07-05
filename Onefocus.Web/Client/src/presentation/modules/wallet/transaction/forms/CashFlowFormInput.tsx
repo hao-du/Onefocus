@@ -1,8 +1,7 @@
-export interface CashFlow {
-    id: string;
-    transactionId: string;
+export interface CashFlowFormInput {
+    id?: string;
     transactedOn: Date;
-    amount: number;
+    amount?: number;
     currencyId?: string;
     description?: string;
     isIncome: boolean;

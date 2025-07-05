@@ -1,9 +1,13 @@
 import {InputProps} from '../../../props/InputProps';
-import {InputNumber, InputNumberValueChangeEvent} from 'primereact/inputnumber';
+import {InputNumber} from 'primereact/inputnumber';
+import {InputWrapper} from './InputWrapper';
 
 export type NumberProps = InputProps & {
+    name?: string;
     inputClassName?: string;
-    onChange?: ((event: InputNumberValueChangeEvent) => void);
+    onChange?: (value: number | null) => void;
+    onBlur?: () => void;
+    ref?: React.Ref<HTMLInputElement | null>;
     value?: number;
     fractionDigits?: number
     textAlign?: 'right' | 'left';
@@ -11,21 +15,26 @@ export type NumberProps = InputProps & {
 
 export const Number = (props: NumberProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label className={props.invalid ? 'p-error' : ''} htmlFor={props.id}>{props.label}</label>
+        <InputWrapper {...props}>
             <InputNumber
+                name={props.name}
                 className={props.className}
                 id={props.id}
                 value={props.value}
-                onValueChange={props.onChange}
+                onChange={(e) =>  {
+                    if(props.onChange) props.onChange(e.value);
+                }}
                 invalid={props.invalid}
                 readOnly={props.isPending || props.readOnly}
                 minFractionDigits={props.fractionDigits}
                 maxFractionDigits={props.fractionDigits}
                 inputClassName={`${props.inputClassName ?? ''} text-${props.textAlign ?? 'right'}`}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                }}
             />
-            {props.description && (<small className="of-text-200">{props.description}</small>)}
-            {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
-        </div>
+        </InputWrapper>
     );
 };

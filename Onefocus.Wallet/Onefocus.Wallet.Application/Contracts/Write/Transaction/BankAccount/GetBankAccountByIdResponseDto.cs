@@ -1,4 +1,4 @@
-﻿using Entity = Onefocus.Wallet.Domain.Entities.Write;
+﻿using Entity = Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Application.Contracts.Write.Transaction.BankAccount;
 

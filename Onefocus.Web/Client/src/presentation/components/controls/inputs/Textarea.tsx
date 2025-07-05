@@ -1,6 +1,7 @@
 import {InputTextarea} from 'primereact/inputtextarea';
 import {InputProps} from '../../../props/InputProps';
 import {ChangeEventHandler} from 'react';
+import {InputWrapper} from './InputWrapper';
 
 export type TextareaProps = InputProps & {
     rows?: number;
@@ -10,8 +11,7 @@ export type TextareaProps = InputProps & {
 
 export const Textarea = (props: TextareaProps) => {
     return (
-        <div className="flex flex-column gap-2 mb-3">
-            <label className={props.invalid ? 'p-error' : ''} htmlFor={props.id}>{props.label}</label>
+        <InputWrapper {...props}>
             <InputTextarea
                 className={props.className}
                 id={props.id}
@@ -21,8 +21,6 @@ export const Textarea = (props: TextareaProps) => {
                 rows={props.rows ?? 5}
                 invalid={props.invalid}
             />
-            {props.description && (<small className="of-text-200">{props.description}</small>)}
-            {props.errorMessage && (<small className="p-error">{props.errorMessage}</small>)}
-        </div>
+        </InputWrapper>
     );
 };

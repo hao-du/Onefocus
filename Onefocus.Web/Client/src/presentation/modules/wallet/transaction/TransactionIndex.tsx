@@ -1,14 +1,42 @@
 import {Workspace} from '../../../layouts/workspace';
 import {Column, DataTable} from '../../../components/data';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useGetAllTransactions} from '../../../../application/transaction/useGetAllTransactions';
+import {TransactionType} from './forms/CashFlowFrom.interface';
+import {CashFlowForm} from './forms/CashFlowForm';
+import {CashFlowFormInput} from './forms/CashFlowFormInput';
+import {Transaction as DomainTransaction, TransactionType as DomainTransactionType} from '../../../../domain/transaction';
+import {useGetCashFlowByTransactionId} from '../../../../application/transaction/useGetCashFlowByTransactionId';
+import {Button} from '../../../components/controls/buttons';
 
 export const TransactionIndex = React.memo(() => {
+    const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(undefined);
     const [showForm, setShowForm] = useState(false);
 
-    const { entities: transactions, isListLoading } = useGetAllTransactions();
+    const { entities: transactions, isListLoading, refetch } = useGetAllTransactions();
+    const { cashFlowEntity: selectedCashFlow, isCashFlowLoading, setTransactionId } = useGetCashFlowByTransactionId();
 
-    const isPending = isListLoading;
+    const isPending = isListLoading || isCashFlowLoading;
+
+    const onCashFlowSubmit = useCallback(async (data: CashFlowFormInput) => {
+        console.log(data);
+        refetch();
+    }, []);
+
+    const renderForm = useCallback((transactionType: TransactionType, isPending: boolean) => {
+        switch (transactionType) {
+            case 'CashFlow':
+                return <CashFlowForm selectedCashFlow={selectedCashFlow} isPending={isPending} onSubmit={onCashFlowSubmit}/>
+            case 'CurrencyExchange':
+                break;
+            case 'BankAccount':
+                break;
+            case  'PeerTransfer':
+                break;
+        }
+
+        return <></>;
+    }, [])
 
     return (
         <Workspace
@@ -16,11 +44,15 @@ export const TransactionIndex = React.memo(() => {
             isPending={isPending}
             actionItems={[
                 {
-                    label: 'Add',
+                    label: 'Actions',
                     icon: 'pi pi-plus',
+                },
+                {
+                    label: 'Case flow',
+                    icon: 'pi pi-money-bill',
                     command: () => {
-                        //setTransactionId(null);
                         setShowForm(true);
+                        setSelectedTransactionType('CashFlow');
                     }
                 }
             ]}
@@ -31,11 +63,27 @@ export const TransactionIndex = React.memo(() => {
                         <Column field="amount" header="Amount" />
                         <Column field="currencyName" header="Currency" />
                         <Column field="description" header="Description" />
+                        <Column body={(transaction: DomainTransaction) => {
+                            switch (transaction.type) {
+                                case DomainTransactionType.CashFlow:
+                                    <Button
+                                        icon="pi pi-pencil"
+                                        className="p-button-text"
+                                        onClick={() => {
+                                            setTransactionId(transaction.id);
+                                            setShowForm(true);
+                                        }}
+                                    />
+                                    break;
+                            }
+
+                            return <></>
+                        }} header="" headerStyle={{ width: "4rem" }} />
                     </DataTable>
                 </div>
             }
             rightPanel={
-                showForm ? <></> : <></>
+                showForm && renderForm(selectedTransactionType, isPending)
             }
         />
     );
