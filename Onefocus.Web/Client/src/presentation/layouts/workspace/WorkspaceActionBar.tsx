@@ -48,6 +48,7 @@ export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
                                 iconPos="right"
                                 aria-haspopup
                                 aria-controls="split_menu"
+                                isPending={props.isPending}
                             />
                             <Menu model={props.actionItems} ref={menuRef} id="split_menu"/>
                         </>

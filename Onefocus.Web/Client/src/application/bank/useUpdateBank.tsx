@@ -1,4 +1,4 @@
-import {useMutation} from '@tanstack/react-query';
+import {useMutation,useQueryClient} from '@tanstack/react-query';
 import {ApiResponse, useClient} from '../../infrastructure/hooks';
 import {
     updateBank,
@@ -7,10 +7,17 @@ import {
 
 export const useUpdateBank = () => {
     const {client} = useClient();
+    const queryClient = useQueryClient();
 
     const {mutateAsync, isPending} = useMutation<ApiResponse, unknown, UpdateBankRequest>({
         mutationFn: async (request) => {
             return await updateBank(client, request);
+        },
+        onSuccess: (_, variables) => {
+            const keysToReset = [['getAllBanks'], [`useGetBankById-${variables.id}`]];
+            keysToReset.forEach((key) => {
+                queryClient.resetQueries({ queryKey: key, exact: true });
+            });
         }
     });
 
