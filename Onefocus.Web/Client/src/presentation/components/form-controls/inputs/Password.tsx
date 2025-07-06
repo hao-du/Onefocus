@@ -19,6 +19,7 @@ export const Password = <
                     {...props}
                     {...controller.field}
                     id={controller.field.name}
+                    onValueChange={(value) => controller.field.onChange(value)}
                     invalid={controller.fieldState.invalid}
                     errorMessage={controller.fieldState.error?.message}
                 />

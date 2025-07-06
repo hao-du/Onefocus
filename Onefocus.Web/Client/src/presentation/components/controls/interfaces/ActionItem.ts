@@ -1,6 +1,6 @@
 import {MenuItem, MenuItemCommandEvent} from 'primereact/menuitem';
 
-export interface SplitButtonActionItem extends MenuItem {
+export interface ActionItem extends MenuItem {
     label?: string;
     icon?: string;
 

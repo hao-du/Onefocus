@@ -27,7 +27,7 @@ export const DatePicker = <
                     {...props}
                     id={controller.field.name}
                     value={controller.field.value}
-                    onChange={(e) => controller.field.onChange(e.value)}
+                    onChange={(value) => controller.field.onChange(value)}
                     invalid={controller.fieldState.invalid}
                     errorMessage={controller.fieldState.error?.message}
                 />

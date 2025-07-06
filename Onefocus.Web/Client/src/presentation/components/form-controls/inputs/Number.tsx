@@ -19,7 +19,7 @@ export const Number = <
                     {...props}
                     {...controller.field}
                     id={controller.field.name}
-                    onChange={controller.field.onChange}
+                    onValueChange={(value) => controller.field.onChange(value)}
                     invalid={controller.fieldState.invalid}
                     errorMessage={controller.fieldState.error?.message}
                 />

@@ -1,13 +1,13 @@
 import {Splitter, SplitterPanel} from 'primereact/splitter';
 import {BaseProps} from '../../props/BaseProps';
-import {SplitButtonActionItem} from '../../components/controls/buttons';
+import {ActionItem} from '../../components/controls/buttons';
 import {WorkspaceActionBar} from '.';
 import {useWindows} from '../../components/hooks/useWindows';
 
 
 type WorkspaceLayoutProps = BaseProps & {
     title: string;
-    actionItems?: SplitButtonActionItem[];
+    actionItems?: ActionItem[];
     leftPanel: React.ReactNode;
     rightPanel: React.ReactNode;
     isPending?: boolean;

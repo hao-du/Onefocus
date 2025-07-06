@@ -23,6 +23,7 @@ export const Text = <
                     {...controller.field}
                     id={controller.field.name}
                     invalid={controller.fieldState.invalid}
+                    onValueChange={(value) => controller.field.onChange(value)}
                     errorMessage={controller.fieldState.error?.message}
                 />
             }}

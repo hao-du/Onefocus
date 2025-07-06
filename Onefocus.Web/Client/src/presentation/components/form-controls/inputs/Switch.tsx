@@ -20,7 +20,13 @@ export const Switch = <
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
                     render={(controller) => {
-                        return <OneFocusSwitch {...props} {...controller.field} id={controller.field.name} checked={controller.field.value} />
+                        return <OneFocusSwitch
+                            {...props}
+                            {...controller.field}
+                            id={controller.field.name}
+                            checked={controller.field.value}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                        />
                     }}
         />
     );

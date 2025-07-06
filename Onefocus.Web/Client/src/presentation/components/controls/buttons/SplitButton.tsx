@@ -1,11 +1,11 @@
 import {SplitButton as PiSplitButton} from 'primereact/splitbutton';
-import {SplitButtonActionItem} from './SplitButton.interface';
+import {ActionItem} from '../interfaces/ActionItem';
 import {BaseButtonProps} from '../../../props/BaseButtonProps';
 
 type SplitButtonProps = BaseButtonProps & {
     appendTo?: 'self' | HTMLElement | undefined | null | (() => HTMLElement);
     menuClassName?: string;
-    actionItems?: SplitButtonActionItem[]
+    actionItems?: ActionItem[]
 };
 
 export const SplitButton = (props: SplitButtonProps) => {

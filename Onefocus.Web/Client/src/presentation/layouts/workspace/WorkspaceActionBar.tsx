@@ -1,20 +1,27 @@
-import {Button, SplitButton, SplitButtonActionItem} from '../../components/controls/buttons';
+import {ActionItem, Button, SplitButton} from '../../components/controls/buttons';
+import {Menu} from '../../components/controls/menu';
 import {BaseProps} from '../../props/BaseProps';
+import {useRef} from 'react';
 
 type WorkspaceActionBarProps = BaseProps & {
     title: string
-    actionItems?: SplitButtonActionItem[]
+    actionItems?: ActionItem[]
     isPending?: boolean;
 };
 
 export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
+    const menuRef = useRef(null);
+
     let primaryButton = null;
     let hasActionItems = false;
+    let hasPrimaryAction = false;
     if (props.actionItems && props.actionItems.length > 0) {
         primaryButton = props.actionItems.shift();
-
         if (props.actionItems.length > 0) {
             hasActionItems = true;
+        }
+        if (primaryButton.command) {
+            hasPrimaryAction = true;
         }
     }
 
@@ -23,7 +30,7 @@ export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
             <h2 className="m-0 text-xl font-bold">{props.title}</h2>
             {primaryButton && (
                 <div className="flex gap-2 align-items-center">
-                    {hasActionItems && (
+                    {hasActionItems && hasPrimaryAction && (
                         <SplitButton
                             label={primaryButton.label}
                             icon={primaryButton.icon}
@@ -31,6 +38,19 @@ export const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
                             onClick={() => primaryButton.command && primaryButton.command(undefined)}
                             isPending={props.isPending}
                         />
+                    )}
+                    {hasActionItems && !hasPrimaryAction && (
+                        <>
+                            <Button
+                                icon={primaryButton.icon ?? 'pi pi-chevron-down'}
+                                label={primaryButton.label}
+                                onClick={(e) => menuRef.current?.toggle(e)}
+                                iconPos="right"
+                                aria-haspopup
+                                aria-controls="split_menu"
+                            />
+                            <Menu model={props.actionItems} ref={menuRef} id="split_menu"/>
+                        </>
                     )}
                     {!hasActionItems && (
                         <Button

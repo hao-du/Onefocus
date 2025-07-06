@@ -1,16 +1,16 @@
 import {InputProps} from '../../../props/InputProps';
 import {InputNumber} from 'primereact/inputnumber';
 import {InputWrapper} from './InputWrapper';
+import React from 'react';
 
 export type NumberProps = InputProps & {
     name?: string;
     inputClassName?: string;
-    onChange?: (value: number | null) => void;
-    onBlur?: () => void;
-    ref?: React.Ref<HTMLInputElement | null>;
     value?: number;
     fractionDigits?: number
     textAlign?: 'right' | 'left';
+    onChange?: React.ChangeEvent<HTMLInputElement>;
+    onValueChange?: (value: number | null) => void;
 };
 
 export const Number = (props: NumberProps) => {
@@ -21,8 +21,14 @@ export const Number = (props: NumberProps) => {
                 className={props.className}
                 id={props.id}
                 value={props.value}
-                onChange={(e) =>  {
-                    if(props.onChange) props.onChange(e.value);
+                onChange={(e) => {
+                    if(props.onValueChange) props.onValueChange(e.value);
+                    if(props.onChange) props.onChange({
+                        target: {
+                            name: e.originalEvent.target.name,
+                            value: e.value
+                        }
+                    });
                 }}
                 invalid={props.invalid}
                 readOnly={props.isPending || props.readOnly}

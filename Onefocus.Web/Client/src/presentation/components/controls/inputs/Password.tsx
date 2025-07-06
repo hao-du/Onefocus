@@ -1,12 +1,13 @@
 import {Password as PiPassword} from 'primereact/password';
 import {InputProps} from '../../../props/InputProps';
-import {ChangeEventHandler} from 'react';
 import {InputWrapper} from './InputWrapper';
+import React from 'react';
 
 export type PasswordProps = InputProps & {
     floatClassName?: string;
     feedback?: boolean;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onChange?: React.ChangeEvent<HTMLInputElement>;
+    onValueChange?: (value: string | null) => void;
 };
 
 export const Password = (props: PasswordProps) => {
@@ -16,7 +17,16 @@ export const Password = (props: PasswordProps) => {
                 inputClassName={props.className}
                 inputId={props.id}
                 feedback={props.feedback ?? false}
-                value={props.value} onChange={props.onChange}
+                value={props.value}
+                onChange={(e) => {
+                    if(props.onValueChange) props.onValueChange(e.target.value);
+                    if(props.onChange) props.onChange({
+                        target: {
+                            name: e.target.name,
+                            value: e.target.value
+                        }
+                    });
+                }}
                 readOnly={props.isPending || props.readOnly}
                 invalid={props.invalid}
                 autoComplete="current-password"
