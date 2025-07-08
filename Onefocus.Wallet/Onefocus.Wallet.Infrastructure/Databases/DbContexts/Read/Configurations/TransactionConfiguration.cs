@@ -14,7 +14,7 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
             builder.HasMany(t => t.CashFlows).WithOne(cf => cf.Transaction).HasForeignKey(cf => cf.TransactionId);
             builder.HasMany(t => t.TransactionItems).WithOne(ti => ti.Transaction).HasForeignKey(ti => ti.TransactionId);
             builder.HasOne(t => t.OwnerUser).WithMany(u => u.Transactions).HasForeignKey(t => t.OwnerUserId);
-            builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.OwnerUserId);
+            builder.HasOne(t => t.Currency).WithMany(c => c.Transactions).HasForeignKey(t => t.CurrencyId);
         }
     }
 }

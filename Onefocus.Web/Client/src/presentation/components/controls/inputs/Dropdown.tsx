@@ -1,7 +1,7 @@
 import { Dropdown as PiDropdown} from 'primereact/dropdown';
 import { InputProps } from '../../../props/InputProps';
-import React, { ReactNode } from 'react';
-import {InputWrapper} from './InputWrapper';
+import { ReactNode } from 'react';
+import { InputWrapper } from './InputWrapper';
 
 export type DropdownOption = {
     label: string;
@@ -15,7 +15,7 @@ export type DropdownProps = InputProps & {
     autoComplete?: 'on' | 'off' | string;
     disabled?: boolean;
     value?: string | number | boolean | null;
-    onChange?: React.ChangeEvent<HTMLInputElement>;
+    onChange?: (value: string | number | boolean | null) => void;
     onValueChange?: (value: string | number | boolean | null) => void;
     itemTemplate?: (option: DropdownOption) => ReactNode;
 };
@@ -30,12 +30,7 @@ export const Dropdown = (props: DropdownProps) => {
                 options={props.options}
                 onChange={(e) => {
                     if(props.onValueChange) props.onValueChange(e.target.value);
-                    if(props.onChange) props.onChange({
-                        target: {
-                            name: e.target.name,
-                            value: e.target.value
-                        }
-                    });
+                    if(props.onChange) props.onChange(e.target.value);
                 }}
                 disabled={props.isPending || props.disabled}
                 autoComplete={props.autoComplete}

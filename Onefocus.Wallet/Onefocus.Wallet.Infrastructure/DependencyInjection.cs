@@ -20,11 +20,18 @@ public static class DependencyInjection
 
         services.AddDbContext<WalletReadDbContext>(option =>
         {
-            option.UseNpgsql(readDatabaseConnectionString);
+            option.UseNpgsql(readDatabaseConnectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
             option.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
+
         services.AddDbContext<WalletWriteDbContext>(option =>
-            option.UseNpgsql(writeDatabaseConnectionString)
+            option.UseNpgsql(writeDatabaseConnectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            })
         );
 
         var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;

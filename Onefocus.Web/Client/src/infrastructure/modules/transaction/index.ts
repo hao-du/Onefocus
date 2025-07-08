@@ -5,10 +5,13 @@ export {
 
 export {
     getAllTransactions,
-    getCashFlowByTransactionId
+    getCashFlowByTransactionId,
+    createCashFlow
 } from './transaction.api';
 
 export type {
     GetCashFlowByTransactionIdResponse,
-    GetAllTransactionsResponse
+    GetAllTransactionsResponse,
+    CreateCashFlowRequest,
+    CreateCashFlowResponse
 } from './transaction.interfaces';

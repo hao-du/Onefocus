@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
@@ -11,9 +12,11 @@ using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 namespace Onefocus.Wallet.Infrastructure.Databases.Migrations
 {
     [DbContext(typeof(WalletWriteDbContext))]
-    partial class WalletWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707153531_UpdateTransactionCurrencyConstraint")]
+    partial class UpdateTransactionCurrencyConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

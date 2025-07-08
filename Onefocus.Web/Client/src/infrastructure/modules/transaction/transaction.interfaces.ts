@@ -22,3 +22,21 @@ export interface GetCashFlowByTransactionIdResponse {
     isIncome: boolean;
     isActive: boolean;
 }
+
+export interface TransactionItem {
+    name: string;
+    amount: number;
+    description?: string;
+}
+
+export interface CreateCashFlowRequest {
+    amount: number;
+    transactedOn: Date;
+    isIncome: boolean;
+    currencyId: string;
+    description?: string;
+    transactionItems: TransactionItem[];
+}
+export interface CreateCashFlowResponse {
+    id: string;
+}

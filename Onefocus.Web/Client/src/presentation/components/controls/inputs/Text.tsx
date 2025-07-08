@@ -1,12 +1,11 @@
 import {InputText} from 'primereact/inputtext';
 import {InputProps} from '../../../props/InputProps';
-import React, {ChangeEventHandler} from 'react';
 import {InputWrapper} from './InputWrapper';
 
 export type TextProps = InputProps & {
     floatClassName?: string;
     autoComplete?: 'username' | string;
-    onChange?: React.ChangeEvent<HTMLInputElement>;
+    onChange?: (value: string | null) => void;
     onValueChange?: (value: string | null) => void;
 };
 
@@ -19,12 +18,7 @@ export const Text = (props: TextProps) => {
                 value={props.value}
                 onChange={(e) => {
                     if(props.onValueChange) props.onValueChange(e.target.value);
-                    if(props.onChange) props.onChange({
-                        target: {
-                            name: e.target.name,
-                            value: e.target.value
-                        }
-                    });
+                    if(props.onChange) props.onChange(e.target.value);
                 }}
                 invalid={props.invalid}
                 readOnly={props.isPending || props.readOnly}

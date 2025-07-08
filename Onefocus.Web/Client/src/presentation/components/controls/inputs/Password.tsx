@@ -1,12 +1,11 @@
 import {Password as PiPassword} from 'primereact/password';
 import {InputProps} from '../../../props/InputProps';
 import {InputWrapper} from './InputWrapper';
-import React from 'react';
 
 export type PasswordProps = InputProps & {
     floatClassName?: string;
     feedback?: boolean;
-    onChange?: React.ChangeEvent<HTMLInputElement>;
+    onChange?: (value: string | null) => void;
     onValueChange?: (value: string | null) => void;
 };
 
@@ -20,12 +19,7 @@ export const Password = (props: PasswordProps) => {
                 value={props.value}
                 onChange={(e) => {
                     if(props.onValueChange) props.onValueChange(e.target.value);
-                    if(props.onChange) props.onChange({
-                        target: {
-                            name: e.target.name,
-                            value: e.target.value
-                        }
-                    });
+                    if(props.onChange) props.onChange(e.target.value);
                 }}
                 readOnly={props.isPending || props.readOnly}
                 invalid={props.invalid}

@@ -1,12 +1,11 @@
-import { Calendar } from 'primereact/calendar';
-import { InputProps } from '../../../props/InputProps';
+import {Calendar} from 'primereact/calendar';
+import {InputProps} from '../../../props/InputProps';
 import {InputWrapper} from './InputWrapper';
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 import {DropdownOption} from './Dropdown';
 
 export type DatePickerProps = InputProps & {
     value?: Date | null;
-    onChange?: (e: { value: Date | null | undefined }) => void;
     showTime?: boolean;
     hourFormat?: '12' | '24';
     minDate?: Date;
@@ -14,8 +13,8 @@ export type DatePickerProps = InputProps & {
     placeholder?: string;
     dateFormat?: string;
     showSeconds?: boolean;
-    onChange?: React.ChangeEvent<HTMLInputElement>;
-    onValueChange?: (value: Date | null) => void;
+    onChange?: (value: Date | null | undefined) => void;
+    onValueChange?: (value: Date | null | undefined) => void;
     itemTemplate?: (option: DropdownOption) => ReactNode;
 };
 
@@ -28,12 +27,7 @@ export const DatePicker = (props: DatePickerProps) => {
                 value={props.value}
                 onChange={(e) => {
                     if(props.onValueChange) props.onValueChange(e.target.value);
-                    if(props.onChange) props.onChange({
-                        target: {
-                            name: e.target.name,
-                            value: e.target.value
-                        }
-                    });
+                    if (props.onChange) props.onChange(e.target.value);
                 }}
                 showTime={props.showTime}
                 hourFormat={props.hourFormat}
