@@ -12,7 +12,7 @@ export const getAllTransactions = async (client: AxiosInstance) => {
 };
 
 export const getCashFlowByTransactionId = async (client: AxiosInstance, transactionId: string) => {
-    const response = await client.get<ApiResponse<GetCashFlowByTransactionIdResponse>>(`wallet/transaction/cashflow/${transactionId}}`);
+    const response = await client.get<ApiResponse<GetCashFlowByTransactionIdResponse>>(`wallet/transaction/cashflow/${transactionId}`);
     return response.data; 
 };
 

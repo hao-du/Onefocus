@@ -6,7 +6,8 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 public sealed record GetCashFlowByTransactionIdQueryRequest(Guid TransactionId) : IQuery<GetCashFlowByTransactionIdQueryResponse>;
 
-public sealed record GetCashFlowByTransactionIdQueryResponse(Guid Id, Guid TransactionId, DateTimeOffset TransactedOn, Guid CurrencyId, bool IsIncome, decimal Amount, string? Description, bool IsActive);
+public sealed record GetCashFlowByTransactionIdQueryResponse(Guid Id, Guid TransactionId, DateTimeOffset TransactedOn, Guid CurrencyId, bool IsIncome, decimal Amount, string? Description, bool IsActive, IReadOnlyList<GetTransactionItem> TransactionItems);
+public sealed record GetTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
 internal sealed class GetCashFlowByTransactionIdQueryHandler(
     IReadUnitOfWork unitOfWork,
@@ -35,7 +36,8 @@ internal sealed class GetCashFlowByTransactionIdQueryHandler(
             IsIncome: cashFlow.IsIncome,
             Amount: transaction.Amount,
             Description: transaction.Description,
-            IsActive: transaction.IsActive
+            IsActive: transaction.IsActive,
+            TransactionItems: [..transaction.TransactionItems.Select(t => new GetTransactionItem(t.Id, t.Name, t.Amount, t.IsActive, t.Description))]
         );
         return Result.Success(response);
     }

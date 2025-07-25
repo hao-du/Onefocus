@@ -32,7 +32,14 @@ export const getCashFlowByIdAdapter = () => {
             currencyId: response.currencyId,
             isIncome : response.isIncome,
             description : response.description,
-            isActive : response.isActive
+            isActive : response.isActive,
+            transactionItems : response.transactionItems.map(item => ({
+                id: item.id,
+                name: item.name,
+                amount: item.amount,
+                isActive: item.isActive,
+                description: item.description
+            }))
         };
     }
 

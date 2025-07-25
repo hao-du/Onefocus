@@ -1,7 +1,6 @@
 import React from 'react';
-import {TransactionList} from './list/TransactionList';
-import {TransactionProvider} from './features/TransactionContext';
-import {CashFlowProvider} from './features/CashFlowContext';
+import { TransactionList } from './list/TransactionList';
+import { TransactionProvider, CashFlowProvider } from './features';
 
 export const TransactionIndex = React.memo(() => {
     return (

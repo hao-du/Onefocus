@@ -1,31 +1,9 @@
-import {createContext, ReactNode, useCallback, useContext} from 'react';
-import {CashFlowFormInput} from '../cashflow/CashFlowFormInput';
-import {CashFlow} from '../../../../../domain/transactions/cashFlow';
-import {useTransaction} from './TransactionContext';
-import {useCreateCashFlow, useGetCashFlowByTransactionId} from '../../../../../application/transaction';
-import {useWindows} from '../../../../components/hooks/useWindows';
-
-export type CashFlowContextValue = {
-    selectedCashFlow:  CashFlow | null | undefined;
-    isCashFlowLoading: boolean;
-    setTransactionIdFromCashFlow: (value: string | null) => void;
-    onCashFlowSubmit: (data: CashFlowFormInput) => void;
-};
-
-const CashFlowContext = createContext<CashFlowContextValue>({
-    selectedCashFlow: null,
-    isCashFlowLoading: false,
-    setTransactionIdFromCashFlow: () => {},
-    onCashFlowSubmit: () => {}
-});
-
-export const useCashFlow = () => {
-    const context = useContext(CashFlowContext);
-    if (!context) {
-        throw new Error('useCashFlow must be used within the CashFlowProvider');
-    }
-    return context;
-};
+import { ReactNode, useCallback } from 'react';
+import { CashFlowFormInput } from '../../cashflow/CashFlowFormInput';
+import { useTransaction } from '../transaction/useTransaction';
+import { useCreateCashFlow, useGetCashFlowByTransactionId } from '../../../../../../application/transaction';
+import { useWindows } from '../../../../../components/hooks/useWindows';
+import { CashFlowContext } from './CashFlowContext';
 
 export const CashFlowProvider = ({ children }: { children: ReactNode }) => {
     const { refetchList } = useTransaction();
@@ -42,21 +20,27 @@ export const CashFlowProvider = ({ children }: { children: ReactNode }) => {
                 isIncome: data.isIncome,
                 transactedOn: data.transactedOn,
                 description: data.description,
-                transactionItems: []
+                transactionItems: data.transactionItems.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    amount: item.amount,
+                    isActive: item.isActive,
+                    description: item.description
+                }))
             });
             showResponseToast(response, 'Saved successfully.');
-            if(response.status === 200 && response.value.id) {
+            if (response.status === 200 && response.value.id) {
                 setTransactionIdFromCashFlow(response.value.id);
             }
         }
         refetchList();
-    }, []);
+    }, [onCreateAsync, refetchList, setTransactionIdFromCashFlow, showResponseToast]);
 
     // Provide the authentication context to the children components
     return (
         <CashFlowContext.Provider value={{
             selectedCashFlow: selectedCashFlow,
-            isCashFlowLoading : isCashFlowLoading || isCreating,
+            isCashFlowLoading: isCashFlowLoading || isCreating,
             setTransactionIdFromCashFlow: setTransactionIdFromCashFlow,
             onCashFlowSubmit: onCashFlowSubmit
         }}>

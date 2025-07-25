@@ -1,6 +1,6 @@
 import {Column as PiColumn, ColumnBodyOptions} from 'primereact/column';
 
-type ColumnProps<TValue> = {
+export type ColumnProps<TValue> = {
     field? : string;
     header?: string;
     headerStyle?: React.CSSProperties;

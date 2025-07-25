@@ -1,3 +1,5 @@
+import { TransactionItem } from "../transactionItem";
+
 export interface CashFlow {
     id: string;
     transactionId: string;
@@ -7,4 +9,5 @@ export interface CashFlow {
     description?: string;
     isIncome: boolean;
     isActive: boolean;
+    transactionItems: TransactionItem[];
 }

@@ -6,4 +6,11 @@ export interface CashFlowFormInput {
     description?: string;
     isIncome: boolean;
     isActive: boolean;
+    transactionItems: {
+        id?: string;
+        name: string;
+        amount: number;
+        isActive: boolean;
+        description?: string;
+    }[];
 }
