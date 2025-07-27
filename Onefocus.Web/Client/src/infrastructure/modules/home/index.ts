@@ -1,1 +1,0 @@
-export {check} from './home.api';

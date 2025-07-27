@@ -1,0 +1,94 @@
+import { Route, Routes, useNavigate } from 'react-router';
+import useCheck from '../shared/features/home/services/useCheck';
+import { AppLayout } from '../shared/components/layouts';
+import { Home } from './pages';
+import { Loading, NotFound } from '../shared/app/pages';
+import { WalletRoutes } from '../features/wallet';
+import { SideMenuItem } from '../shared/components/navigations';
+
+function App() {
+    const navigate = useNavigate();
+    const { isCheckDone } = useCheck();
+    if (!isCheckDone) {
+        return <Loading />;
+    }
+
+    const items: SideMenuItem[] = [
+        {
+            key: 0,
+            label: 'Home',
+            icon: 'pi pi-home',
+            command: () => {
+                navigate("/");
+            }
+        },
+        {
+            key: 1,
+            label: 'Wallet',
+            icon: 'pi pi-wallet',
+            items: [
+                {
+                    label: 'Dashboard',
+                    icon: 'pi pi-gauge',
+                    command: () => {
+                        navigate("/wallet");
+                    }
+                },
+                {
+                    label: 'Your traces',
+                    icon: 'pi pi-calculator',
+                    command: () => {
+                        navigate("/wallet/transaction");
+                    }
+                },
+                {
+                    label: 'Currencies',
+                    icon: 'pi pi-dollar',
+                    command: () => {
+                        navigate("/wallet/currency");
+                    }
+                },
+                {
+                    label: 'Banks',
+                    icon: 'pi pi-credit-card',
+                    command: () => {
+                        navigate("/wallet/bank");
+                    }
+                }
+            ]
+        },
+        {
+            key: 2,
+            label: 'Admin',
+            icon: 'pi pi-user',
+            items: [
+                {
+                    label: 'Users',
+                    icon: 'pi pi-users',
+                    command: () => {
+                        navigate("/admin/users");
+                    }
+                },
+                {
+                    label: 'Settings',
+                    icon: 'pi pi-cog',
+                    command: () => {
+                        navigate("/admin/settings");
+                    }
+                }
+            ]
+        }
+    ];
+
+    return (
+        <AppLayout items={items}>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="wallet/*" element={<WalletRoutes />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </AppLayout>
+    );
+}
+
+export default App;
