@@ -1,8 +1,8 @@
-import {useQuery} from '@tanstack/react-query';
-import {getAllTransactions} from '../apis';
+import { useQuery } from '@tanstack/react-query';
+import { getAllTransactions } from '../apis';
 
 const useGetAllTransactions = () => {
-    const {data,  isLoading, refetch, isFetching} = useQuery({
+    const { data, isLoading, refetch, isFetching } = useQuery({
         queryKey: ['getAllTransactions'],
         queryFn: async () => {
             const apiResponse = await getAllTransactions();
@@ -10,7 +10,7 @@ const useGetAllTransactions = () => {
         }
     });
 
-    return {entities: data, isListLoading: isLoading || isFetching, refetch};
+    return { entities: data, isListLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetAllTransactions;

@@ -1,9 +1,11 @@
-import { ReactNode } from 'react';
-import {useGetAllCurrencies} from '../../../currency/services';
-import {useGetAllTransactions} from '../../services/useGetAllTransactions';
-import { TransactionContext } from './TransactionContext';
+import { PropsWithChildren } from 'react';
+import { useGetAllCurrencies } from '../../../../currency/services';
+import { useGetAllTransactions } from '../../../services';
+import TransactionContext from './TransactionContext';
 
-export const TransactionProvider = ({ children }: { children: ReactNode }) => {
+type TransactionProviderProps = PropsWithChildren;
+
+const TransactionProvider = (props: TransactionProviderProps) => {
     const { entities: currencies, isListLoading: isCurrenciesLoading} = useGetAllCurrencies();
     const { entities: transactions, isListLoading, refetch } = useGetAllTransactions();
 
@@ -14,7 +16,9 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
             isListLoading: isCurrenciesLoading || isListLoading,
             refetchList: refetch
         }}>
-            {children}
+            {props.children}
         </TransactionContext.Provider>
     );
 };
+
+export default TransactionProvider;

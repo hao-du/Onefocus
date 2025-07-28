@@ -1,3 +1,5 @@
+import TransactionItemResponse from "./TransactionItemResponse";
+
 export default interface GetCashFlowByTransactionIdResponse {
     id: string;
     transactionId: string;
@@ -7,11 +9,5 @@ export default interface GetCashFlowByTransactionIdResponse {
     description?: string;
     isIncome: boolean;
     isActive: boolean;
-    transactionItems: {
-        id?: string;
-        name: string;
-        amount: number;
-        isActive: boolean;
-        description?: string;
-    }[];
+    transactionItems: TransactionItemResponse[];
 }

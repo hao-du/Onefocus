@@ -1,7 +1,7 @@
-import {useForm} from 'react-hook-form';
-import {WorkspaceRightPanel} from '../../../../shared/components/layouts/workspace';
-import CurrencyFormInput from './interfaces/CurrencyFormInput';
+import { useForm } from 'react-hook-form';
 import { Switch, Text, Textarea } from '../../../../shared/components/form-controls';
+import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
+import CurrencyFormInput from './interfaces/CurrencyFormInput';
 
 type CurrencyFormProps = {
     selectedCurrency: CurrencyFormInput | null | undefined;

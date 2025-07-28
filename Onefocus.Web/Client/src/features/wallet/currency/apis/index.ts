@@ -1,5 +1,5 @@
 import { createCurrency, updateCurrency, getCurrencyById, getAllCurrencies } from './currencyApis';
-import { CreateCurrencyRequest, UpdateCurrencyRequest, CreateCurrencyResponse } from './interfaces';
+import { CreateCurrencyRequest, UpdateCurrencyRequest, CreateCurrencyResponse, CurrencyResponse } from './interfaces';
 
 export {
     createCurrency,
@@ -11,6 +11,7 @@ export {
 export type {
     CreateCurrencyRequest,
     UpdateCurrencyRequest,
-    CreateCurrencyResponse
+    CreateCurrencyResponse,
+    CurrencyResponse
 };
 

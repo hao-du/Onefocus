@@ -1,23 +1,20 @@
-import { useFieldArray, useForm } from 'react-hook-form';
-import { Switch, Textarea, Dropdown, DatePicker, Text } from '../../../../components/form-controls';
-import { CashFlow as DomainCashFlow } from '../../../../domain/transactions/cashFlow';
-import { CashFlowFormInput } from './interfaces/CashFlowFormInput';
-import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
-import { Number } from '../../../../components/form-controls/inputs/Number';
-import { Currency } from '../../../../domain/currency';
 import { useMemo } from 'react';
-import { DropdownOption } from '../../../../components/controls/inputs/Dropdown';
-import { Column, DataTable } from '../../../../components/data';
-import { Button } from '../../../../components/controls/buttons';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { Button, Option } from '../../../../../shared/components/controls';
+import { Column, DataTable } from '../../../../../shared/components/data';
+import { DatePicker, Dropdown, Number, Switch, Text, Textarea } from '../../../../../shared/components/form-controls';
+import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
+import { CurrencyResponse } from '../../../currency';
+import CashFlowFormInput from './interfaces/CashFlowFormInput';
 
-export type CashFlowFormProps = {
-    selectedCashFlow: DomainCashFlow | null | undefined;
+type CashFlowFormProps = {
+    selectedCashFlow: CashFlowFormInput | null | undefined;
     onSubmit: (data: CashFlowFormInput) => void;
     isPending?: boolean;
-    currencies: Currency[]
+    currencies: CurrencyResponse[]
 }
 
-export const CashFlowForm = (props: CashFlowFormProps) => {
+const CashFlowForm = (props: CashFlowFormProps) => {
     const { control, handleSubmit } = useForm<CashFlowFormInput>({
         defaultValues: props.selectedCashFlow ? { ...props.selectedCashFlow } :
             {
@@ -33,17 +30,17 @@ export const CashFlowForm = (props: CashFlowFormProps) => {
     });
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'transactionItems',
+        name: 'transactionItems'
     });
 
     const isEditMode = Boolean(props.selectedCashFlow);
 
-    const currencyDropdownOptions = useMemo((): DropdownOption[] => {
+    const currencyDropdownOptions = useMemo((): Option[] => {
         return props.currencies.map((currency) => {
             return {
                 label: `${currency.shortName} - ${currency.name}`,
                 value: currency.id
-            } as DropdownOption;
+            } as Option;
         });
     }, [props.currencies])
 
@@ -123,3 +120,5 @@ export const CashFlowForm = (props: CashFlowFormProps) => {
         </WorkspaceRightPanel>
     );
 };
+
+export default CashFlowForm;

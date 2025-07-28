@@ -1,6 +1,5 @@
 import React from 'react';
-import { TransactionList } from '../list/TransactionList';
-import { TransactionProvider, CashFlowProvider } from '../components';
+import { CashFlowProvider, TransactionList, TransactionProvider } from '../components';
 
 const Transaction = React.memo(() => {
     return (

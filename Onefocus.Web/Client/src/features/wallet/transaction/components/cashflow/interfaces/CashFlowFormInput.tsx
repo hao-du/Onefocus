@@ -1,4 +1,4 @@
-export interface CashFlowFormInput {
+export default interface CashFlowFormInput {
     id?: string;
     transactedOn: Date;
     amount: number;

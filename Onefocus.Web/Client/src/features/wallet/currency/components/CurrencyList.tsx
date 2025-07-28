@@ -1,12 +1,12 @@
-import {Workspace} from '../../../../shared/components/layouts/workspace';
-import {useCreateCurrency, useGetAllCurrencies, useGetCurrencyById, useUpdateCurrency} from '../services';
-import {Currency as DomainCurrency} from '../../../../domain/currency';
-import CurrencyForm from './CurrencyForm';
-import React, {useCallback, useState} from 'react';
-import CurrencyFormInput from './interfaces/CurrencyFormInput';
-import { useWindows } from '../../../../shared/components/hooks';
-import { Column, DataTable } from '../../../../shared/components/data';
+import React, { useCallback, useState } from 'react';
 import { Button } from '../../../../shared/components/controls';
+import { Column, DataTable } from '../../../../shared/components/data';
+import { useWindows } from '../../../../shared/components/hooks';
+import { Workspace } from '../../../../shared/components/layouts/workspace';
+import { CurrencyResponse } from '../apis';
+import { useCreateCurrency, useGetAllCurrencies, useGetCurrencyById, useUpdateCurrency } from '../services';
+import CurrencyForm from './CurrencyForm';
+import CurrencyFormInput from './interfaces/CurrencyFormInput';
 
 const CurrencyList = React.memo(() => {
     const [showForm, setShowForm] = useState(false);
@@ -68,11 +68,11 @@ const CurrencyList = React.memo(() => {
                     <DataTable value={currencies} isPending={isPending} className="p-datatable-sm">
                         <Column field="name" header="Name" />
                         <Column field="shortName" header="Short name" />
-                        <Column field="isDefault" header="Default" body={(rowData: DomainCurrency) => {
+                        <Column field="isDefault" header="Default" body={(rowData: CurrencyResponse) => {
                             return rowData.isDefault ? <i className='pi pi-check-circle'></i> : <></>;
                         }}/>
                         <Column field="description" header="Description" />
-                        <Column body={(currency: DomainCurrency) => (
+                        <Column body={(currency: CurrencyResponse) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"

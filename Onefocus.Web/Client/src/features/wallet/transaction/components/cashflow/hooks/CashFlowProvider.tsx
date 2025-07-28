@@ -1,11 +1,13 @@
-import { ReactNode, useCallback } from 'react';
-import { CashFlowFormInput } from '../../cashflow/interfaces/CashFlowFormInput';
-import { useTransaction } from '../transaction/useTransaction';
-import { useCreateCashFlow, useGetCashFlowByTransactionId } from '../../services';
-import { useWindows } from '../../../../../components/hooks/useWindows';
-import { CashFlowContext } from './CashFlowContext';
+import { PropsWithChildren, useCallback } from 'react';
+import { useWindows } from '../../../../../../shared/components/hooks';
+import { useCreateCashFlow, useGetCashFlowByTransactionId } from '../../../services';
+import { useTransaction } from '../../transaction';
+import CashFlowFormInput from '../interfaces/CashFlowFormInput';
+import CashFlowContext from './CashFlowContext';
 
-export const CashFlowProvider = ({ children }: { children: ReactNode }) => {
+type CashFlowProviderProps = PropsWithChildren;
+
+const CashFlowProvider = (props: CashFlowProviderProps) => {
     const { refetchList } = useTransaction();
     const { showResponseToast } = useWindows();
 
@@ -36,7 +38,7 @@ export const CashFlowProvider = ({ children }: { children: ReactNode }) => {
         refetchList();
     }, [onCreateAsync, refetchList, setTransactionIdFromCashFlow, showResponseToast]);
 
-    // Provide the authentication context to the children components
+    // Provide the cash flow context to the children components
     return (
         <CashFlowContext.Provider value={{
             selectedCashFlow: selectedCashFlow,
@@ -44,7 +46,9 @@ export const CashFlowProvider = ({ children }: { children: ReactNode }) => {
             setTransactionIdFromCashFlow: setTransactionIdFromCashFlow,
             onCashFlowSubmit: onCashFlowSubmit
         }}>
-            {children}
+            {props.children}
         </CashFlowContext.Provider>
     );
 };
+
+export default CashFlowProvider;
