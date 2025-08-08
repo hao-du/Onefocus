@@ -1,10 +1,10 @@
 import { Route, Routes, useNavigate } from 'react-router';
-import useCheck from '../shared/features/home/services/useCheck';
-import { AppLayout } from '../shared/components/layouts';
-import { Home } from './pages';
-import { Loading, NotFound } from '../shared/app/pages';
 import { WalletRoutes } from '../features/wallet';
+import { Loading, NotFound } from '../shared/app';
+import { AppLayout } from '../shared/components/layouts';
 import { SideMenuItem } from '../shared/components/navigations';
+import { useCheck } from '../shared/features/home';
+import { Home } from './pages';
 
 function App() {
     const navigate = useNavigate();

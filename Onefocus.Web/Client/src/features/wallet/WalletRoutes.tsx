@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router';
-import { NotFound } from '../../shared/app/pages';
-import { Dashboard } from './dashboard/Dashboard';
+import { NotFound } from '../../shared/app';
 import { Bank } from './bank';
 import { Currency } from './currency';
+import { Dashboard } from './dashboard/Dashboard';
 import { Transaction } from './transaction';
 
 const WalletRoutes = () => {

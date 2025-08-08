@@ -1,9 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { PropsWithChildren, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useToken } from '../token';
 import ClientContext from './ClientContext';
 import client from './client';
-import { useToken } from '../token';
 
 type ClientProviderProps = PropsWithChildren & {
     unauthorizedCallback?: () => Promise<string>;
@@ -44,7 +44,7 @@ const ClientProvider = (props: ClientProviderProps) => {
                         navigate('/login');
                     }
 
-                    return { ...error.response, ignoredError: true };
+                    return Promise.reject(error);
                 }
             );
 

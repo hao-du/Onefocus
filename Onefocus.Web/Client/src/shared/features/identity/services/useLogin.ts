@@ -1,8 +1,8 @@
-import {useMutation} from '@tanstack/react-query';
-import {useNavigate} from 'react-router';
+import { useNavigate } from 'react-router';
 import { ApiResponse, useToken } from '../../../hooks';
-import { AuthenticationRequest, AuthenticationResponse } from '../apis/interfaces';
+import useMutation from '../../../hooks/client/useMutation';
 import { authenticate } from '../apis';
+import { AuthenticationRequest, AuthenticationResponse } from '../apis/interfaces';
 
 const useLogin = () => {
     const {setToken} = useToken();

@@ -1,9 +1,9 @@
-import {SubmitHandler, useForm} from 'react-hook-form';
-import {Password, Text} from '../../../components/form-controls';
-import {Button} from '../../../components/controls/buttons';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from '../../../components/controls/buttons';
+import { Password, Text } from '../../../components/form-controls';
 import { useWindows } from '../../../components/hooks/windows';
-import LoginFormInput from './interfaces/LoginFormInput';
 import { useLogin } from '../services';
+import LoginFormInput from './interfaces/LoginFormInput';
 
 
 const LoginForm = () => {

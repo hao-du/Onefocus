@@ -1,6 +1,6 @@
-import {PropsWithChildren, useCallback, useEffect, useRef, useState} from 'react';
-import {Toast, ToastMessage, ToastRef} from '../../indicators';
+import { PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { ApiResponseBase } from '../../../hooks';
+import { Toast, ToastMessage, ToastRef } from '../../indicators';
 import WindowsContext from './WindowsContext';
 
 type WindowsProviderProps = PropsWithChildren & {};
