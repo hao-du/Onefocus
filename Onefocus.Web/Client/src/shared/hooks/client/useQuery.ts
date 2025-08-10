@@ -10,12 +10,9 @@ const useQuery = <TData = unknown, TError = unknown>(
   return useTanstackQuery({
     ...options,
     queryFn: async () => {
-      try {
         return await options.queryFn();
-      } catch (error) {
-        throw error;
-      }
     },
+    throwOnError: true,
   });
 }
 

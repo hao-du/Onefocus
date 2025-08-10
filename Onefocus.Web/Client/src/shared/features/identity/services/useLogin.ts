@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router';
-import { ApiResponse, useToken } from '../../../hooks';
-import useMutation from '../../../hooks/client/useMutation';
+import { ApiResponse, useMutation, useToken } from '../../../hooks';
 import { authenticate } from '../apis';
 import { AuthenticationRequest, AuthenticationResponse } from '../apis/interfaces';
 

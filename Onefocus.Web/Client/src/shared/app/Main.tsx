@@ -2,8 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PrimeReactProvider } from "primereact/api";
 import { PropsWithChildren } from "react";
 import { BrowserRouter } from "react-router";
-import ErrorHandler from "../components/error/ErrorHandler";
-import { WindowsProvider } from "../components/hooks";
+import { ErrorHandlerProvider, WindowsProvider } from "../components/hooks";
 import { ClientProvider, TokenProvider } from "../hooks";
 
 type MainProps = PropsWithChildren & {
@@ -15,17 +14,17 @@ const Main = (props: MainProps) => {
     return (
         <BrowserRouter>
             <WindowsProvider>
-                <ErrorHandler>
-                <PrimeReactProvider>
-                    <QueryClientProvider client={props.queryClient}>
-                        <TokenProvider>
-                            <ClientProvider unauthorizedCallback={props.unauthorizedCallback}>
-                                {props.children}
-                            </ClientProvider>
-                        </TokenProvider>
-                    </QueryClientProvider>
-                </PrimeReactProvider>
-                </ErrorHandler>
+                <ErrorHandlerProvider>
+                    <PrimeReactProvider>
+                        <QueryClientProvider client={props.queryClient}>
+                            <TokenProvider>
+                                <ClientProvider unauthorizedCallback={props.unauthorizedCallback}>
+                                    {props.children}
+                                </ClientProvider>
+                            </TokenProvider>
+                        </QueryClientProvider>
+                    </PrimeReactProvider>
+                </ErrorHandlerProvider>
             </WindowsProvider>
         </BrowserRouter>
     );

@@ -1,6 +1,6 @@
-import {useQuery} from '@tanstack/react-query';
-import {getBankById } from '../apis';
-import {useState} from 'react';
+import { useState } from 'react';
+import { useQuery } from '../../../../shared/hooks';
+import { getBankById } from '../apis';
 
 const useGetBankById = () => {
     const [bankId, setbankId] = useState<string | undefined>(undefined);

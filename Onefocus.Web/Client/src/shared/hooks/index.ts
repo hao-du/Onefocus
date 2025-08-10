@@ -1,15 +1,13 @@
-import { useToken, TokenProvider } from './token';
-import { client, useClient, ClientProvider, ApiResponse, ApiResponseBase, ClientContextValue } from './client';
+import { ApiResponse, ApiResponseBase, client, ClientContextValue, ClientProvider, useClient, useMutation, useQuery, useQueryClient } from './client';
+import { TokenProvider, useToken } from './token';
 
 export {
-    useToken,
-    TokenProvider,
-    client,
-    useClient,
-    ClientProvider
+    client, ClientProvider, TokenProvider, useClient, useMutation,
+    useQuery, useQueryClient, useToken
 };
 export type {
     ApiResponse,
     ApiResponseBase,
     ClientContextValue
 };
+

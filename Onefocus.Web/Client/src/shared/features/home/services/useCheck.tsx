@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useClient } from '../../../hooks';
+import { useClient, useQuery } from '../../../hooks';
 import { check } from '../apis';
 
 const useCheck = () => {

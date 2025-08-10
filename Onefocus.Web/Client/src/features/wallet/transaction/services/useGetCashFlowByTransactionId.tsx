@@ -1,6 +1,6 @@
-import {useQuery} from '@tanstack/react-query';
-import {useState} from 'react';
-import {getCashFlowByTransactionId} from '../apis';
+import { useState } from 'react';
+import { useQuery } from '../../../../shared/hooks';
+import { getCashFlowByTransactionId } from '../apis';
 
 const useGetCashFlowByTransactionId = () => {
     const [transactionId, setTransactionId] = useState<string | null>(null);

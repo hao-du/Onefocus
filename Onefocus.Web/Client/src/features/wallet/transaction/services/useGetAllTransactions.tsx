@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '../../../../shared/hooks';
 import { getAllTransactions } from '../apis';
 
 const useGetAllTransactions = () => {

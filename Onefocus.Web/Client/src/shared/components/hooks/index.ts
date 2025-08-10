@@ -1,3 +1,4 @@
+import { ErrorHandlerProvider } from "./error";
 import { useWindows, WindowsProvider } from "./windows";
 
-export { useWindows, WindowsProvider };
+export { ErrorHandlerProvider, useWindows, WindowsProvider };

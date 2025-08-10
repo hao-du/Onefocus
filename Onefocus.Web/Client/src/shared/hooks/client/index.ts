@@ -1,18 +1,20 @@
 import client from "./client";
-import useClient from "./useClient";
 import ClientProvider from "./ClientProvider";
 import ApiResponse from "./interfaces/ApiResponse";
 import ApiResponseBase from "./interfaces/ApiResponseBase";
 import ClientContextValue from "./interfaces/ClientContextValue";
+import useClient from "./useClient";
+import useMutation from "./useMutation";
+import useQuery from "./useQuery";
+import useQueryClient from "./useQueryClient";
 
-export type { 
+export {
+    client, ClientProvider, useClient, useMutation,
+    useQuery, useQueryClient
+};
+export type {
     ApiResponse,
     ApiResponseBase,
     ClientContextValue
-};
-export {
-    client,
-    useClient, 
-    ClientProvider 
 };
 
