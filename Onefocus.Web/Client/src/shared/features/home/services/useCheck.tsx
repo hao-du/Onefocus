@@ -13,6 +13,7 @@ const useCheck = () => {
             if (response.status === 200) {
                 setIsCheckDone(true);
             }
+            return response;
         },
         enabled: isClientReady,
         staleTime: Infinity
