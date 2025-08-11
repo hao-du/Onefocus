@@ -12,7 +12,7 @@ const useQuery = <TData = unknown, TError = unknown>(
     queryFn: async () => {
         return await options.queryFn();
     },
-    throwOnError: true,
+    throwOnError: false,
   });
 }
 

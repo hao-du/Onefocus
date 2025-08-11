@@ -17,26 +17,34 @@ const ErrorHandlerProvider = (props: PropsWithChildren) => {
             }
         };
 
+        const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+            event.preventDefault();
+            if (event.reason instanceof AxiosError && event.reason.response) {
+                showResponseToast(event.reason.response.data, event.reason.message);
+            } else {
+                showToast({ severity: "error", detail: event.reason instanceof Error ? event.reason.message : "Unknown error" });
+            }
+        }
+
         window.addEventListener("error", handleError);
+        window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
         return () => {
             window.removeEventListener("error", handleError);
+            window.removeEventListener("unhandledrejection", handleUnhandledRejection);
         };
     }, [showToast, showResponseToast]);
 
     return (
-        <ErrorBoundary onError={(error: Error) => {
-            if (error instanceof AxiosError) {
-                const axiosError = error as AxiosError<ApiResponseBase>;
-
-                if (axiosError.response) {
-                    // If the error has a response, show a toast with the response details
-                    showResponseToast(axiosError.response.data, axiosError.message);
-                    return;
-                }
+        <ErrorBoundary onError={(error: unknown) => {
+            const err = error as AxiosError<ApiResponseBase>;
+            if ((err as AxiosError)?.isAxiosError && err.response) {
+                showResponseToast(err.response.data, err.message);
+            } else if (error instanceof Error) {
+                showToast({ severity: "error", detail: error.message });
+            } else {
+                showToast({ severity: "error", detail: "Unknown error" });
             }
-
-            showToast({ severity: "error", detail: error.message });
         }}>
             {props.children}
         </ErrorBoundary>

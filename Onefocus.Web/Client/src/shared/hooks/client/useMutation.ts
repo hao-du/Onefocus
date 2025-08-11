@@ -12,7 +12,7 @@ const useMutation = <TData = unknown, TError = unknown, TVariables = void>(
     mutationFn: async (variables: TVariables) => {
         return await options.mutationFn(variables);
     },
-    throwOnError: true
+    throwOnError: false,
   });
 }
 export default useMutation;

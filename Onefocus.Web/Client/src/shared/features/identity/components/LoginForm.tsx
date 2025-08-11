@@ -1,14 +1,11 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../../components/controls/buttons';
 import { Password, Text } from '../../../components/form-controls';
-import { useWindows } from '../../../components/hooks/windows';
 import { useLogin } from '../services';
 import LoginFormInput from './interfaces/LoginFormInput';
 
-
 const LoginForm = () => {
     const {onLoginAsync, isPending} = useLogin();
-    const {showResponseToast} = useWindows();
 
     const {control, handleSubmit} = useForm<LoginFormInput>({
         defaultValues: {
@@ -18,8 +15,7 @@ const LoginForm = () => {
     });
 
     const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-        const response = await onLoginAsync({email: data.userName, password: data.password});
-        showResponseToast(response, '');
+        await onLoginAsync({email: data.userName, password: data.password});
     };
 
     return (

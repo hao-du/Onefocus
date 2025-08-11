@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Button } from '../../../../../shared/components/controls';
 import { Column, DataTable } from '../../../../../shared/components/data';
 import { Workspace } from '../../../../../shared/components/layouts';
+import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
 import { CurrencyResponse } from '../../../currency';
 import { TransactionResponse } from '../../apis';
 import { CashFlowForm, useCashFlow } from '../cashflow';
@@ -52,8 +53,12 @@ const TransactionList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={transactions} isPending={isPending} className="p-datatable-sm">
-                        <Column field="transactedOn" header="Date" />
-                        <Column field="amount" header="Amount" />
+                        <Column header="Date" body={(transaction: TransactionResponse) => {
+                            return formatDateLocalSystem(transaction.transactedOn);
+                        }}/>
+                        <Column header="Amount" align="right" alignHeader="right" body={(transaction: TransactionResponse) => {
+                            return formatCurrency(transaction.amount);
+                        }}/>
                         <Column field="currencyName" header="Currency" />
                         <Column field="description" header="Description" />
                         <Column body={(transaction: TransactionResponse) => {
