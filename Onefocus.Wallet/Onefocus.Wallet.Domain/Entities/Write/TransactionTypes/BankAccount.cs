@@ -52,8 +52,11 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
         var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, closedOn, isClosed, bankId, ownerId, actionedBy);
 
-        var upsertInterestsResult = bankAccount.UpsertInterests(actionedBy, transactionParams);
-        if (upsertInterestsResult.IsFailure) return (Result<BankAccount>)upsertInterestsResult;
+        if (transactionParams.Count > 0)
+        {
+            var upsertInterestsResult = bankAccount.UpsertInterests(actionedBy, transactionParams);
+            if (upsertInterestsResult.IsFailure) return (Result<BankAccount>)upsertInterestsResult;
+        }
 
         return Result.Success(bankAccount);
     }
@@ -79,6 +82,9 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
         var upsertInterestsResult = UpsertInterests(actionedBy, transactionParams);
         if (upsertInterestsResult.IsFailure) return upsertInterestsResult;
+
+        var deleteInterestsResult = DeleteInterests(actionedBy, transactionParams);
+        if (deleteInterestsResult.IsFailure) return deleteInterestsResult;
 
         return Result.Success();
     }
@@ -136,6 +142,21 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
         var updateResult = bankAccountTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
         if (updateResult.IsFailure) return updateResult;
+
+        return Result.Success();
+    }
+
+    private Result DeleteInterests(Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
+    {
+        var bankAccountTransactionsToBeDeleted = _bankAccountTransactions.FindAll(t => transactionParams.Any(p => p.Id == t.TransactionId));
+
+        if (bankAccountTransactionsToBeDeleted.Count == 0) return Result.Success();
+
+        foreach (var bankAccountTransaction in bankAccountTransactionsToBeDeleted)
+        {
+            bankAccountTransaction.SetActiveFlag(false, actionedBy);
+            bankAccountTransaction.Transaction.SetActiveFlag(false, actionedBy);
+        }
 
         return Result.Success();
     }
