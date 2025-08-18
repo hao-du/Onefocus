@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit.Initializers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
@@ -40,14 +41,32 @@ public sealed class TransactionReadRepository(
     {
         return await ExecuteAsync(async () =>
         {
-            var transaction = await context.Transaction
-                .Include(t => t.CashFlows)
-                .Include(t => t.TransactionItems)
-                .Include(t => t.Currency)
-                .Where(t => t.OwnerUserId == request.UserId && t.Id == request.TransactionId)
+            var cashFlow = await context.CashFlow
+                .Include(cf => cf.Transaction)
+                .ThenInclude(t => t.TransactionItems)
+                .Where(cf => cf.Transaction.OwnerUserId == request.UserId && cf.Id == request.TransactionId)
                 .SingleOrDefaultAsync(cancellationToken);
 
-            return Result.Success<GetCashFlowByTransactionIdResponseDto>(new(transaction));
+            return Result.Success<GetCashFlowByTransactionIdResponseDto>(new(cashFlow));
+        });
+    }
+
+    public async Task<Result<GetBankAccountByTransactionIdResponseDto>> GetBankAccountByTransactionIdAsync(GetBankAccountByTransactionIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var bankAccountId = await context.Transaction
+                .Where(c => c.Id == request.TransactionId)
+                .SelectMany(c => c.BankAccountTransactions.Select(bat => bat.BankAccountId))
+                .FirstOrDefaultAsync(cancellationToken);
+
+            var bankAccount = await context.BankAccount
+                .Include(ba => ba.BankAccountTransactions)
+                .ThenInclude(bat => bat.Transaction)
+                .Where(ba => ba.OwnerUserId == request.UserId && ba.Id == bankAccountId)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return Result.Success<GetBankAccountByTransactionIdResponseDto>(new(bankAccount));
         });
     }
 }

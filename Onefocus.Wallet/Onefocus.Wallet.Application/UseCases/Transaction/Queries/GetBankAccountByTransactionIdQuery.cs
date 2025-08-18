@@ -6,7 +6,27 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 public sealed record GetBankAccountByTransactionIdQueryRequest(Guid TransactionId) : IQuery<GetBankAccountByTransactionIdQueryResponse>;
 
-public sealed record GetBankAccountByTransactionIdQueryResponse(Guid Id, Guid TransactionId, DateTimeOffset TransactedOn, Guid CurrencyId, bool IsIncome, decimal Amount, string? Description, bool IsActive, IReadOnlyList<GetTransactionItem> TransactionItems);
+public sealed record GetBankAccountByTransactionIdQueryResponse(
+    Guid Id,
+    decimal Amount,
+    Guid CurrencyId,
+    decimal InterestRate,
+    string AccountNumber,
+    DateTimeOffset IssuedOn,
+    DateTimeOffset? ClosedOn, 
+    bool IsClosed,
+    Guid BankId,
+    IReadOnlyList<GetTransaction> Transactions
+);
+
+public sealed record GetTransaction(
+    Guid Id,
+    DateTimeOffset TransactedOn, 
+    Guid CurrencyId, 
+    decimal Amount, 
+    string? Description, 
+    bool IsActive
+);
 
 internal sealed class GetBankAccountByTransactionIdQueryHandler(
     IReadUnitOfWork unitOfWork,
@@ -19,24 +39,30 @@ internal sealed class GetBankAccountByTransactionIdQueryHandler(
         if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
         var userId = getUserIdResult.Value;
 
-        var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByTransactionIdAsync(new(request.TransactionId, userId), cancellationToken);
-        if (getCashFlowResult.IsFailure) return Failure(getCashFlowResult);
+        var getBankAccountResult = await unitOfWork.Transaction.GetBankAccountByTransactionIdAsync(new(request.TransactionId, userId), cancellationToken);
+        if (getBankAccountResult.IsFailure) return Failure(getBankAccountResult);
 
-        var transaction = getCashFlowResult.Value.Transaction;
-        if (transaction == null) return Result.Success<GetBankAccountByTransactionIdQueryResponse>(null);
-
-        var cashFlow = transaction.CashFlows.Single();
+        var bankAccount = getBankAccountResult.Value.BankAccount;
+        if (bankAccount == null) return Result.Success<GetBankAccountByTransactionIdQueryResponse>(null);
 
         var response = new GetBankAccountByTransactionIdQueryResponse(
-            Id: cashFlow.Id,
-            TransactionId: transaction.Id,
-            TransactedOn: transaction.TransactedOn,
-            CurrencyId: transaction.CurrencyId,
-            IsIncome: cashFlow.IsIncome,
-            Amount: transaction.Amount,
-            Description: transaction.Description,
-            IsActive: transaction.IsActive,
-            TransactionItems: [..transaction.TransactionItems.Select(t => new GetTransactionItem(t.Id, t.Name, t.Amount, t.IsActive, t.Description))]
+            Id: bankAccount.Id,
+            Amount: bankAccount.Amount,
+            CurrencyId: bankAccount.CurrencyId,
+            InterestRate: bankAccount.InterestRate,
+            AccountNumber: bankAccount.AccountNumber,
+            IssuedOn: bankAccount.IssuedOn,
+            ClosedOn: bankAccount.ClosedOn,
+            IsClosed: bankAccount.IsClosed,
+            BankId: bankAccount.BankId,
+            Transactions: [..bankAccount.BankAccountTransactions.Select(bct => new GetTransaction(
+                Id: bct.Transaction.Id,
+                TransactedOn: bct.Transaction.TransactedOn,
+                CurrencyId: bct.Transaction.CurrencyId,
+                Amount: bct.Transaction.Amount,
+                Description: bct.Transaction.Description,
+                IsActive: bct.Transaction.IsActive
+            ))]
         );
         return Result.Success(response);
     }

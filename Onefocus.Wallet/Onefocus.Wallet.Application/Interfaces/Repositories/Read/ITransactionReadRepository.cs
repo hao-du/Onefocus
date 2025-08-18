@@ -8,4 +8,5 @@ public interface ITransactionReadRepository : IBaseContextRepository
 {
     Task<Result<GetAllTransactionsResponseDto>> GetAllTransactionsAsync(GetAllTransactionsRequestDto request, CancellationToken cancellationToken = default);
     Task<Result<GetCashFlowByTransactionIdResponseDto>> GetCashFlowByTransactionIdAsync(GetCashFlowByTransactionIdRequestDto request, CancellationToken cancellationToken = default);
+    Task<Result<GetBankAccountByTransactionIdResponseDto>> GetBankAccountByTransactionIdAsync(GetBankAccountByTransactionIdRequestDto request, CancellationToken cancellationToken = default);
 }

@@ -23,10 +23,9 @@ internal sealed class GetCashFlowByTransactionIdQueryHandler(
         var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByTransactionIdAsync(new(request.TransactionId, userId), cancellationToken);
         if (getCashFlowResult.IsFailure) return Failure(getCashFlowResult);
 
-        var transaction = getCashFlowResult.Value.Transaction;
-        if (transaction == null) return Result.Success<GetCashFlowByTransactionIdQueryResponse>(null);
-
-        var cashFlow = transaction.CashFlows.Single();
+        var cashFlow = getCashFlowResult.Value.CashFlow;
+        if (cashFlow == null) return Result.Success<GetCashFlowByTransactionIdQueryResponse>(null);
+        var transaction = cashFlow.Transaction;
 
         var response = new GetCashFlowByTransactionIdQueryResponse(
             Id: cashFlow.Id,
