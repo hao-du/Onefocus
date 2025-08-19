@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Contracts.Write.Transaction.BankAccount;
 using Onefocus.Wallet.Application.Contracts.Write.Transaction.CashFlow;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
@@ -24,11 +25,32 @@ public sealed class TransactionWriteRepository(
         });
     }
 
+    public async Task<Result<GetBankAccountByIdResponseDto>> GetBankAccountByTransactionIdAsync(GetBankAccountByIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var bankAccount = await context.BankAccount
+                .Include(ba => ba.BankAccountTransactions)
+                .ThenInclude(bat => bat.Transaction)
+                .FirstOrDefaultAsync(ba => ba.Id == request.Id, cancellationToken);
+            return Result.Success<GetBankAccountByIdResponseDto>(new(bankAccount));
+        });
+    }
+
     public async Task<Result> AddCashFlowAsync(CreateCashFlowRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
             await context.AddAsync(request.CashFlow, cancellationToken);
+            return Result.Success();
+        });
+    }
+
+    public async Task<Result> AddBankAccountAsync(CreateBankAccountRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await context.AddAsync(request.BankAccount, cancellationToken);
             return Result.Success();
         });
     }

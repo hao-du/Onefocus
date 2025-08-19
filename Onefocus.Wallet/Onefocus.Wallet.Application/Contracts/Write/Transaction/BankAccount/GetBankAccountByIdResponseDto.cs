@@ -2,4 +2,4 @@
 
 namespace Onefocus.Wallet.Application.Contracts.Write.Transaction.BankAccount;
 
-public sealed record GetBankAccountByIdResponseDto(List<Entity.BankAccount> Transactions);
+public sealed record GetBankAccountByIdResponseDto(Entity.BankAccount? BankAccount);

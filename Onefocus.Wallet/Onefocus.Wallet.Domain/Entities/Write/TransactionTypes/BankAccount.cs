@@ -30,7 +30,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         // Required by EF Core
     }
 
-    private BankAccount(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool isClosed, Guid bankId, Guid ownerId, Guid actionedBy)
+    private BankAccount(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, Guid bankId, Guid ownerId, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
@@ -39,8 +39,6 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         CurrencyId = currencyId;
         AccountNumber = accountNumber;
         IssuedOn = issuedOn;
-        ClosedOn = closedOn;
-        IsClosed = isClosed;
         BankId = bankId;
         OwnerUserId = ownerId;
     }
@@ -50,7 +48,8 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         var validationResult = Validate(amount, currencyId, issuedOn);
         if (validationResult.IsFailure) return (Result<BankAccount>)validationResult;
 
-        var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, closedOn, isClosed, bankId, ownerId, actionedBy);
+        var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, bankId, ownerId, actionedBy);
+        bankAccount.UpdateBankStatus(isClosed, accountNumber, closedOn, actionedBy);
 
         if (transactionParams.Count > 0)
         {
@@ -61,7 +60,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         return Result.Success(bankAccount);
     }
 
-    public Result Update(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, Guid bankId, bool isActive, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
+    public Result Update(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool isClosed, Guid bankId, bool isActive, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
         var validationResult = Validate(amount, currencyId, issuedOn);
         if (validationResult.IsFailure)
@@ -74,6 +73,9 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         CurrencyId = currencyId;
         AccountNumber = accountNumber;
         IssuedOn = issuedOn;
+
+        UpdateBankStatus(isClosed, accountNumber, closedOn, actionedBy);
+
         ClosedOn = closedOn;
         BankId = bankId;
         Description = description;
@@ -148,7 +150,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     private Result DeleteInterests(Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
-        var bankAccountTransactionsToBeDeleted = _bankAccountTransactions.FindAll(t => transactionParams.Any(p => p.Id == t.TransactionId));
+        var bankAccountTransactionsToBeDeleted = _bankAccountTransactions.FindAll(t => !transactionParams.Any(param => param.Id == t.TransactionId));
 
         if (bankAccountTransactionsToBeDeleted.Count == 0) return Result.Success();
 
@@ -161,25 +163,29 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         return Result.Success();
     }
 
-    public Result CloseBankAccount(string accountNumber, DateTimeOffset closedOn, Guid actionedBy)
+    private Result UpdateBankStatus(bool isClosed, string accountNumber, DateTimeOffset? closedOn, Guid actionedBy)
     {
-        if (closedOn == default)
-        {
-            return Result.Failure(Errors.BankAccount.ClosedOnRequired);
-        }
-        if (string.IsNullOrEmpty(accountNumber))
-        {
-            return Result.Failure(Errors.BankAccount.AccountNumberRequired);
-        }
-        if (closedOn.UtcDateTime.Date > DateTimeOffset.UtcNow.Date)
-        {
-            return Result.Failure(Errors.Transaction.ClosedOnCannotBeAFutureDate);
-        }
-
         AccountNumber = accountNumber;
-        ClosedOn = closedOn;
-        IsClosed = true;
-        Update(actionedBy);
+
+        if (isClosed)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                return Result.Failure(Errors.BankAccount.AccountNumberRequired);
+            }
+            if (!closedOn.HasValue || closedOn.Value == default)
+            {
+                return Result.Failure(Errors.BankAccount.ClosedOnRequired);
+            }
+
+            ClosedOn = closedOn;
+            IsClosed = true;
+        }
+        else
+        {
+            ClosedOn = null;
+            IsClosed = false;
+        }
 
         return Result.Success();
     }

@@ -23,9 +23,9 @@ namespace Onefocus.Wallet.Domain.Entities.Write.Params
             return new TransactionParams(id, amount, transactedOn, currencyId, isActive, description, transactionItems);
         }
 
-        public static TransactionParams Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, bool isActive, string? description, IReadOnlyList<TransactionItemParams>? transactionItems = null)
+        public static TransactionParams CreateNew(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, IReadOnlyList<TransactionItemParams>? transactionItems = null)
         {
-            return new TransactionParams(null, amount, transactedOn, currencyId, isActive, description, transactionItems);
+            return new TransactionParams(null, amount, transactedOn, currencyId, true, description, transactionItems);
         }
     }
 }

@@ -7,11 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
+	  <Compile Remove="DomainServices\**" />
+	  <EmbeddedResource Remove="DomainServices\**" />
+	  <None Remove="DomainServices\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="DomainServices\" />
+	  <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -16,6 +16,7 @@ public sealed record GetBankAccountByTransactionIdQueryResponse(
     DateTimeOffset? ClosedOn, 
     bool IsClosed,
     Guid BankId,
+    string? Description,
     IReadOnlyList<GetTransaction> Transactions
 );
 
@@ -55,6 +56,7 @@ internal sealed class GetBankAccountByTransactionIdQueryHandler(
             ClosedOn: bankAccount.ClosedOn,
             IsClosed: bankAccount.IsClosed,
             BankId: bankAccount.BankId,
+            Description: bankAccount.Description,
             Transactions: [..bankAccount.BankAccountTransactions.Select(bct => new GetTransaction(
                 Id: bct.Transaction.Id,
                 TransactedOn: bct.Transaction.TransactedOn,
