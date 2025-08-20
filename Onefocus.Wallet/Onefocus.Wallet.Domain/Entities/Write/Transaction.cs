@@ -1,4 +1,5 @@
-﻿using Onefocus.Common.Abstractions.Domain;
+﻿using MediatR;
+using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
@@ -111,7 +112,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         return Result.Success();
     }
 
-    private static Result Validate(decimal amount, Guid currencyId, DateTimeOffset transactedOn)
+    public static Result Validate(decimal amount, Guid currencyId, DateTimeOffset transactedOn)
     {
         if (amount < 0)
         {

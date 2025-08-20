@@ -3,8 +3,8 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
 public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateTimeOffset TransactedOn, bool IsIncome, Guid CurrencyId, bool IsActive, string? Description, IReadOnlyList<UpdateTransactionItem> TransactionItems) : ICommand;
@@ -49,21 +49,17 @@ internal sealed class UpdateCashFlowCommandHandler(
 
     private static Result ValidateRequest(UpdateCashFlowCommandRequest request)
     {
-        if (request.Amount < 0)
+        var validationResult = Entity.Transaction.Validate(
+            request.Amount,
+            request.CurrencyId,
+            request.TransactedOn
+        );
+        if (validationResult.IsFailure) return validationResult;
+
+        foreach (var item in request.TransactionItems)
         {
-            return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
-        }
-        if (request.CurrencyId == default)
-        {
-            return Result.Failure(Errors.Currency.CurrencyRequired);
-        }
-        if (request.TransactedOn == default)
-        {
-            return Result.Failure(Errors.Transaction.TransactedOnRequired);
-        }
-        if (request.TransactionItems.Any(item => string.IsNullOrEmpty(item.Name) || item.Amount < 0))
-        {
-            return Result.Failure(Errors.TransactionItem.InvalidTransactionItem);
+            var itemValidationResult = Entity.TransactionItem.Validate(item.Name, item.Amount);
+            if (itemValidationResult.IsFailure) return itemValidationResult;
         }
 
         return Result.Success();

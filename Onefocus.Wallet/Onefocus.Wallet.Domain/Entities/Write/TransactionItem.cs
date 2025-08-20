@@ -53,7 +53,7 @@ public class TransactionItem : WriteEntityBase
         return Result.Success();
     }
 
-    private static Result Validate(string name, decimal amount)
+    public static Result Validate(string name, decimal amount)
     {
         if (string.IsNullOrEmpty(name))
         {

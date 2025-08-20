@@ -2,6 +2,7 @@
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -72,6 +73,27 @@ internal sealed class CreateBankAccountCommandHandler(
 
     private static Result ValidateRequest(CreateBankAccountCommandRequest request)
     {
+        var validationResult = Entity.TransactionTypes.BankAccount.Validate(
+            amount: request.Amount,
+            currencyId: request.CurrencyId,
+            bankId: request.BankId,
+            interestRate: request.InterestRate,
+            issuedOn: request.IssuedOn,
+            isClosed: request.IsClosed,
+            accountNumber: request.AccountNumber,
+            closedOn: request.ClosedOn);
+        if(validationResult.IsFailure) return validationResult;
+
+        foreach (var transaction in request.Transactions)
+        {
+            var transactionValidationResult = Entity.Transaction.Validate(
+                amount: transaction.Amount,
+                currencyId: transaction.CurrencyId,
+                transactedOn: transaction.TransactedOn
+                );
+            if (transactionValidationResult.IsFailure) return transactionValidationResult;
+        }
+
         return Result.Success();
     }
 }

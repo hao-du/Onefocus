@@ -2,8 +2,6 @@
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -55,7 +53,11 @@ internal sealed class CreateCurrencyExchangeCommandHandler(
 
     private static Result ValidateRequest(CreateCurrencyExchangeCommandRequest request)
     {
-        return Result.Success();
+        return Entity.TransactionTypes.CurrencyExchange.Validate(
+            source: CurrencyExchangeParams.Create(request.SourceAmount, request.SourceCurrencyId),
+            target: CurrencyExchangeParams.Create(request.TargetAmount, request.TargetCurrencyId),
+            exchangeRate: request.ExchangeRate
+        );
     }
 }
 

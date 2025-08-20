@@ -3,6 +3,7 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using System;
 using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
@@ -33,12 +34,12 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         CounterpartyId = counterpartyId;
     }
 
-    public static Result<PeerTransfer> Create(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
+    public static Result<PeerTransfer> Create(int status, int type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        var validationResult = Validate(counterpartyId);
+        var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
         if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
 
-        var peerTransfer = new PeerTransfer(status, type, counterpartyId, description, actionedBy);
+        var peerTransfer = new PeerTransfer((PeerTransferStatus)status, (PeerTransferType)type, counterpartyId, description, actionedBy);
 
         if (transactionParams.Count > 0)
         {
@@ -49,13 +50,13 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         return Result.Success(peerTransfer);
     }
 
-    public Result Update(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
+    public Result Update(int status, int type, Guid counterpartyId, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        var validationResult = Validate(counterpartyId);
+        var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
         if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
 
-        Status = status;
-        Type = type;
+        Status = (PeerTransferStatus)status;
+        Type = (PeerTransferType)type;
         CounterpartyId = counterpartyId;
         Description = description;
 
@@ -144,11 +145,23 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         return Result.Success();
     }
 
-    private static Result Validate(Guid counterpartyId)
+    public static Result Validate(Guid counterpartyId, int status, int type, Array transactions)
     {
         if (counterpartyId == default)
         {
             return Result.Failure(Errors.PeerTransfer.CounterpartyRequired);
+        }
+        if (!Enum.IsDefined(typeof(PeerTransferStatus), status))
+        {
+            return Result.Failure(Errors.PeerTransfer.InvalidStatus);
+        }
+        if (!Enum.IsDefined(typeof(PeerTransferType), type))
+        {
+            return Result.Failure(Errors.PeerTransfer.InvalidType);
+        }
+        if(transactions == null || transactions.Length == 0)
+        {
+            return Result.Failure(Errors.PeerTransfer.NoTransactionsProvided);
         }
 
         return Result.Success();

@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Onefocus.Common.Abstractions.Domain.Specification;
-using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Specifications.Write.Currency;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Currency.Commands;
 public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateCurrencyCommandHandler(
-        IWriteUnitOfWork unitOfWork
+        ICurrencyService currencyService
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor)
 {
@@ -56,19 +54,11 @@ internal sealed class UpdateCurrencyCommandHandler(
 
     private async Task<Result> ValidateRequest(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.Name)) return Result.Failure(Errors.Currency.NameRequired);
-        if (string.IsNullOrEmpty(request.ShortName)) return Result.Failure(Errors.Currency.ShortNameRequired);
-        if (request.ShortName.Length < 3 || request.ShortName.Length > 4) return Result.Failure(Errors.Currency.ShortNameLengthMustBeThreeOrFour);
+        var validationResult = Entity.Currency.Validate(request.Name, request.ShortName);
+        if (validationResult.IsFailure) return validationResult;
 
-        var orSpec = new OrSpecification<Entity.Currency>(
-            FindNameSpecification<Entity.Currency>.Create(request.Name),
-            FindShortNameSpecification.Create(request.ShortName)
-        );
-        var spec = orSpec.And(ExcludeIdsSpecification<Entity.Currency>.Create([request.Id]));
-
-        var queryResult = await unitOfWork.Currency.GetBySpecificationAsync<Entity.Currency>(new(spec), cancellationToken);
-        if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value.Entity != null) return Result.Failure(Errors.Currency.NameOrShortNameIsExisted);
+        var checkDuplicationResult = await currencyService.HasDuplicatedCurrency(request.Id, request.Name, request.ShortName, cancellationToken);
+        if (checkDuplicationResult.IsFailure) return checkDuplicationResult;
 
         return Result.Success();
     }

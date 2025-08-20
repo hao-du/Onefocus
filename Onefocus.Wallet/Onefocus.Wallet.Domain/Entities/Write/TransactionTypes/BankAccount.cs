@@ -1,4 +1,5 @@
-﻿using Onefocus.Common.Abstractions.Domain;
+﻿using MediatR;
+using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 
@@ -45,7 +46,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     public static Result<BankAccount> Create(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool isClosed, Guid bankId, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
-        var validationResult = Validate(amount, currencyId, issuedOn);
+        var validationResult = Validate(amount, currencyId, bankId, interestRate, issuedOn, isClosed, accountNumber, closedOn);
         if (validationResult.IsFailure) return (Result<BankAccount>)validationResult;
 
         var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, bankId, ownerId, actionedBy);
@@ -62,7 +63,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     public Result Update(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool isClosed, Guid bankId, bool isActive, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
-        var validationResult = Validate(amount, currencyId, issuedOn);
+        var validationResult = Validate(amount, currencyId, bankId, interestRate, issuedOn, isClosed, accountNumber, closedOn);
         if (validationResult.IsFailure)
         {
             return validationResult;
@@ -169,15 +170,6 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
         if (isClosed)
         {
-            if (string.IsNullOrEmpty(accountNumber))
-            {
-                return Result.Failure(Errors.BankAccount.AccountNumberRequired);
-            }
-            if (!closedOn.HasValue || closedOn.Value == default)
-            {
-                return Result.Failure(Errors.BankAccount.ClosedOnRequired);
-            }
-
             ClosedOn = closedOn;
             IsClosed = true;
         }
@@ -190,7 +182,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         return Result.Success();
     }
 
-    private static Result Validate(decimal amount, Guid currencyId, DateTimeOffset issuedOn)
+    public static Result Validate(decimal amount, Guid currencyId, Guid bankId, decimal interestRate, DateTimeOffset issuedOn, bool isClosed, string accountNumber, DateTimeOffset? closedOn)
     {
         if (amount < 0)
         {
@@ -200,9 +192,32 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.Currency.CurrencyRequired);
         }
+        if (bankId == default)
+        {
+            return Result.Failure(Errors.Bank.BankRequired);
+        }
+        if (interestRate < 0)
+        {
+            return Result.Failure(Errors.BankAccount.InterestRateMustEqualOrGreaterThanZero);
+        }
         if (issuedOn == default)
         {
             return Result.Failure(Errors.BankAccount.IssuedOnRequired);
+        }
+        if (isClosed)
+        {
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                return Result.Failure(Errors.BankAccount.AccountNumberRequired);
+            }
+            if (!closedOn.HasValue || closedOn.Value == default)
+            {
+                return Result.Failure(Errors.BankAccount.ClosedOnRequired);
+            }
+            if (interestRate == 0)
+            {
+                return Result.Failure(Errors.BankAccount.InterestRateMustGreaterThanZeroWhenClose);
+            }
         }
 
         return Result.Success();

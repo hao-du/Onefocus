@@ -3,9 +3,8 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
 public sealed record UpdateCurrencyExchangeCommandRequest(
@@ -58,7 +57,11 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
 
     private static Result ValidateRequest(UpdateCurrencyExchangeCommandRequest request)
     {
-        return Result.Success();
+        return Entity.TransactionTypes.CurrencyExchange.Validate(
+            source: CurrencyExchangeParams.Create(request.SourceAmount, request.SourceCurrencyId),
+            target: CurrencyExchangeParams.Create(request.TargetAmount, request.TargetCurrencyId),
+            exchangeRate: request.ExchangeRate
+        );
     }
 }
 

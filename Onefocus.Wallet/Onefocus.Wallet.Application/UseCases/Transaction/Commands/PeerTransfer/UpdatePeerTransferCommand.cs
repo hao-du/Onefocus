@@ -6,12 +6,13 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
 public sealed record UpdatePeerTransferCommandRequest(
     Guid Id, 
-    PeerTransferStatus Status, 
-    PeerTransferType Type, 
+    int Status, 
+    int Type, 
     Guid CounterpartyId, 
     bool IsActive, 
     string? Description, 
@@ -74,6 +75,24 @@ internal sealed class UpdatePeerTransferCommandHandler(
 
     private static Result ValidateRequest(UpdatePeerTransferCommandRequest request)
     {
+        var validationResult = Entity.TransactionTypes.PeerTransfer.Validate(
+            request.CounterpartyId,
+            request.Status,
+            request.Type,
+            request.TransferTransactions.ToArray()
+        );
+        if (validationResult.IsFailure) return validationResult;
+
+        foreach (var item in request.TransferTransactions)
+        {
+            var itemValidationResult = Entity.Transaction.Validate(
+                item.Amount,
+                item.CurrencyId,
+                item.TransactedOn
+            );
+            if (itemValidationResult.IsFailure) return itemValidationResult;
+        }
+
         return Result.Success();
     }
 }

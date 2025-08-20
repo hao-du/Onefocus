@@ -2,6 +2,7 @@
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Specifications.Write.Currency;
@@ -13,7 +14,8 @@ public sealed record CreateCurrencyCommandRequest(string Name, string ShortName,
 public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateCurrencyCommandHandler(
-        IWriteUnitOfWork unitOfWork
+        ICurrencyService currencyService
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<CreateCurrencyCommandRequest, CreateBankCommandResponse>(httpContextAccessor)
 {
@@ -57,14 +59,11 @@ internal sealed class CreateCurrencyCommandHandler(
 
     private async Task<Result> ValidateRequest(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.Name)) return Result.Failure(Errors.Currency.NameRequired);
-        if (string.IsNullOrEmpty(request.ShortName)) return Result.Failure(Errors.Currency.ShortNameRequired);
-        if (request.ShortName.Length < 3 || request.ShortName.Length > 4) return Result.Failure(Errors.Currency.ShortNameLengthMustBeThreeOrFour);
+        var validationResult = Entity.Currency.Validate(request.Name, request.ShortName);
+        if (validationResult.IsFailure) return validationResult;
 
-        var spec = FindNameSpecification<Entity.Currency>.Create(request.Name).Or(FindShortNameSpecification.Create(request.ShortName));
-        var queryResult = await unitOfWork.Currency.GetBySpecificationAsync<Entity.Currency>(new(spec), cancellationToken);
-        if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value.Entity != null) return Result.Failure(Errors.Currency.NameOrShortNameIsExisted);
+        var checkDuplicationResult = await currencyService.HasDuplicatedCurrency(Guid.Empty, request.Name, request.ShortName, cancellationToken);
+        if (checkDuplicationResult.IsFailure) return checkDuplicationResult;
 
         return Result.Success();
     }

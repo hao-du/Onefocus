@@ -61,7 +61,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
         return Result.Success();
     }
 
-    private static Result Validate(string name, string shortName)
+    public static Result Validate(string name, string shortName)
     {
         if (string.IsNullOrEmpty(name))
         {

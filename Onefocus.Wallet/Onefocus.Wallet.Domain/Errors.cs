@@ -46,6 +46,8 @@ public static class Errors
         public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
         public static readonly Error ClosedOnRequired = new("ClosedOnRequired", "Close account date is required.");
         public static readonly Error IssuedOnRequired = new("IssuedOnRequired", "Issued date is required.");
+        public static readonly Error InterestRateMustEqualOrGreaterThanZero = new("InterestRateMustEqualOrGreaterThanZero", "Interest rate must be equal or greater than 0.");
+        public static readonly Error InterestRateMustGreaterThanZeroWhenClose = new("InterestRateMustGreaterThanZeroWhenClose", "Interest rate must be greater than 0 when account is closed.");
     }
 
     public static class Transaction
@@ -69,6 +71,9 @@ public static class Errors
     public static class PeerTransfer
     {
         public static readonly Error CounterpartyRequired = new("CounterpartyRequired", "Counterparty is required.");
+        public static readonly Error InvalidStatus = new("InvalidStatus", "Status is invalid.");
+        public static readonly Error InvalidType = new("InvalidType", "Type is invalid.");
+        public static readonly Error NoTransactionsProvided = new ("NoTransactionsProvided", "No transactions p rovided.");
     }
 
     public static class TransactionItem

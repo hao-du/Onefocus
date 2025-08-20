@@ -111,7 +111,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         return Result.Success();
     }
 
-    private static Result Validate(CurrencyExchangeParams source, CurrencyExchangeParams target, decimal exchangeRate)
+    public static Result Validate(CurrencyExchangeParams source, CurrencyExchangeParams target, decimal exchangeRate)
     {
         if (exchangeRate <= 0)
         {

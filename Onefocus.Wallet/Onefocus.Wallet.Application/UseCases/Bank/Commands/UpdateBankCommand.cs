@@ -3,6 +3,7 @@ using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
@@ -12,7 +13,8 @@ namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
 public sealed record UpdateBankCommandRequest(Guid Id, string Name, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateBankCommandHandler(
-    IWriteUnitOfWork unitOfWork,
+    IBankService bankService,
+    IWriteUnitOfWork writeUnitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateBankCommandRequest>(httpContextAccessor)
 {
@@ -24,14 +26,14 @@ internal sealed class UpdateBankCommandHandler(
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return actionByResult;
 
-        var getBankResult = await unitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
+        var getBankResult = await writeUnitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
         if (getBankResult.IsFailure) return getBankResult;
         if (getBankResult.Value.Bank == null) return Result.Failure(CommonErrors.NullReference);
 
         var updateResult = getBankResult.Value.Bank.Update(request.Name, request.Description, request.IsActive, actionByResult.Value);
         if (updateResult.IsFailure) return updateResult;
 
-        var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
+        var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
 
         return Result.Success();
@@ -39,12 +41,11 @@ internal sealed class UpdateBankCommandHandler(
 
     private async Task<Result> ValidateRequest(UpdateBankCommandRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return Result.Failure(Errors.Bank.NameRequired);
+        var validationResult = Entity.Bank.Validate(request.Name);
+        if (validationResult.IsFailure) return validationResult;
 
-        var spec = FindNameSpecification<Entity.Bank>.Create(request.Name).And(ExcludeIdsSpecification<Entity.Bank>.Create([request.Id]));
-        var queryResult = await unitOfWork.Bank.GetBySpecificationAsync<Entity.Bank>(new(spec), cancellationToken);
-        if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value.Entity is not null) return Result.Failure(Errors.Bank.NameIsExisted);
+        var checkDuplicationResult = await bankService.HasDuplicatedBank(request.Id, request.Name, cancellationToken);
+        if (checkDuplicationResult.IsFailure) return checkDuplicationResult;
 
         return Result.Success();
     }

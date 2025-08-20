@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Http;
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.Services;
 using Onefocus.Wallet.Domain;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -12,6 +14,7 @@ public sealed record CreateBankCommandRequest(string Name, string? Description) 
 public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateBankCommandHandler(
+    IBankService bankService,
     IWriteUnitOfWork writeUnitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateBankCommandRequest, CreateBankCommandResponse>(httpContextAccessor)
@@ -43,12 +46,11 @@ internal sealed class CreateBankCommandHandler(
 
     private async Task<Result> ValidateRequest(CreateBankCommandRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Name)) return Result.Failure(Errors.Bank.NameRequired);
+        var validationResult = Entity.Bank.Validate(request.Name);
+        if (validationResult.IsFailure) return validationResult;
 
-        var spec = FindNameSpecification<Entity.Bank>.Create(request.Name);
-        var queryResult = await writeUnitOfWork.Bank.GetBySpecificationAsync<Entity.Bank>(new(spec), cancellationToken);
-        if (queryResult.IsFailure) return queryResult;
-        if (queryResult.Value.Entity is not null) return Result.Failure(Errors.Bank.NameIsExisted);
+        var checkDuplicationResult = await bankService.HasDuplicatedBank(Guid.Empty, request.Name, cancellationToken);
+        if (checkDuplicationResult.IsFailure) return checkDuplicationResult;
 
         return Result.Success();
     }

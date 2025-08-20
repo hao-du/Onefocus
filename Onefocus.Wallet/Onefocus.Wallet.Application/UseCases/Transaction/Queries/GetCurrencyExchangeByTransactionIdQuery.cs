@@ -35,26 +35,19 @@ internal sealed class GetCurrencyExchangeByTransactionIdQueryHandler(
         var currencyExchange = getCurrencyExchangeResult.Value.CurrencyExchange;
         if (currencyExchange == null) return Result.Success<GetCurrencyExchangeByTransactionIdQueryResponse>(null);
 
+        var source = currencyExchange.GetSource();
+        var target = currencyExchange.GetTarget();
+
         var response = new GetCurrencyExchangeByTransactionIdQueryResponse(
             Id: currencyExchange.Id,
-            Amount: currencyExchange.Amount,
-            CurrencyId: currencyExchange.CurrencyId,
-            InterestRate: currencyExchange.InterestRate,
-            AccountNumber: currencyExchange.AccountNumber,
-            IssuedOn: currencyExchange.IssuedOn,
-            ClosedOn: currencyExchange.ClosedOn,
-            IsClosed: currencyExchange.IsClosed,
-            BankId: currencyExchange.BankId,
+            SourceAmount: source.Amount,
+            SourceCurrencyId: source.CurrencyId,
+            TargetAmount: target.Amount,
+            TargetCurrencyId: target.CurrencyId,
+            ExchangeRate: currencyExchange.ExchangeRate,
+            TransactedOn: currencyExchange.GetTransactedOn(),
             IsActive: currencyExchange.IsActive,
-            Description: currencyExchange.Description,
-            Transactions: [..currencyExchange.CurrencyExchangeTransactions.Select(bct => new GetCurrencyExchangeTransaction(
-                Id: bct.Transaction.Id,
-                TransactedOn: bct.Transaction.TransactedOn,
-                CurrencyId: bct.Transaction.CurrencyId,
-                Amount: bct.Transaction.Amount,
-                Description: bct.Transaction.Description,
-                IsActive: bct.Transaction.IsActive
-            ))]
+            Description: currencyExchange.Description
         );
         return Result.Success(response);
     }

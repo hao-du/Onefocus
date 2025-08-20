@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="UseCases\Transaction\CurrencyExchange\**" />
+	  <EmbeddedResource Remove="UseCases\Transaction\CurrencyExchange\**" />
+	  <None Remove="UseCases\Transaction\CurrencyExchange\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.1" />
 		<PackageReference Include="MediatR" Version="12.5.0" />
@@ -14,10 +20,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Onefocus.Wallet.Domain\Onefocus.Wallet.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="UseCases\Transaction\CurrencyExchange\" />
 	</ItemGroup>
 
 </Project>

@@ -54,7 +54,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
         return Result.Success();
     }
 
-    private static Result Validate(string name)
+    public static Result Validate(string name)
     {
         if (string.IsNullOrEmpty(name))
         {
