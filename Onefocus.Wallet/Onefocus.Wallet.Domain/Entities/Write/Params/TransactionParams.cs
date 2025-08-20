@@ -1,11 +1,4 @@
-﻿using Onefocus.Common.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Onefocus.Wallet.Domain.Entities.Write.Params
+﻿namespace Onefocus.Wallet.Domain.Entities.Write.Params
 {
     public class TransactionParams(Guid? id, decimal amount, DateTimeOffset transactedOn, Guid currencyId, bool isActive, string? description, IReadOnlyList<TransactionItemParams>? transactionItems = null)
     {

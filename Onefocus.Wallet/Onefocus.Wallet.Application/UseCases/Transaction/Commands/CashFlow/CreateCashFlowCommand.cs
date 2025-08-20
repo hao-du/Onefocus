@@ -6,7 +6,7 @@ using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
-namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands;
+namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
 public sealed record CreateCashFlowCommandRequest(decimal Amount, DateTimeOffset TransactedOn, bool IsIncome, Guid CurrencyId, string? Description, IReadOnlyList<CreateTransactionItem> TransactionItems) : ICommand<CreateCashFlowCommandResponse>;
 public sealed record CreateTransactionItem(string Name, decimal Amount, string? Description);
 public sealed record CreateCashFlowCommandResponse(Guid Id);
@@ -43,7 +43,7 @@ internal sealed class CreateCashFlowCommandHandler(
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
 
-        return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.TransactionId));
+        return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }
 
     private static Result ValidateRequest(CreateCashFlowCommandRequest request)

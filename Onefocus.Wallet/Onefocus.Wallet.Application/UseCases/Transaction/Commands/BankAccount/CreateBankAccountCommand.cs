@@ -5,7 +5,7 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
-namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands;
+namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
 public sealed record CreateBankAccountCommandRequest(
     decimal Amount,
     Guid CurrencyId,

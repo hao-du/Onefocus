@@ -6,7 +6,7 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 
-namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands;
+namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
 public sealed record UpdateBankAccountCommandRequest(
     Guid Id,
     decimal Amount,
@@ -43,7 +43,7 @@ internal sealed class UpdateBankAccountCommandHandler(
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return actionByResult;
 
-        var getBankAccountResult = await unitOfWork.Transaction.GetBankAccountByTransactionIdAsync(new(request.Id), cancellationToken);
+        var getBankAccountResult = await unitOfWork.Transaction.GetBankAccountByIdAsync(new(request.Id), cancellationToken);
         if (getBankAccountResult.IsFailure) return getBankAccountResult;
 
         var bankAccount = getBankAccountResult.Value.BankAccount;
@@ -75,7 +75,7 @@ internal sealed class UpdateBankAccountCommandHandler(
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
 
-        return Result.Success<CreateBankAccountCommandResponse>(new(bankAccount.Id));
+        return Result.Success();
     }
 
     private static Result ValidateRequest(UpdateBankAccountCommandRequest request)

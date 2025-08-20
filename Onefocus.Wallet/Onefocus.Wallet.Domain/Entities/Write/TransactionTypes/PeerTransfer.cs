@@ -1,7 +1,9 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
+using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -9,11 +11,11 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 {
     private readonly List<PeerTransferTransaction> _peerTransferTransactions = [];
 
-    public Guid CounterpartyId { get; init; }
-    public PeerTransferStatus Status { get; init; }
-    public PeerTransferType Type { get; init; }
+    public Guid CounterpartyId { get; private set; }
+    public PeerTransferStatus Status { get; private set; }
+    public PeerTransferType Type { get; private set; }
 
-    public Counterparty Counterparty { get; init; } = default!;
+    public Counterparty Counterparty { get; private set; } = default!;
 
     public IReadOnlyCollection<PeerTransferTransaction> PeerTransferTransactions => _peerTransferTransactions.AsReadOnly();
 
@@ -31,18 +33,44 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         CounterpartyId = counterpartyId;
     }
 
-    public static Result<PeerTransfer> Create(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, Guid transferredUserId, IReadOnlyList<TransferTransactionParams> transactionParams)
+    public static Result<PeerTransfer> Create(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        var validationResult = Validate(transferredUserId);
+        var validationResult = Validate(counterpartyId);
         if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
 
         var peerTransfer = new PeerTransfer(status, type, counterpartyId, description, actionedBy);
 
-        peerTransfer.UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+        if (transactionParams.Count > 0)
+        {
+            var upsertInterestsResult = peerTransfer.UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+            if (upsertInterestsResult.IsFailure) return (Result<PeerTransfer>)upsertInterestsResult;
+        }
 
         return Result.Success(peerTransfer);
     }
 
+    public Result Update(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
+    {
+        var validationResult = Validate(counterpartyId);
+        if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
+
+        Status = status;
+        Type = type;
+        CounterpartyId = counterpartyId;
+        Description = description;
+
+        SetActiveFlag(isActive, actionedBy);
+
+        var upsertInterestsResult = UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+        if (upsertInterestsResult.IsFailure) return upsertInterestsResult;
+
+        var deleteInterestsResult = DeleteTransferDetails(actionedBy, transactionParams);
+        if (deleteInterestsResult.IsFailure) return deleteInterestsResult;
+
+        UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+
+        return Result.Success();
+    }
 
     private Result UpsertTransferDetails(Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
@@ -97,6 +125,21 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 
         var updateResult = peerTransferTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
         if (updateResult.IsFailure) return updateResult;
+
+        return Result.Success();
+    }
+
+    private Result DeleteTransferDetails(Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
+    {
+        var peerTransferTransactionsToBeDeleted = _peerTransferTransactions.FindAll(t => !transactionParams.Any(param => param.Id == t.TransactionId));
+
+        if (peerTransferTransactionsToBeDeleted.Count == 0) return Result.Success();
+
+        foreach (var peerTransferTransaction in peerTransferTransactionsToBeDeleted)
+        {
+            peerTransferTransaction.SetActiveFlag(false, actionedBy);
+            peerTransferTransaction.Transaction.SetActiveFlag(false, actionedBy);
+        }
 
         return Result.Success();
     }

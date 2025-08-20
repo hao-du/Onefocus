@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
 using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Api.Endpoints;

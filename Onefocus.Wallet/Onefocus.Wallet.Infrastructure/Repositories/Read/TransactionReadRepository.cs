@@ -4,6 +4,10 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Contracts.Read.Transaction;
+using Onefocus.Wallet.Application.Contracts.Read.Transaction.BankAccount;
+using Onefocus.Wallet.Application.Contracts.Read.Transaction.CashFlow;
+using Onefocus.Wallet.Application.Contracts.Read.Transaction.CurrencyExchange;
+using Onefocus.Wallet.Application.Contracts.Read.Transaction.PeerTransfer;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 
@@ -67,6 +71,44 @@ public sealed class TransactionReadRepository(
                 .SingleOrDefaultAsync(cancellationToken);
 
             return Result.Success<GetBankAccountByTransactionIdResponseDto>(new(bankAccount));
+        });
+    }
+
+    public async Task<Result<GetPeerTransferByTransactionIdResponseDto>> GetPeerTransferByTransactionIdAsync(GetPeerTransferByTransactionIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var peerTransferId = await context.Transaction
+                .Where(t => t.Id == request.TransactionId && t.OwnerUserId == request.UserId)
+                .SelectMany(t => t.PeerTransferTransactions.Select(ptt => ptt.PeerTransferId))
+                .FirstOrDefaultAsync(cancellationToken);
+
+            var peerTransfer = await context.PeerTransfer
+                .Include(pt => pt.PeerTransferTransactions)
+                .ThenInclude(ptt => ptt.Transaction)
+                .Where(pt => pt.Id == peerTransferId)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return Result.Success<GetPeerTransferByTransactionIdResponseDto>(new(peerTransfer));
+        });
+    }
+
+    public async Task<Result<GetCurrencyExchangeByTransactionIdResponseDto>> GetCurrencyExchangeByTransactionIdAsync(GetCurrencyExchangeByTransactionIdRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var currencyExchangeId = await context.Transaction
+                .Where(t => t.Id == request.TransactionId && t.OwnerUserId == request.UserId)
+                .SelectMany(t => t.CurrencyExchangeTransactions.Select(ptt => ptt.CurrencyExchangeId))
+                .FirstOrDefaultAsync(cancellationToken);
+
+            var currencyExchange = await context.CurrencyExchange
+                .Include(pt => pt.CurrencyExchangeTransactions)
+                .ThenInclude(ptt => ptt.Transaction)
+                .Where(pt => pt.Id == currencyExchangeId)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return Result.Success<GetCurrencyExchangeByTransactionIdResponseDto>(new(currencyExchange));
         });
     }
 }

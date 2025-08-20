@@ -16,4 +16,8 @@
 	  <ProjectReference Include="..\Onefocus.Wallet.Domain\Onefocus.Wallet.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="UseCases\Transaction\CurrencyExchange\" />
+	</ItemGroup>
+
 </Project>

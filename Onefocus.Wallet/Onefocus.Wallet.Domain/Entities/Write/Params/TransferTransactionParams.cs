@@ -10,9 +10,9 @@
             return new TransferTransactionParams(id, amount, transactedOn, currencyId, isInFlow, isActive, description, transactionItems);
         }
 
-        public static TransferTransactionParams Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, bool isInFlow, bool isActive, string? description, IReadOnlyList<TransactionItemParams>? transactionItems = null)
+        public static TransferTransactionParams CreateNew(decimal amount, DateTimeOffset transactedOn, Guid currencyId, bool isInFlow, string? description, IReadOnlyList<TransactionItemParams>? transactionItems = null)
         {
-            return new TransferTransactionParams(null, amount, transactedOn, currencyId, isInFlow, isActive, description, transactionItems);
+            return new TransferTransactionParams(null, amount, transactedOn, currencyId, isInFlow, true, description, transactionItems);
         }
     }
 }

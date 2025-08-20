@@ -6,7 +6,7 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 
-namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands;
+namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
 public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateTimeOffset TransactedOn, bool IsIncome, Guid CurrencyId, bool IsActive, string? Description, IReadOnlyList<UpdateTransactionItem> TransactionItems) : ICommand;
 public sealed record UpdateTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
@@ -23,7 +23,7 @@ internal sealed class UpdateCashFlowCommandHandler(
         var actionByResult = GetUserId();
         if (actionByResult.IsFailure) return actionByResult;
 
-        var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByTransactionIdAsync(new(request.Id), cancellationToken);
+        var getCashFlowResult = await unitOfWork.Transaction.GetCashFlowByIdAsync(new(request.Id), cancellationToken);
         if (getCashFlowResult.IsFailure) return getCashFlowResult;
 
         var cashFlow = getCashFlowResult.Value.CashFlow;
@@ -44,7 +44,7 @@ internal sealed class UpdateCashFlowCommandHandler(
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
 
-        return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.TransactionId));
+        return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }
 
     private static Result ValidateRequest(UpdateCashFlowCommandRequest request)
