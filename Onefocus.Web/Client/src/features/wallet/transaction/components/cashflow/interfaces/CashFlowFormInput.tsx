@@ -1,3 +1,5 @@
+import TransactionItemFormInput from "./TransactionItemFormInput";
+
 export default interface CashFlowFormInput {
     id?: string;
     transactedOn: Date;
@@ -6,11 +8,5 @@ export default interface CashFlowFormInput {
     description?: string;
     isIncome: boolean;
     isActive: boolean;
-    transactionItems: {
-        id?: string;
-        name: string;
-        amount: number;
-        isActive: boolean;
-        description?: string;
-    }[];
+    transactionItems: TransactionItemFormInput[];
 }
