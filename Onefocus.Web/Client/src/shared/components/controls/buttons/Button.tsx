@@ -7,6 +7,9 @@ type ButtonProps = BaseButtonProps & {
     iconPos?: 'top' | 'bottom' | 'left' | 'right' | undefined;
     "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog" | undefined;
     "aria-controls"?: string | undefined;
+    severity?: 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'help' | 'contrast' | undefined;
+    text?: boolean;
+    rounded?: boolean;
 };
 
 const Button = (props: ButtonProps) => {
@@ -22,6 +25,9 @@ const Button = (props: ButtonProps) => {
             iconPos={props.iconPos ?? 'left'}
             aria-haspopup={props['aria-haspopup']}
             aria-controls={props['aria-controls']}
+            severity={props.severity}
+            text={props.text}
+            rounded={props.rounded}
         />
     );
 };

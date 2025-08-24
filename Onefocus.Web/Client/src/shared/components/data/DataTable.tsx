@@ -1,4 +1,4 @@
-import { DataTableRowEditEvent, DataTableRowEditSaveEvent, DataTableValueArray, DataTable as PiDataTable } from 'primereact/datatable';
+import { DataTableHeaderTemplateType, DataTableRowEditCompleteEvent, DataTableRowEditEvent, DataTableRowEditSaveEvent, DataTableValueArray, DataTable as PiDataTable } from 'primereact/datatable';
 import * as React from 'react';
 import { BaseProps } from '../props';
 
@@ -10,24 +10,14 @@ type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     dataKey?: string;
     onRowEditInit?: (event: DataTableRowEditEvent) => void;
     onRowEditCancel?: (event: DataTableRowEditEvent) => void;
-    onRowEditSave?: (event: DataTableRowEditEvent) => void;
+    onRowEditSave?: (event: DataTableRowEditSaveEvent<TValue>) => void;
     onRowEditChange?(event: DataTableRowEditEvent): void;
     editingRows?: Record<string, boolean>;
+    onRowEditComplete?(event: DataTableRowEditCompleteEvent): void;
+    header: DataTableHeaderTemplateType<TValue>;
 }
 
 const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<TValue>) => {
-    const onRowEditInit = (event: DataTableRowEditEvent) => {
-        if(props.onRowEditInit) props.onRowEditInit(event);
-    };
-
-    const onRowEditCancel = (event: DataTableRowEditEvent) => {
-        if(props.onRowEditCancel) props.onRowEditCancel(event);
-    };
-
-    const onRowEditSave = (event: DataTableRowEditSaveEvent<TValue>) => {
-        if(props.onRowEditSave) props.onRowEditSave(event);
-    };
-
     return (
         <PiDataTable
             value={props.value}
@@ -39,9 +29,11 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
             editMode={props.editMode}
             editingRows={props.editingRows}
             onRowEditChange={props.onRowEditChange}
-            onRowEditInit={onRowEditInit}
-            onRowEditCancel={onRowEditCancel}
-            onRowEditSave={onRowEditSave}
+            onRowEditInit={props.onRowEditInit}
+            onRowEditCancel={props.onRowEditCancel}
+            onRowEditSave={props.onRowEditSave}
+            onRowEditComplete={props.onRowEditComplete}
+            header={props.header}
         >
             {props.children}
         </PiDataTable>

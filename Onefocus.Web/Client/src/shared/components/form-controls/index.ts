@@ -1,14 +1,5 @@
-import { 
-    DatePicker, 
-    Dropdown, 
-    Number, 
-    Password, 
-    Switch, 
-    Text, 
-    Textarea 
-} from "./inputs";
-
-export {
+import { ColumnDefinition, EditableTable } from "./data";
+import {
     DatePicker,
     Dropdown,
     Number,
@@ -16,4 +7,15 @@ export {
     Switch,
     Text,
     Textarea
+} from "./inputs";
+
+export {
+    DatePicker,
+    Dropdown, EditableTable, Number,
+    Password,
+    Switch,
+    Text,
+    Textarea
 };
+export type { ColumnDefinition };
+
