@@ -2,7 +2,8 @@ import { UniqueComponentId } from 'primereact/utils';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Option } from '../../../../../shared/components/controls';
-import { DatePicker, Dropdown, EditableTable, Number, Switch, Textarea } from '../../../../../shared/components/form-controls';
+import { Column } from '../../../../../shared/components/data';
+import { DatePicker, Dropdown, EditableTable, Number, Switch, Text, Textarea } from '../../../../../shared/components/form-controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
 import { CurrencyResponse } from '../../../currency';
 import CashFlowFormInput from './interfaces/CashFlowFormInput';
@@ -79,10 +80,45 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                         rowId: UniqueComponentId(),
                         name: '',
                         amount: 0,
+                        description: '',
                         isActive: true,
                     }}
                     tableName='Notes'
-                />
+                >
+                    <Column field="name" header="Name" editor={(options) => {
+                        return (
+                            <Text
+                                name={`transactionItems.${options.rowIndex}.name`}
+                                control={form.control}
+                                className="w-full"
+                                rules={{
+                                    required: 'Name is required.',
+                                    maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                                }}
+                            />);
+                    }} />
+                    <Column field="amount" header="Amount" editor={(options) => {
+                        return (
+                            <Number
+                                control={form.control}
+                                name={`transactionItems.${options.rowIndex}.amount`}
+                                className="w-full"
+                                fractionDigits={2}
+                                rules={{
+                                    required: 'Amount is required.',
+                                    min: { value: 0, message: "Minimum amount is 0" },
+                                }} 
+                            />);
+                    }} />
+                    <Column field="description" header="Description" editor={(options) => {
+                        return (
+                            <Text
+                                control={form.control}
+                                name={`transactionItems.${options.rowIndex}.description`}
+                                className="w-full"
+                            />);
+                    }} />
+                </EditableTable>
             </form>
         </WorkspaceRightPanel>
     );

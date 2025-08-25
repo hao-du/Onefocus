@@ -3,7 +3,7 @@ import BaseProps from "./BaseProps";
 type InputProps = BaseProps & {
     id?: string;
     value?: string;
-    label: string;
+    label?: string;
     readOnly?: boolean;
     isPending?: boolean;
     required?: boolean;

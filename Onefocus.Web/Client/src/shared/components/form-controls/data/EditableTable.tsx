@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { UniqueComponentId } from 'primereact/utils';
+import { PropsWithChildren, useState } from 'react';
 import { FieldArray, FieldArrayPath, FieldValues, Path, useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Button } from '../../controls';
-import { Column, DataTable, DataTableValueArray } from '../../data';
+import { Column, DataTable } from '../../data';
 import { BaseProps } from '../../props';
-import { Text } from '../inputs';
+import { ColumnBodyOptions } from './interfaces';
 
-type EditableTableProps<TFormInput extends FieldValues, TFields extends DataTableValueArray, TName extends FieldArrayPath<TFormInput>> = BaseProps & {
+type EditableTableProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> = BaseProps & PropsWithChildren & {
     tableName?: string
     isReadOnly?: boolean;
     isPending?: boolean;
@@ -14,7 +15,7 @@ type EditableTableProps<TFormInput extends FieldValues, TFields extends DataTabl
     newRowValue: FieldArray<TFormInput>;
 }
 
-const EditableTable = <TFormInput extends FieldValues, TFields extends DataTableValueArray, TName extends FieldArrayPath<TFormInput>>(props: EditableTableProps<TFormInput, TFields, TName>) => {
+const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableTableProps<TFormInput, TName>) => {
     const [originalRows, setOriginalRows] = useState<Record<string, FieldArray<TFormInput, TName>>>({});
     const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
 
@@ -23,6 +24,117 @@ const EditableTable = <TFormInput extends FieldValues, TFields extends DataTable
         control: control,
         name: props.path
     });
+
+    const actionBodyTemplate = (rowData: FieldArray<TFormInput, TName>, options: ColumnBodyOptions) => {
+        const rowId = (rowData as FieldArray<TFormInput, TName> & { rowId: string }).rowId;
+        const isEditing = !!editingRows[rowId];
+
+        if (isEditing) {
+            // When editing: Accept & Cancel buttons
+            return (
+                <div className="flex gap-2 justify-center">
+                    <Button
+                        icon="pi pi-check"
+                        rounded
+                        text
+                        severity="success"
+                        onClick={async () => {
+                            const rowPathPrefix = `${props.path}.${options.rowIndex}` as Path<TFormInput>;
+                            const currentRow = getValues(rowPathPrefix);
+                            const rowFields = Object.keys(currentRow).map(
+                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
+                            );
+
+                            const isValid = await trigger(rowFields);
+                            if (!isValid) {
+                                return;
+                            }
+
+                            const updatedItem = getValues(props.path as Path<TFormInput>);
+                            update(options.rowIndex, updatedItem[options.rowIndex]);
+
+                            setEditingRows((prev) => {
+                                const updated = { ...prev };
+                                delete updated[rowId];
+                                return updated;
+                            });
+                        }}
+                    />
+                    <Button
+                        icon="pi pi-times"
+                        rounded
+                        text
+                        severity="danger"
+                        onClick={async () => {
+                            const rowPathPrefix = `${props.path}.${options.rowIndex}` as Path<TFormInput>;
+                            const currentRow = getValues(rowPathPrefix);
+                            const rowFields = Object.keys(currentRow).map(
+                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
+                            );
+
+                            const isValid = await trigger(rowFields);
+                            if (!isValid) {
+                                return;
+                            }
+
+                            const original = originalRows[rowId];
+                            if (original) {
+                                update(options.rowIndex, original);
+                            }
+
+                            setEditingRows((prev) => {
+                                const updated = { ...prev };
+                                delete updated[rowId];
+                                return updated;
+                            });
+                        }}
+                    />
+                    <Button
+                        icon="pi pi-trash"
+                        rounded
+                        text
+                        severity="danger"
+                        onClick={() => {
+                            remove(options.rowIndex);
+                        }}
+                    />
+                </div>
+            );
+        }
+
+        // When not editing: Edit & Delete buttons
+        return (
+            <div className="flex gap-2 justify-center">
+                <Button
+                    icon="pi pi-pencil"
+                    rounded
+                    text
+                    severity="info"
+                    onClick={() => {
+                        const arrayItems = getValues(props.path as Path<TFormInput>);
+                        setOriginalRows((prev) => ({
+                            ...prev,
+                            [rowId]: { ...arrayItems[options.rowIndex] }
+                        }));
+
+                        setEditingRows((prev) => ({
+                            ...prev,
+                            [rowId]: true
+                        }));
+                    }}
+                />
+                <Button
+                    icon="pi pi-trash"
+                    rounded
+                    text
+                    severity="danger"
+                    onClick={() => {
+                        remove(options.rowIndex);
+                    }}
+                />
+            </div>
+        );
+    };
 
     return (
         <DataTable
@@ -34,85 +146,26 @@ const EditableTable = <TFormInput extends FieldValues, TFields extends DataTable
                 <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                     <span className="text-xl text-900 font-bold">{props.tableName}</span>
                     <Button icon="pi pi-plus" rounded onClick={() => {
-                        append(props.newRowValue);
+                        const newValue = props.newRowValue !== null
+                            ? { ...props.newRowValue, rowId: UniqueComponentId() }
+                            : {} as FieldArray<TFormInput, TName> & { rowId: string };
+                        append(newValue);
+
+                        setEditingRows((prev) => ({
+                            ...prev,
+                            [newValue.rowId]: true
+                        }));
                     }} />
                 </div>
             }
             editingRows={editingRows}
-            onRowEditChange={(e) => setEditingRows(e.data)}
-            onRowEditComplete={async (e) => {
-                const path = `${props.path}.${e.index}.name` as Path<TFormInput>;
-                const isValid = await trigger(path);
-                if (!isValid) {
-                    setEditingRows((prev) => ({
-                        ...prev,
-                        [e.data.rowId]: true,
-                    }));
-                    return;
-                }
-
-                const updatedItem = getValues(props.path as Path<TFormInput>);
-                update(e.index, updatedItem[e.index]);
-
-                // Remove this row from editing state
-                const newEditingRows = { ...editingRows };
-                delete newEditingRows[e.data.rowId];
-                setEditingRows(newEditingRows);
-            }}
-            onRowEditInit={(e) => {
-                const arrayItems = getValues(props.path as Path<TFormInput>);
-                setOriginalRows((prev) => ({
-                    ...prev,
-                    [e.data.rowId]: { ...arrayItems[e.index] }
-                }));
-            }}
-            onRowEditCancel={async (e) => {
-                const path = `${props.path}.${e.index}.name` as Path<TFormInput>;
-                const isValid = await trigger(path);
-                if (!isValid) {
-                    setEditingRows((prev) => ({
-                        ...prev,
-                        [e.data.rowId]: true,
-                    }));
-                    return;
-                }
-
-                const original = originalRows[e.data.rowId];
-                if (original) {
-                    update(e.index, original);
-                }
-
-                // Remove this row from editing state
-                const newEditingRows = { ...editingRows };
-                delete newEditingRows[e.data.rowId];
-                setEditingRows(newEditingRows);
+            onRowEditChange={async (e) => {
+                setEditingRows(e.data);
             }}
         >
-            <Column field="name" header="Name" editor={(options) => {
-                return (
-                    <Text
-                        name={`${props.path}.${options.rowIndex}.name` as Path<TFormInput>}
-                        control={control}
-                        label="Name"
-                        className="w-full of-w-max"
-                        rules={{
-                            required: 'Name is required.',
-                            maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
-                        }}
-                    />);
-            }} />
+            {props.children}
             <Column
-                rowEditor
-                headerStyle={{ width: '10%', minWidth: '8rem' }}
-                bodyStyle={{ textAlign: 'center' }}
-            />
-            <Column
-                body={(_, { rowIndex }) => (
-                    <Button
-                        icon="pi pi-trash"
-                        onClick={() => remove(rowIndex)}
-                    />
-                )}
+                body={actionBodyTemplate}
                 headerStyle={{ width: '10%', minWidth: '8rem' }}
                 bodyStyle={{ textAlign: 'center' }}
             />

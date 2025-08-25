@@ -1,4 +1,5 @@
-import { ColumnBodyOptions, ColumnEditorOptions, Column as PiColumn } from 'primereact/column';
+import { ColumnEditorOptions, Column as PiColumn } from 'primereact/column';
+import { ColumnBodyOptions } from '../form-controls/data/interfaces';
 
 type ColumnProps<TValue> = {
     field?: string;
@@ -20,6 +21,7 @@ const Column = <TValue,>(props: ColumnProps<TValue>) => {
             field={props.field}
             header={props.header}
             bodyStyle={props.bodyStyle}
+            bodyClassName="of-column"
             headerStyle={props.headerStyle}
             align={props.align}
             alignHeader={props.alignHeader}

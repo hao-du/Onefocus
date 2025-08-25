@@ -1,4 +1,4 @@
-import { ColumnDefinition, EditableTable } from "./data";
+import { EditableTable } from "./data";
 import {
     DatePicker,
     Dropdown,
@@ -17,5 +17,4 @@ export {
     Text,
     Textarea
 };
-export type { ColumnDefinition };
 
