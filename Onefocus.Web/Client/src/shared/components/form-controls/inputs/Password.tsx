@@ -1,8 +1,9 @@
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
 import {
-    Password as OneFocusPassword, 
+    Password as OneFocusPassword,
     PasswordProps as OneFocusPasswordProps
 } from "../../controls";
-import {Controller, FieldPath, FieldValues, UseControllerProps} from "react-hook-form";
+import InputWrapper from "./InputWrapper";
 
 type PasswordProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -18,14 +19,15 @@ const Password = <
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
             render={(controller) => {
-                return <OneFocusPassword
-                    {...props}
-                    {...controller.field}
-                    id={controller.field.name}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    invalid={controller.fieldState.invalid}
-                    errorMessage={controller.fieldState.error?.message}
-                />
+                return (<InputWrapper {...props} errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                    <OneFocusPassword
+                        {...props}
+                        {...controller.field}
+                        id={controller.field.name}
+                        onValueChange={(value) => controller.field.onChange(value)}
+                        invalid={controller.fieldState.invalid}
+                    />
+                </InputWrapper>);
             }}
         />
     );

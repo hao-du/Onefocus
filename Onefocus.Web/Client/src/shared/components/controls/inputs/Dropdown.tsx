@@ -1,7 +1,6 @@
 import { Dropdown as PiDropdown } from 'primereact/dropdown';
-import { InputProps } from '../../props';
 import { ReactNode } from 'react';
-import InputWrapper from './InputWrapper';
+import { InputProps } from '../../props';
 import { Option } from '../interfaces';
 
 export type DropdownProps = InputProps & {
@@ -17,27 +16,25 @@ export type DropdownProps = InputProps & {
 
 const Dropdown = (props: DropdownProps) => {
     return (
-        <InputWrapper {...props}>
-            <PiDropdown
-                id={props.id}
-                className={props.className}
-                value={props.value}
-                options={props.options}
-                onChange={(e) => {
-                    if (props.onValueChange) props.onValueChange(e.target.value);
-                }}
-                disabled={props.isPending || props.disabled}
-                autoComplete={props.autoComplete}
-                placeholder={props.placeholder}
-                itemTemplate={props.itemTemplate}
-                data-testid={props.id}
-                filter
-                checkmark={true}
-                highlightOnSelect={true}
-                showClear
-                invalid={props.invalid}
-            />
-        </InputWrapper>
+        <PiDropdown
+            id={props.id}
+            className={props.className}
+            value={props.value}
+            options={props.options}
+            onChange={(e) => {
+                if (props.onValueChange) props.onValueChange(e.target.value);
+            }}
+            disabled={props.isPending || props.disabled}
+            autoComplete={props.autoComplete}
+            placeholder={props.placeholder}
+            itemTemplate={props.itemTemplate}
+            data-testid={props.id}
+            filter
+            checkmark={true}
+            highlightOnSelect={true}
+            showClear
+            invalid={props.invalid}
+        />
     );
 };
 

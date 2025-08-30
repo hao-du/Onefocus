@@ -1,7 +1,6 @@
 import { Calendar } from 'primereact/calendar';
-import { InputProps } from '../../props';
-import InputWrapper from './InputWrapper';
 import { ReactNode } from 'react';
+import { InputProps } from '../../props';
 import { Option } from '../interfaces';
 
 export type DatePickerProps = InputProps & {
@@ -19,28 +18,26 @@ export type DatePickerProps = InputProps & {
 
 const DatePicker = (props: DatePickerProps) => {
     return (
-        <InputWrapper {...props}>
-            <Calendar
-                id={props.id}
-                className={props.className}
-                value={props.value}
-                onChange={(e) => {
-                    if (props.onValueChange) props.onValueChange(e.target.value);
-                }}
-                showTime={props.showTime}
-                hourFormat={props.hourFormat}
-                minDate={props.minDate}
-                maxDate={props.maxDate}
-                placeholder={props.placeholder}
-                dateFormat={props.dateFormat}
-                showIcon={true}
-                showSeconds={props.showSeconds}
-                readOnlyInput={props.readOnly}
-                disabled={props.isPending}
-                appendTo="self"
-                invalid={props.invalid}
-            />
-        </InputWrapper>
+        <Calendar
+            id={props.id}
+            className={props.className}
+            value={props.value}
+            onChange={(e) => {
+                if (props.onValueChange) props.onValueChange(e.target.value);
+            }}
+            showTime={props.showTime}
+            hourFormat={props.hourFormat}
+            minDate={props.minDate}
+            maxDate={props.maxDate}
+            placeholder={props.placeholder}
+            dateFormat={props.dateFormat}
+            showIcon={true}
+            showSeconds={props.showSeconds}
+            readOnlyInput={props.readOnly}
+            disabled={props.isPending}
+            appendTo="self"
+            invalid={props.invalid}
+        />
     );
 };
 

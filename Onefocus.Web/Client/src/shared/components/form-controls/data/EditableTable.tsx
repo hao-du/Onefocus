@@ -142,6 +142,7 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
             editMode="row"
             dataKey="rowId"
             isPending={props.isPending}
+            tableStyle={{ tableLayout: 'fixed', width: '100%', minWidth: '60rem' }}
             header={
                 <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                     <span className="text-xl text-900 font-bold">{props.tableName}</span>
@@ -166,8 +167,8 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
             {props.children}
             <Column
                 body={actionBodyTemplate}
-                headerStyle={{ width: '10%', minWidth: '8rem' }}
-                bodyStyle={{ textAlign: 'center' }}
+                bodyStyle={{ textAlign: 'center', verticalAlign: 'top' }}
+                style={{width:'7rem'}}
             />
         </DataTable>
     );

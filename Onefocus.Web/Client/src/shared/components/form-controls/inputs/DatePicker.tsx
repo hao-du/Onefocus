@@ -3,6 +3,7 @@ import {
     DatePicker as OnefocusDatePicker,
     DatePickerProps as OneFocusDatePickerProps
 } from '../../controls';
+import InputWrapper from './InputWrapper';
 
 export type DateTimeProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -22,16 +23,18 @@ const DatePicker = <
             name={props.name}
             control={props.control}
             rules={props.rules}
-            render={(controller) => (
-                <OnefocusDatePicker
-                    {...props}
-                    id={controller.field.name}
-                    value={controller.field.value}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    invalid={controller.fieldState.invalid}
-                    errorMessage={controller.fieldState.error?.message}
-                />
-            )}
+            render={(controller) => {
+                return (
+                    <InputWrapper {...props}  errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                        <OnefocusDatePicker
+                            {...props}
+                            id={controller.field.name}
+                            value={controller.field.value}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                            invalid={controller.fieldState.invalid}
+                        />
+                    </InputWrapper>);
+            }}
         />
     );
 };

@@ -1,8 +1,9 @@
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
 import {
     Text as OneFocusText,
     TextProps as OneFocusTextProps
 } from "../../controls";
-import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
+import InputWrapper from "./InputWrapper";
 
 type TextProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -21,14 +22,17 @@ const Text = <
             control={props.control}
             rules={props.rules}
             render={(controller) => {
-                return <OneFocusText
-                    {...props}
-                    {...controller.field}
-                    id={controller.field.name}
-                    invalid={controller.fieldState.invalid}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    errorMessage={controller.fieldState.error?.message}
-                />
+                return (
+                    <InputWrapper {...props} errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                        <OneFocusText
+                            {...props}
+                            {...controller.field}
+                            id={controller.field.name}
+                            invalid={controller.fieldState.invalid}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                        />
+                    </InputWrapper>
+                );
             }}
         />
     );

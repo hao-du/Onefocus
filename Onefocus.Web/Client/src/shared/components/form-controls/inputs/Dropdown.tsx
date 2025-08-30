@@ -4,6 +4,7 @@ import {
     DropdownProps as OneFocusDropdownProps,
     Option
 } from '../../controls';
+import InputWrapper from './InputWrapper';
 
 export type DropdownProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -25,17 +26,19 @@ const Dropdown = <
             name={props.name}
             control={props.control}
             rules={props.rules}
-            render={(controller) => (
-                <OneFocusDropdown
-                    {...props}
-                    {...controller.field}
-                    id={controller.field.name}
-                    value={controller.field.value}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    invalid={controller.fieldState.invalid}
-                    errorMessage={controller.fieldState.error?.message}
-                />
-            )}
+            render={(controller) => {
+                return (
+                    <InputWrapper {...props} errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                        <OneFocusDropdown
+                            {...props}
+                            {...controller.field}
+                            id={controller.field.name}
+                            value={controller.field.value}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                            invalid={controller.fieldState.invalid}
+                        />
+                    </InputWrapper>);
+            }}
         />
     );
 };

@@ -66,3 +66,14 @@ body {
 .of-w-max {
   max-width: 40rem;
 }
+
+.pi-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.p-editable-column {
+  vertical-align: top;
+}

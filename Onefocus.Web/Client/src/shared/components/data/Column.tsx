@@ -4,6 +4,7 @@ import { ColumnBodyOptions } from '../form-controls/data/interfaces';
 type ColumnProps<TValue> = {
     field?: string;
     header?: string;
+    style?: React.CSSProperties;
     headerStyle?: React.CSSProperties;
     bodyStyle?: React.CSSProperties;
     align?: 'left' | 'right' | 'center';
@@ -20,8 +21,8 @@ const Column = <TValue,>(props: ColumnProps<TValue>) => {
         <PiColumn
             field={props.field}
             header={props.header}
+            style={props.style}
             bodyStyle={props.bodyStyle}
-            bodyClassName="of-column"
             headerStyle={props.headerStyle}
             align={props.align}
             alignHeader={props.alignHeader}

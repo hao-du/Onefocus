@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { BaseProps } from '../props';
+import { useWindows } from '../hooks';
 import { Header, SideMenu, SideMenuItem } from '../navigations';
+import { BaseProps } from '../props';
 
 type AppLayoutProps = BaseProps & {
     children: React.ReactNode;
@@ -9,9 +10,10 @@ type AppLayoutProps = BaseProps & {
 
 const AppLayout = (props: AppLayoutProps) => {
     const [mobileSidebarVisible, setMobileSidebarVisible] = useState(false);
+    const {isMobile} = useWindows();
 
     return (
-        <div className="flex h-full">
+        <div className={isMobile ? undefined : "flex h-full"}>
             <SideMenu items={props.items} mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
 
             {/* Main Content Area */}

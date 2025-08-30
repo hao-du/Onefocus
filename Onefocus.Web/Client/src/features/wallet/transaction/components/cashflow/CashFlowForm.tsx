@@ -85,7 +85,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                     }}
                     tableName='Notes'
                 >
-                    <Column field="name" header="Name" editor={(options) => {
+                    <Column field="name" header="Name" width={30} editor={(options) => {
                         return (
                             <Text
                                 name={`transactionItems.${options.rowIndex}.name`}
@@ -97,12 +97,12 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                                 }}
                             />);
                     }} />
-                    <Column field="amount" header="Amount" editor={(options) => {
+                    <Column field="amount" header="Amount" width={20} align="right" editor={(options) => {
                         return (
                             <Number
                                 control={form.control}
                                 name={`transactionItems.${options.rowIndex}.amount`}
-                                className="w-full"
+                                inputClassName="w-full"
                                 fractionDigits={2}
                                 rules={{
                                     required: 'Amount is required.',
@@ -110,7 +110,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                                 }} 
                             />);
                     }} />
-                    <Column field="description" header="Description" editor={(options) => {
+                    <Column field="description" width={30} header="Description" editor={(options) => {
                         return (
                             <Text
                                 control={form.control}

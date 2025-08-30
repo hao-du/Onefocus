@@ -51,35 +51,33 @@ const TransactionList = React.memo(() => {
                 }
             ]}
             leftPanel={
-                <div className="overflow-auto flex-1">
-                    <DataTable value={transactions} isPending={isPending} className="p-datatable-sm">
-                        <Column header="Date" body={(transaction: TransactionResponse) => {
-                            return formatDateLocalSystem(transaction.transactedOn);
-                        }}/>
-                        <Column header="Amount" align="right" alignHeader="right" body={(transaction: TransactionResponse) => {
-                            return formatCurrency(transaction.amount);
-                        }}/>
-                        <Column field="currencyName" header="Currency" />
-                        <Column field="description" header="Description" />
-                        <Column body={(transaction: TransactionResponse) => {
-                            switch (transaction.type) {
-                                case TransactionType.CashFlow:
-                                    return (
-                                        <Button
-                                            icon="pi pi-pencil"
-                                            className="p-button-text"
-                                            onClick={() => {
-                                                setTransactionIdFromCashFlow(transaction.id);
-                                                setShowForm(true);
-                                            }}
-                                        />
-                                    );
-                            }
+                <DataTable value={transactions} isPending={isPending} className="p-datatable-sm">
+                    <Column header="Date" body={(transaction: TransactionResponse) => {
+                        return formatDateLocalSystem(transaction.transactedOn);
+                    }} />
+                    <Column header="Amount" align="right" alignHeader="right" body={(transaction: TransactionResponse) => {
+                        return formatCurrency(transaction.amount);
+                    }} />
+                    <Column field="currencyName" header="Currency" />
+                    <Column field="description" header="Description" />
+                    <Column body={(transaction: TransactionResponse) => {
+                        switch (transaction.type) {
+                            case TransactionType.CashFlow:
+                                return (
+                                    <Button
+                                        icon="pi pi-pencil"
+                                        className="p-button-text"
+                                        onClick={() => {
+                                            setTransactionIdFromCashFlow(transaction.id);
+                                            setShowForm(true);
+                                        }}
+                                    />
+                                );
+                        }
 
-                            return null;
-                        }} header="" headerStyle={{ width: "4rem" }} />
-                    </DataTable>
-                </div>
+                        return null;
+                    }} header="" headerStyle={{ width: "4rem" }} />
+                </DataTable>
             }
             rightPanel={
                 showForm && renderForm(selectedTransactionType, currencies, isPending)

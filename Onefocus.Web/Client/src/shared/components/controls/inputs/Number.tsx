@@ -1,6 +1,5 @@
-import { InputProps } from '../../props';
 import { InputNumber } from 'primereact/inputnumber';
-import InputWrapper from './InputWrapper';
+import { InputProps } from '../../props';
 
 export type NumberProps = InputProps & {
     name?: string;
@@ -13,27 +12,25 @@ export type NumberProps = InputProps & {
 
 const Number = (props: NumberProps) => {
     return (
-        <InputWrapper {...props}>
-            <InputNumber
-                name={props.name}
-                className={props.className}
-                id={props.id}
-                value={props.value}
-                onChange={(e) => {
-                    if (props.onValueChange) props.onValueChange(e.value);
-                }}
-                invalid={props.invalid}
-                readOnly={props.isPending || props.readOnly}
-                minFractionDigits={props.fractionDigits}
-                maxFractionDigits={props.fractionDigits}
-                inputClassName={`${props.inputClassName ?? ''} text-${props.textAlign ?? 'right'}`}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                    }
-                }}
-            />
-        </InputWrapper>
+        <InputNumber
+            name={props.name}
+            className={props.className}
+            id={props.id}
+            value={props.value}
+            onChange={(e) => {
+                if (props.onValueChange) props.onValueChange(e.value);
+            }}
+            invalid={props.invalid}
+            readOnly={props.isPending || props.readOnly}
+            minFractionDigits={props.fractionDigits}
+            maxFractionDigits={props.fractionDigits}
+            inputClassName={`${props.inputClassName ?? ''} text-${props.textAlign ?? 'right'}`}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                }
+            }}
+        />
     );
 };
 

@@ -1,6 +1,5 @@
 import { Password as PiPassword } from 'primereact/password';
 import { InputProps } from '../../props';
-import InputWrapper from './InputWrapper';
 
 export type PasswordProps = InputProps & {
     floatClassName?: string;
@@ -10,20 +9,18 @@ export type PasswordProps = InputProps & {
 
 const Password = (props: PasswordProps) => {
     return (
-        <InputWrapper {...props}>
-            <PiPassword
-                inputClassName={props.className}
-                inputId={props.id}
-                feedback={props.feedback ?? false}
-                value={props.value}
-                onChange={(e) => {
-                    if (props.onValueChange) props.onValueChange(e.target.value);
-                }}
-                readOnly={props.isPending || props.readOnly}
-                invalid={props.invalid}
-                autoComplete="current-password"
-            />
-        </InputWrapper>
+        <PiPassword
+            inputClassName={props.className}
+            inputId={props.id}
+            feedback={props.feedback ?? false}
+            value={props.value}
+            onChange={(e) => {
+                if (props.onValueChange) props.onValueChange(e.target.value);
+            }}
+            readOnly={props.isPending || props.readOnly}
+            invalid={props.invalid}
+            autoComplete="current-password"
+        />
     );
 };
 

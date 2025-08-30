@@ -1,8 +1,9 @@
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
 import {
-    Number as OneFocusNumber, 
+    Number as OneFocusNumber,
     NumberProps as OneFocusNumberProps
 } from "../../controls";
-import {Controller, FieldPath, FieldValues, UseControllerProps} from "react-hook-form";
+import InputWrapper from "./InputWrapper";
 
 type NumberProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -18,14 +19,16 @@ const Number = <
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
             render={(controller) => {
-                return <OneFocusNumber
-                    {...props}
-                    {...controller.field}
-                    id={controller.field.name}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    invalid={controller.fieldState.invalid}
-                    errorMessage={controller.fieldState.error?.message}
-                />
+                return (
+                    <InputWrapper {...props} errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                        <OneFocusNumber
+                            {...props}
+                            {...controller.field}
+                            id={controller.field.name}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                            invalid={controller.fieldState.invalid}
+                        />
+                    </InputWrapper>);
             }}
         />
     );

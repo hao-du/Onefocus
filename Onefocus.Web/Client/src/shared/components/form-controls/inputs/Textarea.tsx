@@ -1,8 +1,9 @@
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
 import {
-    Textarea as OneFocusTextarea, 
+    Textarea as OneFocusTextarea,
     TextareaProps as OneFocusTextareaProps
 } from "../../controls";
-import {Controller, FieldPath, FieldValues, UseControllerProps} from "react-hook-form";
+import InputWrapper from "./InputWrapper";
 
 type TextareaProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -18,14 +19,16 @@ const Textarea = <
     return (
         <Controller name={props.name} control={props.control} rules={props.rules}
             render={(controller) => {
-                return <OneFocusTextarea
-                    {...props}
-                    {...controller.field}
-                    id={controller.field.name}
-                    invalid={controller.fieldState.invalid}
-                    onValueChange={(value) => controller.field.onChange(value)}
-                    errorMessage={controller.fieldState.error?.message}
-                />
+                return (
+                    <InputWrapper {...props} errorMessage={controller.fieldState.error?.message} invalid={controller.fieldState.invalid}>
+                        <OneFocusTextarea
+                            {...props}
+                            {...controller.field}
+                            id={controller.field.name}
+                            invalid={controller.fieldState.invalid}
+                            onValueChange={(value) => controller.field.onChange(value)}
+                        />
+                    </InputWrapper>);
             }}
         />
     );

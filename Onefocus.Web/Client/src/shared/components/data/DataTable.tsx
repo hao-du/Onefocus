@@ -14,7 +14,8 @@ type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     onRowEditChange?(event: DataTableRowEditEvent): void;
     editingRows?: Record<string, boolean>;
     onRowEditComplete?(event: DataTableRowEditCompleteEvent): void;
-    header: DataTableHeaderTemplateType<TValue>;
+    header?: DataTableHeaderTemplateType<TValue>;
+    tableStyle?: React.CSSProperties;
 }
 
 const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<TValue>) => {
@@ -34,6 +35,9 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
             onRowEditSave={props.onRowEditSave}
             onRowEditComplete={props.onRowEditComplete}
             header={props.header}
+            tableStyle={props.tableStyle}
+            scrollable
+            scrollHeight='flex'
         >
             {props.children}
         </PiDataTable>
