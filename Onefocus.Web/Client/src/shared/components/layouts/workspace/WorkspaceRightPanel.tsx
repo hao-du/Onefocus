@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Button, SpeedDial } from '../../controls';
-import { BaseProps } from '../../props';
 import { useWindows } from '../../hooks';
+import { BaseProps } from '../../props';
 import EditPanelButton from './interfaces/EditPanelButton';
 
 type WorkspaceRightPanelProps = BaseProps & {
@@ -52,10 +52,10 @@ const WorkspaceRightPanel = (props: WorkspaceRightPanelProps) => {
             {!isMinimised && (
                 <div className={isMobile ? 
                     'md:hidden fixed top-0 left-0 w-full h-full bg-white z-5 shadow-5 overflow-auto flex flex-column'
-                    : 'hidden md:flex flex-column w-full'}
+                    : 'hidden md:flex flex-column w-full h-full'}
                 >
                     {renderButtons(isMobile, props.isPending, props.buttons)}
-                    <div className="p-3">
+                    <div className="flex-auto overflow-auto  p-3">
                         {props.children}
                     </div>
                 </div>

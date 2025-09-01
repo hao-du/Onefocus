@@ -1,8 +1,8 @@
-import {PanelMenu} from 'primereact/panelmenu';
-import {useCallback, useMemo, useState} from "react";
+import { PanelMenu } from 'primereact/panelmenu';
+import { Sidebar } from "primereact/sidebar";
+import { useCallback, useMemo, useState } from "react";
 import MobileSidebarVisibleState from "./interfaces/MobileSidebarVisibleState";
 import SideMenuItem from "./interfaces/SideMenuItem";
-import {Sidebar} from "primereact/sidebar";
 
 type SideMenuProps = {
     items?: SideMenuItem[];
@@ -33,7 +33,7 @@ const SideMenu = (props: SideMenuProps) => {
             <>
                 <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">Onefocus</h1>
                 <PanelMenu model={props.items} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys}
-                           className="w-full" multiple/>
+                           className="w-full flex-auto overflow-auto" multiple/>
             </>
 
         );
@@ -42,7 +42,7 @@ const SideMenu = (props: SideMenuProps) => {
     return (
         <>
             {/* Desktop Sidebar */}
-            <div className="hidden md:block of-sidemenu w-18rem bg-gray-100 p-3">
+            <div className="hidden md:flex flex-column of-sidemenu w-18rem bg-gray-100 p-3">
                 {renderSideMenu()}
             </div>
 

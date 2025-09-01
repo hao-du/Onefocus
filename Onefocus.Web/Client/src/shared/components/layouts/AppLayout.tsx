@@ -13,11 +13,11 @@ const AppLayout = (props: AppLayoutProps) => {
     const {isMobile} = useWindows();
 
     return (
-        <div className={isMobile ? undefined : "flex h-full"}>
+        <div className={isMobile ? "h-screen" : "flex h-screen"}>
             <SideMenu items={props.items} mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
 
             {/* Main Content Area */}
-            <div className="flex flex-column flex-1 h-screen">
+            <div className="flex flex-column flex-1 h-full">
                 <Header mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
 
                 {/* Main Workspace */}

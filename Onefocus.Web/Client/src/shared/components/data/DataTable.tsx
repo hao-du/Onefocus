@@ -22,7 +22,7 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
     return (
         <PiDataTable
             value={props.value}
-            className={props.className}
+            className={`${props.className ?? ''} flex-auto overflow-auto`}
             loading={props.isPending}
             loadingIcon="pi pi-spinner pi-spin"
             emptyMessage={props.isPending ? null : "Nothing to show right now."}
@@ -37,7 +37,7 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
             header={props.header}
             tableStyle={props.tableStyle}
             scrollable
-            scrollHeight='flex'
+            scrollHeight="flex"
         >
             {props.children}
         </PiDataTable>

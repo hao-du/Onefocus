@@ -1,8 +1,8 @@
 import { Splitter, SplitterPanel } from 'primereact/splitter';
-import { BaseProps } from '../../props';
-import { ActionItem } from '../../controls';
 import { WorkspaceActionBar } from '.';
+import { ActionItem } from '../../controls';
 import { useWindows } from '../../hooks';
+import { BaseProps } from '../../props';
 
 type WorkspaceLayoutProps = BaseProps & {
     title: string;
@@ -35,9 +35,7 @@ const Workspace = (props: WorkspaceLayoutProps) => {
             {isMobile && (
                 <div className="flex flex-column h-full w-full p-3">
                     <WorkspaceActionBar {...props} />
-                    <div className="overflow-auto flex-1">
-                        {props.leftPanel}
-                    </div>
+                    {props.leftPanel}
                     {props.rightPanel}
                 </div>
             )}
