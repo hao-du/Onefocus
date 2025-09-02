@@ -21,7 +21,7 @@ const AppLayout = (props: AppLayoutProps) => {
                 <Header mobileVisibleState={{ mobileSidebarVisible, setMobileSidebarVisible }} />
 
                 {/* Main Workspace */}
-                <div className="flex-1 overflow-auto bg-gray-50">
+                <div className="flex-auto overflow-auto bg-gray-50">
                     {props.children}
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import TransactionItemResponse from "./TransactionItemResponse";
+import TransactionItemResponse from "../TransactionItemResponse";
 
 export default interface GetCashFlowByTransactionIdResponse {
     id: string;

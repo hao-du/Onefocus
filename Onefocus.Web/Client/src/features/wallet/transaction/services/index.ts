@@ -1,9 +1,10 @@
-import useCreateCashFlow from "./useCreateCashFlow";
+import useCreateCashFlow from "./cashflow/useCreateCashFlow";
+import useGetCashFlowByTransactionId from "./cashflow/useGetCashFlowByTransactionId";
+import useUpdateCashFlow from "./cashflow/useUpdateCashFlow";
 import useGetAllTransactions from "./useGetAllTransactions";
-import useGetCashFlowByTransactionId from "./useGetCashFlowByTransactionId";
 
 export {
-    useCreateCashFlow, 
-    useGetAllTransactions, 
-    useGetCashFlowByTransactionId
+    useCreateCashFlow, useGetAllTransactions,
+    useGetCashFlowByTransactionId, useUpdateCashFlow
 };
+

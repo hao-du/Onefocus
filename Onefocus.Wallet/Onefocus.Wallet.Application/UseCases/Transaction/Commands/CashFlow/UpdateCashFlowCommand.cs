@@ -44,7 +44,7 @@ internal sealed class UpdateCashFlowCommandHandler(
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
 
-        return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
+        return Result.Success();
     }
 
     private static Result ValidateRequest(UpdateCashFlowCommandRequest request)

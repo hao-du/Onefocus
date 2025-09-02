@@ -13,6 +13,7 @@ type EditableTableProps<TFormInput extends FieldValues, TName extends FieldArray
     form: UseFormReturn<TFormInput>;
     path: TName;
     newRowValue: FieldArray<TFormInput>;
+    style?: React.CSSProperties;
 }
 
 const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableTableProps<TFormInput, TName>) => {
@@ -84,7 +85,7 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
 
                             setEditingRows((prev) => {
                                 const updated = { ...prev };
-                                delete updated[rowId];
+                                delete updated[rowId];  
                                 return updated;
                             });
                         }}
@@ -142,7 +143,7 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
             editMode="row"
             dataKey="rowId"
             isPending={props.isPending}
-            tableStyle={{ tableLayout: 'fixed', width: '100%', minWidth: '60rem' }}
+            tableStyle={{ tableLayout: 'fixed', width: '100%' }}
             header={
                 <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                     <span className="text-xl text-900 font-bold">{props.tableName}</span>
@@ -163,13 +164,15 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
             onRowEditChange={async (e) => {
                 setEditingRows(e.data);
             }}
+            scrollType="responsive"
+            style={props.style}
         >
-            {props.children}
             <Column
                 body={actionBodyTemplate}
                 bodyStyle={{ textAlign: 'center', verticalAlign: 'top' }}
-                style={{width:'7rem'}}
+                style={{width:'10rem'}}
             />
+            {props.children}
         </DataTable>
     );
 };

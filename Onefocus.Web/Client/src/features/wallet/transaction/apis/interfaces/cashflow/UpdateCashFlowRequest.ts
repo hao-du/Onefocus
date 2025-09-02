@@ -1,9 +1,11 @@
-import TransactionItemResponse from "./TransactionItemResponse";
+import TransactionItemResponse from "../TransactionItemResponse";
 
-export default interface CreateCashFlowRequest {
+export default interface UpdateCashFlowRequest {
+    id: string;
     amount: number;
     transactedOn: Date;
     isIncome: boolean;
+    isActive: boolean;
     currencyId: string;
     description?: string;
     transactionItems: TransactionItemResponse[];

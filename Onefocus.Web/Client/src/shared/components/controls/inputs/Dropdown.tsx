@@ -32,7 +32,6 @@ const Dropdown = (props: DropdownProps) => {
             filter
             checkmark={true}
             highlightOnSelect={true}
-            showClear
             invalid={props.invalid}
         />
     );

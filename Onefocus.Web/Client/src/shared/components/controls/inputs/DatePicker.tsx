@@ -21,7 +21,7 @@ const DatePicker = (props: DatePickerProps) => {
         <Calendar
             id={props.id}
             className={props.className}
-            value={props.value}
+            value={props.value ? new Date(props.value) : undefined}
             onChange={(e) => {
                 if (props.onValueChange) props.onValueChange(e.target.value);
             }}

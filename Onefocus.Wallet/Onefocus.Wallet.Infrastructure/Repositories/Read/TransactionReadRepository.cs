@@ -48,7 +48,7 @@ public sealed class TransactionReadRepository(
             var cashFlow = await context.CashFlow
                 .Include(cf => cf.Transaction)
                 .ThenInclude(t => t.TransactionItems)
-                .Where(cf => cf.Transaction.OwnerUserId == request.UserId && cf.Id == request.TransactionId)
+                .Where(cf => cf.Transaction.OwnerUserId == request.UserId && cf.Transaction.Id == request.TransactionId)
                 .SingleOrDefaultAsync(cancellationToken);
 
             return Result.Success<GetCashFlowByTransactionIdResponseDto>(new(cashFlow));

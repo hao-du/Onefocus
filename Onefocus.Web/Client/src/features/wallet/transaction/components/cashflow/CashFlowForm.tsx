@@ -5,6 +5,7 @@ import { Option } from '../../../../../shared/components/controls';
 import { Column } from '../../../../../shared/components/data';
 import { DatePicker, Dropdown, EditableTable, Number, Switch, Text, Textarea } from '../../../../../shared/components/form-controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
+import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';
 import { CurrencyResponse } from '../../../currency';
 import CashFlowFormInput from './interfaces/CashFlowFormInput';
 
@@ -17,12 +18,12 @@ type CashFlowFormProps = {
 
 const CashFlowForm = (props: CashFlowFormProps) => {
     const form = useForm<CashFlowFormInput>({
-        defaultValues: props.selectedCashFlow ? { ...props.selectedCashFlow } :
+        values: props.selectedCashFlow ? { ...props.selectedCashFlow } :
             {
                 id: undefined,
                 transactedOn: new Date(),
-                amount: undefined,
-                currencyId: undefined,
+                amount: 0,
+                currencyId: getEmptyGuid(),
                 description: '',
                 isIncome: true,
                 isActive: true,
@@ -84,8 +85,9 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                         isActive: true,
                     }}
                     tableName='Notes'
+                    style={{ width: '40rem' }}
                 >
-                    <Column field="name" header="Name" width={30} editor={(options) => {
+                    <Column field="name" header="Name" style={{ width: '15rem' }} editor={(options) => {
                         return (
                             <Text
                                 name={`transactionItems.${options.rowIndex}.name`}
@@ -97,7 +99,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                                 }}
                             />);
                     }} />
-                    <Column field="amount" header="Amount" width={20} align="right" editor={(options) => {
+                    <Column field="amount" header="Amount" style={{ width: '10rem' }} align="right" editor={(options) => {
                         return (
                             <Number
                                 control={form.control}
@@ -110,7 +112,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                                 }} 
                             />);
                     }} />
-                    <Column field="description" width={30} header="Description" editor={(options) => {
+                    <Column field="description" style={{ width: '15rem' }} header="Description" editor={(options) => {
                         return (
                             <Text
                                 control={form.control}

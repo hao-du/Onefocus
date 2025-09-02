@@ -1,14 +1,17 @@
-import { TransactionResponse, CreateCashFlowRequest, CreateCashFlowResponse, GetCashFlowByTransactionIdResponse } from './interfaces';
-import { getAllTransactions, getCashFlowByTransactionId, createCashFlow } from './transactionApis';
+import { CreateCashFlowRequest, CreateCashFlowResponse, GetCashFlowByTransactionIdResponse, TransactionResponse, UpdateCashFlowRequest } from './interfaces';
+import { createCashFlow, updateCashFlow, getAllTransactions, getCashFlowByTransactionId } from './transactionApis';
 
 export {
     getAllTransactions,
-    getCashFlowByTransactionId,
-    createCashFlow
+    createCashFlow, 
+    updateCashFlow,
+    getCashFlowByTransactionId
 };
 export type {
-    TransactionResponse,
     CreateCashFlowRequest,
     CreateCashFlowResponse,
-    GetCashFlowByTransactionIdResponse
+    UpdateCashFlowRequest,
+    GetCashFlowByTransactionIdResponse,
+    TransactionResponse
 };
+

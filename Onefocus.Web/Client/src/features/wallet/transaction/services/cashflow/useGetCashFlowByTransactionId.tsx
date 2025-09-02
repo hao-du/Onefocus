@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '../../../../shared/hooks';
-import { getCashFlowByTransactionId } from '../apis';
+import { useQuery } from '../../../../../shared/hooks';
+import { getCashFlowByTransactionId } from '../../apis';
 
 const useGetCashFlowByTransactionId = () => {
     const [transactionId, setTransactionId] = useState<string | null>(null);

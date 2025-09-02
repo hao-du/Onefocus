@@ -8,17 +8,22 @@ import { TransactionResponse } from '../../apis';
 import { CashFlowForm, useCashFlow } from '../cashflow';
 import { TransactionType } from './enums';
 import { useTransaction } from './hooks';
+import { UniqueComponentId } from 'primereact/utils';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
-    const [showForm, setShowForm] = useState(false);
 
-    const { transactions, currencies, isListLoading } = useTransaction();
+    const { transactions, currencies, isListLoading, showForm, setShowForm } = useTransaction();
     const { selectedCashFlow, isCashFlowLoading, setTransactionIdFromCashFlow, onCashFlowSubmit } = useCashFlow();
 
     const isPending = isListLoading || isCashFlowLoading;
 
     const renderForm = useCallback((transactionType: TransactionType, currencies: CurrencyResponse[], isPending: boolean) => {
+        //Make unique row ids for transaction items
+        selectedCashFlow?.transactionItems?.map(item => {
+            item.rowId = UniqueComponentId();
+        });
+
         switch (transactionType) {
             case TransactionType.CashFlow:
                 return <CashFlowForm selectedCashFlow={selectedCashFlow} isPending={isPending} onSubmit={onCashFlowSubmit} currencies={currencies} />
@@ -46,6 +51,7 @@ const TransactionList = React.memo(() => {
                     icon: 'pi pi-money-bill',
                     command: () => {
                         setShowForm(true);
+                        setTransactionIdFromCashFlow(null);
                         setSelectedTransactionType(TransactionType.CashFlow);
                     }
                 }

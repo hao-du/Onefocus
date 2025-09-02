@@ -1,3 +1,4 @@
+
 const formatDateLocalSystem = (date?: Date | string | number) => {
     if (!date) return "";
 
@@ -18,7 +19,11 @@ const formatCurrency = (value: number) => {
     }).format(value);
 }
 
+const getEmptyGuid = () => {
+    return '00000000-0000-0000-0000-000000000000';
+}
+
 export {
-    formatCurrency, formatDateLocalSystem
+    formatCurrency, formatDateLocalSystem, getEmptyGuid
 };
 

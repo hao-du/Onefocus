@@ -15,7 +15,9 @@ type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     editingRows?: Record<string, boolean>;
     onRowEditComplete?(event: DataTableRowEditCompleteEvent): void;
     header?: DataTableHeaderTemplateType<TValue>;
+    style?: React.CSSProperties;
     tableStyle?: React.CSSProperties;
+    scrollType?: 'flex' | 'responsive';
 }
 
 const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<TValue>) => {
@@ -23,6 +25,7 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
         <PiDataTable
             value={props.value}
             className={`${props.className ?? ''} flex-auto overflow-auto`}
+            style={props.style}
             loading={props.isPending}
             loadingIcon="pi pi-spinner pi-spin"
             emptyMessage={props.isPending ? null : "Nothing to show right now."}
@@ -37,7 +40,8 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
             header={props.header}
             tableStyle={props.tableStyle}
             scrollable
-            scrollHeight="flex"
+            scrollHeight={props.scrollType ?? 'flex'}
+            showGridlines
         >
             {props.children}
         </PiDataTable>
