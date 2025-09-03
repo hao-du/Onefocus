@@ -1,24 +1,41 @@
-import { InputTextarea } from 'primereact/inputtextarea';
-import { InputProps } from '../../props';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
+import InputWrapper from "./InputWrapper";
+import { InputProps, InputWrapperProps } from "../../props";
+import { InputTextarea } from "primereact/inputtextarea";
 
-export type TextareaProps = InputProps & {
-    rows?: number;
-    floatClassName?: string;
-    onValueChange?: (value: string | null) => void;
-};
+type TextareaProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        rows?: number;
+    };
 
-const Textarea = (props: TextareaProps) => {
+const Textarea = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: TextareaProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <InputTextarea
-            className={props.className}
-            id={props.id}
-            value={props.value}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.target.value);
+        <Controller 
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <InputTextarea
+                            id={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            invalid={controller.fieldState.invalid}
+                            value={props.value}
+                            rows={props.rows ?? 5}
+                            readOnly={props.isPending || props.readOnly}
+                            className={props.className}
+                        />
+                    </InputWrapper>);
             }}
-            readOnly={props.isPending || props.readOnly}
-            rows={props.rows ?? 5}
-            invalid={props.invalid}
         />
     );
 };

@@ -1,38 +1,54 @@
-import { Dropdown as PiDropdown } from 'primereact/dropdown';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from 'react-hook-form';
+import { Dropdown as PrimeDropdown } from 'primereact/dropdown';
+import InputWrapper from './InputWrapper';
+import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
-import { InputProps } from '../../props';
-import { Option } from '../interfaces';
+import { Option } from '..';
 
-export type DropdownProps = InputProps & {
-    options: Option[];
-    placeholder?: string;
-    className?: string;
-    autoComplete?: 'on' | 'off' | string;
-    disabled?: boolean;
-    value?: string | number | boolean | null;
-    onValueChange?: (value: string | number | boolean | null) => void;
-    itemTemplate?: (option: Option) => ReactNode;
-};
+export type DropdownProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        options: Option[];
+        placeholder?: string;
+        autoComplete?: 'on' | 'off' | string;
+        value?: string | number | boolean | null;
+        itemTemplate?: (option: Option) => ReactNode;
+    };
 
-const Dropdown = (props: DropdownProps) => {
+const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: DropdownProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <PiDropdown
-            id={props.id}
-            className={props.className}
-            value={props.value}
-            options={props.options}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.target.value);
+        <Controller
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <PrimeDropdown
+                            id={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            invalid={controller.fieldState.invalid}
+                            value={controller.field.value}
+                            options={props.options}
+                            itemTemplate={props.itemTemplate}
+                            placeholder={props.placeholder}
+                            readOnly={props.isPending || props.readOnly}
+                            disabled={props.isPending || props.disabled}
+                            autoComplete={props.autoComplete}
+                            filter
+                            checkmark={true}
+                            highlightOnSelect={true}
+                            className={props.className}
+                        />
+                    </InputWrapper>);
             }}
-            disabled={props.isPending || props.disabled}
-            autoComplete={props.autoComplete}
-            placeholder={props.placeholder}
-            itemTemplate={props.itemTemplate}
-            data-testid={props.id}
-            filter
-            checkmark={true}
-            highlightOnSelect={true}
-            invalid={props.invalid}
         />
     );
 };

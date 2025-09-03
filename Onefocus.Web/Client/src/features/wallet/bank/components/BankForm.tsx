@@ -1,7 +1,7 @@
-import {useForm} from 'react-hook-form';
-import { Switch, Text, Textarea } from '../../../../shared/components/form-controls';
+import { useForm } from 'react-hook-form';
 import BankFormInput from './interfaces/BankFormInput';
-import {WorkspaceRightPanel} from '../../../../shared/components/layouts/workspace';
+import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
+import { Switch, Text, Textarea } from '../../../../shared/components/controls';
 
 type BankFormProps = {
     selectedBank: BankFormInput | null | undefined;

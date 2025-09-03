@@ -1,10 +1,10 @@
-import DatePicker, { DatePickerProps } from "./DatePicker";
-import Dropdown, { DropdownProps } from "./Dropdown";
-import Number, { NumberProps } from "./Number";
-import Password, { PasswordProps } from "./Password";
-import Switch, { SwitchProps } from "./Switch";
-import Text, { TextProps } from "./Text";
-import Textarea, { TextareaProps } from "./Textarea";
+import DatePicker from "./DatePicker";
+import Dropdown from "./Dropdown";
+import Number from "./Number";
+import Password from "./Password";
+import Switch from "./Switch";
+import Text from "./Text";
+import Textarea from "./Textarea";
 
 export {
     DatePicker,
@@ -13,14 +13,5 @@ export {
     Password,
     Switch,
     Text,
-    Textarea,
-};
-export type {
-    DatePickerProps,
-    DropdownProps,
-    NumberProps,
-    PasswordProps,
-    SwitchProps,
-    TextProps,
-    TextareaProps
+    Textarea
 };

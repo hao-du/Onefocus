@@ -1,25 +1,43 @@
-import { Password as PiPassword } from 'primereact/password';
-import { InputProps } from '../../props';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
+import InputWrapper from "./InputWrapper";
+import { InputProps, InputWrapperProps } from "../../props";
+import { Password as PrimePassword } from 'primereact/password';
 
-export type PasswordProps = InputProps & {
-    floatClassName?: string;
-    feedback?: boolean;
-    onValueChange?: (value: string | null) => void;
-};
+type PasswordProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        feedback?: boolean;
+    };
 
-const Password = (props: PasswordProps) => {
+const Password = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: PasswordProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <PiPassword
-            inputClassName={props.className}
-            inputId={props.id}
-            feedback={props.feedback ?? false}
-            value={props.value}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.target.value);
+        <Controller
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <PrimePassword
+                            id={controller.field.name}
+                            inputId={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            invalid={controller.fieldState.invalid}
+                            value={props.value}
+                            readOnly={props.isPending || props.readOnly}
+                            autoComplete="current-password"
+                            feedback={props.feedback ?? false}
+                            inputClassName={props.className}
+                        />
+                    </InputWrapper>);
             }}
-            readOnly={props.isPending || props.readOnly}
-            invalid={props.invalid}
-            autoComplete="current-password"
         />
     );
 };

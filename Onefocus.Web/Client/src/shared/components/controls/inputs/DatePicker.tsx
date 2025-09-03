@@ -1,42 +1,60 @@
-import { Calendar } from 'primereact/calendar';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from 'react-hook-form';
+import { Option } from '..';
+import InputWrapper from './InputWrapper';
+import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
-import { InputProps } from '../../props';
-import { Option } from '../interfaces';
+import { Calendar } from 'primereact/calendar';
 
-export type DatePickerProps = InputProps & {
-    value?: Date | null;
-    showTime?: boolean;
-    hourFormat?: '12' | '24';
-    minDate?: Date;
-    maxDate?: Date;
-    placeholder?: string;
-    dateFormat?: string;
-    showSeconds?: boolean;
-    onValueChange?: (value: Date | null | undefined) => void;
-    itemTemplate?: (option: Option) => ReactNode;
-};
+export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        value?: Date | null;
+        showTime?: boolean;
+        showSeconds?: boolean;
+        hourFormat?: '12' | '24';
+        dateFormat?: string;
+        minDate?: Date;
+        maxDate?: Date;
+        placeholder?: string;
+        itemTemplate?: (option: Option) => ReactNode;
+    };
 
-const DatePicker = (props: DatePickerProps) => {
+const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: DateTimeProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <Calendar
-            id={props.id}
-            className={props.className}
-            value={props.value ? new Date(props.value) : undefined}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.target.value);
+        <Controller
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <Calendar
+                            id={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            invalid={controller.fieldState.invalid}
+                            value={controller.field.value ? new Date(controller.field.value) : undefined}
+                            showTime={props.showTime}
+                            hourFormat={props.hourFormat}
+                            minDate={props.minDate}
+                            maxDate={props.maxDate}
+                            placeholder={props.placeholder}
+                            dateFormat={props.dateFormat}
+                            showIcon={true}
+                            showSeconds={props.showSeconds}
+                            appendTo="self"
+                            readOnlyInput={props.readOnly}
+                            disabled={props.isPending}
+                            className={props.className}
+                        />
+                    </InputWrapper>);
             }}
-            showTime={props.showTime}
-            hourFormat={props.hourFormat}
-            minDate={props.minDate}
-            maxDate={props.maxDate}
-            placeholder={props.placeholder}
-            dateFormat={props.dateFormat}
-            showIcon={true}
-            showSeconds={props.showSeconds}
-            readOnlyInput={props.readOnly}
-            disabled={props.isPending}
-            appendTo="self"
-            invalid={props.invalid}
         />
     );
 };

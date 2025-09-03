@@ -1,11 +1,11 @@
 import { UniqueComponentId } from 'primereact/utils';
 import { PropsWithChildren, useState } from 'react';
 import { FieldArray, FieldArrayPath, FieldValues, Path, useFieldArray, UseFormReturn } from 'react-hook-form';
-import { Button } from '../../controls';
-import { Column, DataTable } from '../../data';
-import { BaseProps } from '../../props';
+import { BaseProps } from '../props';
 import { ColumnBodyOptions } from './interfaces';
-
+import { Button } from '../controls';
+import DataTable from './DataTable';
+import Column from './Column';
 type EditableTableProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> = BaseProps & PropsWithChildren & {
     tableName?: string
     isReadOnly?: boolean;

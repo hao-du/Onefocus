@@ -1,34 +1,51 @@
-import { InputNumber } from 'primereact/inputnumber';
-import { InputProps } from '../../props';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
+import InputWrapper from "./InputWrapper";
+import { InputProps, InputWrapperProps } from "../../props";
+import { InputNumber } from "primereact/inputnumber";
 
-export type NumberProps = InputProps & {
-    name?: string;
-    inputClassName?: string;
-    value?: number;
-    fractionDigits?: number
-    textAlign?: 'right' | 'left';
-    onValueChange?: (value: number | null) => void;
-};
+type NumberProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        value?: number;
+        feedback?: boolean;
+        fractionDigits?: number;
+        textAlign?: 'right' | 'left';
+        inputClassName?: string;
+    };
 
-const Number = (props: NumberProps) => {
+const Number = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: NumberProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <InputNumber
+        <Controller
             name={props.name}
-            className={props.className}
-            id={props.id}
-            value={props.value}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.value);
-            }}
-            invalid={props.invalid}
-            readOnly={props.isPending || props.readOnly}
-            minFractionDigits={props.fractionDigits}
-            maxFractionDigits={props.fractionDigits}
-            inputClassName={`${props.inputClassName ?? ''} text-${props.textAlign ?? 'right'}`}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                }
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <InputNumber
+                            id={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.value); }}
+                            invalid={controller.fieldState.invalid}
+                            value={props.value}
+                            minFractionDigits={props.fractionDigits}
+                            maxFractionDigits={props.fractionDigits}
+                            readOnly={props.isPending || props.readOnly}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                }
+                            }}
+                            className={props.className}
+                            inputClassName={`${props.inputClassName ?? ''} text-${props.textAlign ?? 'right'}`}
+                        />
+                    </InputWrapper>);
             }}
         />
     );

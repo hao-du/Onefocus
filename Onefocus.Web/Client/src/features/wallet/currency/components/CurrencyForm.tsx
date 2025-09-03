@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Switch, Text, Textarea } from '../../../../shared/components/form-controls';
+import { Switch, Text, Textarea } from '../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
 import CurrencyFormInput from './interfaces/CurrencyFormInput';
 

@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../../components/controls/buttons';
-import { Password, Text } from '../../../components/form-controls';
+import { Password, Text } from '../../../components/controls';
 import { useLogin } from '../services';
 import LoginFormInput from './interfaces/LoginFormInput';
 

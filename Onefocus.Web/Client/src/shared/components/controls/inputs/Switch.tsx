@@ -1,23 +1,40 @@
-import { InputSwitch } from 'primereact/inputswitch';
-import { InputProps } from '../../props';
+import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-hook-form";
+import InputWrapper from "./InputWrapper";
+import { InputProps, InputWrapperProps } from "../../props";
+import { InputSwitch } from "primereact/inputswitch";
 
-export type SwitchProps = InputProps & {
-    checked?: boolean;
-    invalid?: boolean;
-    onValueChange?: (value: boolean) => void;
-};
+export type SwitchProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    = UseControllerProps<TFieldValues, TName, TTransformedValues>
+    & InputProps
+    & InputWrapperProps
+    & {
+        checked?: boolean;
+    };
 
-const Switch = (props: SwitchProps) => {
+const Switch = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
+    (props: SwitchProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <InputSwitch
-            id={props.id}
-            className={`${props.className} p-inputwrapper-filled`}
-            checked={props.checked ?? false}
-            onChange={(e) => {
-                if (props.onValueChange) props.onValueChange(e.target.value);
+        <Controller
+            name={props.name}
+            control={props.control}
+            rules={props.rules}
+            render={(controller) => {
+                return (
+                    <InputWrapper
+                        htmlFor={controller.field.name}
+                        errorMessage={controller.fieldState.error?.message}
+                        description={props.description}
+                    >
+                        <InputSwitch
+                            id={controller.field.name}
+                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            invalid={controller.fieldState.invalid}
+                            checked={controller.field.value ?? false}
+                            disabled={props.isPending || props.readOnly}
+                            className={props.className}
+                        />
+                    </InputWrapper>);
             }}
-            disabled={props.isPending || props.readOnly}
-            invalid={props.invalid}
         />
     );
 };

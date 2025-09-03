@@ -1,5 +1,5 @@
 import { ColumnEditorOptions, Column as PiColumn } from 'primereact/column';
-import { ColumnBodyOptions } from '../form-controls/data/interfaces';
+import { ColumnBodyOptions } from './interfaces';
 
 type ColumnProps<TValue> = {
     field?: string;
