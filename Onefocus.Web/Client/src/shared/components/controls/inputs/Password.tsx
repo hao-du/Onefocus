@@ -30,7 +30,7 @@ const Password = <TFieldValues extends FieldValues = FieldValues, TName extends 
                             inputId={controller.field.name}
                             onChange={(e) => { controller.field.onChange(e.target.value); }}
                             invalid={controller.fieldState.invalid}
-                            value={props.value}
+                            value={controller.field.value}
                             readOnly={props.isPending || props.readOnly}
                             autoComplete="current-password"
                             feedback={props.feedback ?? false}

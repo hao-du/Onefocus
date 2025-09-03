@@ -33,7 +33,7 @@ const Number = <TFieldValues extends FieldValues = FieldValues, TName extends Fi
                             id={controller.field.name}
                             onChange={(e) => { controller.field.onChange(e.value); }}
                             invalid={controller.fieldState.invalid}
-                            value={props.value}
+                            value={controller.field.value}
                             minFractionDigits={props.fractionDigits}
                             maxFractionDigits={props.fractionDigits}
                             readOnly={props.isPending || props.readOnly}

@@ -29,7 +29,7 @@ const Text = <TFieldValues extends FieldValues = FieldValues, TName extends Fiel
                             id={controller.field.name}
                             onChange={(e) => { controller.field.onChange(e.target.value); }}
                             invalid={controller.fieldState.invalid}
-                            value={props.value}
+                            value={controller.field.value}
                             readOnly={props.isPending || props.readOnly}
                             autoComplete={props.autoComplete}
                             className={props.className}

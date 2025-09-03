@@ -29,7 +29,7 @@ const Textarea = <TFieldValues extends FieldValues = FieldValues, TName extends 
                             id={controller.field.name}
                             onChange={(e) => { controller.field.onChange(e.target.value); }}
                             invalid={controller.fieldState.invalid}
-                            value={props.value}
+                            value={controller.field.value}
                             rows={props.rows ?? 5}
                             readOnly={props.isPending || props.readOnly}
                             className={props.className}
