@@ -14,7 +14,7 @@ const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
 
     const { transactions, currencies, isListLoading, showForm, setShowForm } = useTransaction();
-    const { selectedCashFlow, isCashFlowLoading, setTransactionIdFromCashFlow, onCashFlowSubmit } = useCashFlow();
+    const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
 
     const isPending = isListLoading || isCashFlowLoading;
 
@@ -51,7 +51,7 @@ const TransactionList = React.memo(() => {
                     icon: 'pi pi-money-bill',
                     command: () => {
                         setShowForm(true);
-                        setTransactionIdFromCashFlow(null);
+                        setCashFlowTransactionId(null);
                         setSelectedTransactionType(TransactionType.CashFlow);
                     }
                 }
@@ -74,7 +74,7 @@ const TransactionList = React.memo(() => {
                                         icon="pi pi-pencil"
                                         className="p-button-text"
                                         onClick={() => {
-                                            setTransactionIdFromCashFlow(transaction.id);
+                                            setCashFlowTransactionId(transaction.id);
                                             setShowForm(true);
                                         }}
                                     />

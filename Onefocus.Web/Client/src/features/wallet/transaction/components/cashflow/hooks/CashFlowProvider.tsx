@@ -11,7 +11,7 @@ const CashFlowProvider = (props: CashFlowProviderProps) => {
     const { refetchList, setShowForm } = useTransaction();
     const { showResponseToast } = useWindows();
 
-    const { cashFlowEntity: selectedCashFlow, isCashFlowLoading, setTransactionId: setTransactionIdFromCashFlow } = useGetCashFlowByTransactionId();
+    const { cashFlowEntity: selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId} = useGetCashFlowByTransactionId();
     const { onCreateAsync, isCreating } = useCreateCashFlow();
     const { onUpdateAsync, isUpdating } = useUpdateCashFlow();
 
@@ -33,7 +33,7 @@ const CashFlowProvider = (props: CashFlowProviderProps) => {
             });
             showResponseToast(response, 'Saved successfully.');
             if (response.status === 200 && response.value.id) {
-                setTransactionIdFromCashFlow(response.value.id);
+                setCashFlowTransactionId(response.value.id);
             }
         } else {
             const response = await onUpdateAsync({
@@ -58,14 +58,14 @@ const CashFlowProvider = (props: CashFlowProviderProps) => {
             }
         }
         refetchList();
-    }, [onCreateAsync, onUpdateAsync, setShowForm, refetchList, setTransactionIdFromCashFlow, showResponseToast]);
+    }, [onCreateAsync, onUpdateAsync, setShowForm, refetchList, setCashFlowTransactionId, showResponseToast]);
 
     // Provide the cash flow context to the children components
     return (
         <CashFlowContext.Provider value={{
             selectedCashFlow: selectedCashFlow,
             isCashFlowLoading: isCashFlowLoading || isCreating || isUpdating,
-            setTransactionIdFromCashFlow: setTransactionIdFromCashFlow,
+            setCashFlowTransactionId: setCashFlowTransactionId,
             onCashFlowSubmit: onCashFlowSubmit,
         }}>
             {props.children}

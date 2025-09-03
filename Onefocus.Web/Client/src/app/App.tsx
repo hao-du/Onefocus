@@ -5,15 +5,13 @@ import { AppLayout } from '../shared/components/layouts';
 import { SideMenuItem } from '../shared/components/navigations';
 import { useCheck } from '../shared/features/home';
 import { Home } from './pages';
+import { useMemo } from 'react';
 
-function App() {
+const App = () => {
     const navigate = useNavigate();
     const { isCheckDone } = useCheck();
-    if (!isCheckDone) {
-        return <Loading />;
-    }
 
-    const items: SideMenuItem[] = [
+    const items = useMemo<SideMenuItem[]>(() => [
         {
             key: 0,
             label: 'Home',
@@ -78,16 +76,18 @@ function App() {
                 }
             ]
         }
-    ];
+    ], [navigate]);
 
     return (
-        <AppLayout items={items}>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="wallet/*" element={<WalletRoutes />} />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </AppLayout>
+        !isCheckDone ? <Loading /> : (
+            <AppLayout items={items}>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="wallet/*" element={<WalletRoutes />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </AppLayout>
+        )
     );
 }
 

@@ -1,5 +1,5 @@
 import { BaseProps } from '../props';
-import { Toast as PiToast } from 'primereact/toast';
+import { Toast as PrimeToast } from 'primereact/toast';
 
 export interface ToastMessage {
     severity?: 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast' | undefined;
@@ -19,10 +19,10 @@ type ToastProps = BaseProps & {
 
 export const Toast = (props: ToastProps) => {
     return (
-        <PiToast
+        <PrimeToast
             className={props.className}
             style={props.style}
-            ref={props.ref as React.RefObject<PiToast>}
+            ref={props.ref as React.RefObject<PrimeToast>}
             position={props.position ?? 'bottom-right'}
         />
     );

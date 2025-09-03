@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fieldset as PiFieldset } from 'primereact/fieldset';
+import { Fieldset as PrimeFieldset } from 'primereact/fieldset';
 import { BaseProps } from '../../props';
 
 type FieldsetProps = BaseProps & {
@@ -9,9 +9,9 @@ type FieldsetProps = BaseProps & {
 
 const Fieldset = (props: FieldsetProps) => {
     return (
-        <PiFieldset legend={props.title} className={props.className}>
+        <PrimeFieldset legend={props.title} className={props.className}>
             {props.children}
-        </PiFieldset>
+        </PrimeFieldset>
     );
 };
 

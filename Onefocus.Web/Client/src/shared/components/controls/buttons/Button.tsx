@@ -1,4 +1,4 @@
-import { Button as PiButton } from 'primereact/button';
+import { Button as PrimeButton } from 'primereact/button';
 import { BaseButtonProps } from '../../props';
 
 type ButtonProps = BaseButtonProps & {
@@ -14,7 +14,7 @@ type ButtonProps = BaseButtonProps & {
 
 const Button = (props: ButtonProps) => {
     return (
-        <PiButton
+        <PrimeButton
             type={props.type ? props.type : 'button'}
             className={props.className}
             label={props.label}

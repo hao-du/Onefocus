@@ -1,4 +1,4 @@
-import {Sidebar as PiSideBar} from "primereact/sidebar";
+import { Sidebar as PrimeSideBar } from "primereact/sidebar";
 import * as React from "react";
 
 type SidebarProps = {
@@ -9,9 +9,9 @@ type SidebarProps = {
 
 const Sidebar = (props: SidebarProps) => {
     return (
-        <PiSideBar visible={props.visible} onHide={props.onHide} className="md:hidden">
+        <PrimeSideBar visible={props.visible} onHide={props.onHide} className="md:hidden">
             {props.children}
-        </PiSideBar>
+        </PrimeSideBar>
     );
 }
 

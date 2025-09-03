@@ -1,5 +1,5 @@
-import {ProgressSpinner as PiProgressSpinner} from 'primereact/progressspinner';
-import {BaseProps} from '../props/BaseProps';
+import { ProgressSpinner as PiProgressSpinner } from 'primereact/progressspinner';
+import { BaseProps } from '../props';
 
 type ProgressSpinnerProps = BaseProps & {
 }
