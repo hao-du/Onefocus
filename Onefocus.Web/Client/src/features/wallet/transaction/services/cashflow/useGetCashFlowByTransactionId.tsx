@@ -3,20 +3,20 @@ import { useQuery } from '../../../../../shared/hooks';
 import { getCashFlowByTransactionId } from '../../apis';
 
 const useGetCashFlowByTransactionId = () => {
-    const [transactionId, setTransactionId] = useState<string | null>(null);
+    const [cashFlowTransactionId, setCashFlowTransactionId] = useState<string | null>(null);
 
     const {data, isLoading} = useQuery({
-        queryKey: [`useGetTransactionById-${transactionId}`],
+        queryKey: [`useGetCashFlowByTransactionId-${cashFlowTransactionId}`],
         queryFn: async () => {
-            if (!transactionId) return null;
+            if (!cashFlowTransactionId) return null;
 
-            const apiResponse = await getCashFlowByTransactionId(transactionId);
+            const apiResponse = await getCashFlowByTransactionId(cashFlowTransactionId);
             return apiResponse.value;
         },
-        enabled: Boolean(transactionId)
+        enabled: Boolean(cashFlowTransactionId)
     });
 
-    return {cashFlowEntity: data, isCashFlowLoading: isLoading, setTransactionId: setTransactionId};
+    return {cashFlowEntity: data, isCashFlowLoading: isLoading, setCashFlowTransactionId};
 };
 
 export default useGetCashFlowByTransactionId;

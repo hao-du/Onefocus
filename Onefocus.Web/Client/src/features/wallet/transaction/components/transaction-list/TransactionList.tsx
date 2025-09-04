@@ -16,7 +16,7 @@ const TransactionList = React.memo(() => {
 
     const { showForm, setShowForm } = useTransactionPage();
     const { transactions, currencies, isListLoading } = useTransactionList();
-    const { selectedCashFlow, isCashFlowLoading, setTransactionIdFromCashFlow, onCashFlowSubmit } = useCashFlow();
+    const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId: setTransactionIdFromCashFlow, onCashFlowSubmit } = useCashFlow();
 
     const isPending = isListLoading || isCashFlowLoading;
 
