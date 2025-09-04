@@ -1,6 +1,6 @@
-import BankAccountForm from "./CashFlowForm";
-import { CashFlowProvider, useCashFlow } from "./hooks";
+import BankAccountForm from "./BankAccountForm";
+import { BankAccountProvider, useBankAccount } from "./hooks";
 
 export {
-    BankAccountForm as CashFlowForm, CashFlowProvider, useCashFlow
+    BankAccountForm, BankAccountProvider, useBankAccount
 };

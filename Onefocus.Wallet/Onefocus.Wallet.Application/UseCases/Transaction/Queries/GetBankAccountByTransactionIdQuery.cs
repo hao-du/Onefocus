@@ -23,8 +23,7 @@ public sealed record GetBankAccountByTransactionIdQueryResponse(
 
 public sealed record GetBankAccountTransaction(
     Guid Id,
-    DateTimeOffset TransactedOn, 
-    Guid CurrencyId, 
+    DateTimeOffset TransactedOn,
     decimal Amount, 
     string? Description, 
     bool IsActive
@@ -62,7 +61,6 @@ internal sealed class GetBankAccountByTransactionIdQueryHandler(
             Transactions: [..bankAccount.BankAccountTransactions.Select(bct => new GetBankAccountTransaction(
                 Id: bct.Transaction.Id,
                 TransactedOn: bct.Transaction.TransactedOn,
-                CurrencyId: bct.Transaction.CurrencyId,
                 Amount: bct.Transaction.Amount,
                 Description: bct.Transaction.Description,
                 IsActive: bct.Transaction.IsActive

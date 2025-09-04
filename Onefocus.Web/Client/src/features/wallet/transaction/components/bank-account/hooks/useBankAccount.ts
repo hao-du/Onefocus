@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import BankAccountContext from "./BankAccountContext";
 
-const useCashFlow = () => {
+const useBankAccount = () => {
     const context = useContext(BankAccountContext);
     if (!context) {
-        throw new Error('useCashFlow must be used within the CashFlowProvider');
+        throw new Error('useBankAccount must be used within the BankAccountProvider');
     }
     return context;
 };
 
-export default useCashFlow;
+export default useBankAccount;

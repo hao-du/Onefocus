@@ -27,13 +27,14 @@ const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends 
             render={(controller) => {
                 return (
                     <InputWrapper
+                        label={props.label}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
                         description={props.description}
                     >
                         <PrimeDropdown
                             id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            onChange={(e) => { controller.field.onChange(e.value); }}
                             invalid={controller.fieldState.invalid}
                             value={controller.field.value}
                             options={props.options}

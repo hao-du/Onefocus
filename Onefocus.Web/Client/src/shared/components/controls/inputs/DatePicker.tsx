@@ -18,6 +18,7 @@ export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName 
         minDate?: Date;
         maxDate?: Date;
         placeholder?: string;
+        appendTo?: 'self' | HTMLElement | (() => HTMLElement);
         itemTemplate?: (option: Option) => ReactNode;
     };
 
@@ -31,13 +32,14 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
             render={(controller) => {
                 return (
                     <InputWrapper
+                        label={props.label}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
                         description={props.description}
                     >
                         <Calendar
                             id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.target.value); }}
+                            onChange={(e) => { controller.field.onChange(e.value); }}
                             invalid={controller.fieldState.invalid}
                             value={controller.field.value ? new Date(controller.field.value) : undefined}
                             showTime={props.showTime}
@@ -48,7 +50,7 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
                             dateFormat={props.dateFormat}
                             showIcon={true}
                             showSeconds={props.showSeconds}
-                            appendTo="self"
+                            appendTo={props.appendTo ?? 'self'}
                             readOnlyInput={props.readOnly}
                             disabled={props.isPending}
                             className={props.className}

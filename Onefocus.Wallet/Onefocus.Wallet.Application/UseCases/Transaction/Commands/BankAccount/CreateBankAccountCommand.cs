@@ -21,7 +21,6 @@ public sealed record CreateBankAccountCommandRequest(
 ) : ICommand<CreateBankAccountCommandResponse>;
 public sealed record CreateTransaction(
     DateTimeOffset TransactedOn,
-    Guid CurrencyId,
     decimal Amount,
     string? Description
 );
@@ -55,7 +54,7 @@ internal sealed class CreateBankAccountCommandHandler(
             transactionParams: [.. request.Transactions.Select(t => TransactionParams.CreateNew(
                 amount: t.Amount,
                 transactedOn: t.TransactedOn,
-                currencyId: t.CurrencyId,
+                currencyId: request.CurrencyId,
                 description: t.Description
             ))]
         );
@@ -88,7 +87,7 @@ internal sealed class CreateBankAccountCommandHandler(
         {
             var transactionValidationResult = Entity.Transaction.Validate(
                 amount: transaction.Amount,
-                currencyId: transaction.CurrencyId,
+                currencyId: request.CurrencyId,
                 transactedOn: transaction.TransactedOn
                 );
             if (transactionValidationResult.IsFailure) return transactionValidationResult;

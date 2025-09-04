@@ -17,18 +17,23 @@ type CashFlowFormProps = {
 }
 
 const CashFlowForm = (props: CashFlowFormProps) => {
+    const formValues = useMemo(() => {
+        return props.selectedCashFlow ??
+        {
+            id: undefined,
+            transactedOn: new Date(),
+            amount: 0,
+            currencyId: getEmptyGuid(),
+            description: '',
+            isIncome: true,
+            isActive: true,
+            transactionItems: []
+        }
+    }, [props.selectedCashFlow]);
+
     const form = useForm<CashFlowFormInput>({
-        values: props.selectedCashFlow ? { ...props.selectedCashFlow } :
-            {
-                id: undefined,
-                transactedOn: new Date(),
-                amount: 0,
-                currencyId: getEmptyGuid(),
-                description: '',
-                isIncome: true,
-                isActive: true,
-                transactionItems: []
-            }
+        defaultValues: formValues,
+        values: formValues
     });
 
     const isEditMode = Boolean(props.selectedCashFlow);
@@ -56,7 +61,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
             <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} CashFlow`}</h3>
-            <form>
+            <form key={props.selectedCashFlow?.id ?? 'new'}>
                 <DatePicker control={form.control} name="transactedOn" label="Date" className="w-full of-w-max" rules={{
                     required: 'Date is required.',
                 }} />
@@ -109,7 +114,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                                 rules={{
                                     required: 'Amount is required.',
                                     min: { value: 0, message: "Minimum amount is 0" },
-                                }} 
+                                }}
                             />);
                     }} />
                     <Column field="description" style={{ width: '15rem' }} header="Description" editor={(options) => {

@@ -25,7 +25,6 @@ public sealed record UpdateBankAccountCommandRequest(
 public sealed record UpdateTransaction(
     Guid? Id,
     DateTimeOffset TransactedOn,
-    Guid CurrencyId,
     decimal Amount,
     string? Description,
     bool IsActive
@@ -66,7 +65,7 @@ internal sealed class UpdateBankAccountCommandHandler(
                 id: t.Id,
                 amount: t.Amount,
                 transactedOn: t.TransactedOn,
-                currencyId: t.CurrencyId,
+                currencyId: request.CurrencyId,
                 description: t.Description,
                 isActive: t.IsActive
             ))]
@@ -96,7 +95,7 @@ internal sealed class UpdateBankAccountCommandHandler(
         {
             var transactionValidationResult = Entity.Transaction.Validate(
                 amount: transaction.Amount,
-                currencyId: transaction.CurrencyId,
+                currencyId: request.CurrencyId,
                 transactedOn: transaction.TransactedOn
                 );
             if (transactionValidationResult.IsFailure) return transactionValidationResult;

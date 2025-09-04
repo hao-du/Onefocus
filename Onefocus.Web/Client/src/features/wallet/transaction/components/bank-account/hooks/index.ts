@@ -1,6 +1,6 @@
 import BankAccountProvider from "./BankAccountProvider";
-import useCashFlow from "./useCashFlow";
+import useBankAccount from "./useBankAccount";
 
 export {
-    BankAccountProvider as CashFlowProvider, useCashFlow
+    BankAccountProvider, useBankAccount
 };

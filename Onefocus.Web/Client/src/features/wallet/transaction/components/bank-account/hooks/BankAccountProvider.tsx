@@ -32,7 +32,6 @@ const BankAccountProvider = (props: BankAccountProviderProps) => {
                 transactions: data.transactions.map(item => ({
                     id: item.id,
                     transactedOn: item.transactedOn,
-                    currencyId: item.currencyId,
                     amount: item.amount,
                     isActive: item.isActive,
                     description: item.description
@@ -58,7 +57,6 @@ const BankAccountProvider = (props: BankAccountProviderProps) => {
                 transactions: data.transactions.map(item => ({
                     id: item.id,
                     transactedOn: item.transactedOn,
-                    currencyId: item.currencyId,
                     amount: item.amount,
                     isActive: item.isActive,
                     description: item.description

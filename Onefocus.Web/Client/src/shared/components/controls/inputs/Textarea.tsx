@@ -21,6 +21,7 @@ const Textarea = <TFieldValues extends FieldValues = FieldValues, TName extends 
             render={(controller) => {
                 return (
                     <InputWrapper
+                        label={props.label}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
                         description={props.description}
