@@ -4,7 +4,11 @@ import {
     CreateCashFlowRequest,
     CreateCashFlowResponse,
     GetCashFlowByTransactionIdResponse,
-    UpdateCashFlowRequest
+    UpdateCashFlowRequest,
+    GetBankAccountByTransactionIdResponse,
+    CreateBankAccountRequest,
+    CreateBankAccountResponse,
+    UpdateBankAccountRequest
 } from './interfaces';
 
 export const getAllTransactions = async () => {
@@ -24,5 +28,20 @@ export const createCashFlow = async (request: CreateCashFlowRequest) => {
 
 export const updateCashFlow = async (request: UpdateCashFlowRequest) => {
     const response = await client.put<ApiResponse>(`wallet/transaction/cashflow/update`, request);
+    return response.data;
+};
+
+export const getBankAccountByTransactionId = async (transactionId: string) => {
+    const response = await client.get<ApiResponse<GetBankAccountByTransactionIdResponse>>(`wallet/transaction/bankaccount/${transactionId}`);
+    return response.data; 
+};
+
+export const createBankAccount = async (request: CreateBankAccountRequest) => {
+    const response = await client.post<ApiResponse<CreateBankAccountResponse>>(`wallet/transaction/bankaccount/create`, request);
+    return response.data;
+};
+
+export const updateBankAccount = async (request: UpdateBankAccountRequest) => {
+    const response = await client.put<ApiResponse>(`wallet/transaction/bankaccount/update`, request);
     return response.data;
 };

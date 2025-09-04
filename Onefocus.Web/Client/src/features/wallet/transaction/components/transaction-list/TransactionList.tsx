@@ -7,14 +7,16 @@ import { CurrencyResponse } from '../../../currency';
 import { TransactionResponse } from '../../apis';
 import { CashFlowForm, useCashFlow } from '../cashflow';
 import { TransactionType } from './enums';
-import { useTransaction } from './hooks';
+import { useTransactionList } from './hooks';
 import { UniqueComponentId } from 'primereact/utils';
+import { useTransactionPage } from '../../pages/hooks';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
 
-    const { transactions, currencies, isListLoading, showForm, setShowForm } = useTransaction();
-    const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
+    const { showForm, setShowForm } = useTransactionPage();
+    const { transactions, currencies, isListLoading } = useTransactionList();
+    const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId: setTransactionIdFromCashFlow, onCashFlowSubmit } = useCashFlow();
 
     const isPending = isListLoading || isCashFlowLoading;
 

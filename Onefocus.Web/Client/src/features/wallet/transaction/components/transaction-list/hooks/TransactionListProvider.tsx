@@ -1,27 +1,24 @@
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import { useGetAllCurrencies } from '../../../../currency/services';
 import { useGetAllTransactions } from '../../../services';
-import TransactionContext from './TransactionContext';
+import TransactionListContext from './TransactionListContext';
 
-type TransactionProviderProps = PropsWithChildren;
+type TransactionListProviderProps = PropsWithChildren;
 
-const TransactionProvider = (props: TransactionProviderProps) => {
+const TransactionListProvider = (props: TransactionListProviderProps) => {
     const { entities: currencies, isListLoading: isCurrenciesLoading } = useGetAllCurrencies();
     const { entities: transactions, isListLoading, refetch } = useGetAllTransactions();
-    const [ showForm, setShowForm] = useState(false);
 
     return (
-        <TransactionContext.Provider value={{
+        <TransactionListContext.Provider value={{
             transactions: transactions ?? [],
             currencies: currencies ?? [],
             isListLoading: isCurrenciesLoading || isListLoading,
-            refetchList: refetch,
-            showForm: showForm,
-            setShowForm: setShowForm
+            refetchList: refetch
         }}>
             {props.children}
-        </TransactionContext.Provider>
+        </TransactionListContext.Provider>
     );
 };
 
-export default TransactionProvider;
+export default TransactionListProvider;

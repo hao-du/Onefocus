@@ -1,4 +1,4 @@
-import {SingleContentLayout} from '../../../components/layouts';
+import { SingleContentLayout } from '../../../components/layouts';
 import { Fieldset } from '../../../components/controls/panels';
 import LoginForm from '../components/LoginForm';
 
