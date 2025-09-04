@@ -1,14 +1,16 @@
 import { PropsWithChildren, useCallback } from 'react';
 import { useWindows } from '../../../../../../shared/components/hooks';
 import { useCreateCashFlow, useGetCashFlowByTransactionId, useUpdateCashFlow } from '../../../services';
-import { useTransaction } from '../../transaction';
+import { useTransactionList } from '../../transaction-list';
 import CashFlowFormInput from '../interfaces/CashFlowFormInput';
 import CashFlowContext from './CashFlowContext';
+import { useTransactionPage } from '../../../pages/hooks';
 
 type CashFlowProviderProps = PropsWithChildren;
 
 const CashFlowProvider = (props: CashFlowProviderProps) => {
-    const { refetchList, setShowForm } = useTransaction();
+    const { setShowForm } = useTransactionPage();
+    const { refetchList } = useTransactionList();
     const { showResponseToast } = useWindows();
 
     const { cashFlowEntity: selectedCashFlow, isCashFlowLoading, setTransactionId: setTransactionIdFromCashFlow } = useGetCashFlowByTransactionId();

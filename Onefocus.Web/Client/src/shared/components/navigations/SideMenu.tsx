@@ -31,7 +31,7 @@ const SideMenu = (props: SideMenuProps) => {
     const renderSideMenu = useCallback(() => {
         return (
             <>
-                <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">Onefocus</h1>
+                <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">Test</h1>
                 <PanelMenu model={props.items} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys}
                            className="w-full flex-auto overflow-auto" multiple/>
             </>

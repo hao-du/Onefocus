@@ -1,13 +1,16 @@
 import React from 'react';
-import { CashFlowProvider, TransactionList, TransactionProvider } from '../components';
+import { CashFlowProvider, TransactionList, TransactionListProvider } from '../components';
+import { TransactionPageProvider } from './hooks';
 
 const Transaction = React.memo(() => {
     return (
-        <TransactionProvider>
-            <CashFlowProvider>
-                <TransactionList />
-            </CashFlowProvider>
-        </TransactionProvider>
+        <TransactionPageProvider>
+            <TransactionListProvider>
+                <CashFlowProvider>
+                    <TransactionList />
+                </CashFlowProvider>
+            </TransactionListProvider>
+        </TransactionPageProvider>
     );
 });
 
