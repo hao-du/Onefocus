@@ -8,7 +8,11 @@ import {
     GetBankAccountByTransactionIdResponse,
     CreateBankAccountRequest,
     CreateBankAccountResponse,
-    UpdateBankAccountRequest
+    UpdateBankAccountRequest,
+    GetCurrencyExchangeByTransactionIdResponse,
+    CreateCurrencyExchangeRequest,
+    UpdateCurrencyExchangeRequest,
+    CreateCurrencyExchangeResponse
 } from './interfaces';
 
 export const getAllTransactions = async () => {
@@ -45,3 +49,18 @@ export const updateBankAccount = async (request: UpdateBankAccountRequest) => {
     const response = await client.put<ApiResponse>(`wallet/transaction/bankaccount/update`, request);
     return response.data;
 };
+
+export const getCurrencyExchangeByTransactionId = async (transactionId: string) => {
+    const response = await client.get<ApiResponse<GetCurrencyExchangeByTransactionIdResponse>>(`wallet/transaction/currencyexchange/${transactionId}`);
+    return response.data; 
+}
+
+export const createCurrencyExchange = async (request: CreateCurrencyExchangeRequest) => {
+    const response = await client.post<ApiResponse<CreateCurrencyExchangeResponse>>(`wallet/transaction/currencyexchange/create`, request);
+    return response.data;
+}
+
+export const updateCurrencyExchange = async (request: UpdateCurrencyExchangeRequest) => {
+    const response = await client.put<ApiResponse>(`wallet/transaction/currencyexchange/update`, request);
+    return response.data;
+}

@@ -8,6 +8,7 @@ public interface IWriteUnitOfWork
     IUserWriteRepository User { get; }
     IBankWriteRepository Bank { get; }
     ICurrencyWriteRepository Currency { get; }
+    ICounterpartyWriteRepository Counterparty { get; }
     ITransactionWriteRepository Transaction { get; }
 
     Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default);

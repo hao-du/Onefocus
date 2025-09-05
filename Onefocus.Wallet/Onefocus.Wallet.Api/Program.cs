@@ -65,12 +65,14 @@ services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
 services.AddScoped<IUserReadRepository, UserReadRepository>();
 services.AddScoped<ICurrencyReadRepository, CurrencyReadRepository>();
 services.AddScoped<IBankReadRepository, BankReadRepository>();
+services.AddScoped<ICounterpartyReadRepository, CounterpartyReadRepository>();
 services.AddScoped<ITransactionReadRepository, TransactionReadRepository>();
 
 services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
 services.AddScoped<IUserWriteRepository, UserWriteRepository>();
 services.AddScoped<ICurrencyWriteRepository, CurrencyWriteRepository>();
 services.AddScoped<IBankWriteRepository, BankWriteRepository>();
+services.AddScoped<ICounterpartyWriteRepository, CounterpartyWriteRepository>();
 services.AddScoped<ITransactionWriteRepository, TransactionWriteRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -92,6 +94,7 @@ app.UseExceptionHandler();
 
 app.MapBankEndpoints();
 app.MapCurrencyEndpoints();
+app.MapCounterpartyEndpoints();
 app.MapTransactionEndpoints();
 
 app.Run();

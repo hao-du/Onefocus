@@ -8,6 +8,9 @@ import useCreateBankAccount from "./bank-account/useCreateBankAccount";
 import useUpdateBankAccount from "./bank-account/useUpdateBankAccount";
 import useGetBankAccountByTransactionId from "./bank-account/useGetBankAccountByTransactionId";
 
+import useCreateCurrencyExchange from "./currency-exchange/useCreateCurrencyExchange";
+import useUpdateCurrencyExchange from "./currency-exchange/useUpdateCurrencyExchange";
+import useGetCurrencyExchangeByTransactionId from "./currency-exchange/useGetCurrencyExchangeByTransactionId";
 
 export {
     useGetAllTransactions,
@@ -18,6 +21,10 @@ export {
     
     useCreateBankAccount,
     useUpdateBankAccount,
-    useGetBankAccountByTransactionId
+    useGetBankAccountByTransactionId,
+
+    useCreateCurrencyExchange,
+    useUpdateCurrencyExchange,
+    useGetCurrencyExchangeByTransactionId
 };
 

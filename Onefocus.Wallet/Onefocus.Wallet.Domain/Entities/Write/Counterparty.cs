@@ -59,7 +59,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
         return Result.Success();
     }
 
-    private static Result Validate(string fullName)
+    public static Result Validate(string fullName)
     {
         if (string.IsNullOrEmpty(fullName))
         {

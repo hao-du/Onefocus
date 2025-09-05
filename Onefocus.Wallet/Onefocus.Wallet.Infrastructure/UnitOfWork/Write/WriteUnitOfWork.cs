@@ -12,6 +12,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
         , IUserWriteRepository userRepository
         , IBankWriteRepository bankRepository
         , ICurrencyWriteRepository currencyRepository
+        , ICounterpartyWriteRepository counterpartyWriteRepository
         , ITransactionWriteRepository transactionRepository
     ) : IWriteUnitOfWork
 {
@@ -20,6 +21,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
     public IUserWriteRepository User { get; } = userRepository;
     public IBankWriteRepository Bank { get; } = bankRepository;
     public ICurrencyWriteRepository Currency { get; } = currencyRepository;
+    public ICounterpartyWriteRepository Counterparty { get; } = counterpartyWriteRepository;
     public ITransactionWriteRepository Transaction { get; } = transactionRepository;
 
     public async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)

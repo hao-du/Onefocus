@@ -13,6 +13,7 @@ import { useTransactionList } from './hooks';
 import { useTransactionPage } from '../../pages/hooks';
 import { CashFlowForm, useCashFlow } from '../cashflow';
 import { BankAccountForm, useBankAccount } from '../bank-account';
+import { CurrencyExchangeForm, useCurrencyExchange } from '../currency-exchange';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
@@ -21,8 +22,9 @@ const TransactionList = React.memo(() => {
     const { transactions, currencies, banks, isListLoading } = useTransactionList();
     const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
     const { selectedBankAccount, isBankAccountLoading, setBankAccountTransactionId, onBankAccountSubmit } = useBankAccount();
+    const { selectedCurrencyExchange, isCurrencyExchangeLoading, setCurrencyExchangeTransactionId, onCurrencyExchangeSubmit } = useCurrencyExchange();
 
-    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading;
+    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading || isCurrencyExchangeLoading;
 
     const renderForm = useCallback((transactionType: TransactionType, currencies: CurrencyResponse[], isPending: boolean) => {
         switch (transactionType) {
@@ -32,20 +34,23 @@ const TransactionList = React.memo(() => {
                     item.rowId = UniqueComponentId();
                 });
                 return <CashFlowForm selectedCashFlow={selectedCashFlow} isPending={isPending} onSubmit={onCashFlowSubmit} currencies={currencies} />
+
             case TransactionType.CurrencyExchange:
-                break;
+                return <CurrencyExchangeForm selectedCurrencyExchange={selectedCurrencyExchange} isPending={isPending} onSubmit={onCurrencyExchangeSubmit} currencies={currencies} />;
+
             case TransactionType.BankAccount:
                 //Make unique row ids for transactions
                 selectedBankAccount?.transactions?.map(item => {
                     item.rowId = UniqueComponentId();
                 });
                 return <BankAccountForm selectedBankAccount={selectedBankAccount} isPending={isPending} onSubmit={onBankAccountSubmit} currencies={currencies} banks={banks} />;
+
             case TransactionType.PeerTransfer:
                 break;
         }
 
         return null;
-    }, [banks, onBankAccountSubmit, onCashFlowSubmit, selectedBankAccount, selectedCashFlow])
+    }, [banks, onBankAccountSubmit, onCashFlowSubmit, onCurrencyExchangeSubmit, selectedBankAccount, selectedCashFlow, selectedCurrencyExchange])
 
     return (
         <Workspace
@@ -70,6 +75,15 @@ const TransactionList = React.memo(() => {
                     command: () => {
                         setSelectedTransactionType(TransactionType.BankAccount);
                         setBankAccountTransactionId(null);
+                        setShowForm(true);
+                    }
+                },
+                {
+                    label: 'Exchange',
+                    icon: 'pi pi-arrow-right-arrow-left',
+                    command: () => {
+                        setSelectedTransactionType(TransactionType.CurrencyExchange);
+                        setCurrencyExchangeTransactionId(null);
                         setShowForm(true);
                     }
                 }
@@ -97,6 +111,10 @@ const TransactionList = React.memo(() => {
                                     case TransactionType.BankAccount:
                                         setSelectedTransactionType(TransactionType.BankAccount);
                                         setBankAccountTransactionId(transaction.id);
+                                        break;
+                                    case TransactionType.CurrencyExchange:
+                                        setSelectedTransactionType(TransactionType.CurrencyExchange);
+                                        setCurrencyExchangeTransactionId(transaction.id);
                                         break;
                                 }
                                 setShowForm(true);

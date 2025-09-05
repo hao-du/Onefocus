@@ -2,6 +2,7 @@
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
 using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
 using Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
 using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
@@ -50,6 +51,24 @@ internal static class TransactionEndpoints
         });
 
         routes.MapPost("transaction/bankaccount/update", async (UpdateBankAccountCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
+            return result.ToResult();
+        });
+
+        routes.MapGet("transaction/currencyexchange/{id}", async (Guid id, ISender sender) =>
+        {
+            var result = await sender.Send(new GetCurrencyExchangeByTransactionIdQueryRequest(id));
+            return result.ToResult();
+        });
+
+        routes.MapPost("transaction/currencyexchange/create", async (CreateCurrencyExchangeCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
+            return result.ToResult();
+        });
+
+        routes.MapPost("transaction/currencyexchange/update", async (UpdateCurrencyExchangeCommandRequest command, ISender sender) =>
         {
             var result = await sender.Send(command);
             return result.ToResult();

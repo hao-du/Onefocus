@@ -7,5 +7,6 @@ public interface IReadUnitOfWork
     IUserReadRepository User { get; }
     ICurrencyReadRepository Currency { get; }
     IBankReadRepository Bank { get; }
+    ICounterpartyReadRepository Counterparty { get; }
     ITransactionReadRepository Transaction { get; }
 }

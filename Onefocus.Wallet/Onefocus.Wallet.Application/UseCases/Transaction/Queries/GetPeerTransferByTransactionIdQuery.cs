@@ -9,7 +9,7 @@ public sealed record GetPeerTransferByTransactionIdQueryRequest(Guid Transaction
 public sealed record GetPeerTransferByTransactionIdQueryResponse(
     Guid Id,
     Guid CounterpartyId,
-    int PeerTransferStatus,
+    int Status,
     int Type,
     bool IsActive,
     string? Description,
@@ -20,7 +20,8 @@ public sealed record GetTransferTransaction(
     Guid Id,
     DateTimeOffset TransactedOn, 
     Guid CurrencyId, 
-    decimal Amount, 
+    decimal Amount,
+    bool IsInFlow,
     string? Description, 
     bool IsActive
 );
@@ -45,17 +46,18 @@ internal sealed class GetPeerTransferByTransactionIdQueryHandler(
         var response = new GetPeerTransferByTransactionIdQueryResponse(
             Id: peerTransfer.Id,
             CounterpartyId: peerTransfer.CounterpartyId,
-            PeerTransferStatus: (int)peerTransfer.Status,
+            Status: (int)peerTransfer.Status,
             Type: (int)peerTransfer.Type,
             IsActive: peerTransfer.IsActive,
             Description: peerTransfer.Description,
-            Transactions: [..peerTransfer.PeerTransferTransactions.Select(bct => new GetTransferTransaction(
-                Id: bct.Transaction.Id,
-                TransactedOn: bct.Transaction.TransactedOn,
-                CurrencyId: bct.Transaction.CurrencyId,
-                Amount: bct.Transaction.Amount,
-                Description: bct.Transaction.Description,
-                IsActive: bct.Transaction.IsActive
+            Transactions: [..peerTransfer.PeerTransferTransactions.Select(ptt => new GetTransferTransaction(
+                Id: ptt.Transaction.Id,
+                TransactedOn: ptt.Transaction.TransactedOn,
+                CurrencyId: ptt.Transaction.CurrencyId,
+                Amount: ptt.Transaction.Amount,
+                IsInFlow: ptt.IsInFlow,
+                Description: ptt.Transaction.Description,
+                IsActive: ptt.Transaction.IsActive
             ))]
         );
         return Result.Success(response);

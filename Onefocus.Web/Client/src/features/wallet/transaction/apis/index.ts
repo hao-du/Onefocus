@@ -9,7 +9,12 @@ import {
     CreateBankAccountRequest,
     CreateBankAccountResponse,
     GetBankAccountByTransactionIdResponse,
-    UpdateBankAccountRequest
+    UpdateBankAccountRequest,
+
+    CreateCurrencyExchangeRequest,
+    UpdateCurrencyExchangeRequest,
+    GetCurrencyExchangeByTransactionIdResponse,
+    CreateCurrencyExchangeResponse
 } from './interfaces';
 
 import {
@@ -21,7 +26,11 @@ import {
 
     createBankAccount,
     updateBankAccount,
-    getBankAccountByTransactionId
+    getBankAccountByTransactionId,
+
+    createCurrencyExchange,
+    updateCurrencyExchange,
+    getCurrencyExchangeByTransactionId
 } from './transactionApis';
 
 export {
@@ -31,7 +40,10 @@ export {
     getCashFlowByTransactionId,
     createBankAccount,
     updateBankAccount,
-    getBankAccountByTransactionId
+    getBankAccountByTransactionId,
+    createCurrencyExchange,
+    updateCurrencyExchange,
+    getCurrencyExchangeByTransactionId
 };
 export type {
     TransactionResponse,
@@ -44,6 +56,11 @@ export type {
     CreateBankAccountRequest,
     CreateBankAccountResponse,
     GetBankAccountByTransactionIdResponse,
-    UpdateBankAccountRequest
+    UpdateBankAccountRequest,
+
+    CreateCurrencyExchangeRequest,
+    CreateCurrencyExchangeResponse,
+    GetCurrencyExchangeByTransactionIdResponse,
+    UpdateCurrencyExchangeRequest
 };
 
