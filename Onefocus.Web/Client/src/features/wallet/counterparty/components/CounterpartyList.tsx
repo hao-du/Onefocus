@@ -69,12 +69,12 @@ const CounterpartyList = React.memo(() => {
                         <Column field="email" header="Email" />
                         <Column field="phoneNumber" header="Phone" />
                         <Column field="description" header="Description" />
-                        <Column body={(bank: CounterpartyFormInput) => (
+                        <Column body={(counterparty: CounterpartyFormInput) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"
                                 onClick={() => {
-                                    setCounterpartyId(bank.id);
+                                    setCounterpartyId(counterparty.id);
                                     setShowForm(true);
                                 }}
                             />

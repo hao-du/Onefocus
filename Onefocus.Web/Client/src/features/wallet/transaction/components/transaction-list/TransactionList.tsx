@@ -6,7 +6,6 @@ import { Button } from '../../../../../shared/components/controls';
 import { Column, DataTable } from '../../../../../shared/components/data';
 import { Workspace } from '../../../../../shared/components/layouts';
 
-import { CurrencyResponse } from '../../../currency';
 import { TransactionResponse } from '../../apis';
 import { TransactionType } from './enums';
 import { useTransactionList } from './hooks';
@@ -14,19 +13,21 @@ import { useTransactionPage } from '../../pages/hooks';
 import { CashFlowForm, useCashFlow } from '../cashflow';
 import { BankAccountForm, useBankAccount } from '../bank-account';
 import { CurrencyExchangeForm, useCurrencyExchange } from '../currency-exchange';
+import { PeerTransferForm, usePeerTransfer } from '../peer-transfer';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
 
     const { showForm, setShowForm } = useTransactionPage();
-    const { transactions, currencies, banks, isListLoading } = useTransactionList();
+    const { transactions, currencies, banks, counterparties, isListLoading } = useTransactionList();
     const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
     const { selectedBankAccount, isBankAccountLoading, setBankAccountTransactionId, onBankAccountSubmit } = useBankAccount();
     const { selectedCurrencyExchange, isCurrencyExchangeLoading, setCurrencyExchangeTransactionId, onCurrencyExchangeSubmit } = useCurrencyExchange();
+    const { selectedPeerTransfer, isPeerTransferLoading, setPeerTransferTransactionId, onPeerTransferSubmit } = usePeerTransfer();
 
-    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading || isCurrencyExchangeLoading;
+    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading || isCurrencyExchangeLoading || isPeerTransferLoading;
 
-    const renderForm = useCallback((transactionType: TransactionType, currencies: CurrencyResponse[], isPending: boolean) => {
+    const renderForm = useCallback((transactionType: TransactionType, isPending: boolean) => {
         switch (transactionType) {
             case TransactionType.CashFlow:
                 //Make unique row ids for transaction items
@@ -46,11 +47,27 @@ const TransactionList = React.memo(() => {
                 return <BankAccountForm selectedBankAccount={selectedBankAccount} isPending={isPending} onSubmit={onBankAccountSubmit} currencies={currencies} banks={banks} />;
 
             case TransactionType.PeerTransfer:
-                break;
+                //Make unique row ids for transactions
+                selectedPeerTransfer?.transferTransactions?.map(item => {
+                    item.rowId = UniqueComponentId();
+                });
+                return <PeerTransferForm selectedPeerTransfer={selectedPeerTransfer} isPending={isPending} onSubmit={onPeerTransferSubmit} currencies={currencies} counterparties={counterparties} />;
+
         }
 
-        return null;
-    }, [banks, onBankAccountSubmit, onCashFlowSubmit, onCurrencyExchangeSubmit, selectedBankAccount, selectedCashFlow, selectedCurrencyExchange])
+    }, [
+        banks, 
+        counterparties, 
+        currencies, 
+        onBankAccountSubmit, 
+        onCashFlowSubmit, 
+        onCurrencyExchangeSubmit, 
+        onPeerTransferSubmit, 
+        selectedBankAccount, 
+        selectedCashFlow, 
+        selectedCurrencyExchange, 
+        selectedPeerTransfer
+    ]);
 
     return (
         <Workspace
@@ -86,6 +103,15 @@ const TransactionList = React.memo(() => {
                         setCurrencyExchangeTransactionId(null);
                         setShowForm(true);
                     }
+                },
+                {
+                    label: 'Peer transfer',
+                    icon: 'pi pi-users',
+                    command: () => {
+                        setSelectedTransactionType(TransactionType.PeerTransfer);
+                        setPeerTransferTransactionId(null);
+                        setShowForm(true);
+                    }
                 }
             ]}
             leftPanel={
@@ -116,6 +142,10 @@ const TransactionList = React.memo(() => {
                                         setSelectedTransactionType(TransactionType.CurrencyExchange);
                                         setCurrencyExchangeTransactionId(transaction.id);
                                         break;
+                                    case TransactionType.PeerTransfer:
+                                        setSelectedTransactionType(TransactionType.PeerTransfer);
+                                        setPeerTransferTransactionId(transaction.id);
+                                        break;
                                 }
                                 setShowForm(true);
                             }} />
@@ -123,7 +153,7 @@ const TransactionList = React.memo(() => {
                 </DataTable>
             }
             rightPanel={
-                showForm && renderForm(selectedTransactionType, currencies, isPending)
+                showForm && renderForm(selectedTransactionType, isPending)
             }
         />
     );

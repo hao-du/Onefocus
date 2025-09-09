@@ -75,40 +75,28 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                 <Dropdown control={form.control} name="type" label="Type" className="w-full of-w-max" options={[
                     { label: 'Lent to', value: 100 },
                     { label: 'Borrowed from', value: 200 },
-                    { label: 'Gave to', value: 200 },
-                    { label: 'Received from', value: 200 }
+                    { label: 'Gave to', value: 300 },
+                    { label: 'Received from', value: 400 }
                 ]} rules={{
-                    required: 'Type is required.'
+                    validate: { 
+                        required: (value) => value && value != 0 ? true : 'Type is required.'
+                    }
+                }} filter={false}/>
+                <Dropdown control={form.control} name="counterpartyId" label="Counterparty" className="w-full of-w-max" options={counterpartyDropdownOptions} rules={{
+                    validate: {
+                        required: (value) => value && value !== getEmptyGuid() ? true : 'Counterparty is required.'
+                    }
                 }} />
-                <Dropdown control={form.control} name="counterpartyId" label="Counterparty" className="w-full of-w-max" options={bankDropdownOptions
+                <Dropdown control={form.control} name="status" label="Status" className="w-full of-w-max" options={[
+                    { label: 'Completed', value: 100 },
+                    { label: 'Failed', value: 200 },
+                    { label: 'Processing', value: 300 },
+                    { label: 'Pending', value: 400 }
                 ]} rules={{
-                    validate: (value) => value && value !== getEmptyGuid() ? true : 'Bank is required.'
-                }} />
-
-                <DatePicker control={form.control} name="issuedOn" label="Date" className="w-full of-w-max" rules={{
-                    required: 'Issued On is required.',
-                }} />
-                <Dropdown control={form.control} name="bankId" label="Bank" className="w-full of-w-max" options={bankDropdownOptions} rules={{
-                    validate: (value) => value && value !== getEmptyGuid() ? true : 'Bank is required.'
-                }} />
-                <Text control={form.control} name="accountNumber" label="Account Number" className="w-full of-w-max" rules={{
-                    maxLength: { value: 50, message: 'Account Number cannot exceed 50 characters.' },
-                }} />
-                <Number control={form.control} name="interestRate" label="Interest Rate (%)" className="w-full of-w-max" fractionDigits={2} rules={{
-                    required: 'Interest Rate is required.',
-                    min: { value: 1, message: "Minimum interest rate is 1" },
-                }} />
-                <Number control={form.control} name="amount" label="Amount" className="w-full of-w-max" fractionDigits={2} rules={{
-                    required: 'Amount is required.',
-                    min: { value: 0, message: "Minimum amount is 0" },
-                }} />
-                <Switch control={form.control} name="isClosed" label="Is closed" description="Toggle between open and closed account." />
-                {form.watch('isClosed') && <DatePicker control={form.control} name="closedOn" label="Closed On" className="w-full of-w-max" rules={{
-                    required: 'Closed On is required when account is closed.',
-                }} />}
-                <Dropdown control={form.control} name="currencyId" label="Currency" className="w-full of-w-max" options={currencyDropdownOptions} rules={{
-                    validate: (value) => value && value !== getEmptyGuid() ? true : 'Currency is required.',
-                }} />
+                    validate: {
+                        required: (value) => value && value != 0 ? true : 'Status is required.'
+                    }
+                }} filter={false}/>
                 <Textarea control={form.control} name="description" label="Description" className="w-full of-w-max" rules={{
                     maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' },
                 }} />
@@ -117,21 +105,23 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                 <EditableTable
                     isPending={props.isPending}
                     form={form}
-                    path='transactions'
+                    path='transferTransactions'
                     newRowValue={{
                         rowId: UniqueComponentId(),
                         transactedOn: new Date(),
                         amount: 0,
+                        currencyId: getEmptyGuid(),
                         description: '',
-                        isActive: true,
+                        isInFlow: undefined,
+                        isActive: true
                     }}
                     tableName='Interests'
                     style={{ width: '40rem' }}
                 >
-                    <Column field="transactedOn" header="Transacted On" style={{ width: '15rem' }} editor={(options) => {
+                    <Column field="transactedOn" header="Transacted On" style={{ width: '12rem' }} editor={(options) => {
                         return (
                             <DatePicker
-                                name={`transactions.${options.rowIndex}.transactedOn`}
+                                name={`transferTransactions.${options.rowIndex}.transactedOn`}
                                 control={form.control}
                                 className="w-full"
                                 rules={{
@@ -140,11 +130,11 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                                 appendTo={document.body}
                             />);
                     }} />
-                    <Column field="amount" header="Amount" style={{ width: '10rem' }} align="right" editor={(options) => {
+                    <Column field="amount" header="Amount" style={{ width: '13rem' }} align="right" editor={(options) => {
                         return (
                             <Number
                                 control={form.control}
-                                name={`transactions.${options.rowIndex}.amount`}
+                                name={`transferTransactions.${options.rowIndex}.amount`}
                                 inputClassName="w-full"
                                 fractionDigits={2}
                                 rules={{
@@ -153,11 +143,40 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                                 }}
                             />);
                     }} />
+                    <Column field="currencyId" header="Currency" style={{ width: '13rem' }} align="right" editor={(options) => {
+                        return (
+                            <Dropdown
+                                control={form.control}
+                                name={`transferTransactions.${options.rowIndex}.currencyId`}
+                                options={currencyDropdownOptions}
+                                className="w-full"
+                                rules={{
+                                    validate: {
+                                        required: (value) => value && value !== getEmptyGuid() ? true : 'Currency is required.'
+                                    }
+                                }}
+                            />);
+                    }} />
+                    <Column field="isInFlow" header="Cash flow" style={{ width: '10rem' }} align="right" editor={(options) => {
+                        return (
+                            <Dropdown
+                                control={form.control}
+                                name={`transferTransactions.${options.rowIndex}.isInFlow`}
+                                options={[ { label: 'Inflow', value: true }, { label: 'Outflow', value: false } ]}
+                                className="w-full"
+                                filter={false}
+                                rules={{
+                                    validate: {
+                                        required: (value) => value !== undefined ? true : 'Cash flow is required.'
+                                    }
+                                }}
+                            />);
+                    }} />
                     <Column field="description" style={{ width: '15rem' }} header="Description" editor={(options) => {
                         return (
                             <Text
                                 control={form.control}
-                                name={`transactions.${options.rowIndex}.description`}
+                                name={`transferTransactions.${options.rowIndex}.description`}
                                 className="w-full"
                             />);
                     }} />

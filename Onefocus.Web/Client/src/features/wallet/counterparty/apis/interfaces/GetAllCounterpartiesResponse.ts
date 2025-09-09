@@ -1,5 +1,5 @@
-import BankResponse from "./CounterpartyResponse";
+import CounterpartyResponse from "./CounterpartyResponse";
 
 export default interface GetAllCounterpartiesResponse {
-    banks : BankResponse[];
+    counterparties : CounterpartyResponse[];
 }

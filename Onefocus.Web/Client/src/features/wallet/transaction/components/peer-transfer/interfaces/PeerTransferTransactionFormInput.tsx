@@ -4,7 +4,7 @@ export default interface PeerTransferTransactionFormInput {
     amount: number;
     currencyId: string;
     description?: string;
-    isInFlow: boolean;
+    isInFlow?: boolean;
     isActive: boolean;
     rowId?: string
 }

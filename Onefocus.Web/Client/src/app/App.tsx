@@ -53,6 +53,14 @@ const App = () => {
                         navigate("/wallet/bank");
                     }
                 }
+                ,
+                {
+                    label: 'Counterparties',
+                    icon: 'pi pi-users',
+                    command: () => {
+                        navigate("/wallet/counterparty");
+                    }
+                }
             ]
         },
         {

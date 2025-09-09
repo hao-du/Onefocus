@@ -14,6 +14,7 @@ export type DropdownProps<TFieldValues extends FieldValues = FieldValues, TName 
         autoComplete?: 'on' | 'off' | string;
         value?: string | number | boolean | null;
         itemTemplate?: (option: Option) => ReactNode;
+        filter?: boolean;
     };
 
 const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
@@ -42,7 +43,7 @@ const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends 
                             readOnly={props.isPending || props.readOnly}
                             disabled={props.isPending || props.disabled}
                             autoComplete={props.autoComplete}
-                            filter
+                            filter={props.filter ?? true}
                             checkmark={true}
                             highlightOnSelect={true}
                             className={props.className}
