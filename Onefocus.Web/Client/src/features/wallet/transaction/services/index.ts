@@ -12,6 +12,10 @@ import useCreateCurrencyExchange from "./currency-exchange/useCreateCurrencyExch
 import useUpdateCurrencyExchange from "./currency-exchange/useUpdateCurrencyExchange";
 import useGetCurrencyExchangeByTransactionId from "./currency-exchange/useGetCurrencyExchangeByTransactionId";
 
+import useCreatePeerTransfer from "./peer-transfer/useCreatePeerTransfer";
+import useUpdatePeerTransfer from "./peer-transfer/useUpdatePeerTransfer";
+import useGetPeerTransferByTransactionId from "./peer-transfer/useGetPeerTransferByTransactionId";
+
 export {
     useGetAllTransactions,
 
@@ -25,6 +29,10 @@ export {
 
     useCreateCurrencyExchange,
     useUpdateCurrencyExchange,
-    useGetCurrencyExchangeByTransactionId
+    useGetCurrencyExchangeByTransactionId,
+
+    useCreatePeerTransfer,
+    useUpdatePeerTransfer,
+    useGetPeerTransferByTransactionId
 };
 

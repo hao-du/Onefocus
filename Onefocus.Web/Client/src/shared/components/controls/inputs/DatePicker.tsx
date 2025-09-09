@@ -17,7 +17,6 @@ export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName 
         dateFormat?: string;
         minDate?: Date;
         maxDate?: Date;
-        placeholder?: string;
         appendTo?: 'self' | HTMLElement | (() => HTMLElement);
         itemTemplate?: (option: Option) => ReactNode;
     };

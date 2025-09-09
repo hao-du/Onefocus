@@ -73,5 +73,23 @@ internal static class TransactionEndpoints
             var result = await sender.Send(command);
             return result.ToResult();
         });
+
+        routes.MapGet("transaction/peertransfer/{id}", async (Guid id, ISender sender) =>
+        {
+            var result = await sender.Send(new GetPeerTransferByTransactionIdQueryRequest(id));
+            return result.ToResult();
+        });
+
+        routes.MapPost("transaction/peertransfer/create", async (CreatePeerTransferCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
+            return result.ToResult();
+        });
+
+        routes.MapPost("transaction/peertransfer/update", async (UpdatePeerTransferCommandRequest command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
+            return result.ToResult();
+        });
     }
 }

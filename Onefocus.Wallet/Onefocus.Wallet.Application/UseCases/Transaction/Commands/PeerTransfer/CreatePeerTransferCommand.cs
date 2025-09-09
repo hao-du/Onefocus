@@ -8,8 +8,20 @@ using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
-public sealed record CreatePeerTransferCommandRequest(int Status, int Type, Guid CounterpartyId, string? Description, IReadOnlyList<CreateTransferTransaction> TransferTransactions) : ICommand<CreatePeerTransferCommandResponse>;
-public sealed record CreateTransferTransaction(decimal Amount, DateTimeOffset TransactedOn, Guid CurrencyId, bool IsInFlow, string? Description);
+public sealed record CreatePeerTransferCommandRequest(
+    int Status, 
+    int Type, 
+    Guid CounterpartyId, 
+    string? Description, 
+    IReadOnlyList<CreateTransferTransaction> TransferTransactions
+) : ICommand<CreatePeerTransferCommandResponse>;
+public sealed record CreateTransferTransaction(
+    decimal Amount,
+    DateTimeOffset TransactedOn,
+    Guid CurrencyId,
+    bool IsInFlow,
+    string? Description
+);
 public sealed record CreatePeerTransferCommandResponse(Guid Id);
 
 internal sealed class CreatePeerTransferCommandHandler(

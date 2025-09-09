@@ -13,7 +13,7 @@ public sealed record GetPeerTransferByTransactionIdQueryResponse(
     int Type,
     bool IsActive,
     string? Description,
-    IReadOnlyList<GetTransferTransaction> Transactions
+    IReadOnlyList<GetTransferTransaction> TransferTransactions
 );
 
 public sealed record GetTransferTransaction(
@@ -50,7 +50,7 @@ internal sealed class GetPeerTransferByTransactionIdQueryHandler(
             Type: (int)peerTransfer.Type,
             IsActive: peerTransfer.IsActive,
             Description: peerTransfer.Description,
-            Transactions: [..peerTransfer.PeerTransferTransactions.Select(ptt => new GetTransferTransaction(
+            TransferTransactions: [..peerTransfer.PeerTransferTransactions.Select(ptt => new GetTransferTransaction(
                 Id: ptt.Transaction.Id,
                 TransactedOn: ptt.Transaction.TransactedOn,
                 CurrencyId: ptt.Transaction.CurrencyId,

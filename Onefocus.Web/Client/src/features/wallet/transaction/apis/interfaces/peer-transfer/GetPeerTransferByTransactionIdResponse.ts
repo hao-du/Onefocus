@@ -7,5 +7,5 @@ export default interface GetPeerTransferByTransactionIdResponse {
     type: number;
     description?: string;
     isActive: boolean;
-    transactions: PeerTransferTransactionDto[];
+    transferTransactions: PeerTransferTransactionDto[];
 }

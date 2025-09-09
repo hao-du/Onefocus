@@ -1,3 +1,3 @@
-export default interface CreateBankAccountResponse {
+export default interface CreatePeerTransferResponse {
     id: string;
 }

@@ -13,6 +13,11 @@ import CreateCurrencyExchangeResponse from "./currency-exchange/CreateCurrencyEx
 import GetCurrencyExchangeByTransactionIdResponse from "./currency-exchange/GetCurrencyExchangeByTransactionIdResponse";
 import UpdateCurrencyExchangeRequest from "./currency-exchange/UpdateCurrencyExchangeRequest";
 
+import CreatePeerTransferRequest from "./peer-transfer/CreatePeerTransferRequest";
+import CreatePeerTransferResponse from "./peer-transfer/CreatePeerTransferResponse";
+import GetPeerTransferByTransactionIdResponse from "./peer-transfer/GetPeerTransferByTransactionIdResponse";
+import UpdatePeerTransferRequest from "./peer-transfer/UpdatePeerTransferRequest";
+
 import GetAllTransactionsResponse from "./GetAllTransactionsResponse";
 import TransactionResponse from "./TransactionResponse";
 
@@ -34,5 +39,10 @@ export type {
     CreateCurrencyExchangeResponse,
     GetCurrencyExchangeByTransactionIdResponse,
     UpdateCurrencyExchangeRequest,
+
+    CreatePeerTransferRequest,
+    CreatePeerTransferResponse,
+    GetPeerTransferByTransactionIdResponse,
+    UpdatePeerTransferRequest,
 };
 

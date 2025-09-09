@@ -2,10 +2,10 @@ import PeerTransferTransactionDto from "./PeerTransferTransactionDto";
 
 export default interface UpdatePeerTransferRequest {
     id: string;
-    counterpartyId: string;
     status: number;
     type: number;
-    description?: string;
+    counterpartyId: string;
     isActive: boolean;
-    transactions: PeerTransferTransactionDto[];
+    description?: string;
+    transferTransactions: PeerTransferTransactionDto[];
 }

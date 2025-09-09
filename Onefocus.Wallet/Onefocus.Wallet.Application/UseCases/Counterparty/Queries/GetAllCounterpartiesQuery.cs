@@ -5,7 +5,7 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
 namespace Onefocus.Wallet.Application.UseCases.Counterparty.Queries;
 
 public sealed record GetAllCounterpartiesQueryRequest() : IQuery<GetAllCounterpartiesQueryResponse>;
-public sealed record GetAllCounterpartiesQueryResponse(List<CounterpartyQueryResponse> Counterpartys);
+public sealed record GetAllCounterpartiesQueryResponse(List<CounterpartyQueryResponse> Counterparties);
 public record CounterpartyQueryResponse(Guid Id, string FullName, string? Email, string? PhoneNumber, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
 
@@ -17,7 +17,7 @@ internal sealed class GetAllCounterpartysQueryHandler(IReadUnitOfWork readUnitOf
         if (counterpartyDtosResult.IsFailure) return counterpartyDtosResult.Failure<GetAllCounterpartiesQueryResponse>();
         var counterpartyDtos = counterpartyDtosResult.Value.Counterparties;
         return Result.Success(new GetAllCounterpartiesQueryResponse(
-            Counterpartys: [.. counterpartyDtos.Select(c => new CounterpartyQueryResponse(
+            Counterparties: [.. counterpartyDtos.Select(c => new CounterpartyQueryResponse(
                 Id: c.Id,
                 FullName: c.FullName,
                 Email: c.Email,

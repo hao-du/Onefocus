@@ -9,6 +9,7 @@ type TextProps<TFieldValues extends FieldValues = FieldValues, TName extends Fie
     & InputWrapperProps
     & {
         autoComplete?: 'username' | string;
+        keyfilter? : 'email' | 'int';
     };
 
 const Text = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
@@ -34,6 +35,8 @@ const Text = <TFieldValues extends FieldValues = FieldValues, TName extends Fiel
                             readOnly={props.isPending || props.readOnly}
                             autoComplete={props.autoComplete}
                             className={props.className}
+                            keyfilter={props.keyfilter}
+                            placeholder={props.placeholder}
                         />
                     </InputWrapper>
                 );

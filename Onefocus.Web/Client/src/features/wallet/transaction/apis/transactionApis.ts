@@ -12,7 +12,11 @@ import {
     GetCurrencyExchangeByTransactionIdResponse,
     CreateCurrencyExchangeRequest,
     UpdateCurrencyExchangeRequest,
-    CreateCurrencyExchangeResponse
+    CreateCurrencyExchangeResponse,
+    GetPeerTransferByTransactionIdResponse,
+    CreatePeerTransferRequest,
+    CreatePeerTransferResponse,
+    UpdatePeerTransferRequest
 } from './interfaces';
 
 export const getAllTransactions = async () => {
@@ -62,5 +66,20 @@ export const createCurrencyExchange = async (request: CreateCurrencyExchangeRequ
 
 export const updateCurrencyExchange = async (request: UpdateCurrencyExchangeRequest) => {
     const response = await client.put<ApiResponse>(`wallet/transaction/currencyexchange/update`, request);
+    return response.data;
+}
+
+export const getPeerTransferByTransactionId = async (transactionId: string) => {
+    const response = await client.get<ApiResponse<GetPeerTransferByTransactionIdResponse>>(`wallet/transaction/peertransfer/${transactionId}`);
+    return response.data; 
+}
+
+export const createPeerTransfer = async (request: CreatePeerTransferRequest) => {
+    const response = await client.post<ApiResponse<CreatePeerTransferResponse>>(`wallet/transaction/peertransfer/create`, request);
+    return response.data;
+}
+
+export const updatePeerTransfer = async (request: UpdatePeerTransferRequest) => {
+    const response = await client.put<ApiResponse>(`wallet/transaction/peertransfer/update`, request);
     return response.data;
 }

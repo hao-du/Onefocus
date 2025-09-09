@@ -14,7 +14,12 @@ import {
     CreateCurrencyExchangeRequest,
     UpdateCurrencyExchangeRequest,
     GetCurrencyExchangeByTransactionIdResponse,
-    CreateCurrencyExchangeResponse
+    CreateCurrencyExchangeResponse,
+
+    CreatePeerTransferRequest,
+    CreatePeerTransferResponse,
+    GetPeerTransferByTransactionIdResponse,
+    UpdatePeerTransferRequest
 } from './interfaces';
 
 import {
@@ -30,7 +35,11 @@ import {
 
     createCurrencyExchange,
     updateCurrencyExchange,
-    getCurrencyExchangeByTransactionId
+    getCurrencyExchangeByTransactionId,
+
+    createPeerTransfer,
+    updatePeerTransfer,
+    getPeerTransferByTransactionId
 } from './transactionApis';
 
 export {
@@ -43,7 +52,10 @@ export {
     getBankAccountByTransactionId,
     createCurrencyExchange,
     updateCurrencyExchange,
-    getCurrencyExchangeByTransactionId
+    getCurrencyExchangeByTransactionId,
+    createPeerTransfer,
+    updatePeerTransfer,
+    getPeerTransferByTransactionId
 };
 export type {
     TransactionResponse,
@@ -61,6 +73,11 @@ export type {
     CreateCurrencyExchangeRequest,
     CreateCurrencyExchangeResponse,
     GetCurrencyExchangeByTransactionIdResponse,
-    UpdateCurrencyExchangeRequest
+    UpdateCurrencyExchangeRequest,
+
+    CreatePeerTransferRequest,
+    CreatePeerTransferResponse,
+    GetPeerTransferByTransactionIdResponse,
+    UpdatePeerTransferRequest,
 };
 

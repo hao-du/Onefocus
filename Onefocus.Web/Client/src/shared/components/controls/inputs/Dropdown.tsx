@@ -11,7 +11,6 @@ export type DropdownProps<TFieldValues extends FieldValues = FieldValues, TName 
     & InputWrapperProps
     & {
         options: Option[];
-        placeholder?: string;
         autoComplete?: 'on' | 'off' | string;
         value?: string | number | boolean | null;
         itemTemplate?: (option: Option) => ReactNode;

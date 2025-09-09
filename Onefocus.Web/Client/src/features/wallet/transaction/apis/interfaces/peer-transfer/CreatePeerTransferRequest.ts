@@ -1,9 +1,9 @@
 import PeerTransferTransactionDto from "./PeerTransferTransactionDto";
 
-export default interface CreateBankAccountRequest {
-    counterpartyId: string;
+export default interface CreatePeerTransferRequest {
     status: number;
     type: number;
+    counterpartyId: string;
     description?: string;
-    transactions: PeerTransferTransactionDto[];
+    transferTransactions: PeerTransferTransactionDto[];
 }

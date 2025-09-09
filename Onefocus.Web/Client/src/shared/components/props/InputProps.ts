@@ -6,6 +6,7 @@ type InputProps = BaseProps & {
     isPending?: boolean;
     required?: boolean;
     invalid?: boolean;
+    placeholder?: string;
 };
 
 export default InputProps;
