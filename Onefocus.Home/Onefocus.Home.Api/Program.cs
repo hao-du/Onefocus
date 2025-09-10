@@ -52,7 +52,7 @@ services.AddAuthorization();
 
 services
     .AddInfrastructure()
-    .AddApplication();
+    .AddApplication(configuration);
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();
