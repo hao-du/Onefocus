@@ -10,7 +10,7 @@ type AppLayoutProps = BaseProps & {
 
 const AppLayout = (props: AppLayoutProps) => {
     const [mobileSidebarVisible, setMobileSidebarVisible] = useState(false);
-    const {isMobile} = useWindows();
+    const { isMobile } = useWindows();
 
     return (
         <div className={isMobile ? "h-screen" : "flex h-screen"}>
@@ -22,7 +22,9 @@ const AppLayout = (props: AppLayoutProps) => {
 
                 {/* Main Workspace */}
                 <div className="flex-auto overflow-auto bg-gray-50">
-                    {props.children}
+                    <div className="h-full w-full">
+                        {props.children}
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ const useGetAllCounterparties = () => {
         queryKey: ['getAllCounterparties'],
         queryFn: async () => {
             const apiResponse = await getAllCounterparties();
-            return apiResponse.value.banks;
+            return apiResponse.value.counterparties;
         }
     });
 

@@ -69,7 +69,9 @@ const CurrencyExchangeForm = (props: CurrencyExchangeFormProps) => {
                     min: { value: 1, message: "Minimum amount is 1" },
                 }} />
                 <Dropdown control={form.control} name="sourceCurrencyId" label="Source Currency" className="w-full of-w-max" options={currencyDropdownOptions} rules={{
-                    required: 'Source Currency is required.',
+                    validate: {
+                        required: (value) => value && value !== getEmptyGuid() ? true : 'Source Currency is required.'
+                    }
                 }} />
 
                 <Number control={form.control} name="targetAmount" label="Target Amount" className="w-full of-w-max" fractionDigits={2} rules={{
@@ -77,7 +79,9 @@ const CurrencyExchangeForm = (props: CurrencyExchangeFormProps) => {
                     min: { value: 1, message: "Minimum amount is 1" },
                 }} />
                 <Dropdown control={form.control} name="targetCurrencyId" label="Target Currency" className="w-full of-w-max" options={currencyDropdownOptions} rules={{
-                    required: 'Target Currency is required.',
+                    validate: {
+                        required: (value) => value && value !== getEmptyGuid() ? true : 'Target Currency is required.'
+                    }
                 }} />
 
                 <Number control={form.control} name="exchangeRate" label="Rate (%)" className="w-full of-w-max" fractionDigits={2} rules={{

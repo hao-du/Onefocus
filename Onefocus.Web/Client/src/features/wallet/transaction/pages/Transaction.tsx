@@ -1,7 +1,6 @@
 import React from 'react';
-import { CashFlowProvider, TransactionList, TransactionListProvider } from '../components';
+import { BankAccountProvider, CashFlowProvider, CurrencyExchangeProvider, PeerTransferProvider, TransactionList, TransactionListProvider } from '../components';
 import { TransactionPageProvider } from './hooks';
-import { BankAccountProvider } from '../components/bank-account';
 
 const Transaction = React.memo(() => {
     return (
@@ -9,7 +8,11 @@ const Transaction = React.memo(() => {
             <TransactionListProvider>
                 <CashFlowProvider>
                     <BankAccountProvider>
-                        <TransactionList />
+                        <PeerTransferProvider>
+                            <CurrencyExchangeProvider>
+                                <TransactionList />
+                            </CurrencyExchangeProvider>
+                        </PeerTransferProvider>
                     </BankAccountProvider>
                 </CashFlowProvider>
             </TransactionListProvider>
