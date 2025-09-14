@@ -1,56 +1,46 @@
 trigger: none
 
-schedules:
-# Stop the server every day at 1:00 AM
-- cron: "0 1 * * *"
-  displayName: "Stop PostgreSQL server at 1 AM"
-  branches:
-    include:
-      - main
-  always: true
-  parameters:
-    action: stop
-
-# Start the server every day at 8:00 PM
-- cron: "0 20 * * *"
-  displayName: "Start PostgreSQL server at 8 PM"
-  branches:
-    include:
-      - main
-  always: true
-  parameters:
-    action: start
-
 parameters:
-  - name: action
+  - name: ACTION
     type: string
     displayName: "Action"
-    default: stop
+    default: stop  # default for scheduled run
     values:
       - start
       - stop
   - name: RESOURCE_GROUP
     type: string
-    displayName: "Azure Resource Group"
     default: "onefocus-rg"
   - name: SERVER_NAME
     type: string
-    displayName: "PostgreSQL Flexible Server Name"
     default: "onefocus-db"
+
+schedules:
+- cron: "0 1 * * *"  # 1:00 AM UTC
+  displayName: "Stop PostgreSQL server at 1 AM"
+  branches:
+    include:
+      - main
+  always: true
+
+- cron: "0 20 * * *" # 8:00 PM UTC
+  displayName: "Start PostgreSQL server at 8 PM"
+  branches:
+    include:
+      - main
+  always: true
 
 stages:
 - stage: ManagePostgres
   displayName: "Manage PostgreSQL Flexible Server"
   jobs:
   - job: ControlServer
-    displayName: "Start/Stop PostgreSQL Server"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      name: PostgresControl
       inputs:
-        azureSubscription: '<YOUR_SERVICE_CONNECTION>' # Replace with your service connection
+        azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
