@@ -10,7 +10,7 @@ const LoginForm = () => {
     const {control, handleSubmit} = useForm<LoginFormInput>({
         defaultValues: {
             userName: 'kevindu1986@gmail.com',
-            password: 'hao123'
+            password: 'Asd@123'
         }
     });
 

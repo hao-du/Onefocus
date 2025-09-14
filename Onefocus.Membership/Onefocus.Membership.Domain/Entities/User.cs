@@ -8,8 +8,9 @@ public class User : IdentityUser<Guid>
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
 
-    private User(string userName, string firstName, string lastName) : base(userName)
+    private User(string email, string firstName, string lastName) : base(email)
     {
+        Email = email;
         FirstName = firstName;
         LastName = lastName;
     }
