@@ -1,0 +1,65 @@
+trigger: none
+
+schedules:
+# Stop the server every day at 1:00 AM
+- cron: "0 1 * * *"
+  displayName: "Stop PostgreSQL server at 1 AM"
+  branches:
+    include:
+      - main
+  always: true
+  parameters:
+    action: stop
+
+# Start the server every day at 8:00 PM
+- cron: "0 20 * * *"
+  displayName: "Start PostgreSQL server at 8 PM"
+  branches:
+    include:
+      - main
+  always: true
+  parameters:
+    action: start
+
+parameters:
+  - name: action
+    type: string
+    default: stop
+    values:
+      - start
+      - stop
+      
+variables:
+  RESOURCE_GROUP: 'onefocus-rg'
+  SERVER_NAME: 'onefocus-db.postgres.database.azure.com'
+
+stages:
+- stage: ManagePostgres
+  displayName: "Manage PostgreSQL Flexible Server"
+  jobs:
+  - job: ControlServer
+    displayName: "Start/Stop PostgreSQL Server"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      name: PostgresControl
+      inputs:
+        azureSubscription: '<YOUR_SERVICE_CONNECTION>' # Your service connection
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Performing $ACTION on server $SERVER_NAME in resource group $RESOURCE_GROUP"
+
+          if [ "$ACTION" == "start" ]; then
+            az postgres flexible-server start --name $SERVER_NAME --resource-group $RESOURCE_GROUP
+          elif [ "$ACTION" == "stop" ]; then
+            az postgres flexible-server stop --name $SERVER_NAME --resource-group $RESOURCE_GROUP
+          else
+            echo "Invalid ACTION: $ACTION. Must be 'start' or 'stop'."
+            exit 1
+          fi
+      env:
+        ACTION: ${{ parameters.action }}
+        RESOURCE_GROUP: $(RESOURCE_GROUP)
+        SERVER_NAME: $(SERVER_NAME)
