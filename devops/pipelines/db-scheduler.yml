@@ -24,14 +24,19 @@ schedules:
 parameters:
   - name: action
     type: string
+    displayName: "Action"
     default: stop
     values:
       - start
       - stop
-      
-variables:
-  RESOURCE_GROUP: 'onefocus-rg'
-  SERVER_NAME: 'onefocus-db.postgres.database.azure.com'
+  - name: RESOURCE_GROUP
+    type: string
+    displayName: "Azure Resource Group"
+    default: "onefocus-rg"
+  - name: SERVER_NAME
+    type: string
+    displayName: "PostgreSQL Flexible Server Name"
+    default: "onefocus-db"
 
 stages:
 - stage: ManagePostgres
@@ -45,7 +50,7 @@ stages:
     - task: AzureCLI@2
       name: PostgresControl
       inputs:
-        azureSubscription: '<YOUR_SERVICE_CONNECTION>' # Your service connection
+        azureSubscription: '<YOUR_SERVICE_CONNECTION>' # Replace with your service connection
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
@@ -61,5 +66,5 @@ stages:
           fi
       env:
         ACTION: ${{ parameters.action }}
-        RESOURCE_GROUP: $(RESOURCE_GROUP)
-        SERVER_NAME: $(SERVER_NAME)
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        SERVER_NAME: ${{ parameters.SERVER_NAME }}
