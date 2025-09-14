@@ -34,7 +34,7 @@ stages:
 - stage: ManagePostgres
   displayName: "Manage PostgreSQL Flexible Server"
   jobs:
-  - job: ControlServer
+  - job: PostgreSQLServerScheduler
     pool:
       vmImage: 'ubuntu-latest'
     steps:
