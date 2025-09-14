@@ -1,4 +1,3 @@
-name: onefocus-db-scheduler
 trigger: none
 
 parameters:
