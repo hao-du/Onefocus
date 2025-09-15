@@ -1,7 +1,7 @@
 import { Workspace } from '../../../../shared/components/layouts/workspace';
 import { useCreateBank, useGetAllBanks, useGetBankById, useUpdateBank } from '../services';
 import { Button } from '../../../../shared/components/controls';
-import { Column, DataTable } from '../../../../shared/components/data';
+import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import BankFormInput from './interfaces/BankFormInput';
 import BankForm from './BankForm';
 import React, { useCallback, useState } from 'react';

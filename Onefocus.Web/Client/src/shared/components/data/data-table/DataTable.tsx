@@ -1,6 +1,6 @@
 import { DataTableHeaderTemplateType, DataTableRowEditCompleteEvent, DataTableRowEditEvent, DataTableRowEditSaveEvent, DataTableValueArray, DataTable as PiDataTable } from 'primereact/datatable';
 import * as React from 'react';
-import { BaseProps } from '../props';
+import { BaseProps } from '../../props';
 
 type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     value?: TValue | undefined;

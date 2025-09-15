@@ -2,7 +2,7 @@ import { UniqueComponentId } from 'primereact/utils';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Option } from '../../../../../shared/components/controls';
-import { Column, EditableTable } from '../../../../../shared/components/data';
+import { Column, EditableTable } from '../../../../../shared/components/data/data-table';
 import { DatePicker, Dropdown, Number, Switch, Text, Textarea } from '../../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
 import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';

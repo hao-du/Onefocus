@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Button } from '../../../../shared/components/controls';
-import { Column, DataTable } from '../../../../shared/components/data';
+import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import { useWindows } from '../../../../shared/components/hooks';
 import { Workspace } from '../../../../shared/components/layouts/workspace';
 import { CurrencyResponse } from '../apis';

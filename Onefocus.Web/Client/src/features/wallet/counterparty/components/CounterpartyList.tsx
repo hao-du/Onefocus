@@ -1,7 +1,7 @@
 import { Workspace } from '../../../../shared/components/layouts/workspace';
 import { useCreateCounterparty, useGetAllCounterparties, useGetCounterpartyById, useUpdateCounterparty } from '../services';
 import { Button } from '../../../../shared/components/controls';
-import { Column, DataTable } from '../../../../shared/components/data';
+import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import CounterpartyFormInput from './interfaces/CounterpartyFormInput';
 import CounterpartyForm from './CounterpartyForm';
 import React, { useCallback, useState } from 'react';

@@ -3,7 +3,7 @@ import { UniqueComponentId } from 'primereact/utils';
 
 import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
 import { Button } from '../../../../../shared/components/controls';
-import { Column, DataTable } from '../../../../../shared/components/data';
+import { Column, DataTable } from '../../../../../shared/components/data/data-table';
 import { Workspace } from '../../../../../shared/components/layouts';
 
 import { TransactionResponse } from '../../apis';
