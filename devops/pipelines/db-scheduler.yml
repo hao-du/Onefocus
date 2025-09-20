@@ -62,10 +62,11 @@ stages:
         SERVER_NAME: ${{ parameters.SERVER_NAME }}
 
 - stage: StopPostgres
-  displayName: "Stop PostgreSQL Flexible Server"
+  displayName: "Stop Database Scheduler"
   condition: eq(variables['Build.CronSchedule.DisplayName'], 'Stop PostgreSQL')
   jobs:
   - job: StopDatabaseServer
+    displayName: "Stop Database Scheduler"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -83,10 +84,11 @@ stages:
         SERVER_NAME: ${{ parameters.SERVER_NAME }}
 
 - stage: StartPostgres
-  displayName: "Start PostgreSQL Flexible Server"
+  displayName: "Start Database Scheduler"
   condition: eq(variables['Build.CronSchedule.DisplayName'], 'Start PostgreSQL')
   jobs:
   - job: StartDatabaseServer
+    displayName: "Start Database Scheduler"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
