@@ -32,15 +32,16 @@ schedules:
 
 stages:
 - stage: ManualStartStopPostgres
-  displayName: "Manual Start/Stop PostgreSQL Flexible Server"
+  displayName: "Manual Start/Stop Database Server"
   condition: eq(variables['Build.CronSchedule.DisplayName'], '')
   jobs:
   - job: ManualDatabaseStartStop
+    displayName: "Manual Start/Stop Database Server"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      displayName: "Manual Start/Stop Database"
+      displayName: "Manual Start/Stop Database Server"
       inputs:
         azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
