@@ -40,7 +40,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      displayName: "Manual Start/Stop Flexible Server"
+      displayName: "Manual Start/Stop Database"
       inputs:
         azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
@@ -70,7 +70,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      displayName: "Stop Flexible Server"
+      displayName: "Stop Database Scheduler"
       inputs:
         azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
@@ -91,7 +91,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      displayName: "Start Flexible Server"
+      displayName: "Start Database Scheduler"
       inputs:
         azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
