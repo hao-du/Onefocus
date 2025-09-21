@@ -1,20 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataView as PrimeDataView } from "primereact/dataview";
 import { BaseProps } from "../../props";
 
 type DataViewProps = BaseProps & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value?: any[];
-    children: React.ReactNode;
     isPending?: boolean;
     dataKey?: string;
     style?: React.CSSProperties;
     header?: React.ReactNode | undefined;
     layout?: 'list' | 'grid' | (string & Record<string, unknown>);
-     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     itemTemplate?(item: any, layout?: 'list' | 'grid' | (string & Record<string, unknown>)): React.ReactNode | undefined;
+    itemTemplate?(item: any, layout?: 'list' | 'grid' | (string & Record<string, unknown>)): React.ReactNode | undefined;
+    listTemplate?(items: any[], layout?: 'list' | 'grid' | (string & Record<string, unknown>)): React.ReactNode | React.ReactNode[] | undefined;
 }
 
-const DataView = (props : DataViewProps) => {
+const DataView = (props: DataViewProps) => {
     return (
         <PrimeDataView
             value={props.value}
@@ -26,9 +25,8 @@ const DataView = (props : DataViewProps) => {
             dataKey={props.dataKey}
             header={props.header}
             itemTemplate={props.itemTemplate}
-        >
-            {props.children}
-        </PrimeDataView>
+            listTemplate={props.listTemplate}
+        />
     );
 };
 

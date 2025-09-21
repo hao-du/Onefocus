@@ -7,6 +7,8 @@ type InputProps = BaseProps & {
     required?: boolean;
     invalid?: boolean;
     placeholder?: string;
+    size?: 'normal' | 'small',
+    textOnly?: boolean;
 };
 
 export default InputProps;

@@ -23,31 +23,33 @@ const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends 
         <Controller
             name={props.name}
             control={props.control}
-            rules={props.rules}
+            rules={props.textOnly ? undefined : props.rules}
             render={(controller) => {
                 return (
                     <InputWrapper
-                        label={props.label}
+                        {...props}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
-                        description={props.description}
                     >
-                        <PrimeDropdown
-                            id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.value); }}
-                            invalid={controller.fieldState.invalid}
-                            value={controller.field.value}
-                            options={props.options}
-                            itemTemplate={props.itemTemplate}
-                            placeholder={props.placeholder}
-                            readOnly={props.isPending || props.readOnly}
-                            disabled={props.isPending || props.disabled}
-                            autoComplete={props.autoComplete}
-                            filter={props.filter ?? true}
-                            checkmark={true}
-                            highlightOnSelect={true}
-                            className={props.className}
-                        />
+                        {props.textOnly
+                            ? <p>{controller.field.value}</p>
+                            : <PrimeDropdown
+                                id={controller.field.name}
+                                onChange={(e) => { controller.field.onChange(e.value); }}
+                                invalid={controller.fieldState.invalid}
+                                value={controller.field.value}
+                                options={props.options}
+                                itemTemplate={props.itemTemplate}
+                                placeholder={props.placeholder}
+                                readOnly={props.isPending || props.readOnly}
+                                disabled={props.isPending || props.disabled}
+                                autoComplete={props.autoComplete}
+                                filter={props.filter ?? true}
+                                checkmark={true}
+                                highlightOnSelect={true}
+                                className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
+                            />
+                        }
                     </InputWrapper>);
             }}
         />

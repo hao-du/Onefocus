@@ -17,26 +17,28 @@ const Password = <TFieldValues extends FieldValues = FieldValues, TName extends 
         <Controller
             name={props.name}
             control={props.control}
-            rules={props.rules}
+            rules={props.textOnly ? undefined : props.rules}
             render={(controller) => {
                 return (
                     <InputWrapper
-                        label={props.label}
+                        {...props}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
-                        description={props.description}
                     >
-                        <PrimePassword
-                            id={controller.field.name}
-                            inputId={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.target.value); }}
-                            invalid={controller.fieldState.invalid}
-                            value={controller.field.value}
-                            readOnly={props.isPending || props.readOnly}
-                            autoComplete="current-password"
-                            feedback={props.feedback ?? false}
-                            inputClassName={props.className}
-                        />
+                        {props.textOnly
+                            ? <p>{controller.field.value}</p>
+                            : <PrimePassword
+                                id={controller.field.name}
+                                inputId={controller.field.name}
+                                onChange={(e) => { controller.field.onChange(e.target.value); }}
+                                invalid={controller.fieldState.invalid}
+                                value={controller.field.value}
+                                readOnly={props.isPending || props.readOnly}
+                                autoComplete="current-password"
+                                feedback={props.feedback ?? false}
+                                inputClassName={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
+                            />
+                        }
                     </InputWrapper>);
             }}
         />

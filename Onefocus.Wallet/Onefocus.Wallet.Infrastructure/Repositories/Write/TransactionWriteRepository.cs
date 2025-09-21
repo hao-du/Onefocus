@@ -21,7 +21,9 @@ public sealed class TransactionWriteRepository(
         return await ExecuteAsync(async () =>
         {
             var cashFlow = await context.CashFlow
-                .Include(t => t.Transaction)
+                .Include(cf => cf.Transaction)
+                .ThenInclude(t => t.TransactionItems)
+                .AsTracking()
                 .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
             return Result.Success<GetCashFlowByIdResponseDto>(new(cashFlow));
         });

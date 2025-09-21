@@ -17,23 +17,25 @@ const Switch = <TFieldValues extends FieldValues = FieldValues, TName extends Fi
         <Controller
             name={props.name}
             control={props.control}
-            rules={props.rules}
+            rules={props.textOnly ? undefined : props.rules}
             render={(controller) => {
                 return (
                     <InputWrapper
-                        label={props.label}
+                        {...props}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
-                        description={props.description}
                     >
-                        <InputSwitch
-                            id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.target.value); }}
-                            invalid={controller.fieldState.invalid}
-                            checked={controller.field.value ?? false}
-                            disabled={props.isPending || props.readOnly}
-                            className={props.className}
-                        />
+                        {props.textOnly
+                            ? <i className={`pi ${controller.field.value ? 'pi-check-circle' : 'pi-ban'}`}></i>
+                            : <InputSwitch
+                                id={controller.field.name}
+                                onChange={(e) => { controller.field.onChange(e.target.value); }}
+                                invalid={controller.fieldState.invalid}
+                                checked={controller.field.value ?? false}
+                                disabled={props.isPending || props.readOnly}
+                                className={`${props.className} ${props.size == 'small' ? 'p-inputswitch-sm' : ''}`}
+                            />
+                        }
                     </InputWrapper>);
             }}
         />

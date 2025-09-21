@@ -5,6 +5,7 @@ type InputWrapperProps = PropsWithChildren & {
     htmlFor?: string;
     description?: string;
     errorMessage?: string;
+    size?: 'normal' | 'small';
 };
 
 export default InputWrapperProps;

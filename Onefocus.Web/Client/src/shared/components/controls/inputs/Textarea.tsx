@@ -14,27 +14,29 @@ type TextareaProps<TFieldValues extends FieldValues = FieldValues, TName extends
 const Textarea = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     (props: TextareaProps<TFieldValues, TName, TTransformedValues>) => {
     return (
-        <Controller 
+        <Controller
             name={props.name}
             control={props.control}
-            rules={props.rules}
+            rules={props.textOnly ? undefined : props.rules}
             render={(controller) => {
                 return (
                     <InputWrapper
-                        label={props.label}
+                        {...props}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
-                        description={props.description}
                     >
-                        <InputTextarea
-                            id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.target.value); }}
-                            invalid={controller.fieldState.invalid}
-                            value={controller.field.value}
-                            rows={props.rows ?? 5}
-                            readOnly={props.isPending || props.readOnly}
-                            className={props.className}
-                        />
+                        {props.textOnly
+                            ? <p>{controller.field.value}</p>
+                            : <InputTextarea
+                                id={controller.field.name}
+                                onChange={(e) => { controller.field.onChange(e.target.value); }}
+                                invalid={controller.fieldState.invalid}
+                                value={controller.field.value}
+                                rows={props.rows ?? 5}
+                                readOnly={props.isPending || props.readOnly}
+                                className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
+                            />
+                        }
                     </InputWrapper>);
             }}
         />

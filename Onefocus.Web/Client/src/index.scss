@@ -50,8 +50,15 @@ body {
   border-color: var(--surface-border);
 }
 
-.surface-background-color {
+.surface-background-color,
+.p-panel-header {
   background-color: var(--primary-50);
+}
+
+.p-card-footer,
+.p-card-content {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .of-sidemenu {

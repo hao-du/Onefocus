@@ -27,33 +27,35 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
         <Controller
             name={props.name}
             control={props.control}
-            rules={props.rules}
+            rules={props.textOnly ? undefined : props.rules}
             render={(controller) => {
                 return (
                     <InputWrapper
-                        label={props.label}
+                        {...props}
                         htmlFor={controller.field.name}
                         errorMessage={controller.fieldState.error?.message}
-                        description={props.description}
                     >
-                        <Calendar
-                            id={controller.field.name}
-                            onChange={(e) => { controller.field.onChange(e.value); }}
-                            invalid={controller.fieldState.invalid}
-                            value={controller.field.value ? new Date(controller.field.value) : undefined}
-                            showTime={props.showTime}
-                            hourFormat={props.hourFormat}
-                            minDate={props.minDate}
-                            maxDate={props.maxDate}
-                            placeholder={props.placeholder}
-                            dateFormat={props.dateFormat}
-                            showIcon={true}
-                            showSeconds={props.showSeconds}
-                            appendTo={props.appendTo ?? 'self'}
-                            readOnlyInput={props.readOnly}
-                            disabled={props.isPending}
-                            className={props.className}
-                        />
+                        {props.textOnly
+                            ? <p>{controller.field.value}</p>
+                            : <Calendar
+                                id={controller.field.name}
+                                onChange={(e) => { controller.field.onChange(e.value); }}
+                                invalid={controller.fieldState.invalid}
+                                value={controller.field.value ? new Date(controller.field.value) : undefined}
+                                showTime={props.showTime}
+                                hourFormat={props.hourFormat}
+                                minDate={props.minDate}
+                                maxDate={props.maxDate}
+                                placeholder={props.placeholder}
+                                dateFormat={props.dateFormat}
+                                showIcon={true}
+                                showSeconds={props.showSeconds}
+                                appendTo={props.appendTo ?? 'self'}
+                                readOnlyInput={props.readOnly}
+                                disabled={props.isPending}
+                                className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
+                            />
+                        }
                     </InputWrapper>);
             }}
         />
