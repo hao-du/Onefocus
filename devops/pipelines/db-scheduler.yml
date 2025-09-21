@@ -17,28 +17,31 @@ parameters:
 
 schedules:
 - cron: "0 1 * * *"  # 1:00 AM UTC
-  displayName: "Stop PostgreSQL server at 1 AM"
+  displayName: "Stop PostgreSQL"
   branches:
     include:
       - main
   always: true
 
 - cron: "0 20 * * *" # 8:00 PM UTC
-  displayName: "Start PostgreSQL server at 8 PM"
+  displayName: "Start PostgreSQL"
   branches:
     include:
       - main
   always: true
 
 stages:
-- stage: ManagePostgres
-  displayName: "Manage PostgreSQL Flexible Server"
+- stage: ManualStartStopPostgres
+  displayName: "Manual Start/Stop Database Server"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], '')
   jobs:
-  - job: PostgreSQLServerScheduler
+  - job: ManualDatabaseStartStop
+    displayName: "Manual Start/Stop Database Server"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
+      displayName: "Manual Start/Stop Database Server"
       inputs:
         azureSubscription: 'Onefocus Service Connection'
         scriptType: 'bash'
@@ -56,5 +59,49 @@ stages:
           fi
       env:
         ACTION: ${{ parameters.action }}
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        SERVER_NAME: ${{ parameters.SERVER_NAME }}
+
+- stage: StopPostgres
+  displayName: "Stop Database Scheduler"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Stop PostgreSQL')
+  jobs:
+  - job: StopDatabaseServer
+    displayName: "Stop Database Scheduler"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: "Stop Database Scheduler"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Stopping server $SERVER_NAME in resource group $RESOURCE_GROUP"
+          az postgres flexible-server stop --name $SERVER_NAME --resource-group $RESOURCE_GROUP
+      env:
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        SERVER_NAME: ${{ parameters.SERVER_NAME }}
+
+- stage: StartPostgres
+  displayName: "Start Database Scheduler"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Start PostgreSQL')
+  jobs:
+  - job: StartDatabaseServer
+    displayName: "Start Database Scheduler"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: "Start Database Scheduler"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Starting server $SERVER_NAME in resource group $RESOURCE_GROUP"
+          az postgres flexible-server start --name $SERVER_NAME --resource-group $RESOURCE_GROUP
+      env:
         RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
         SERVER_NAME: ${{ parameters.SERVER_NAME }}
