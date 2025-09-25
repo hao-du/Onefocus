@@ -27,7 +27,7 @@ const Text = <TFieldValues extends FieldValues = FieldValues, TName extends Fiel
                         errorMessage={controller.fieldState.error?.message}
                     >
                         {props.textOnly
-                            ? <p>{controller.field.value}</p>
+                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{controller.field.value}</p>
                             : <InputText
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.target.value); }}

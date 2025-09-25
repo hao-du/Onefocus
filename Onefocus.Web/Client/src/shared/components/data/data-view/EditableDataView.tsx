@@ -1,4 +1,4 @@
-import { FieldArray, FieldArrayPath, FieldArrayWithId, FieldValues, useFieldArray, UseFormReturn } from 'react-hook-form';
+import { FieldArray, FieldArrayPath, FieldArrayWithId, FieldValues, Path, useFieldArray, UseFormReturn } from 'react-hook-form';
 import { ReactNode, useCallback, useState } from 'react';
 import { Card, CardOptions, Panel } from '../../panel';
 import DataView from './DataView';
@@ -15,6 +15,8 @@ type EditableDataViewProps<TFormInput extends FieldValues, TName extends FieldAr
 }
 
 const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableDataViewProps<TFormInput, TName>) => {
+    type EditableRow = FieldArrayWithId<TFormInput, TName, "__internalId"> & { rowId: string };
+
     const [originalRows, setOriginalRows] = useState<Record<string, FieldArray<TFormInput, TName>>>({});
     const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
 
@@ -22,8 +24,12 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
     const { fields, update, insert, remove } = useFieldArray({
         control: control,
         name: props.path,
-        keyName: 'rowId'
+        keyName: '__internalId'
     });
+
+    const isEditing = useCallback((rowId: string) => {
+        return !!editingRows[rowId];
+    }, [editingRows])
 
     const headerTemplate = useCallback((options: PanelHeaderTemplateOptions) => {
         return (
@@ -33,59 +39,137 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
                 </div>
                 <div>
                     <Button icon="pi pi-plus" rounded text onClick={() => {
-                        const newValue = props.newRowValue !== null
-                            ? { ...props.newRowValue, rowId: UniqueComponentId() }
-                            : {} as FieldArray<TFormInput, TName> & { rowId: string };
-                        insert(0, newValue);
-
+                        const newRow = (props.newRowValue !== null ? { ...props.newRowValue, rowId: UniqueComponentId() } : {}) as EditableRow;
+                        insert(0, newRow);
                         setEditingRows((prev) => ({
                             ...prev,
-                            [newValue.rowId]: true
+                            [newRow.rowId]: true
                         }));
                     }} />
                 </div>
             </div>
         );
-    }, [insert, props.headerName, props.newRowValue]);
+    }, [props.headerName, props.newRowValue, insert]);
 
     const cardFooterTemplate = useCallback((options: CardOptions) => {
-        return (
-            <div className='flex gap-3'>
+        const item = fields[options.index] as EditableRow;
+        const isEditMode = isEditing(item.rowId);
+
+        let buttons = <></>;
+        if (isEditMode) {
+            buttons = (
+                <>
+                    <Button
+                        icon="pi pi-check"
+                        rounded
+                        severity="success"
+                        onClick={async () => {
+                            const rowPathPrefix = `${props.path}.${options.index}` as Path<TFormInput>;
+                            const currentRow = getValues(rowPathPrefix);
+                            const rowFields = Object.keys(currentRow).map(
+                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
+                            );
+
+                            const isValid = await trigger(rowFields);
+                            if (!isValid) {
+                                return;
+                            }
+
+                            const updatedItem = getValues(props.path as Path<TFormInput>);
+                            update(options.index, updatedItem[options.index]);
+
+                            setEditingRows((prev) => {
+                                const updated = { ...prev };
+                                delete updated[item.rowId];
+                                return updated;
+                            });
+                        }}
+                    />
+                    <Button
+                        icon="pi pi-times"
+                        rounded
+                        severity="secondary"
+                        onClick={async () => {
+                            const rowPathPrefix = `${props.path}.${options.index}` as Path<TFormInput>;
+                            const currentRow = getValues(rowPathPrefix);
+                            const rowFields = Object.keys(currentRow).map(
+                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
+                            );
+
+                            const isValid = await trigger(rowFields);
+                            if (!isValid) {
+                                return;
+                            }
+
+                            const original = originalRows[item.rowId];
+                            if (original) {
+                                update(options.index, original);
+                            }
+
+                            setEditingRows((prev) => {
+                                const updated = { ...prev };
+                                delete updated[item.rowId];  
+                                return updated;
+                            });
+                        }}
+                    />
+                </>
+            )
+        }
+        else {
+            buttons = (
                 <Button
                     icon="pi pi-pencil"
                     rounded
                     severity="info"
                     onClick={() => {
+                        const arrayItems = getValues(props.path as Path<TFormInput>);
+                        setOriginalRows((prev) => ({
+                            ...prev,
+                            [item.rowId]: { ...arrayItems[options.index] }
+                        }));
+
+                        setEditingRows((prev) => ({
+                            ...prev,
+                            [item.rowId]: true
+                        }));
                     }}
                 />
+
+            )
+        }
+
+        return (
+            <div className='flex gap-3'>
+                {buttons}
                 <Button
                     icon="pi pi-trash"
                     rounded
                     severity="danger"
                     onClick={() => {
+                        remove(options.index);
                     }}
                 />
             </div>
         )
-    }, []);
+    }, [fields, isEditing]);
 
-    const itemTemplate = useCallback((item: FieldArrayWithId<TFormInput, TName, "rowId">) => {
-        const index = fields.findIndex(f => f.rowId == item.rowId);
+    const itemTemplate = useCallback((item: EditableRow) => {
+        const index = (fields as (EditableRow[])).findIndex(f => f.rowId == item.rowId);
         const oddRow = index % 2 != 0;
-        const isEditing = !!editingRows[item.rowId];
 
         return (
-            <Card className={`mb-3 ${oddRow ? 'surface-background-color' : ''}`} footer={cardFooterTemplate} index={index}>
-                {props.inputs.map((input) => { return input(index, isEditing); })}
+            <Card key={item.rowId} className={`mb-3 ${oddRow ? 'surface-background-color' : ''}`} footer={cardFooterTemplate} index={index}>
+                {props.inputs.map((input) => { return input(index, isEditing(item.rowId)); })}
             </Card>
         );
-    }, [cardFooterTemplate, editingRows, fields, props.inputs]);
+    }, [cardFooterTemplate, fields, props.inputs, isEditing]);
 
     const listTemplate = useCallback((items: typeof fields) => {
         if (!items || items.length === 0) return null;
 
         const list = items.map((item) => {
-            return itemTemplate(item);
+            return itemTemplate(item as EditableRow);
         });
 
         return (

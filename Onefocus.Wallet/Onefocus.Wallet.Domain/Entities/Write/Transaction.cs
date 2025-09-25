@@ -71,7 +71,13 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
         SetActiveFlag(isActive, actionedBy);
 
-        return UpsertTransactionItems(transactionItems, actionedBy);
+        var upsertTransactionItemsResult = UpsertTransactionItems(transactionItems, actionedBy);
+        if(upsertTransactionItemsResult.IsFailure) return upsertTransactionItemsResult;
+
+        var deleteTransactionItemsResult = DeleteTransactionItems(transactionItems, actionedBy);
+        if (deleteTransactionItemsResult.IsFailure) return deleteTransactionItemsResult;
+
+        return Result.Success();
     }
 
     private Result UpsertTransactionItems(IReadOnlyList<TransactionItemParams>? transactionItems, Guid actionedBy)
@@ -107,6 +113,25 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
                 _transactionItems.Add(itemCreationResult.Value);
             }
+        }
+
+        return Result.Success();
+    }
+
+    private Result DeleteTransactionItems(IReadOnlyList<TransactionItemParams>? transactionItems, Guid actionedBy)
+    {
+        if (transactionItems == null)
+        {
+            return Result.Success();
+        }
+
+        var transactionItemsToBeDeleted = _transactionItems.FindAll(t => !transactionItems.Any(param => param.Id == t.Id));
+
+        if (transactionItemsToBeDeleted.Count == 0) return Result.Success();
+
+        foreach (var item in transactionItemsToBeDeleted)
+        {
+            item.SetActiveFlag(false, actionedBy);
         }
 
         return Result.Success();

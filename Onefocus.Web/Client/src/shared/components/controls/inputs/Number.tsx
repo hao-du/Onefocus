@@ -2,6 +2,7 @@ import { Controller, FieldPath, FieldValues, UseControllerProps } from "react-ho
 import InputWrapper from "./InputWrapper";
 import { InputProps, InputWrapperProps } from "../../props";
 import { InputNumber } from "primereact/inputnumber";
+import { formatCurrency } from "../../../utils";
 
 type NumberProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     = UseControllerProps<TFieldValues, TName, TTransformedValues>
@@ -30,7 +31,7 @@ const Number = <TFieldValues extends FieldValues = FieldValues, TName extends Fi
                         errorMessage={controller.fieldState.error?.message}
                     >
                         {props.textOnly
-                            ? <p>{controller.field.value}</p>
+                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{formatCurrency(controller.field.value)}</p>
                             : <InputNumber
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.value); }}
