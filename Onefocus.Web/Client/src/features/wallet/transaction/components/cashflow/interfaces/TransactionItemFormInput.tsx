@@ -4,5 +4,4 @@ export default interface TransactionItemFormInput {
     amount: number;
     isActive: boolean;
     description?: string;
-    rowId?: string
 }

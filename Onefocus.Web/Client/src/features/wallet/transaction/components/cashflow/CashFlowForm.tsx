@@ -1,4 +1,3 @@
-import { UniqueComponentId } from 'primereact/utils';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Option } from '../../../../../shared/components/controls';
@@ -83,7 +82,6 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                     form={form}
                     path='transactionItems'
                     newRowValue={{
-                        rowId: UniqueComponentId(),
                         name: '',
                         amount: 0,
                         description: '',

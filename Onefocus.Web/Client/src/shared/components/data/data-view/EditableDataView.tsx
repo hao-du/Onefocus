@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray, FieldArrayPath, FieldArrayWithId, FieldValues, Path, useFieldArray, UseFormReturn } from 'react-hook-form';
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Card, CardOptions, Panel } from '../../panel';
 import DataView from './DataView';
 import { PanelHeaderTemplateOptions } from './interfaces';
 import { Button } from '../../controls';
-import { UniqueComponentId } from 'primereact/utils';
 
 type EditableDataViewProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> = {
     headerName?: string;
@@ -14,22 +14,118 @@ type EditableDataViewProps<TFormInput extends FieldValues, TName extends FieldAr
     newRowValue: FieldArray<TFormInput>;
 }
 
-const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableDataViewProps<TFormInput, TName>) => {
-    type EditableRow = FieldArrayWithId<TFormInput, TName, "__internalId"> & { rowId: string };
+interface Action {
+    rowId?: string;
+    rowIndex: number;
+    action?: 'new' | 'edit' | 'remove' | 'accept' | 'cancel';
+}
 
-    const [originalRows, setOriginalRows] = useState<Record<string, FieldArray<TFormInput, TName>>>({});
-    const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
+const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableDataViewProps<TFormInput, TName>) => {
+    type EditableRow = FieldArrayWithId<TFormInput, TName, "rowId">;
+
+    const [originalRows, setOriginalRows] = useState<Record<string, any>>({});
+    const [rowsState, setRowsState] = useState<Record<string, 'inNewMode' | 'inEditMode' | undefined>>({});
+    const [lastAction, setLastAction] = useState<Action>({ rowIndex: 0 });
 
     const { control, getValues, trigger } = props.form;
-    const { fields, update, insert, remove } = useFieldArray({
+    const { fields, update, insert, remove, } = useFieldArray({
         control: control,
         name: props.path,
-        keyName: '__internalId'
+        keyName: 'rowId'
     });
 
-    const isEditing = useCallback((rowId: string) => {
-        return !!editingRows[rowId];
-    }, [editingRows])
+    const isInFormMode = useCallback((rowId: string) => {
+        const rowState = rowsState[rowId];
+        if (rowState == 'inNewMode' || rowState == 'inEditMode') return true;
+
+        return false;
+    }, [rowsState]);
+
+    //To control useFieldArray's actions
+    useEffect(() => {
+        switch (lastAction.action) {
+            case 'new': {
+                const newRowId = fields[lastAction.rowIndex].rowId;
+                setRowsState((prev) => ({
+                    ...prev,
+                    [newRowId]: 'inNewMode'
+                }));
+                break;
+            }
+            case 'edit': {
+                if (lastAction.rowId) {
+                    const rowPathPrefix = `${props.path}.${lastAction.rowIndex}` as Path<TFormInput>;
+                    const currentRow = { ...getValues(rowPathPrefix) };
+
+                    setOriginalRows((prev) => {
+                        if (!lastAction.rowId) return prev;
+                        return {
+                            ...prev,
+                            [lastAction.rowId]: currentRow
+                        };
+                    });
+
+                    setRowsState((prev) => {
+                        if (!lastAction.rowId) return prev;
+                        return {
+                            ...prev,
+                            [lastAction.rowId]: 'inEditMode'
+                        };
+                    });
+                }
+                break;
+            }
+            case 'remove': {
+                remove(lastAction.rowIndex);
+                break;
+            }
+            case 'accept': {
+                const rowPathPrefix = `${props.path}.${lastAction.rowIndex}` as Path<TFormInput>;
+                const currentRow = getValues(rowPathPrefix);
+                const rowFields = Object.keys(currentRow).map(
+                    (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
+                );
+
+                trigger(rowFields).then((value) => {
+                    if (value) {
+                        setRowsState((prev) => {
+                            if (!lastAction.rowId) return prev;
+                            const updated = { ...prev };
+                            delete updated[lastAction.rowId];
+                            return updated;
+                        });
+                    }
+                });
+                break;
+            }
+            case 'cancel': {
+                if (lastAction.rowId) {
+                    const original = originalRows[lastAction.rowId];
+                    if (original) {
+                        update(lastAction.rowIndex, original);
+                    }
+
+                    setOriginalRows((prev) => {
+                        if (!lastAction.rowId) return prev;
+                        const updated = { ...prev };
+                        delete updated[lastAction.rowId];
+                        return updated;
+                    });
+
+                    setRowsState((prev) => {
+                        if (!lastAction.rowId) return prev;
+                        const updated = { ...prev };
+                        delete updated[lastAction.rowId];
+                        return updated;
+                    });
+                }
+                break;
+            }
+        }
+        if (lastAction.action) {
+            setLastAction({ rowIndex: 0 });
+        }
+    }, [lastAction, fields, getValues, originalRows, props.path, remove, trigger, update]);
 
     const headerTemplate = useCallback((options: PanelHeaderTemplateOptions) => {
         return (
@@ -39,120 +135,84 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
                 </div>
                 <div>
                     <Button icon="pi pi-plus" rounded text onClick={() => {
-                        const newRow = (props.newRowValue !== null ? { ...props.newRowValue, rowId: UniqueComponentId() } : {}) as EditableRow;
-                        insert(0, newRow);
-                        setEditingRows((prev) => ({
-                            ...prev,
-                            [newRow.rowId]: true
-                        }));
+                        const rowIndex = 0;
+                        insert(rowIndex, { ...(props.newRowValue ?? {}) } as EditableRow);
+                        setLastAction({
+                            action: 'new',
+                            rowIndex: rowIndex
+                        });
                     }} />
                 </div>
             </div>
         );
     }, [props.headerName, props.newRowValue, insert]);
 
+
     const cardFooterTemplate = useCallback((options: CardOptions) => {
         const item = fields[options.index] as EditableRow;
-        const isEditMode = isEditing(item.rowId);
+        const isFormMode = isInFormMode(item.rowId);
+        const isInOnlyEditMode = rowsState[item.rowId] == 'inEditMode';
 
-        let buttons = <></>;
-        if (isEditMode) {
-            buttons = (
-                <>
-                    <Button
-                        icon="pi pi-check"
-                        rounded
-                        severity="success"
-                        onClick={async () => {
-                            const rowPathPrefix = `${props.path}.${options.index}` as Path<TFormInput>;
-                            const currentRow = getValues(rowPathPrefix);
-                            const rowFields = Object.keys(currentRow).map(
-                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
-                            );
+        const acceptButton = <Button
+            icon="pi pi-check"
+            rounded
+            severity="success"
+            onClick={async () => {
+                setLastAction({
+                    rowId: item.rowId,
+                    rowIndex: options.index,
+                    action: 'accept'
+                });
+            }}
+        />;
 
-                            const isValid = await trigger(rowFields);
-                            if (!isValid) {
-                                return;
-                            }
+        const cancelButton = <Button
+            icon="pi pi-times"
+            rounded
+            severity="secondary"
+            onClick={async () => {
+                setLastAction({
+                    rowId: item.rowId,
+                    rowIndex: options.index,
+                    action: 'cancel'
+                });
+            }}
+        />;
 
-                            const updatedItem = getValues(props.path as Path<TFormInput>);
-                            update(options.index, updatedItem[options.index]);
+        const editButton = <Button
+            icon="pi pi-pencil"
+            rounded
+            severity="info"
+            onClick={() => {
+                setLastAction({
+                    rowId: item.rowId,
+                    rowIndex: options.index,
+                    action: 'edit'
+                });
+            }}
+        />;
 
-                            setEditingRows((prev) => {
-                                const updated = { ...prev };
-                                delete updated[item.rowId];
-                                return updated;
-                            });
-                        }}
-                    />
-                    <Button
-                        icon="pi pi-times"
-                        rounded
-                        severity="secondary"
-                        onClick={async () => {
-                            const rowPathPrefix = `${props.path}.${options.index}` as Path<TFormInput>;
-                            const currentRow = getValues(rowPathPrefix);
-                            const rowFields = Object.keys(currentRow).map(
-                                (key) => `${rowPathPrefix}.${key}` as Path<TFormInput>
-                            );
-
-                            const isValid = await trigger(rowFields);
-                            if (!isValid) {
-                                return;
-                            }
-
-                            const original = originalRows[item.rowId];
-                            if (original) {
-                                update(options.index, original);
-                            }
-
-                            setEditingRows((prev) => {
-                                const updated = { ...prev };
-                                delete updated[item.rowId];  
-                                return updated;
-                            });
-                        }}
-                    />
-                </>
-            )
-        }
-        else {
-            buttons = (
-                <Button
-                    icon="pi pi-pencil"
-                    rounded
-                    severity="info"
-                    onClick={() => {
-                        const arrayItems = getValues(props.path as Path<TFormInput>);
-                        setOriginalRows((prev) => ({
-                            ...prev,
-                            [item.rowId]: { ...arrayItems[options.index] }
-                        }));
-
-                        setEditingRows((prev) => ({
-                            ...prev,
-                            [item.rowId]: true
-                        }));
-                    }}
-                />
-
-            )
-        }
+        const removeButton = <Button
+            icon="pi pi-trash"
+            rounded
+            severity="danger"
+            onClick={() => {
+                setLastAction({
+                    rowIndex: options.index,
+                    action: 'remove'
+                });
+            }}
+        />
 
         return (
             <div className='flex gap-3'>
-                {buttons}
-                <Button
-                    icon="pi pi-trash"
-                    rounded
-                    severity="danger"
-                    onClick={() => {
-                        remove(options.index);
-                    }}
-                />
+                {!isFormMode && editButton}
+                {isFormMode && acceptButton}
+                {isInOnlyEditMode && cancelButton}
+                {removeButton}
             </div>
         )
-    }, [fields, isEditing]);
+    }, [fields, isInFormMode, rowsState]);
 
     const itemTemplate = useCallback((item: EditableRow) => {
         const index = (fields as (EditableRow[])).findIndex(f => f.rowId == item.rowId);
@@ -160,10 +220,10 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
 
         return (
             <Card key={item.rowId} className={`mb-3 ${oddRow ? 'surface-background-color' : ''}`} footer={cardFooterTemplate} index={index}>
-                {props.inputs.map((input) => { return input(index, isEditing(item.rowId)); })}
+                {props.inputs.map((input) => { return input(index, isInFormMode(item.rowId)); })}
             </Card>
         );
-    }, [cardFooterTemplate, fields, props.inputs, isEditing]);
+    }, [cardFooterTemplate, fields, props.inputs, isInFormMode]);
 
     const listTemplate = useCallback((items: typeof fields) => {
         if (!items || items.length === 0) return null;
