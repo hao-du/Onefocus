@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, SpeedDial, SplitButton } from './buttons';
 import { Menu } from './menu';
 import { Fieldset } from './panels';
+import { Tag } from './misc';
 import { ActionItem, Option } from './interfaces';
 import {
     DatePicker,
@@ -25,7 +26,8 @@ export {
     Password,
     Switch,
     Text,
-    Textarea
+    Textarea,
+    Tag
 };
 
 export type {

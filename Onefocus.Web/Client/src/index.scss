@@ -74,6 +74,12 @@ body {
   max-width: 40rem;
 }
 
+.of-currency {
+  display: inline-block;
+  width: 5ch;
+  white-space: nowrap;
+}
+
 .pi-spin {
   animation: spin 1s linear infinite;
 }

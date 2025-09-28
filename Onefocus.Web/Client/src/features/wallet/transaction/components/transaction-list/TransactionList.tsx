@@ -1,8 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
-import { Button } from '../../../../../shared/components/controls';
-import { Column, DataTable } from '../../../../../shared/components/data/data-table';
 import { Workspace } from '../../../../../shared/components/layouts';
 
 import { TransactionResponse } from '../../apis';
@@ -13,6 +10,10 @@ import { CashFlowForm, useCashFlow } from '../cashflow';
 import { BankAccountForm, useBankAccount } from '../bank-account';
 import { CurrencyExchangeForm, useCurrencyExchange } from '../currency-exchange';
 import { PeerTransferForm, usePeerTransfer } from '../peer-transfer';
+import { DataView } from '../../../../../shared/components/data';
+import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
+import { Card } from '../../../../../shared/components/panel';
+import { Button, Tag } from '../../../../../shared/components/controls';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
@@ -43,16 +44,16 @@ const TransactionList = React.memo(() => {
         }
 
     }, [
-        banks, 
-        counterparties, 
-        currencies, 
-        onBankAccountSubmit, 
-        onCashFlowSubmit, 
-        onCurrencyExchangeSubmit, 
-        onPeerTransferSubmit, 
-        selectedBankAccount, 
-        selectedCashFlow, 
-        selectedCurrencyExchange, 
+        banks,
+        counterparties,
+        currencies,
+        onBankAccountSubmit,
+        onCashFlowSubmit,
+        onCurrencyExchangeSubmit,
+        onPeerTransferSubmit,
+        selectedBankAccount,
+        selectedCashFlow,
+        selectedCurrencyExchange,
         selectedPeerTransfer
     ]);
 
@@ -102,42 +103,72 @@ const TransactionList = React.memo(() => {
                 }
             ]}
             leftPanel={
-                <DataTable value={transactions} isPending={isPending} className="p-datatable-sm">
-                    <Column header="Date" body={(transaction: TransactionResponse) => {
-                        return formatDateLocalSystem(transaction.transactedOn, false);
-                    }} />
-                    <Column header="Amount" align="right" alignHeader="right" body={(transaction: TransactionResponse) => {
-                        return formatCurrency(transaction.amount);
-                    }} />
-                    <Column field="currencyName" header="Currency" />
-                    <Column field="description" header="Description" />
-                    <Column header="" headerStyle={{ width: "4rem" }} body={(transaction: TransactionResponse) => (
-                        <Button
-                            icon="pi pi-pencil"
-                            className="p-button-text"
-                            onClick={() => {
-                                switch (transaction.type) {
-                                    case TransactionType.CashFlow:
-                                        setSelectedTransactionType(TransactionType.CashFlow);
-                                        setCashFlowTransactionId(transaction.id);
-                                        break;
-                                    case TransactionType.BankAccount:
-                                        setSelectedTransactionType(TransactionType.BankAccount);
-                                        setBankAccountTransactionId(transaction.id);
-                                        break;
-                                    case TransactionType.CurrencyExchange:
-                                        setSelectedTransactionType(TransactionType.CurrencyExchange);
-                                        setCurrencyExchangeTransactionId(transaction.id);
-                                        break;
-                                    case TransactionType.PeerTransfer:
-                                        setSelectedTransactionType(TransactionType.PeerTransfer);
-                                        setPeerTransferTransactionId(transaction.id);
-                                        break;
-                                }
-                                setShowForm(true);
-                            }} />
-                    )} />
-                </DataTable>
+                <DataView
+                    isPending={isPending}
+                    className="overflow-x-hidden overflow-y-auto"
+                    value={transactions}
+                    listTemplate={(transactions: TransactionResponse[]) => {
+                        if (!transactions || transactions.length === 0) return null;
+
+                        const list = transactions.map((transaction, index) => {
+                            const oddRow = index % 2 != 0;
+                            return (
+                                <Card key={index} className={`mb-3 w-full ${!oddRow ? 'surface-background-color' : ''}`} index={index}>
+                                    <div className="grid nested-grid" key={index}>
+                                        <div className="col-12 md:col-6">
+                                            <div className="grid">
+                                                <div className="col-12 text-lg font-bold">
+                                                    {formatDateLocalSystem(transaction.transactedOn, false)}
+                                                </div>
+                                                <div className="col-12 text-color-secondary font-italic">
+                                                    {transaction.description}
+                                                </div>
+                                                <div className="col-12 flex gap-2">
+                                                    {transaction.tags?.map((value, index) => {
+                                                        return <Tag key={index} value={value} />
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 md:col-6 font-semibold text-right">
+                                            {formatCurrency(transaction.amount)}
+                                            <span className="of-currency">{transaction.currencyName}</span>
+                                        </div>
+                                        <div className="col-12 text-right">
+                                            <Button
+                                                icon="pi pi-pencil"
+                                                rounded
+                                                onClick={() => {
+                                                    switch (transaction.type) {
+                                                        case TransactionType.CashFlow:
+                                                            setSelectedTransactionType(TransactionType.CashFlow);
+                                                            setCashFlowTransactionId(transaction.id);
+                                                            break;
+                                                        case TransactionType.BankAccount:
+                                                            setSelectedTransactionType(TransactionType.BankAccount);
+                                                            setBankAccountTransactionId(transaction.id);
+                                                            break;
+                                                        case TransactionType.CurrencyExchange:
+                                                            setSelectedTransactionType(TransactionType.CurrencyExchange);
+                                                            setCurrencyExchangeTransactionId(transaction.id);
+                                                            break;
+                                                        case TransactionType.PeerTransfer:
+                                                            setSelectedTransactionType(TransactionType.PeerTransfer);
+                                                            setPeerTransferTransactionId(transaction.id);
+                                                            break;
+                                                    }
+                                                    setShowForm(true);
+                                                }} />
+                                        </div>
+                                    </div>
+                                </Card>
+                            );
+                        });
+
+                        return <div className="grid nested-grid">{list}</div>;
+                    }}
+                >
+                </DataView>
             }
             rightPanel={
                 showForm && renderForm(selectedTransactionType, isPending)
