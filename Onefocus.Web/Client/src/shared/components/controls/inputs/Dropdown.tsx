@@ -32,7 +32,7 @@ const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends 
                         errorMessage={controller.fieldState.error?.message}
                     >
                         {props.textOnly
-                            ? <p>{controller.field.value}</p>
+                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{props.options.find(o => o.value == controller.field.value)?.label ?? ''}</p>
                             : <PrimeDropdown
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.value); }}

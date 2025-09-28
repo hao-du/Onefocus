@@ -89,7 +89,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
         foreach (var item in transactionItems)
         {
-            if (item.Id.HasValue)
+            if (item.Id.HasValue && item.Id != Guid.Empty)
             {
                 var existingItem = _transactionItems.Find(t => t.Id == item.Id);
                 if (existingItem == null)

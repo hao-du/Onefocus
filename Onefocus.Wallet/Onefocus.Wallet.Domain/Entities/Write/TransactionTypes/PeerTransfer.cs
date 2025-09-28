@@ -37,14 +37,14 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
     public static Result<PeerTransfer> Create(int status, int type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
         var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
-        if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
+        if (validationResult.IsFailure) return validationResult.Failure<PeerTransfer>();
 
         var peerTransfer = new PeerTransfer((PeerTransferStatus)status, (PeerTransferType)type, counterpartyId, description, actionedBy);
 
         if (transactionParams.Count > 0)
         {
             var upsertInterestsResult = peerTransfer.UpsertTransferDetails(ownerId, actionedBy, transactionParams);
-            if (upsertInterestsResult.IsFailure) return (Result<PeerTransfer>)upsertInterestsResult;
+            if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<PeerTransfer>();
         }
 
         return Result.Success(peerTransfer);
@@ -53,7 +53,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
     public Result Update(int status, int type, Guid counterpartyId, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
         var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
-        if (validationResult.IsFailure) return (Result<PeerTransfer>)validationResult;
+        if (validationResult.IsFailure) return validationResult;
 
         Status = (PeerTransferStatus)status;
         Type = (PeerTransferType)type;
@@ -77,7 +77,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
     {
         foreach (var param in transactionParams)
         {
-            var isNew = param.Id.HasValue && param.Id != Guid.Empty;
+            var isNew = !param.Id.HasValue || param.Id == Guid.Empty;
             if (isNew)
             {
                 var createDetailResult = CreateTransferDetails(ownerId, actionedBy, param);

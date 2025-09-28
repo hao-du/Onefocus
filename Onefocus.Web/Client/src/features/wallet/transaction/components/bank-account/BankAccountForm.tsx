@@ -1,14 +1,13 @@
-import { UniqueComponentId } from 'primereact/utils';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Option } from '../../../../../shared/components/controls';
-import { Column, EditableTable } from '../../../../../shared/components/data/data-table';
 import { DatePicker, Dropdown, Number, Switch, Text, Textarea } from '../../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
 import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';
 import { CurrencyResponse } from '../../../currency';
 import BankAccountFormInput from './interfaces/BankAccountFormInput';
 import { BankResponse } from '../../../bank';
+import { EditableDataView } from '../../../../../shared/components/data';
 
 type BankAccountFormProps = {
     selectedBankAccount: BankAccountFormInput | null | undefined;
@@ -106,54 +105,51 @@ const BankAccountForm = (props: BankAccountFormProps) => {
                 }} />
                 {isEditMode && <Switch control={form.control} name="isActive" label="Is active" />}
 
-                <EditableTable
-                    isPending={props.isPending}
+                <EditableDataView
+                    headerName='Interests'
                     form={form}
                     path='transactions'
                     newRowValue={{
-                        rowId: UniqueComponentId(),
                         transactedOn: new Date(),
                         amount: 0,
                         description: '',
                         isActive: true,
                     }}
-                    tableName='Interests'
-                    style={{ width: '40rem' }}
-                >
-                    <Column field="transactedOn" header="Transacted On" style={{ width: '15rem' }} editor={(options) => {
-                        return (
-                            <DatePicker
-                                name={`transactions.${options.rowIndex}.transactedOn`}
+                    inputs={[
+                        (index, isEditing) => <DatePicker
+                                name={`transactions.${index}.transactedOn`}
+                                label='Transacted On'
                                 control={form.control}
-                                className="w-full"
+                                className="w-full of-w-max"
+                                size="small"
+                                textOnly={!isEditing}
                                 rules={{
                                     required: 'Transacted On is required.'
                                 }}
-                                appendTo={document.body}
-                            />);
-                    }} />
-                    <Column field="amount" header="Amount" style={{ width: '10rem' }} align="right" editor={(options) => {
-                        return (
-                            <Number
+                            />,
+                        (index, isEditing) => <Number
                                 control={form.control}
-                                name={`transactions.${options.rowIndex}.amount`}
-                                inputClassName="w-full"
+                                label='Amount'
+                                name={`transactions.${index}.amount`}
+                                inputClassName="w-full of-w-max"
+                                size="small"
+                                textOnly={!isEditing}
                                 fractionDigits={2}
                                 rules={{
                                     required: 'Amount is required.',
                                     min: { value: 0, message: "Minimum amount is 0" },
                                 }}
-                            />);
-                    }} />
-                    <Column field="description" style={{ width: '15rem' }} header="Description" editor={(options) => {
-                        return (
-                            <Text
+                            />,
+                        (index, isEditing) => <Text
                                 control={form.control}
-                                name={`transactions.${options.rowIndex}.description`}
-                                className="w-full"
-                            />);
-                    }} />
-                </EditableTable>
+                                label='Description'
+                                name={`transactions.${index}.description`}
+                                className="w-full of-w-max"
+                                size="small"
+                                textOnly={!isEditing}
+                            />
+                    ]}
+                />
             </form>
         </WorkspaceRightPanel>
     );

@@ -47,7 +47,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
     public static Result<BankAccount> Create(decimal amount, decimal interestRate, Guid currencyId, string accountNumber, string? description, DateTimeOffset issuedOn, DateTimeOffset? closedOn, bool isClosed, Guid bankId, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
         var validationResult = Validate(amount, currencyId, bankId, interestRate, issuedOn, isClosed, accountNumber, closedOn);
-        if (validationResult.IsFailure) return (Result<BankAccount>)validationResult;
+        if (validationResult.IsFailure) return validationResult.Failure<BankAccount>();
 
         var bankAccount = new BankAccount(amount, interestRate, currencyId, accountNumber, description, issuedOn, bankId, ownerId, actionedBy);
         bankAccount.UpdateBankStatus(isClosed, accountNumber, closedOn, actionedBy);
@@ -55,7 +55,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         if (transactionParams.Count > 0)
         {
             var upsertInterestsResult = bankAccount.UpsertInterests(actionedBy, transactionParams);
-            if (upsertInterestsResult.IsFailure) return (Result<BankAccount>)upsertInterestsResult;
+            if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<BankAccount>();
         }
 
         return Result.Success(bankAccount);
@@ -96,7 +96,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
     {
         foreach (var param in transactionParams)
         {
-            var isNew = param.Id.HasValue && param.Id != Guid.Empty;
+            var isNew = !param.Id.HasValue || param.Id == Guid.Empty;
             if (isNew)
             {
                 var createDetailResult = CreateInterests(actionedBy, param);

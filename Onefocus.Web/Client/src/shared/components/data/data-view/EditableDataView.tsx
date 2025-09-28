@@ -12,6 +12,7 @@ type EditableDataViewProps<TFormInput extends FieldValues, TName extends FieldAr
     form: UseFormReturn<TFormInput>;
     inputs: ((index: number, isEditing: boolean) => ReactNode)[];
     newRowValue: FieldArray<TFormInput>;
+    isPending?:boolean;
 }
 
 interface Action {
@@ -134,7 +135,7 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
                     <span className="font-bold">{props.headerName}</span>
                 </div>
                 <div>
-                    <Button icon="pi pi-plus" rounded text onClick={() => {
+                    <Button icon="pi pi-plus" isPending={props.isPending} rounded text onClick={() => {
                         const rowIndex = 0;
                         insert(rowIndex, { ...(props.newRowValue ?? {}) } as EditableRow);
                         setLastAction({
@@ -145,7 +146,7 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
                 </div>
             </div>
         );
-    }, [props.headerName, props.newRowValue, insert]);
+    }, [props.headerName, props.newRowValue, props.isPending, insert]);
 
 
     const cardFooterTemplate = useCallback((options: CardOptions) => {
@@ -226,27 +227,29 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
     }, [cardFooterTemplate, fields, props.inputs, isInFormMode]);
 
     const listTemplate = useCallback((items: typeof fields) => {
-        if (!items || items.length === 0) return null;
-
-        const list = items.map((item) => {
+        const list = (items ?? []).map((item) => {
             return itemTemplate(item as EditableRow);
         });
 
         return (
-            <Panel
-                headerTemplate={headerTemplate}
-                toggleable
-            >
+            <>
                 {list}
-            </Panel>
+            </>
         );
-    }, [headerTemplate, itemTemplate]);
+    }, [itemTemplate]);
 
     return (
-        <DataView
-            value={fields}
-            listTemplate={listTemplate}
-        />
+        <Panel
+            headerTemplate={headerTemplate}
+            toggleable
+        >
+            <DataView
+                value={fields}
+                listTemplate={listTemplate}
+                emptyMessage="No records found"
+                isPending={props.isPending}
+            />
+        </Panel>
     );
 };
 

@@ -4,6 +4,7 @@ import InputWrapper from './InputWrapper';
 import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
 import { Calendar } from 'primereact/calendar';
+import { formatDateLocalSystem } from '../../../utils';
 
 export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     = UseControllerProps<TFieldValues, TName, TTransformedValues>
@@ -36,7 +37,7 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
                         errorMessage={controller.fieldState.error?.message}
                     >
                         {props.textOnly
-                            ? <p>{controller.field.value}</p>
+                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{controller.field.value ? formatDateLocalSystem(controller.field.value, props.showTime ?? false) : ''}</p>
                             : <Calendar
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.value); }}
@@ -50,7 +51,7 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
                                 dateFormat={props.dateFormat}
                                 showIcon={true}
                                 showSeconds={props.showSeconds}
-                                appendTo={props.appendTo ?? 'self'}
+                                appendTo={props.appendTo ?? document.body}
                                 readOnlyInput={props.readOnly}
                                 disabled={props.isPending}
                                 className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}

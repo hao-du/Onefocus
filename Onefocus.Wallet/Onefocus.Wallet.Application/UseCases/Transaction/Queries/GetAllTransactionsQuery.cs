@@ -34,7 +34,9 @@ internal sealed class GetAllTransactionsQueryHandler(
             Tags: t.GetTransactionTags(),
             Amount: t.Amount,
             Description: t.Description
-        )).ToList();
+        ))
+        .OrderByDescending(t => t.TransactedOn)
+        .ToList();
 
         return Result.Success<GetAllTransactionsQueryResponse>(new(transactions));
     }

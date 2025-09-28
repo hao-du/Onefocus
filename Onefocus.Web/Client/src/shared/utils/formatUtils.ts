@@ -1,5 +1,5 @@
 
-const formatDateLocalSystem = (date?: Date | string | number) => {
+const formatDateLocalSystem = (date?: Date | string | number, includeTime: boolean = true) => {
     if (!date) return "";
 
     const d = date instanceof Date ? date : new Date(date);
@@ -7,7 +7,7 @@ const formatDateLocalSystem = (date?: Date | string | number) => {
 
     const newValue = new Intl.DateTimeFormat(navigator.language, {
         dateStyle: "short",
-        timeStyle: "short",
+        ...(includeTime ? { timeStyle: "short" } : {}),
     }).format(d);
     return newValue;
 }

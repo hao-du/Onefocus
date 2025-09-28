@@ -1,3 +1,4 @@
 import DataView from "./DataView";
+import EditableDataView from "./EditableDataView";
 
-export { DataView };
+export { EditableDataView, DataView };

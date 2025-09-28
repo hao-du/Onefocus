@@ -6,7 +6,7 @@ import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/wo
 import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';
 import { CurrencyResponse } from '../../../currency';
 import CashFlowFormInput from './interfaces/CashFlowFormInput';
-import EditableDataView from '../../../../../shared/components/data/data-view/EditableDataView';
+import { EditableDataView } from '../../../../../shared/components/data';
 
 type CashFlowFormProps = {
     selectedCashFlow: CashFlowFormInput | null | undefined;
@@ -81,6 +81,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                     headerName='Notes'
                     form={form}
                     path='transactionItems'
+                    isPending={props.isPending}
                     newRowValue={{
                         name: '',
                         amount: 0,

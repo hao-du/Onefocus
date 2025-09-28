@@ -9,6 +9,7 @@ type DataViewProps = BaseProps & {
     style?: React.CSSProperties;
     header?: React.ReactNode | undefined;
     layout?: 'list' | 'grid' | (string & Record<string, unknown>);
+    emptyMessage?:string;
     itemTemplate?(item: any, layout?: 'list' | 'grid' | (string & Record<string, unknown>)): React.ReactNode | undefined;
     listTemplate?(items: any[], layout?: 'list' | 'grid' | (string & Record<string, unknown>)): React.ReactNode | React.ReactNode[] | undefined;
 }
@@ -26,6 +27,7 @@ const DataView = (props: DataViewProps) => {
             header={props.header}
             itemTemplate={props.itemTemplate}
             listTemplate={props.listTemplate}
+            emptyMessage={props.emptyMessage}
         />
     );
 };

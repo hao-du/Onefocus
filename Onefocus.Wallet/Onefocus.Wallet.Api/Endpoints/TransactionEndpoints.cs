@@ -68,7 +68,7 @@ internal static class TransactionEndpoints
             return result.ToResult();
         });
 
-        routes.MapPost("transaction/currencyexchange/update", async (UpdateCurrencyExchangeCommandRequest command, ISender sender) =>
+        routes.MapPut("transaction/currencyexchange/update", async (UpdateCurrencyExchangeCommandRequest command, ISender sender) =>
         {
             var result = await sender.Send(command);
             return result.ToResult();
@@ -86,7 +86,7 @@ internal static class TransactionEndpoints
             return result.ToResult();
         });
 
-        routes.MapPost("transaction/peertransfer/update", async (UpdatePeerTransferCommandRequest command, ISender sender) =>
+        routes.MapPut("transaction/peertransfer/update", async (UpdatePeerTransferCommandRequest command, ISender sender) =>
         {
             var result = await sender.Send(command);
             return result.ToResult();

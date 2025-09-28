@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { UniqueComponentId } from 'primereact/utils';
 
 import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
 import { Button } from '../../../../../shared/components/controls';
@@ -30,27 +29,15 @@ const TransactionList = React.memo(() => {
     const renderForm = useCallback((transactionType: TransactionType, isPending: boolean) => {
         switch (transactionType) {
             case TransactionType.CashFlow:
-                //Make unique row ids for transaction items
-                selectedCashFlow?.transactionItems?.map(item => {
-                    item.rowId = UniqueComponentId();
-                });
                 return <CashFlowForm selectedCashFlow={selectedCashFlow} isPending={isPending} onSubmit={onCashFlowSubmit} currencies={currencies} />
 
             case TransactionType.CurrencyExchange:
                 return <CurrencyExchangeForm selectedCurrencyExchange={selectedCurrencyExchange} isPending={isPending} onSubmit={onCurrencyExchangeSubmit} currencies={currencies} />;
 
             case TransactionType.BankAccount:
-                //Make unique row ids for transactions
-                selectedBankAccount?.transactions?.map(item => {
-                    item.rowId = UniqueComponentId();
-                });
                 return <BankAccountForm selectedBankAccount={selectedBankAccount} isPending={isPending} onSubmit={onBankAccountSubmit} currencies={currencies} banks={banks} />;
 
             case TransactionType.PeerTransfer:
-                //Make unique row ids for transactions
-                selectedPeerTransfer?.transferTransactions?.map(item => {
-                    item.rowId = UniqueComponentId();
-                });
                 return <PeerTransferForm selectedPeerTransfer={selectedPeerTransfer} isPending={isPending} onSubmit={onPeerTransferSubmit} currencies={currencies} counterparties={counterparties} />;
 
         }
@@ -117,7 +104,7 @@ const TransactionList = React.memo(() => {
             leftPanel={
                 <DataTable value={transactions} isPending={isPending} className="p-datatable-sm">
                     <Column header="Date" body={(transaction: TransactionResponse) => {
-                        return formatDateLocalSystem(transaction.transactedOn);
+                        return formatDateLocalSystem(transaction.transactedOn, false);
                     }} />
                     <Column header="Amount" align="right" alignHeader="right" body={(transaction: TransactionResponse) => {
                         return formatCurrency(transaction.amount);
