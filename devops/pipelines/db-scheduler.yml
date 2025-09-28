@@ -16,7 +16,7 @@ parameters:
     default: "onefocus-db"
 
 schedules:
-- cron: "0 19 * * 1-5"  # 2:00 AM UTC+7 (Mon-Fri)
+- cron: "0 19 * * 0-4"  # 2:00 AM UTC+7 (Mon-Fri)
   displayName: "Stop PostgreSQL"
   branches:
     include:
