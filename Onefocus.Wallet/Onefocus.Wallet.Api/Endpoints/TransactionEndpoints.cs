@@ -50,7 +50,7 @@ internal static class TransactionEndpoints
             return result.ToResult();
         });
 
-        routes.MapPost("transaction/bankaccount/update", async (UpdateBankAccountCommandRequest command, ISender sender) =>
+        routes.MapPut("transaction/bankaccount/update", async (UpdateBankAccountCommandRequest command, ISender sender) =>
         {
             var result = await sender.Send(command);
             return result.ToResult();

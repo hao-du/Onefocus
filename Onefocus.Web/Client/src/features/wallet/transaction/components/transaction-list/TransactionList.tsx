@@ -113,59 +113,65 @@ const TransactionList = React.memo(() => {
                         const list = transactions.map((transaction, index) => {
                             const oddRow = index % 2 != 0;
                             return (
-                                <Card key={index} className={`mb-3 w-full ${!oddRow ? 'surface-background-color' : ''}`} index={index}>
-                                    <div className="grid nested-grid" key={index}>
-                                        <div className="col-12 md:col-6">
-                                            <div className="grid">
-                                                <div className="col-12 text-lg font-bold">
+                                <Card key={index} className={`w-full ${!oddRow ? 'surface-background-color' : ''}`} index={index}>
+                                    <div className="grid mt-0" key={index}>
+                                        <div className="col-12 md:col-8 py-0">
+                                            <div className="grid m-0">
+                                                <div className="col-12 text-lg font-bold pb-1">
                                                     {formatDateLocalSystem(transaction.transactedOn, false)}
                                                 </div>
-                                                <div className="col-12 text-color-secondary font-italic">
+                                                <div className="col-12 text-color-secondary font-italic text-sm py-1">
                                                     {transaction.description}
                                                 </div>
-                                                <div className="col-12 flex gap-2">
+                                                <div className="col-12 flex flex-wrap gap-2 py-1">
                                                     {transaction.tags?.map((value, index) => {
-                                                        return <Tag key={index} value={value} />
+                                                        return <Tag key={index} value={value} className="text-xs"/>
                                                     })}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col-12 md:col-6 font-semibold text-right">
-                                            {formatCurrency(transaction.amount)}
-                                            <span className="of-currency">{transaction.currencyName}</span>
-                                        </div>
-                                        <div className="col-12 text-right">
-                                            <Button
-                                                icon="pi pi-pencil"
-                                                rounded
-                                                onClick={() => {
-                                                    switch (transaction.type) {
-                                                        case TransactionType.CashFlow:
-                                                            setSelectedTransactionType(TransactionType.CashFlow);
-                                                            setCashFlowTransactionId(transaction.id);
-                                                            break;
-                                                        case TransactionType.BankAccount:
-                                                            setSelectedTransactionType(TransactionType.BankAccount);
-                                                            setBankAccountTransactionId(transaction.id);
-                                                            break;
-                                                        case TransactionType.CurrencyExchange:
-                                                            setSelectedTransactionType(TransactionType.CurrencyExchange);
-                                                            setCurrencyExchangeTransactionId(transaction.id);
-                                                            break;
-                                                        case TransactionType.PeerTransfer:
-                                                            setSelectedTransactionType(TransactionType.PeerTransfer);
-                                                            setPeerTransferTransactionId(transaction.id);
-                                                            break;
-                                                    }
-                                                    setShowForm(true);
-                                                }} />
+                                        <div className="col-12 md:col-4 py-0">
+                                            <div className="grid m-0 text-right">
+                                                <div className="col-12 font-semibold text-sm pb-1">
+                                                    {formatCurrency(transaction.amount)}
+                                                </div>
+                                                <div className="col-12 text-sm py-1">
+                                                    {transaction.currencyName}
+                                                </div>
+                                                <div className="col-12 py-1">
+                                                    <Button
+                                                        icon="pi pi-pencil"
+                                                        rounded
+                                                        onClick={() => {
+                                                            switch (transaction.type) {
+                                                                case TransactionType.CashFlow:
+                                                                    setSelectedTransactionType(TransactionType.CashFlow);
+                                                                    setCashFlowTransactionId(transaction.id);
+                                                                    break;
+                                                                case TransactionType.BankAccount:
+                                                                    setSelectedTransactionType(TransactionType.BankAccount);
+                                                                    setBankAccountTransactionId(transaction.id);
+                                                                    break;
+                                                                case TransactionType.CurrencyExchange:
+                                                                    setSelectedTransactionType(TransactionType.CurrencyExchange);
+                                                                    setCurrencyExchangeTransactionId(transaction.id);
+                                                                    break;
+                                                                case TransactionType.PeerTransfer:
+                                                                    setSelectedTransactionType(TransactionType.PeerTransfer);
+                                                                    setPeerTransferTransactionId(transaction.id);
+                                                                    break;
+                                                            }
+                                                            setShowForm(true);
+                                                        }} />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </Card>
                             );
                         });
 
-                        return <div className="grid nested-grid">{list}</div>;
+                        return <div className="grid">{list}</div>;
                     }}
                 >
                 </DataView>
