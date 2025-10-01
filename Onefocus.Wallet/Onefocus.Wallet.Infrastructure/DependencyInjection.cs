@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Configurations;
+using Onefocus.Common.Constants;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 using Onefocus.Wallet.Infrastructure.ServiceBus;
@@ -48,6 +50,11 @@ public static class DependencyInjection
                 {
                     host.Username(messageBrokerSettings.UserName);
                     host.Password(messageBrokerSettings.Password);
+                });
+
+                configure.Message<IUserSyncedMessage>(message =>
+                {
+                    message.SetEntityName(MessageQueueNames.UserSynced);
                 });
 
                 configure.ConfigureEndpoints(context);

@@ -60,6 +60,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onefocus.Home.Domain", "Onefocus.Home\Onefocus.Home.Domain\Onefocus.Home.Domain.csproj", "{8C553F3C-B7F1-4C5D-9AE1-DF6110362949}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,6 +152,10 @@ Global
 		{A17CED8F-7054-6843-E39C-9045C176C7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A17CED8F-7054-6843-E39C-9045C176C7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A17CED8F-7054-6843-E39C-9045C176C7E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C553F3C-B7F1-4C5D-9AE1-DF6110362949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C553F3C-B7F1-4C5D-9AE1-DF6110362949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C553F3C-B7F1-4C5D-9AE1-DF6110362949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C553F3C-B7F1-4C5D-9AE1-DF6110362949}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,6 +178,7 @@ Global
 		{5DDF412C-C886-4DB0-B0EE-17CF0D4DF132} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FB4CC0F8-DFB1-4DFD-9C83-09CFDF048FD1} = {9B6EE019-2E3A-44C2-B909-89E850062915}
 		{A17CED8F-7054-6843-E39C-9045C176C7E1} = {9B6EE019-2E3A-44C2-B909-89E850062915}
+		{8C553F3C-B7F1-4C5D-9AE1-DF6110362949} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD625179-24CF-4106-8A8D-416F2137CBF5}

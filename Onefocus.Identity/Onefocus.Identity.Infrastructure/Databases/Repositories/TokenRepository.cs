@@ -20,7 +20,7 @@ public sealed class TokenRepository(
     {
         return await ExecuteAsync<GenerateRefreshTokenResponseDto>(async () =>
         {
-            var refreshToken = await userManager.GenerateUserTokenAsync(request.User, Commons.TokenProviderName, "RefreshToken");
+            var refreshToken = await userManager.GenerateUserTokenAsync(request.User, Common.Constants.Common.TokenProviderName, "RefreshToken");
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Result.Failure<GenerateRefreshTokenResponseDto>(DomainErrors.Token.CannotCreateToken);
@@ -28,11 +28,11 @@ public sealed class TokenRepository(
 
             var composedTokenName = GetComposedTokenName(request.User.Email);
 
-            var removeIdentityResult = await userManager.RemoveAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
+            var removeIdentityResult = await userManager.RemoveAuthenticationTokenAsync(request.User, Common.Constants.Common.TokenProviderName, composedTokenName);
             if (!removeIdentityResult.Succeeded)
                 return GetIdentityErrorResult<GenerateRefreshTokenResponseDto>(removeIdentityResult);
 
-            var setIdentityResult = await userManager.SetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName, refreshToken);
+            var setIdentityResult = await userManager.SetAuthenticationTokenAsync(request.User, Common.Constants.Common.TokenProviderName, composedTokenName, refreshToken);
             if (!setIdentityResult.Succeeded)
                 return GetIdentityErrorResult<GenerateRefreshTokenResponseDto>(setIdentityResult);
 
@@ -45,7 +45,7 @@ public sealed class TokenRepository(
         return await ExecuteAsync(async () =>
         {
             var composedTokenName = GetComposedTokenName(request.User.Email);
-            var storedToken = await userManager.GetAuthenticationTokenAsync(request.User, Commons.TokenProviderName, composedTokenName);
+            var storedToken = await userManager.GetAuthenticationTokenAsync(request.User, Common.Constants.Common.TokenProviderName, composedTokenName);
 
             if (string.IsNullOrEmpty(storedToken))
             {

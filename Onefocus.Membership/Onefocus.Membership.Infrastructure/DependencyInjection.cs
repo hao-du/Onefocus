@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Membership.Domain.Entities;
@@ -20,7 +21,7 @@ public static class DependencyInjection
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<MembershipDbContext>()
             .AddDefaultTokenProviders()
-            .AddTokenProvider<DataProtectorTokenProvider<User>>(Commons.TokenProviderName);
+            .AddTokenProvider<DataProtectorTokenProvider<User>>(Common.Constants.Common.TokenProviderName);
 
         var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
         services.AddMassTransit(busConfigure =>
@@ -33,6 +34,11 @@ public static class DependencyInjection
                 {
                     host.Username(messageBrokerSettings.UserName);
                     host.Password(messageBrokerSettings.Password);
+                });
+
+                configure.Message<IUserSyncedMessage>(message =>
+                {
+                    message.SetEntityName(MessageQueueNames.UserSynced);
                 });
 
                 configure.ConfigureEndpoints(context);

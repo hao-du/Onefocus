@@ -22,7 +22,7 @@ services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Identity", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Identity", Description = Common.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
         new ("default", "/"),
         new ("with gateway", "/identity")

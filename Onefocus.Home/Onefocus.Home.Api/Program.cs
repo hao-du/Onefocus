@@ -17,7 +17,7 @@ var configuration = builder.Configuration;
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Home", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Home", Description = Common.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
         new ("default", "/"),
         new ("with gateway", "/home")

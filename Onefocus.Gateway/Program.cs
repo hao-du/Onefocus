@@ -24,7 +24,7 @@ if (builder.Environment.IsDevelopmentLike())
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Gateway", Description = Commons.SwaggerApiInfoDescription, Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Gateway", Description = Common.SwaggerApiInfoDescription, Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
