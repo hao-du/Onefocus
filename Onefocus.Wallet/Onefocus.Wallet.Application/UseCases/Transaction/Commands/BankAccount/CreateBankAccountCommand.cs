@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
@@ -27,9 +28,10 @@ public sealed record CreateTransaction(
 public sealed record CreateBankAccountCommandResponse(Guid Id);
 
 internal sealed class CreateBankAccountCommandHandler(
-        IWriteUnitOfWork unitOfWork
+    ILogger<CreateBankAccountCommandHandler> logger
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateBankAccountCommandRequest, CreateBankAccountCommandResponse>(httpContextAccessor)
+    ) : CommandHandler<CreateBankAccountCommandRequest, CreateBankAccountCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateBankAccountCommandResponse>> Handle(CreateBankAccountCommandRequest request, CancellationToken cancellationToken)
     {
@@ -81,7 +83,7 @@ internal sealed class CreateBankAccountCommandHandler(
             isClosed: request.IsClosed,
             accountNumber: request.AccountNumber,
             closedOn: request.ClosedOn);
-        if(validationResult.IsFailure) return validationResult;
+        if (validationResult.IsFailure) return validationResult;
 
         foreach (var transaction in request.Transactions)
         {

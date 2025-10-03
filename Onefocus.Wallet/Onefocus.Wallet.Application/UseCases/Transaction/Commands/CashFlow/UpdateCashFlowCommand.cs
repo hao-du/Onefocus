@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
@@ -11,9 +12,10 @@ public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateT
 public sealed record UpdateTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
 internal sealed class UpdateCashFlowCommandHandler(
-        IWriteUnitOfWork unitOfWork
+        ILogger logger
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCashFlowCommandRequest request, CancellationToken cancellationToken)
     {

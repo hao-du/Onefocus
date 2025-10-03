@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
@@ -10,10 +11,11 @@ namespace Onefocus.Wallet.Application.UseCases.Currency.Commands;
 public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateCurrencyCommandHandler(
-        ICurrencyService currencyService
+        ILogger<UpdateCurrencyCommandHandler> logger
+        , ICurrencyService currencyService
         , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {

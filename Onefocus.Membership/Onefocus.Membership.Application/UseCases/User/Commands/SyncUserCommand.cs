@@ -15,7 +15,7 @@ internal sealed class SyncUserCommandHandler(
     IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
         , IHttpContextAccessor httpContextAccessor
-        , ILogger<SyncUserCommandHandler> logger) : CommandHandler<SyncUserCommandRequest>(httpContextAccessor)
+        , ILogger<SyncUserCommandHandler> logger) : CommandHandler<SyncUserCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(SyncUserCommandRequest request, CancellationToken cancellationToken)
     {

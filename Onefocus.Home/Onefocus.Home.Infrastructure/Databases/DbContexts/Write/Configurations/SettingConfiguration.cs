@@ -17,7 +17,7 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
                 .HasForeignKey<Setting>(s => s.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.OwnsOne(s => s.Preference, pref =>
+            builder.OwnsOne(s => s.Preferences, pref =>
             {
                 pref.ToJson();
             }); 

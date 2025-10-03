@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
@@ -12,9 +13,10 @@ public sealed record GetAllTransactionsQueryResponse(IReadOnlyList<TransactionQu
 public sealed record TransactionQueryResponse(Guid Id, DateTimeOffset TransactedOn, string CurrencyName, TransactionType Type, IReadOnlyList<string> Tags, decimal Amount, string? Description);
 
 internal sealed class GetAllTransactionsQueryHandler(
+    ILogger<GetAllTransactionsQueryHandler> logger,
     IReadUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : QueryHandler<GetAllTransactionsQueryRequest, GetAllTransactionsQueryResponse>(httpContextAccessor)
+) : QueryHandler<GetAllTransactionsQueryRequest, GetAllTransactionsQueryResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<GetAllTransactionsQueryResponse>> Handle(GetAllTransactionsQueryRequest request, CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
@@ -31,9 +32,10 @@ public sealed record UpdateTransaction(
 );
 
 internal sealed class UpdateBankAccountCommandHandler(
-        IWriteUnitOfWork unitOfWork
+    ILogger<UpdateBankAccountCommandHandler> logger
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateBankAccountCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdateBankAccountCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateBankAccountCommandRequest request, CancellationToken cancellationToken)
     {

@@ -1,28 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
-using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
+using Onefocus.Home.Application.Interfaces.Repositories.Write;
+using Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Home.Infrastructure.Databases.DbContexts.Write;
 
 namespace Onefocus.Home.Infrastructure.UnitOfWork.Write;
 
-public class WriteUnitOfWork(WalletWriteDbContext context
+public class WriteUnitOfWork(HomeWriteDbContext context
         , ILogger<WriteUnitOfWork> logger
         , IUserWriteRepository userRepository
-        , IBankWriteRepository bankRepository
-        , ICurrencyWriteRepository currencyRepository
-        , ICounterpartyWriteRepository counterpartyWriteRepository
-        , ITransactionWriteRepository transactionRepository
+        , ISettingWriteRepository settingRepository
     ) : IWriteUnitOfWork
 {
-    private readonly WalletWriteDbContext _context = context;
+    private readonly HomeWriteDbContext _context = context;
     protected ILogger<WriteUnitOfWork> Logger { get; } = logger;
     public IUserWriteRepository User { get; } = userRepository;
-    public IBankWriteRepository Bank { get; } = bankRepository;
-    public ICurrencyWriteRepository Currency { get; } = currencyRepository;
-    public ICounterpartyWriteRepository Counterparty { get; } = counterpartyWriteRepository;
-    public ITransactionWriteRepository Transaction { get; } = transactionRepository;
+    public ISettingWriteRepository Setting { get; } = settingRepository;
 
     public async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -13,7 +13,7 @@ public static class Errors
 
     public static class Preference
     {
-        public static readonly Error PreferenceRequired = new("PreferenceRequired", "Preference is required.");
+        public static readonly Error PreferencesRequired = new("PreferencesRequired", "Preferences are required.");
         public static readonly Error LocaleRequired = new("LocaleRequired", "Locale is required.");
         public static readonly Error TimezoneRequired = new("TimezoneRequired", "Timezone is required.");
     }

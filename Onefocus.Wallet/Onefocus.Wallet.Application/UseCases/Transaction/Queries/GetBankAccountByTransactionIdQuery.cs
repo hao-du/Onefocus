@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
@@ -30,9 +31,10 @@ public sealed record GetBankAccountTransaction(
 );
 
 internal sealed class GetBankAccountByTransactionIdQueryHandler(
+    ILogger<GetBankAccountByTransactionIdQueryHandler> logger,
     IReadUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : QueryHandler<GetBankAccountByTransactionIdQueryRequest, GetBankAccountByTransactionIdQueryResponse>(httpContextAccessor)
+) : QueryHandler<GetBankAccountByTransactionIdQueryRequest, GetBankAccountByTransactionIdQueryResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<GetBankAccountByTransactionIdQueryResponse>> Handle(GetBankAccountByTransactionIdQueryRequest request, CancellationToken cancellationToken)
     {

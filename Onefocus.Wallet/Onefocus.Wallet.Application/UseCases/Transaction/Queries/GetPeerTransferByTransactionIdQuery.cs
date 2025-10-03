@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
@@ -27,9 +28,10 @@ public sealed record GetTransferTransaction(
 );
 
 internal sealed class GetPeerTransferByTransactionIdQueryHandler(
+    ILogger<GetPeerTransferByTransactionIdQueryHandler> logger,
     IReadUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : QueryHandler<GetPeerTransferByTransactionIdQueryRequest, GetPeerTransferByTransactionIdQueryResponse>(httpContextAccessor)
+) : QueryHandler<GetPeerTransferByTransactionIdQueryRequest, GetPeerTransferByTransactionIdQueryResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<GetPeerTransferByTransactionIdQueryResponse>> Handle(GetPeerTransferByTransactionIdQueryRequest request, CancellationToken cancellationToken)
     {

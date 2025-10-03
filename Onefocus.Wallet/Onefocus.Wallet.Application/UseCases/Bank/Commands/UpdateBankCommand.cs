@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
@@ -13,10 +14,11 @@ namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
 public sealed record UpdateBankCommandRequest(Guid Id, string Name, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateBankCommandHandler(
+    ILogger<UpdateBankCommandHandler> logger,
     IBankService bankService,
     IWriteUnitOfWork writeUnitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : CommandHandler<UpdateBankCommandRequest>(httpContextAccessor)
+) : CommandHandler<UpdateBankCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateBankCommandRequest request, CancellationToken cancellationToken)
     {

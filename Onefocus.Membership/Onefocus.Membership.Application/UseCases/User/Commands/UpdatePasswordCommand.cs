@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
@@ -14,12 +15,13 @@ namespace Onefocus.Membership.Application.UseCases.User.Commands;
 
 public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, string ConfirmPassword) : ICommand;
 internal sealed class UpdatePasswordCommandHandler(
-    IUserRepository userRepository
+    ILogger<UpdatePasswordCommandHandler> logger
+        , IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
         , IPasswordHasher<Entity.User> passwordHasher
         , IAuthenticationSettings authenticationSettings
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdatePasswordCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdatePasswordCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdatePasswordCommandRequest request, CancellationToken cancellationToken)
     {

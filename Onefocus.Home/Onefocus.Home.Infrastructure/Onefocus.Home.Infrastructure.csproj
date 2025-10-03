@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Onefocus.Home.Application\Onefocus.Home.Application.csproj" />
 	  <ProjectReference Include="..\Onefocus.Home.Domain\Onefocus.Home.Domain.csproj" />
 	</ItemGroup>
 

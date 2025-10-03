@@ -3,14 +3,14 @@ using Onefocus.Common.Results;
 using Onefocus.Home.Domain;
 using Onefocus.Home.Domain.Entities.Read;
 using Onefocus.Home.Domain.Entities.ValueObjects;
-using Onefocus.Home.Domain.Entities.Write;
+using Onefocus.Home.Domain.Entities.Write.Params;
 
 namespace Onefocus.Home.Domain.Entities.Write;
 
 public sealed class Setting : WriteEntityBase, IAggregateRoot
 {
     public Guid UserId { get; private set; } = default!;
-    public Preference Preference { get; private set; } = default!;
+    public Preferences Preferences { get; private set; } = default!;
 
     public User User { get; private set; } = default!;
 
@@ -19,42 +19,49 @@ public sealed class Setting : WriteEntityBase, IAggregateRoot
         // Required for EF Core
     }
 
-    private Setting(Guid? id, Preference preference, string? description, Guid actionedBy)
+    private Setting(Guid actionedBy)
     {
-        Init(id ?? Guid.NewGuid(), description, actionedBy);
-
-        Preference = preference;
+        Init(null, null, actionedBy);
     }
 
-    public static Result<Setting> Create(Guid? id, Preference preference, string? description, Guid actionedBy)
+    public static Result<Setting> Create(PreferenceParams preferenceParams, Guid actionedBy)
     {
-        var validationResult = Validate(preference);
+        var validationResult = Validate(preferenceParams);
         if (validationResult.IsFailure) return (Result<Setting>)validationResult;
 
-        return new Setting(id, preference, description, actionedBy);
+        var preferencesResult = Preferences.Create(preferenceParams);
+        if (preferencesResult.IsFailure) return preferencesResult.Failure<Setting>();
+
+        var setting = new Setting(actionedBy);
+        setting.Preferences = preferencesResult.Value;
+        return setting;
     }
 
-    public Result Update(Preference preference, string? description, bool isActive, Guid actionedBy)
+    public Result Update(PreferenceParams preferenceParams, Guid actionedBy)
     {
-        var validationResult = Validate(preference);
-        if (validationResult.IsFailure)
+        var validationResult = Validate(preferenceParams);
+        if (validationResult.IsFailure) return validationResult;
+
+        if (Preferences == null)
         {
-            return Result.Failure<User>(validationResult.Errors);
+            var preferencesResult = Preferences.Create(preferenceParams);
+            if (preferencesResult.IsFailure) return preferencesResult.Failure<Setting>();
+
+            Preferences = preferencesResult.Value;
         }
-
-        Preference = preference;
-        Description = description;
-
-        SetActiveFlag(isActive, actionedBy);
+        else
+        {
+            Preferences.Update(preferenceParams);
+        }
 
         return Result.Success();
     }
 
-    private static Result Validate(Preference preference)
+    private static Result Validate(PreferenceParams preferenceParams)
     {
-        if(preference is null)
+        if(preferenceParams is null)
         {
-            return Result.Failure(Errors.Preference.PreferenceRequired);
+            return Result.Failure(Errors.Preference.PreferencesRequired);
         }
 
         return Result.Success();

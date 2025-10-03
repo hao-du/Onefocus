@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Results;
@@ -16,11 +17,12 @@ public sealed record CreateUserCommandRequest(string Email, string FirstName, st
 public sealed record CreateUserCommandResponse(Guid Id);
 
 internal sealed class CreateUserCommandHandler(
-    IUserRepository userRepository
+    ILogger<CreateUserCommandHandler> logger
+        , IUserRepository userRepository
         , IUserSyncedPublisher userSyncedPublisher
         , IAuthenticationSettings authenticationSettings
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateUserCommandRequest, CreateUserCommandResponse>(httpContextAccessor)
+    ) : CommandHandler<CreateUserCommandRequest, CreateUserCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateUserCommandResponse>> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
     {

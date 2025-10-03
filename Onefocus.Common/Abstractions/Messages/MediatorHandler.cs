@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using System;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Onefocus.Common.Abstractions.Messages;
 
-public abstract class MediatorHandler(IHttpContextAccessor httpContextAccessor)
+public abstract class MediatorHandler(IHttpContextAccessor httpContextAccessor, ILogger logger)
 {
     protected Result<Guid> GetUserId()
     {
@@ -29,5 +32,18 @@ public abstract class MediatorHandler(IHttpContextAccessor httpContextAccessor)
             SameSite = mode,
             HttpOnly = httpOnly
         });
+    }
+
+    protected Result<T?> DeserializeJson<T>(string json)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<T>(json);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "DeserializationJsonFailed");
+            return Result.Failure<T?>(new Error("DeserializationJsonFailed", ex.Message));
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
@@ -14,10 +15,11 @@ public sealed record CreateCurrencyCommandRequest(string Name, string ShortName,
 public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateCurrencyCommandHandler(
-        ICurrencyService currencyService
+        ILogger<CreateCurrencyCommandHandler> logger
+        , ICurrencyService currencyService
         , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateCurrencyCommandRequest, CreateBankCommandResponse>(httpContextAccessor)
+    ) : CommandHandler<CreateCurrencyCommandRequest, CreateBankCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateBankCommandResponse>> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {

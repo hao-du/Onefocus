@@ -15,8 +15,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var readDatabaseConnectionString = configuration.GetConnectionString("WalletReadDatabase");
-        var writeDatabaseConnectionString = configuration.GetConnectionString("WalletWriteDatabase");
+        var readDatabaseConnectionString = configuration.GetConnectionString("HomeReadDatabase");
+        var writeDatabaseConnectionString = configuration.GetConnectionString("HomeWriteDatabase");
 
         services.AddDbContext<HomeReadDbContext>(option =>
         {

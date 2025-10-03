@@ -14,5 +14,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
+    <ProjectReference Include="..\Onefocus.Home.Domain\Onefocus.Home.Domain.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Application.Contracts.ServiceBus;
@@ -13,10 +14,11 @@ namespace Onefocus.Membership.Application.UseCases.User.Commands;
 public sealed record UpdateUserCommandRequest(Guid Id, string Email, string FirstName, string LastName) : ICommand;
 
 internal sealed class UpdateUserCommandHandler(
-    IUserRepository userRepository
+    ILogger<UpdateUserCommandHandler> logger
+    , IUserRepository userRepository
     , IUserSyncedPublisher userSyncedPublisher
     , IHttpContextAccessor httpContextAccessor
-) : CommandHandler<UpdateUserCommandRequest>(httpContextAccessor)
+) : CommandHandler<UpdateUserCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateUserCommandRequest request, CancellationToken cancellationToken)
     {

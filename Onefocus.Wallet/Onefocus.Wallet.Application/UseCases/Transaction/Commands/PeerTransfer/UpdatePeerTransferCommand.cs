@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
@@ -29,9 +30,10 @@ public sealed record UpdateTransferTransaction(
 );
 
 internal sealed class UpdatePeerTransferCommandHandler(
-        IWriteUnitOfWork unitOfWork
+        ILogger<UpdatePeerTransferCommandHandler> logger
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdatePeerTransferCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdatePeerTransferCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdatePeerTransferCommandRequest request, CancellationToken cancellationToken)
     {

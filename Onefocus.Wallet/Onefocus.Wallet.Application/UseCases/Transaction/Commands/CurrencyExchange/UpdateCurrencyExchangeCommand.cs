@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
@@ -20,9 +21,10 @@ public sealed record UpdateCurrencyExchangeCommandRequest(
 ) : ICommand;
 
 internal sealed class UpdateCurrencyExchangeCommandHandler(
-        IWriteUnitOfWork unitOfWork
+    ILogger<UpdateCurrencyExchangeCommandHandler> logger
+        , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCurrencyExchangeCommandRequest>(httpContextAccessor)
+    ) : CommandHandler<UpdateCurrencyExchangeCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCurrencyExchangeCommandRequest request, CancellationToken cancellationToken)
     {

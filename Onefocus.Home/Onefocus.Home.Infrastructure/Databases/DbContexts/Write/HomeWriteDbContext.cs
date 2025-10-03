@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Onefocus.Home.Domain.Entities.Read;
 using Onefocus.Home.Domain.Entities.Write;
 using Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations;
 
@@ -16,7 +15,7 @@ public class HomeWriteDbContext(DbContextOptions<HomeWriteDbContext> options) : 
         base.OnModelCreating(builder);
 
         builder.ApplyConfiguration(new UserConfiguration());
-        builder.ApplyConfiguration(new CounterpartyConfiguration());
+        builder.ApplyConfiguration(new SettingConfiguration());
     }
 }
 

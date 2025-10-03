@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Application.Interfaces.Repositories;
@@ -11,10 +12,11 @@ public sealed record RefreshTokenCommandRequest() : ICommand<RefreshTokenCommand
 public sealed record RefreshTokenCommandReponse(string Token);
 
 internal sealed class RefreshTokenCommandHandler(
-    ITokenService tokenService
+    ILogger<RefreshTokenCommandHandler> logger
+        , ITokenService tokenService
         , IUserRepository userRepository
         , ITokenRepository tokenRepository
-        , IHttpContextAccessor httpContextAccessor) : CommandHandler<RefreshTokenCommandRequest, RefreshTokenCommandReponse>(httpContextAccessor)
+        , IHttpContextAccessor httpContextAccessor) : CommandHandler<RefreshTokenCommandRequest, RefreshTokenCommandReponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<RefreshTokenCommandReponse>> Handle(RefreshTokenCommandRequest request, CancellationToken cancellationToken = default)
     {

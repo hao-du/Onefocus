@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
-using Entity = Onefocus.Wallet.Domain.Entities.Write;
+using Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
+using Entity = Onefocus.Home.Domain.Entities.Write;
 
 namespace Onefocus.Home.Infrastructure.ServiceBus
 {

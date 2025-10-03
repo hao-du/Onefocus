@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Identity.Application.Interfaces.Repositories;
@@ -10,11 +11,12 @@ public sealed record AuthenticateCommandRequest(string Email, string Password) :
 public sealed record AuthenticateCommandResponse(string Token);
 
 internal sealed class AuthenticateCommandHandler(
-    ITokenService tokenService
+    ILogger<AuthenticateCommandHandler> logger
+        , ITokenService tokenService
         , IUserRepository userRepository
         , ITokenRepository tokenRepository
         , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<AuthenticateCommandRequest, AuthenticateCommandResponse>(httpContextAccessor)
+    ) : CommandHandler<AuthenticateCommandRequest, AuthenticateCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<AuthenticateCommandResponse>> Handle(AuthenticateCommandRequest request, CancellationToken cancellationToken = default)
     {

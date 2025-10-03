@@ -5,7 +5,15 @@ using Onefocus.Common.Infrastructure;
 using Onefocus.Common.Utilities;
 using Onefocus.Home.Api.Endpoints;
 using Onefocus.Home.Application;
+using Onefocus.Home.Application.Interfaces.Repositories.Read;
+using Onefocus.Home.Application.Interfaces.Repositories.Write;
+using Onefocus.Home.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Home.Infrastructure;
+using Onefocus.Home.Infrastructure.Repositories.Read;
+using Onefocus.Home.Infrastructure.Repositories.Write;
+using Onefocus.Home.Infrastructure.UnitOfWork.Read;
+using Onefocus.Home.Infrastructure.UnitOfWork.Write;
 using Onefocus.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,8 +59,15 @@ services.AddAuthenticationSettings(configuration);
 services.AddAuthorization();
 
 services
-    .AddInfrastructure()
+    .AddInfrastructure(configuration)
     .AddApplication(configuration);
+
+services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
+services.AddScoped<ISettingReadRepository, SettingReadRepository>();
+
+services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
+services.AddScoped<IUserWriteRepository, UserWriteRepository>();
+services.AddScoped<ISettingWriteRepository, SettingWriteRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();
@@ -71,6 +86,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
 
-app.MapHomeEndpoints();
+app.MapAuthenticationEndpoints();
+app.MapSettingEndpoints();
 
 app.Run();

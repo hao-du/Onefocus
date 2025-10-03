@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
@@ -10,9 +11,10 @@ public sealed record CreateCounterpartyCommandRequest(string FullName, string? E
 public sealed record CreateCounterpartyCommandResponse(Guid Id);
 
 internal sealed class CreateCounterpartyCommandHandler(
+    ILogger<CreateCounterpartyCommandHandler> logger,
     IWriteUnitOfWork writeUnitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : CommandHandler<CreateCounterpartyCommandRequest, CreateCounterpartyCommandResponse>(httpContextAccessor)
+) : CommandHandler<CreateCounterpartyCommandRequest, CreateCounterpartyCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateCounterpartyCommandResponse>> Handle(CreateCounterpartyCommandRequest request, CancellationToken cancellationToken)
     {
