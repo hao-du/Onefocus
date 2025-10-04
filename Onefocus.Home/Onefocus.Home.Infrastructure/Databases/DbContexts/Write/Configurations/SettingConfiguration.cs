@@ -4,9 +4,9 @@ using Onefocus.Home.Domain.Entities.Write;
 
 namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
 {
-    internal class SettingConfiguration : BaseConfiguration<Setting>
+    internal class SettingConfiguration : BaseConfiguration<Settings>
     {
-        public override void Configure(EntityTypeBuilder<Setting> builder)
+        public override void Configure(EntityTypeBuilder<Settings> builder)
         {
             base.Configure(builder);
 

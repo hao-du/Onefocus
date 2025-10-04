@@ -1,9 +1,7 @@
 import { ApiResponse, client } from '../../../hooks';
-import CheckResponse from './interfaces/CheckResponse';
+import { GetSettingsByUserIdResponse } from './interfaces';
 
-const check = async () => {
-    const response = await client.head<ApiResponse<CheckResponse>>('home/check');
-    return response;
+export const getSettingsByUserId = async () => {
+    const response = await client.get<ApiResponse<GetSettingsByUserIdResponse>>(`home/settings/get`);
+    return response.data;
 };
-
-export default check;

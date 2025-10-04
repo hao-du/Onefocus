@@ -7,7 +7,7 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Read;
 public class HomeReadDbContext(DbContextOptions<HomeReadDbContext> options) : DbContext(options)
 {
     public DbSet<User> User { get; set; }
-    public DbSet<Setting> Setting { get; set; }
+    public DbSet<Settings> Settings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,5 +1,5 @@
-import useCheck from "./useCheck";
+import useGetAppSettings from "./useGetAppSettings";
 
 export {
-    useCheck
+    useGetAppSettings
 };

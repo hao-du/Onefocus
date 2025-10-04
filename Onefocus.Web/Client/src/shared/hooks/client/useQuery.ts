@@ -12,6 +12,7 @@ const useQuery = <TData = unknown, TError = unknown>(
     queryFn: async () => {
         return await options.queryFn();
     },
+    refetchOnWindowFocus: false,
     throwOnError: false,
   });
 }

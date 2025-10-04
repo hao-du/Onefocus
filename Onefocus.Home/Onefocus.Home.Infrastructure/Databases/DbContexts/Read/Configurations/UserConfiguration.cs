@@ -10,9 +10,9 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Read.Configurations
         {
             base.Configure(builder);
 
-            builder.HasOne(u => u.Setting)
+            builder.HasOne(u => u.Settings)
                 .WithOne(s => s.User)
-                .HasForeignKey<Setting>(u => u.UserId)
+                .HasForeignKey<Settings>(u => u.UserId)
                 .IsRequired();
         }
     }

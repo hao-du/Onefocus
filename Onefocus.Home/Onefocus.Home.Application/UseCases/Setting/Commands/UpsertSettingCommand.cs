@@ -29,21 +29,21 @@ internal sealed class UpsertSettingCommandHandler(
         if (actionByResult.IsFailure) return actionByResult;
         var userId = actionByResult.Value;
 
-        var getSettingResult = await writeUnitOfWork.Setting.GetSettingByUserIdAsync(new(userId));
+        var getSettingResult = await writeUnitOfWork.Settings.GetSettingsByUserIdAsync(new(userId));
         if (getSettingResult.IsFailure) return getSettingResult;
-        var setting = getSettingResult.Value.Setting;
+        var settings = getSettingResult.Value.Settings;
 
-        if (setting == null)
+        if (settings == null)
         {
-            var createSettingResult = Entity.Setting.Create(preferenceParams, userId);
+            var createSettingResult = Entity.Settings.Create(preferenceParams, userId);
             if(createSettingResult.IsFailure) return createSettingResult;
 
-            var addSettingToContextResult = await writeUnitOfWork.Setting.AddSettingAsync(new(createSettingResult.Value), cancellationToken);
+            var addSettingToContextResult = await writeUnitOfWork.Settings.AddSettingsAsync(new(createSettingResult.Value), cancellationToken);
             if (addSettingToContextResult.IsFailure) return addSettingToContextResult;
         }
         else
         {
-            var updateSettingResult = setting.Update(preferenceParams, userId);
+            var updateSettingResult = settings.Update(preferenceParams, userId);
             if (updateSettingResult.IsFailure) return updateSettingResult;
         }
 

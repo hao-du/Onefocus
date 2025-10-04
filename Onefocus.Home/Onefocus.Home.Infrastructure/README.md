@@ -6,12 +6,12 @@ This is infrastructure layer in CQRS architecture for Home app.
 ### Add EF migration cs file
 Under *Onefocus.Homne.Infrastructure* folder, run this command in **Powershell**:
 
-`dotnet ef migrations add <from-this-migration> <to-this-migration> --context HomeWriteDbContext -o "Databases/Migrations" --startup-project ../Onefocus.Home.Api`
+`dotnet ef migrations add <migration-name> --context HomeWriteDbContext -o "Databases/Migrations" --startup-project ../Onefocus.Home.Api`
 
 ### Create EF migration SQL script
 Under *Onefocus.Membership.Infrastructure* folder, run this command in **Powershell**:
 
-`dotnet ef migrations script <from-this-migration> <to-this-migration> --startup-project '../Onefocus.Home.Api' -o script.sql`
+`dotnet ef migrations script <from-this-migration> <to-this-migration> --context HomeWriteDbContext --startup-project '../Onefocus.Home.Api' -o script.sql`
 
 or to generate entire sql script:
 

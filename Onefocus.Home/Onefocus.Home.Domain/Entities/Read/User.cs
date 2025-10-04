@@ -8,7 +8,7 @@ public sealed class User : ReadEntityBase
     public string LastName { get; init; } = default!;
     public string Email { get; init; } = default!;
 
-    public Setting Setting { get; init; } = default!;
+    public Settings Settings { get; init; } = default!;
 
     public string GetFullName() => $"{FirstName} {LastName}".Trim();
 }

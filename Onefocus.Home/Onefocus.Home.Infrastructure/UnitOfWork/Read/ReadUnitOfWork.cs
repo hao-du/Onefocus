@@ -5,9 +5,9 @@ using Onefocus.Home.Infrastructure.Databases.DbContexts.Read;
 namespace Onefocus.Home.Infrastructure.UnitOfWork.Read;
 
 public class ReadUnitOfWork(HomeReadDbContext context
-        , ISettingReadRepository settingRepository
+        , ISettingsReadRepository settingRepository
     ) : IReadUnitOfWork
 {
     private readonly HomeReadDbContext _context = context;
-    public ISettingReadRepository Setting { get; } = settingRepository;
+    public ISettingsReadRepository Settings { get; } = settingRepository;
 }

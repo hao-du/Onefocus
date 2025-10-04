@@ -1,3 +1,5 @@
-import check from "./homeApis";
+import { getSettingsByUserId } from "./homeApis";
+import { GetSettingsByUserIdResponse } from "./interfaces";
 
-export { check };
+export { getSettingsByUserId };
+export type { GetSettingsByUserIdResponse };

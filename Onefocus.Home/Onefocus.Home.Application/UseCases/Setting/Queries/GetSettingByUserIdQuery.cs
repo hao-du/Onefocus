@@ -8,27 +8,27 @@ using Onefocus.Home.Domain.Entities.ValueObjects;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Onefocus.Home.Application.UseCases.Setting.Queries;
+namespace Onefocus.Home.Application.UseCases.Settings.Queries;
 
-public sealed record GetSettingByUserIdQueryRequest() : IQuery<GetSettingByUserIdQueryResponse>;
-public sealed record GetSettingByUserIdQueryResponse(string Locale, string TimeZone);
+public sealed record GetSettingsByUserIdQueryRequest() : IQuery<GetSettingsByUserIdQueryResponse>;
+public sealed record GetSettingsByUserIdQueryResponse(string Locale, string TimeZone);
 
-internal sealed class GetSettingByUserIdQueryHandler(
-    ILogger<GetSettingByUserIdQueryHandler> logger,
+internal sealed class GetSettingsByUserIdQueryHandler(
+    ILogger<GetSettingsByUserIdQueryHandler> logger,
     IReadUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
-) : QueryHandler<GetSettingByUserIdQueryRequest, GetSettingByUserIdQueryResponse>(httpContextAccessor, logger)
+) : QueryHandler<GetSettingsByUserIdQueryRequest, GetSettingsByUserIdQueryResponse>(httpContextAccessor, logger)
 {
-    public override async Task<Result<GetSettingByUserIdQueryResponse>> Handle(GetSettingByUserIdQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetSettingsByUserIdQueryResponse>> Handle(GetSettingsByUserIdQueryRequest request, CancellationToken cancellationToken)
     {
         var actionByResult = GetUserId();
-        if (actionByResult.IsFailure) return actionByResult.Failure<GetSettingByUserIdQueryResponse>();
+        if (actionByResult.IsFailure) return actionByResult.Failure<GetSettingsByUserIdQueryResponse>();
 
-        var getSettingResult = await unitOfWork.Setting.GetSettingByUserIdAsync(new(actionByResult.Value), cancellationToken);
-        if (getSettingResult.IsFailure) return getSettingResult.Failure<GetSettingByUserIdQueryResponse>();
+        var getSettingResult = await unitOfWork.Settings.GetSettingsByUserIdAsync(new(actionByResult.Value), cancellationToken);
+        if (getSettingResult.IsFailure) return getSettingResult.Failure<GetSettingsByUserIdQueryResponse>();
 
-        var preferences = getSettingResult.Value.Setting?.Preferences ?? Preferences.Default();
-        return Result.Success<GetSettingByUserIdQueryResponse>(new(
+        var preferences = getSettingResult.Value.Settings?.Preferences ?? Preferences.Default();
+        return Result.Success<GetSettingsByUserIdQueryResponse>(new(
             Locale: preferences.Locale,
             TimeZone: preferences.TimeZone
         ));

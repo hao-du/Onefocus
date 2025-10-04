@@ -9,7 +9,7 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     public string LastName { get; private set; } = default!;
     public string Email { get; private set; } = default!;
 
-    public Setting Setting { get; private set; } = default!;
+    public Settings Settings { get; private set; } = default!;
 
     private User()
     {

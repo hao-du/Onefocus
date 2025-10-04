@@ -64,11 +64,11 @@ services
     .AddApplication(configuration);
 
 services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
-services.AddScoped<ISettingReadRepository, SettingReadRepository>();
+services.AddScoped<ISettingsReadRepository, SettingsReadRepository>();
 
 services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
 services.AddScoped<IUserWriteRepository, UserWriteRepository>();
-services.AddScoped<ISettingWriteRepository, SettingWriteRepository>();
+services.AddScoped<ISettingsWriteRepository, SettingsWriteRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();

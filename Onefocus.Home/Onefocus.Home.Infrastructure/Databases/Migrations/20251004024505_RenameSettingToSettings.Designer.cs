@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Onefocus.Home.Infrastructure.Databases.DbContexts.Write;
@@ -11,9 +12,11 @@ using Onefocus.Home.Infrastructure.Databases.DbContexts.Write;
 namespace Onefocus.Home.Infrastructure.Databases.Migrations
 {
     [DbContext(typeof(HomeWriteDbContext))]
-    partial class HomeWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251004024505_RenameSettingToSettings")]
+    partial class RenameSettingToSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

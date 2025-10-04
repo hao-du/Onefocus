@@ -6,7 +6,7 @@ namespace Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
 public interface IWriteUnitOfWork
 {
     IUserWriteRepository User { get; }
-    ISettingWriteRepository Setting { get; }
+    ISettingsWriteRepository Settings { get; }
 
     Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task<Result> WithTransactionAsync(Func<CancellationToken, Task<Result>> action, CancellationToken cancellationToken = default);

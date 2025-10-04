@@ -10,13 +10,13 @@ namespace Onefocus.Home.Infrastructure.UnitOfWork.Write;
 public class WriteUnitOfWork(HomeWriteDbContext context
         , ILogger<WriteUnitOfWork> logger
         , IUserWriteRepository userRepository
-        , ISettingWriteRepository settingRepository
+        , ISettingsWriteRepository settingRepository
     ) : IWriteUnitOfWork
 {
     private readonly HomeWriteDbContext _context = context;
     protected ILogger<WriteUnitOfWork> Logger { get; } = logger;
     public IUserWriteRepository User { get; } = userRepository;
-    public ISettingWriteRepository Setting { get; } = settingRepository;
+    public ISettingsWriteRepository Settings { get; } = settingRepository;
 
     public async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -3,14 +3,14 @@ import { WalletRoutes } from '../features/wallet';
 import { Loading, NotFound } from '../shared/app';
 import { AppLayout } from '../shared/components/layouts';
 import { SideMenuItem } from '../shared/components/navigations';
-import { useCheck } from '../shared/features/home';
 import { Home } from './pages';
 import { useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
+import { useGetAppSettings } from '../shared/features/home';
 
 const App = () => {
     const navigate = useNavigate();
-    const { isCheckDone } = useCheck();
+    const { isAppSettingsReady } = useGetAppSettings();
 
     const items = useMemo<SideMenuItem[]>(() => [
         {
@@ -80,7 +80,7 @@ const App = () => {
                     label: 'Settings',
                     icon: 'pi pi-cog',
                     command: () => {
-                        navigate("/home/setting");
+                        navigate("/home/settings");
                     }
                 }
             ]
@@ -88,7 +88,7 @@ const App = () => {
     ], [navigate]);
 
     return (
-        !isCheckDone ? <Loading /> : (
+        !isAppSettingsReady ? <Loading /> : (
             <AppLayout items={items}>
                 <Routes>
                     <Route path="/" element={<Home />} />

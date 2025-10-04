@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router';
 import { NotFound } from '../../shared/app';
-import { Setting } from './setting';
+import { Settings } from './settings';
 
 const HomeRoutes = () => {
     return (
         <Routes>
-            <Route path="/setting" element={<Setting />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/*" element={<NotFound />} />
         </Routes>
     );

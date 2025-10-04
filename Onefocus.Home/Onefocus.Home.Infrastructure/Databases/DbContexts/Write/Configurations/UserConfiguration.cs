@@ -13,9 +13,9 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
             builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
             builder.Property(u => u.Email).HasMaxLength(254).IsRequired();
 
-            builder.HasOne(u => u.Setting)
+            builder.HasOne(u => u.Settings)
                 .WithOne(s => s.User)
-                .HasForeignKey<Setting>(u => u.UserId)
+                .HasForeignKey<Settings>(u => u.UserId)
                 .IsRequired();
         }
     }

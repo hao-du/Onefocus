@@ -5,5 +5,5 @@ namespace Onefocus.Home.Application.Interfaces.UnitOfWork.Read;
 
 public interface IReadUnitOfWork
 {
-    ISettingReadRepository Setting { get; }
+    ISettingsReadRepository Settings { get; }
 }

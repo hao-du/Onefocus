@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 
-namespace Onefocus.Home.Application.UseCases.Setting.Queries;
+namespace Onefocus.Home.Application.UseCases.Settings.Queries;
 
 public sealed record GetAllTimeZonesRequest() : IQuery<GetAllTimeZonesResponse>;
 public sealed record GetAllTimeZonesResponse(List<TimeZoneResponse> TimeZones);
