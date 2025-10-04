@@ -14,17 +14,20 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.2",
     "axios": "^1.12.2",
+    "luxon": "^3.7.2",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.63.0",
-    "react-router": "^7.9.3"
+    "react-router": "^7.9.3",
+    "windows-iana": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@types/jsdom": "^27.0.0",
+    "@types/luxon": "^3.7.1",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",

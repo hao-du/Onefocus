@@ -9,9 +9,11 @@ import useGetAllTimeZones from '../services/useGetAllTimeZones';
 import { Dropdown, Option } from '../../../../shared/components/controls';
 import { getEmptyGuid } from '../../../../shared/utils/formatUtils';
 import useGetSettingsByUserId from '../services/useGetSettingByUserId';
+import { useSettings } from '../../../../shared/hooks';
 
 const SettingsForm = () => {
     const { showResponseToast } = useWindows();
+    const { refetch } = useSettings();
     const { entity: allLocales, isEntityLoading: isAllLocalesLoading } = useGetAllLocales();
     const { entity: allTimeZones, isEntityLoading: isAllTimeZonesLoading } = useGetAllTimeZones();
     const { entity: setting, isEntityLoading: isSettingLoading } = useGetSettingsByUserId();
@@ -48,6 +50,7 @@ const SettingsForm = () => {
                                 locale: data.locale,
                                 timeZone: data.timeZone
                             });
+                            await refetch();
                             showResponseToast(response, 'Saved successfully.');
                         })();
                     }
@@ -62,7 +65,7 @@ const SettingsForm = () => {
                             className="w-full of-w-max"
                             options={allLocales?.map(locale => ({
                                 value: locale.code,
-                                label: `${locale.code} - ${locale.nativeName}`
+                                label: `${locale.nativeName}`
                             }) as Option) ?? []}
                             rules={{
                                 validate: (value) => value && value !== getEmptyGuid() ? true : 'Locale is required.'
@@ -73,7 +76,7 @@ const SettingsForm = () => {
                             className="w-full of-w-max"
                             options={allTimeZones?.map(timeZone => ({
                                 value: timeZone.id,
-                                label: `${timeZone.id} - ${timeZone.displayName}`
+                                label: `${timeZone.displayName}`
                             }) as Option) ?? []}
                             rules={{
                                 validate: (value) => value && value !== getEmptyGuid() ? true : 'Timezone is required.'

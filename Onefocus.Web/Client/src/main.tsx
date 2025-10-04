@@ -6,7 +6,7 @@ import App from './app/App';
 import { Main } from './shared/app';
 import { Login, refreshToken } from './shared/features/identity';
 
-import 'primereact/resources/themes/viva-light/theme.css';
+import 'primereact/resources/themes/tailwind-light/theme.css';
 import './index.scss';
 
 

@@ -1,6 +1,6 @@
-import { formatCurrency, formatDateLocalSystem } from "./formatUtils";
+import { formatCurrency, normalizeDateTimeString } from "./formatUtils";
 
 export {
-    formatCurrency, formatDateLocalSystem
+    formatCurrency, normalizeDateTimeString
 };
 

@@ -11,13 +11,15 @@ import { BankAccountForm, useBankAccount } from '../bank-account';
 import { CurrencyExchangeForm, useCurrencyExchange } from '../currency-exchange';
 import { PeerTransferForm, usePeerTransfer } from '../peer-transfer';
 import { DataView } from '../../../../../shared/components/data';
-import { formatCurrency, formatDateLocalSystem } from '../../../../../shared/utils';
+import { formatCurrency } from '../../../../../shared/utils';
 import { Card } from '../../../../../shared/components/panel';
 import { Button, Tag } from '../../../../../shared/components/controls';
+import { useSettings } from '../../../../../shared/hooks';
 
 const TransactionList = React.memo(() => {
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
 
+    const { formatDateTime } = useSettings();
     const { showForm, setShowForm } = useTransactionPage();
     const { transactions, currencies, banks, counterparties, isListLoading } = useTransactionList();
     const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
@@ -118,7 +120,7 @@ const TransactionList = React.memo(() => {
                                         <div className="col-12 md:col-8 py-0">
                                             <div className="grid m-0">
                                                 <div className="col-12 text-lg font-bold pb-1">
-                                                    {formatDateLocalSystem(transaction.transactedOn, false)}
+                                                    {formatDateTime(transaction.transactedOn, true)}
                                                 </div>
                                                 <div className="col-12 text-color-secondary font-italic text-sm py-1">
                                                     {transaction.description}

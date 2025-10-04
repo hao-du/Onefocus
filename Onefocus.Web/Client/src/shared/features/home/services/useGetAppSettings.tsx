@@ -4,7 +4,7 @@ import { getSettingsByUserId } from '../apis';
 const useGetAppSettings = () => {
     const { isClientReady } = useClient();
 
-    const { data, isSuccess } = useQuery({
+    const { data, isSuccess, refetch } = useQuery({
         queryKey: [`useGetAppSettings`],
         queryFn: async () => {
             const apiResponse = await getSettingsByUserId();
@@ -16,7 +16,7 @@ const useGetAppSettings = () => {
         staleTime: Infinity
     });
 
-    return { appSettings: data, isAppSettingsReady: isSuccess};
+    return { appSettings: data, isAppSettingsReady: isSuccess, refetchAppSettings: refetch };
 };
 
 export default useGetAppSettings;

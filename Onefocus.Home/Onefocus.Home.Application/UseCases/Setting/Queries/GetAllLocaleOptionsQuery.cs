@@ -20,12 +20,16 @@ internal sealed class GetAllLocaleOptionsQueryHandler(
     IHttpContextAccessor httpContextAccessor
 ) : QueryHandler<GetAllLocaleOptionsRequest, GetAllLocaleOptionsResponse>(httpContextAccessor, logger)
 {
+    private readonly string[] supportedLocales = ["vi-VN", "en-US"];
+
     public override Task<Result<GetAllLocaleOptionsResponse>> Handle(GetAllLocaleOptionsRequest request, CancellationToken cancellationToken)
     {
         var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
 
         return Task.Run(() => Result.Success<GetAllLocaleOptionsResponse>(new(
-            [..cultures.Select(c => new LocaleResponse(
+            [..cultures
+            .Where(c => supportedLocales.Any(s => c.Name.Equals(s, StringComparison.OrdinalIgnoreCase)))
+            .Select(c => new LocaleResponse(
                 c.Name,
                 c.NativeName
             ))]

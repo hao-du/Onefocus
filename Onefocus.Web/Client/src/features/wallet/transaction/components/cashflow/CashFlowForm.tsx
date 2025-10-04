@@ -61,7 +61,7 @@ const CashFlowForm = (props: CashFlowFormProps) => {
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
             <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} CashFlow`}</h3>
             <form key={props.selectedCashFlow?.id ?? 'new'}>
-                <DatePicker control={form.control} name="transactedOn" label="Date" className="w-full of-w-max" rules={{
+                <DatePicker control={form.control} name="transactedOn" label="Date" showTime className="w-full of-w-max" rules={{
                     required: 'Date is required.',
                 }} />
                 <Number control={form.control} name="amount" label="Amount" className="w-full of-w-max" fractionDigits={2} rules={{

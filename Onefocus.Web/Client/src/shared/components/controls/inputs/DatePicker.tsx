@@ -4,7 +4,7 @@ import InputWrapper from './InputWrapper';
 import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
 import { Calendar } from 'primereact/calendar';
-import { formatDateLocalSystem } from '../../../utils';
+import { useSettings } from '../../../hooks';
 
 export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     = UseControllerProps<TFieldValues, TName, TTransformedValues>
@@ -24,6 +24,8 @@ export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName 
 
 const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     (props: DateTimeProps<TFieldValues, TName, TTransformedValues>) => {
+
+    const { formatDateTime, settings } = useSettings();
     return (
         <Controller
             name={props.name}
@@ -37,10 +39,11 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
                         errorMessage={controller.fieldState.error?.message}
                     >
                         {props.textOnly
-                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{controller.field.value ? formatDateLocalSystem(controller.field.value, props.showTime ?? false) : ''}</p>
+                            ? <p className={`${props.size == 'small' ? 'text-sm' : ''} m-2`}>{controller.field.value ? formatDateTime(controller.field.value, props.showTime ?? false) : ''}</p>
                             : <Calendar
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.value); }}
+                                locale={settings?.locale}
                                 invalid={controller.fieldState.invalid}
                                 value={controller.field.value ? new Date(controller.field.value) : undefined}
                                 showTime={props.showTime}

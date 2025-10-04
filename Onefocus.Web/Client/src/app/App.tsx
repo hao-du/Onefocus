@@ -6,11 +6,11 @@ import { SideMenuItem } from '../shared/components/navigations';
 import { Home } from './pages';
 import { useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
-import { useGetAppSettings } from '../shared/features/home';
+import { useSettings } from '../shared/hooks';
 
 const App = () => {
     const navigate = useNavigate();
-    const { isAppSettingsReady } = useGetAppSettings();
+    const { isSettingsReady } = useSettings();
 
     const items = useMemo<SideMenuItem[]>(() => [
         {
@@ -88,7 +88,8 @@ const App = () => {
     ], [navigate]);
 
     return (
-        !isAppSettingsReady ? <Loading /> : (
+        !isSettingsReady
+           ? <Loading /> : (
             <AppLayout items={items}>
                 <Routes>
                     <Route path="/" element={<Home />} />

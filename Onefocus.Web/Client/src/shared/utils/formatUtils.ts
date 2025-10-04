@@ -1,15 +1,56 @@
+const normalizeDateTimeString = (input: string, showTime: boolean) => {
+    if (!input || typeof input !== "string") return "";
 
-const formatDateLocalSystem = (date?: Date | string | number, includeTime: boolean = true) => {
-    if (!date) return "";
+    // Step 1: split into tokens
+    const parts = input.trim().split(/[,\s]+/).filter(Boolean);
+    let datePart = parts.find(p => p.includes("/") || p.includes("-")) || "";
+    let timePart = parts.find(p => p.includes(":")) || "";
+    const ampm = parts.find(p => /^am$|^pm$/i.test(p)); // detect AM/PM separately
 
-    const d = date instanceof Date ? date : new Date(date);
-    if (isNaN(d.getTime())) return ""; // Invalid date
+    // Step 2: normalize date
+    if (datePart) {
+        const separator = datePart.includes("/") ? "/" : "-";
+        const segments = datePart.split(separator).map(seg => seg.padStart(2, "0"));
 
-    const newValue = new Intl.DateTimeFormat(navigator.language, {
-        dateStyle: "short",
-        ...(includeTime ? { timeStyle: "short" } : {}),
-    }).format(d);
-    return newValue;
+        // Heuristic: if first part <=12 and second >12 → it's US MM/DD/YYYY, swap
+        if (segments.length === 3) {
+            const [a, b] = segments;
+            if (+a <= 12 && +b > 12) {
+                [segments[0], segments[1]] = [segments[1], segments[0]];
+            }
+        }
+
+        datePart = segments.join("/");
+    }
+
+    // Step 3: normalize time
+    if (timePart) {
+        let [hour, minute = "00", second = ""] = timePart.split(":");
+
+        let h = parseInt(hour, 10);
+        const m = parseInt(minute, 10);
+        const s = second ? parseInt(second, 10) : null;
+
+        // Convert AM/PM → 24h
+        if (ampm) {
+            const isPM = /^pm$/i.test(ampm);
+            const isAM = /^am$/i.test(ampm);
+
+            if (isPM && h < 12) h += 12;
+            if (isAM && h === 12) h = 0;
+        }
+
+        hour = h.toString().padStart(2, "0");
+        minute = m.toString().padStart(2, "0");
+        second = s !== null ? s.toString().padStart(2, "0") : "";
+
+        timePart = [hour, minute, second].filter(Boolean).join(":");
+    }
+
+    // Step 4: merge
+    return showTime
+        ? `${datePart} ${timePart}`.trim()
+        : datePart;
 }
 
 const formatCurrency = (value: number) => {
@@ -24,6 +65,6 @@ const getEmptyGuid = () => {
 }
 
 export {
-    formatCurrency, formatDateLocalSystem, getEmptyGuid
+    formatCurrency, normalizeDateTimeString, getEmptyGuid
 };
 
