@@ -16,4 +16,8 @@
 	  <ProjectReference Include="..\Onefocus.Home.Domain\Onefocus.Home.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Databases\Migrations\" />
+	</ItemGroup>
+
 </Project>

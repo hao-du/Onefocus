@@ -6,7 +6,7 @@ using Onefocus.Home.Application.Contracts.Read.Setting;
 using Onefocus.Home.Application.Interfaces.Repositories.Read;
 using Onefocus.Home.Infrastructure.Databases.DbContexts.Read;
 
-namespace Onefocus.Home.Infrastructure.Repositories.Read;
+namespace Onefocus.Home.Infrastructure.Databases.Repositories.Read;
 
 public sealed class SettingReadRepository(
     ILogger<SettingReadRepository> logger

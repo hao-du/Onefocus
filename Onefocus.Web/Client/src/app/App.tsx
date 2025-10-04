@@ -6,6 +6,7 @@ import { SideMenuItem } from '../shared/components/navigations';
 import { useCheck } from '../shared/features/home';
 import { Home } from './pages';
 import { useMemo } from 'react';
+import { HomeRoutes } from '../features/home';
 
 const App = () => {
     const navigate = useNavigate();
@@ -79,7 +80,7 @@ const App = () => {
                     label: 'Settings',
                     icon: 'pi pi-cog',
                     command: () => {
-                        navigate("/admin/settings");
+                        navigate("/home/setting");
                     }
                 }
             ]
@@ -92,6 +93,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="wallet/*" element={<WalletRoutes />} />
+                    <Route path="home/*" element={<HomeRoutes />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </AppLayout>

@@ -33,6 +33,7 @@ public sealed class Setting : WriteEntityBase, IAggregateRoot
         if (preferencesResult.IsFailure) return preferencesResult.Failure<Setting>();
 
         var setting = new Setting(actionedBy);
+        setting.UserId = actionedBy;
         setting.Preferences = preferencesResult.Value;
         return setting;
     }
@@ -47,6 +48,7 @@ public sealed class Setting : WriteEntityBase, IAggregateRoot
             var preferencesResult = Preferences.Create(preferenceParams);
             if (preferencesResult.IsFailure) return preferencesResult.Failure<Setting>();
 
+            UserId = actionedBy;
             Preferences = preferencesResult.Value;
         }
         else

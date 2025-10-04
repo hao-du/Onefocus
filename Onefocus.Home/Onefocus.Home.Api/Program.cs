@@ -10,8 +10,8 @@ using Onefocus.Home.Application.Interfaces.Repositories.Write;
 using Onefocus.Home.Application.Interfaces.UnitOfWork.Read;
 using Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Home.Infrastructure;
-using Onefocus.Home.Infrastructure.Repositories.Read;
-using Onefocus.Home.Infrastructure.Repositories.Write;
+using Onefocus.Home.Infrastructure.Databases.Repositories.Read;
+using Onefocus.Home.Infrastructure.Databases.Repositories.Write;
 using Onefocus.Home.Infrastructure.UnitOfWork.Read;
 using Onefocus.Home.Infrastructure.UnitOfWork.Write;
 using Onefocus.ServiceDefaults;
@@ -22,6 +22,7 @@ builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(option =>
 {

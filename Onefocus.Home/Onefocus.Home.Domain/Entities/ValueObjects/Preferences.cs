@@ -7,12 +7,12 @@ namespace Onefocus.Home.Domain.Entities.ValueObjects
     public class Preferences
     {
         public string Locale { get; private set; }
-        public string Timezone { get; private set; }
+        public string TimeZone { get; private set; }
 
-        public Preferences(string locale, string timezone)
+        public Preferences(string locale, string timeZone)
         {
             Locale = locale;
-            Timezone = timezone;
+            TimeZone = timeZone;
         }
 
         public static Preferences Default() => new Preferences(CultureInfoHelper.DefaultLocale, CultureInfoHelper.DefaultTimeZoneId);
@@ -34,7 +34,7 @@ namespace Onefocus.Home.Domain.Entities.ValueObjects
             if (validationResult.IsFailure) return validationResult.Failure<Preferences>();
 
             Locale = preferenceParams.Locale;
-            Timezone = preferenceParams.Timezone; 
+            TimeZone = preferenceParams.Timezone; 
 
             return Result.Success();
         }

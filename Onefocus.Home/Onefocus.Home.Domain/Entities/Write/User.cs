@@ -5,8 +5,6 @@ namespace Onefocus.Home.Domain.Entities.Write;
 
 public sealed class User : WriteEntityBase, IAggregateRoot
 {
-    public Guid? SettingId { get; private set; } = default!;
-
     public string FirstName { get; private set; } = default!;
     public string LastName { get; private set; } = default!;
     public string Email { get; private set; } = default!;

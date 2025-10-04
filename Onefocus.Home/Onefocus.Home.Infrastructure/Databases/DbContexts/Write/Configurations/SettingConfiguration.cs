@@ -12,10 +12,7 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
 
             builder.Property(t => t.UserId).IsRequired();
 
-            builder.HasOne(s => s.User)
-                .WithOne(u => u.Setting)
-                .HasForeignKey<Setting>(s => s.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasIndex(s => s.UserId).IsUnique();
 
             builder.OwnsOne(s => s.Preferences, pref =>
             {

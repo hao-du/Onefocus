@@ -10,12 +10,9 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Read.Configurations
         {
             base.Configure(builder);
 
-            builder.HasOne(s => s.User)
-                .WithOne(u => u.Setting)
-                .HasForeignKey<Setting>(s => s.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasIndex(s => s.UserId).IsUnique();
 
-            builder.OwnsOne(s => s.Preference, pref =>
+            builder.OwnsOne(s => s.Preferences, pref =>
             {
                 pref.ToJson();
             }); 

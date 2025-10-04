@@ -6,7 +6,7 @@ public abstract class WriteEntityBase : EntityBase
 {
     protected void Init(Guid? id, string? description, Guid actionedBy)
     {
-        Id = id ?? Guid.NewGuid();
+        Id = id ?? Guid.Empty;
         Description = description;
         IsActive = true;
         CreatedBy = actionedBy;

@@ -50,7 +50,7 @@ const BankAccountForm = (props: BankAccountFormProps) => {
                 value: currency.id
             } as Option;
         });
-    }, [props.currencies])
+    }, [props.currencies]);
 
     const bankDropdownOptions = useMemo((): Option[] => {
         return props.banks.map((bank) => {
@@ -59,7 +59,7 @@ const BankAccountForm = (props: BankAccountFormProps) => {
                 value: bank.id
             } as Option;
         });
-    }, [props.banks])
+    }, [props.banks]);
 
     const buttons = [
         {

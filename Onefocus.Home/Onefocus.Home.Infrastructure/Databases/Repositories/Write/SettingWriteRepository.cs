@@ -6,7 +6,7 @@ using Onefocus.Home.Application.Contracts.Write.Setting;
 using Onefocus.Home.Application.Interfaces.Repositories.Write;
 using Onefocus.Home.Infrastructure.Databases.DbContexts.Write;
 
-namespace Onefocus.Home.Infrastructure.Repositories.Write;
+namespace Onefocus.Home.Infrastructure.Databases.Repositories.Write;
 
 public sealed class SettingWriteRepository(
     ILogger<SettingWriteRepository> logger

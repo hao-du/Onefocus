@@ -18,6 +18,18 @@ internal static class SettingEndpoints
             return result.ToResult();
         });
 
+        routes.MapGet("setting/option/locales", async (ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllLocaleOptionsRequest());
+            return result.ToResult();
+        });
+
+        routes.MapGet("setting/option/timezones", async (ISender sender) =>
+        {
+            var result = await sender.Send(new GetAllTimeZonesRequest());
+            return result.ToResult();
+        });
+
         routes.MapPost("setting/upsert", async (UpsertSettingCommandRequest command, ISender sender) =>
         {
             var result = await sender.Send(command);

@@ -12,7 +12,7 @@ public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateT
 public sealed record UpdateTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
 internal sealed class UpdateCashFlowCommandHandler(
-        ILogger logger
+        ILogger<UpdateCashFlowCommandHandler> logger
         , IWriteUnitOfWork unitOfWork
         , IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor, logger)

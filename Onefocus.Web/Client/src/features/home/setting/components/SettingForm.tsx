@@ -1,51 +1,88 @@
 import { useForm } from 'react-hook-form';
 import SettingFormInput from './interfaces/SettingFormInput';
-import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
-import { Switch, Text, Textarea } from '../../../../shared/components/controls';
+import { Workspace } from '../../../../shared/components/layouts/workspace';
+import { useWindows } from '../../../../shared/components/hooks';
+import useGetSettingByUserId from '../services/useGetSettingByUserId';
+import useUpsertSetting from '../services/useUpsertSetting';
+import { useMemo } from 'react';
+import useGetAllLocales from '../services/useGetAllLocales';
+import useGetAllTimeZones from '../services/useGetAllTimeZones';
+import { Dropdown, Option } from '../../../../shared/components/controls';
+import { getEmptyGuid } from '../../../../shared/utils/formatUtils';
 
-type SettingFormProps = {
-    setting: SettingFormInput | null | undefined;
-    onSubmit: (data: SettingFormInput) => void;
-    isPending?: boolean;
-}
+const SettingForm = () => {
+    const { showResponseToast } = useWindows();
+    const { entity: allLocales, isEntityLoading: isAllLocalesLoading } = useGetAllLocales();
+    const { entity: allTimeZones, isEntityLoading: isAllTimeZonesLoading } = useGetAllTimeZones();
+    const { entity: setting, isEntityLoading: isSettingLoading } = useGetSettingByUserId();
+    const { onUpsertAsync, isUpserting } = useUpsertSetting();
 
-const BankForm = (props: SettingFormProps) => {
-    const {control, handleSubmit} = useForm<SettingFormInput>({
-        values: props.setting ? {...props.setting} :
-            {
-                locale: '',
-                timezone: ''
-            }
+    const isPending = isSettingLoading || isUpserting || isAllLocalesLoading || isAllTimeZonesLoading;
+
+    const formValues = useMemo(() => {
+        return setting ??
+        {
+            locale: '',
+            timeZone: ''
+        }
+    }, [setting]);
+
+    const { control, handleSubmit } = useForm<SettingFormInput>({
+        defaultValues: formValues,
+        values: formValues
     });
 
-    const isEditMode = Boolean(props.setting);
 
-    const buttons = [
-        {
-            id: 'btnSave',
-            label: 'Save',
-            icon: 'pi pi-save',
-            onClick: () => {
-                handleSubmit(props.onSubmit)();
-            }
-        }
-    ];
 
     return (
-        <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} Bank`}</h3>
-            <form>
-                <Text control={control} name="name" label="Name" className="w-full of-w-max" rules={{
-                    required: 'Name is required.',
-                    maxLength: {value: 100, message: 'Name cannot exceed 100 characters.'}
-                }}/>
-                <Textarea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: {value: 255, message: 'Name cannot exceed 255 characters.'}
-                }}/>
-                {isEditMode && <Switch control={control} name="isActive" label="Is active"/>}
-            </form>
-        </WorkspaceRightPanel>
+        <Workspace
+            title="Settings"
+            isPending={isPending}
+            actionItems={[
+                {
+                    label: 'Save',
+                    icon: 'pi pi-save',
+                    command: () => {
+                        handleSubmit(async (data: SettingFormInput) => {
+                            const response = await onUpsertAsync({
+                                locale: data.locale,
+                                timeZone: data.timeZone
+                            });
+                            showResponseToast(response, 'Saved successfully.');
+                        })();
+                    }
+                }
+            ]}
+            leftPanel={
+                <div className="overflow-auto flex-1">
+                    <form>
+                        <Dropdown control={control}
+                            name="locale"
+                            label="Locale"
+                            className="w-full of-w-max"
+                            options={allLocales?.map(locale => ({
+                                value: locale.code,
+                                label: `${locale.code} - ${locale.nativeName}`
+                            }) as Option) ?? []}
+                            rules={{
+                                validate: (value) => value && value !== getEmptyGuid() ? true : 'Locale is required.'
+                            }} />
+                        <Dropdown control={control}
+                            name="timeZone"
+                            label="Timezone"
+                            className="w-full of-w-max"
+                            options={allTimeZones?.map(timeZone => ({
+                                value: timeZone.id,
+                                label: `${timeZone.id} - ${timeZone.displayName}`
+                            }) as Option) ?? []}
+                            rules={{
+                                validate: (value) => value && value !== getEmptyGuid() ? true : 'Timezone is required.'
+                            }} />
+                    </form>
+                </div>
+            }
+        />
     );
 };
 
-export default BankForm;
+export default SettingForm;

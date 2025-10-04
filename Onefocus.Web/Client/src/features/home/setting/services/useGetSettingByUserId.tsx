@@ -1,22 +1,16 @@
-import { useState } from 'react';
 import { useQuery } from '../../../../shared/hooks';
 import { getSettingByUserId } from '../apis';
 
 const useGetSettingByUserId = () => {
-    const [settingId, setSettingId] = useState<string | undefined>(undefined);
-
-    const {data, isLoading} = useQuery({
+    const {data, isLoading, isFetching} = useQuery({
         queryKey: [`getSettingByUserId`],
         queryFn: async () => {
-            if (!settingId) return null;
-
             const apiResponse = await getSettingByUserId();
             return apiResponse.value;
         },
-        enabled: Boolean(settingId)
     });
 
-    return {entity: data, isEntityLoading: isLoading, setSettingId: setSettingId};
+    return {entity: data, isEntityLoading: isLoading || isFetching};
 };
 
 export default useGetSettingByUserId;

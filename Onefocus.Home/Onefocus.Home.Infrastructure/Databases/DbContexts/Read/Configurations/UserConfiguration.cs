@@ -12,8 +12,8 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Read.Configurations
 
             builder.HasOne(u => u.Setting)
                 .WithOne(s => s.User)
-                .HasForeignKey<User>(u => u.SettingId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey<Setting>(u => u.UserId)
+                .IsRequired();
         }
     }
 }

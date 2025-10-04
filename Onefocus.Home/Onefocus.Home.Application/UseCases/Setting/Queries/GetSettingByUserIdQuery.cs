@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 namespace Onefocus.Home.Application.UseCases.Setting.Queries;
 
 public sealed record GetSettingByUserIdQueryRequest() : IQuery<GetSettingByUserIdQueryResponse>;
-public sealed record GetSettingByUserIdQueryResponse(Guid? SettingId, string Locale, string Timezone);
+public sealed record GetSettingByUserIdQueryResponse(string Locale, string TimeZone);
 
 internal sealed class GetSettingByUserIdQueryHandler(
     ILogger<GetSettingByUserIdQueryHandler> logger,
@@ -27,11 +27,10 @@ internal sealed class GetSettingByUserIdQueryHandler(
         var getSettingResult = await unitOfWork.Setting.GetSettingByUserIdAsync(new(actionByResult.Value), cancellationToken);
         if (getSettingResult.IsFailure) return getSettingResult.Failure<GetSettingByUserIdQueryResponse>();
 
-        var preferences = getSettingResult.Value.Setting?.Preference ?? Preferences.Default();
+        var preferences = getSettingResult.Value.Setting?.Preferences ?? Preferences.Default();
         return Result.Success<GetSettingByUserIdQueryResponse>(new(
-            SettingId: getSettingResult.Value.Setting?.Id ?? Guid.Empty,
             Locale: preferences.Locale,
-            Timezone: preferences.Timezone
+            TimeZone: preferences.TimeZone
         ));
     }
 }

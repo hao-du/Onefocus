@@ -1,11 +1,17 @@
-import { getSettingByUserId, upsertSetting } from './settingApis';
-import { GetSettingByUserIdResponse, UpsertSettingRequest } from './interfaces';
+import { getSettingByUserId, upsertSetting, getAllLocaleOptions, getAllTimeZoneOptions } from './settingApis';
+import { GetSettingByUserIdResponse, UpsertSettingRequest, GetAllLocaleOptionsResponse, GetAllTimeZonesResponse, LocaleResponse, TimeZoneResponse } from './interfaces';
 
 export {
     getSettingByUserId,
-    upsertSetting
+    upsertSetting,
+    getAllLocaleOptions,
+    getAllTimeZoneOptions
 };
 export type {
     GetSettingByUserIdResponse,
-    UpsertSettingRequest
+    UpsertSettingRequest,
+    GetAllLocaleOptionsResponse,
+    GetAllTimeZonesResponse,
+    LocaleResponse,
+    TimeZoneResponse
 };
