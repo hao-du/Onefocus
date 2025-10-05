@@ -4,5 +4,4 @@ export default interface SettingsContextValue<TData = unknown, TError = DefaultE
     settings?: TData;
     refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<TData, TError>>;
     isSettingsReady?: boolean;
-    formatDateTime: (date: Date | string | number, showTime: boolean) => string;
 }

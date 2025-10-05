@@ -1,5 +1,6 @@
 import { Button as PrimeButton } from 'primereact/button';
 import { BaseButtonProps } from '../../props';
+import { useLocale } from '../../../hooks';
 
 type ButtonProps = BaseButtonProps & {
     link?: boolean | undefined;
@@ -13,11 +14,13 @@ type ButtonProps = BaseButtonProps & {
 };
 
 const Button = (props: ButtonProps) => {
+    const { translate } = useLocale();
+
     return (
         <PrimeButton
             type={props.type ? props.type : 'button'}
             className={props.className}
-            label={props.label}
+            label={translate(props.label)}
             icon={props.isPending && props.icon ? 'pi pi-spin pi-spinner' : 'pi ' + props.icon}
             disabled={props.disabled || props.isPending}
             onClick={props.onClick}

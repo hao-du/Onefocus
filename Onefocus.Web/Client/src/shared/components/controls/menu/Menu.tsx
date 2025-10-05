@@ -2,6 +2,7 @@ import { Menu as PiMenu } from 'primereact/menu';
 import { ActionItem } from '../interfaces';
 import { BaseProps } from '../../props';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { useLocale } from '../../../hooks';
 
 type MenuProps = BaseProps & {
     model?: ActionItem[];
@@ -14,6 +15,7 @@ export type MenuRef = {
 };
 
 const Menu = forwardRef<MenuRef, MenuProps>((props, ref) => {
+    const { translate } = useLocale();
     const internalRef = useRef<PiMenu>(null);
 
     useImperativeHandle(ref, () => ({
@@ -24,7 +26,11 @@ const Menu = forwardRef<MenuRef, MenuProps>((props, ref) => {
 
     return (
         <PiMenu
-            model={props.model}
+            model={props.model?.map(item => {
+                item.label = translate(item.label);
+                return item;
+            })}
+            className={props.className}
             popupAlignment={props.popupAlignment ?? 'right'}
             id={props.id}
             ref={internalRef}

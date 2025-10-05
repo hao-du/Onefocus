@@ -5,6 +5,7 @@ import { Card, CardOptions, Panel } from '../../panel';
 import DataView from './DataView';
 import { PanelHeaderTemplateOptions } from './interfaces';
 import { Button } from '../../controls';
+import { useLocale } from '../../../hooks';
 
 type EditableDataViewProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> = {
     headerName?: string;
@@ -24,6 +25,7 @@ interface Action {
 const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableDataViewProps<TFormInput, TName>) => {
     type EditableRow = FieldArrayWithId<TFormInput, TName, "rowId">;
 
+    const { translate } = useLocale();
     const [originalRows, setOriginalRows] = useState<Record<string, any>>({});
     const [rowsState, setRowsState] = useState<Record<string, 'inNewMode' | 'inEditMode' | undefined>>({});
     const [lastAction, setLastAction] = useState<Action>({ rowIndex: 0 });
@@ -132,7 +134,7 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
         return (
             <div className={`${options.className} justify-content-space-between`}>
                 <div className="flex align-items-center gap-2">
-                    <span className="font-bold">{props.headerName}</span>
+                    <span className="font-bold">{translate(props.headerName)}</span>
                 </div>
                 <div>
                     <Button icon="pi pi-plus" isPending={props.isPending} rounded text onClick={() => {
@@ -146,7 +148,7 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
                 </div>
             </div>
         );
-    }, [props.headerName, props.newRowValue, props.isPending, insert]);
+    }, [props.headerName, props.newRowValue, props.isPending, insert, translate]);
 
 
     const cardFooterTemplate = useCallback((options: CardOptions) => {

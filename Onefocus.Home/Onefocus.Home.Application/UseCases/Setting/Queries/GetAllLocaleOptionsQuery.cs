@@ -30,8 +30,8 @@ internal sealed class GetAllLocaleOptionsQueryHandler(
             [..cultures
             .Where(c => supportedLocales.Any(s => c.Name.Equals(s, StringComparison.OrdinalIgnoreCase)))
             .Select(c => new LocaleResponse(
-                c.Name,
-                c.NativeName
+                Code: c.Name,
+                NativeName: c.NativeName
             ))]
         )));
     }

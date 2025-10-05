@@ -3,6 +3,7 @@ import { Button, SpeedDial } from '../../controls';
 import { useWindows } from '../../hooks';
 import { BaseProps } from '../../props';
 import EditPanelButton from './interfaces/EditPanelButton';
+import { useLocale } from '../../../hooks';
 
 type WorkspaceRightPanelProps = BaseProps & {
     buttons?: EditPanelButton[];
@@ -13,6 +14,7 @@ type WorkspaceRightPanelProps = BaseProps & {
 const WorkspaceRightPanel = (props: WorkspaceRightPanelProps) => {
     const { isMobile } = useWindows();
     const [isMinimised, setIsMinimised] = useState(false);
+    const { translate } = useLocale();
 
     const renderButtons = useCallback((isMobile: boolean, isPending?: boolean, buttons?: EditPanelButton[]) => {
         if (!buttons) {
@@ -35,7 +37,7 @@ const WorkspaceRightPanel = (props: WorkspaceRightPanelProps) => {
                         'flex justify-content-between align-items-center border-bottom-1 surface-border-color p-3'
                         : 'flex justify-content-end gap-2 border-bottom-1 surface-border-color p-3'}
                     >
-                        {buttons.map((button) => <Button key={button.id} id={button.id} label={button.label}
+                        {buttons.map((button) => <Button key={button.id} id={button.id} label={translate(button.label)}
                             onClick={button.onClick} icon={button.icon}
                             isPending={isPending} />)}
                     </div>

@@ -4,7 +4,7 @@ import InputWrapper from './InputWrapper';
 import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
 import { Calendar } from 'primereact/calendar';
-import { useSettings } from '../../../hooks';
+import { useLocale } from '../../../hooks';
 
 export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     = UseControllerProps<TFieldValues, TName, TTransformedValues>
@@ -25,7 +25,7 @@ export type DateTimeProps<TFieldValues extends FieldValues = FieldValues, TName 
 const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     (props: DateTimeProps<TFieldValues, TName, TTransformedValues>) => {
 
-    const { formatDateTime, settings } = useSettings();
+    const { formatDateTime, language, translate } = useLocale();
     return (
         <Controller
             name={props.name}
@@ -43,14 +43,14 @@ const DatePicker = <TFieldValues extends FieldValues = FieldValues, TName extend
                             : <Calendar
                                 id={controller.field.name}
                                 onChange={(e) => { controller.field.onChange(e.value); }}
-                                locale={settings?.locale}
+                                locale={language}
                                 invalid={controller.fieldState.invalid}
                                 value={controller.field.value ? new Date(controller.field.value) : undefined}
                                 showTime={props.showTime}
                                 hourFormat={props.hourFormat}
                                 minDate={props.minDate}
                                 maxDate={props.maxDate}
-                                placeholder={props.placeholder}
+                                placeholder={translate(props.placeholder)}
                                 dateFormat={props.dateFormat}
                                 showIcon={true}
                                 showSeconds={props.showSeconds}

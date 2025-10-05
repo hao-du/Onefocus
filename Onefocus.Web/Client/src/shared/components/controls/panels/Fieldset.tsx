@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Fieldset as PrimeFieldset } from 'primereact/fieldset';
 import { BaseProps } from '../../props';
+import { useLocale } from '../../../hooks';
 
 type FieldsetProps = BaseProps & {
     children: React.ReactNode;
@@ -8,8 +9,10 @@ type FieldsetProps = BaseProps & {
 };
 
 const Fieldset = (props: FieldsetProps) => {
+    const {translate} = useLocale();
+
     return (
-        <PrimeFieldset legend={props.title} className={props.className}>
+        <PrimeFieldset legend={translate(props.title)} className={props.className}>
             {props.children}
         </PrimeFieldset>
     );

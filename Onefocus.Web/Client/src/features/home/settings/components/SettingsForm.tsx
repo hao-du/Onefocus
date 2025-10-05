@@ -33,9 +33,7 @@ const SettingsForm = () => {
         defaultValues: formValues,
         values: formValues
     });
-
-
-
+    
     return (
         <Workspace
             title="Settings"

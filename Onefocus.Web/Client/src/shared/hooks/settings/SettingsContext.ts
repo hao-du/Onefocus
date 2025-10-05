@@ -6,8 +6,7 @@ import { GetSettingsByUserIdResponse } from '../../features/home';
 const SettingsContext = createContext<SettingsContextValue<GetSettingsByUserIdResponse, unknown>>({
     settings: undefined,
     isSettingsReady: false,
-    refetch: async () => Promise.resolve({} as QueryObserverResult<GetSettingsByUserIdResponse, unknown>),
-    formatDateTime: () => ""
+    refetch: async () => Promise.resolve({} as QueryObserverResult<GetSettingsByUserIdResponse, unknown>)
 });
 
 export default SettingsContext;

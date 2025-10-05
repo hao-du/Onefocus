@@ -1,5 +1,6 @@
 import { ColumnEditorOptions, Column as PiColumn } from 'primereact/column';
 import { ColumnBodyOptions } from './interfaces';
+import { useLocale } from '../../../hooks';
 
 type ColumnProps<TValue> = {
     field?: string;
@@ -17,10 +18,12 @@ type ColumnProps<TValue> = {
 };
 
 const Column = <TValue,>(props: ColumnProps<TValue>) => {
+    const { translate } = useLocale();
+
     return (
         <PiColumn
             field={props.field}
-            header={props.header}
+            header={translate(props.header)}
             style={props.style}
             bodyStyle={props.bodyStyle}
             headerStyle={props.headerStyle}

@@ -6,6 +6,7 @@ import { ColumnBodyOptions } from './interfaces';
 import { Button } from '../../controls';
 import DataTable from './DataTable';
 import Column from './Column';
+import { useLocale } from '../../../hooks';
 type EditableTableProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> = BaseProps & PropsWithChildren & {
     tableName?: string
     isReadOnly?: boolean;
@@ -19,6 +20,7 @@ type EditableTableProps<TFormInput extends FieldValues, TName extends FieldArray
 const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>>(props: EditableTableProps<TFormInput, TName>) => {
     const [originalRows, setOriginalRows] = useState<Record<string, FieldArray<TFormInput, TName>>>({});
     const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
+    const {translate} = useLocale();
 
     const { control, getValues, trigger } = props.form;
     const { fields, update, append, remove } = useFieldArray({
@@ -146,7 +148,7 @@ const EditableTable = <TFormInput extends FieldValues, TName extends FieldArrayP
             tableStyle={{ tableLayout: 'fixed', width: '100%' }}
             header={
                 <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span className="text-xl text-900 font-bold">{props.tableName}</span>
+                    <span className="text-xl text-900 font-bold">{translate(props.tableName)}</span>
                     <Button icon="pi pi-plus" rounded onClick={() => {
                         const newValue = props.newRowValue !== null
                             ? { ...props.newRowValue, rowId: UniqueComponentId() }

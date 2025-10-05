@@ -3,6 +3,8 @@ import { Sidebar } from "primereact/sidebar";
 import { useCallback, useMemo, useState } from "react";
 import MobileSidebarVisibleState from "./interfaces/MobileSidebarVisibleState";
 import SideMenuItem from "./interfaces/SideMenuItem";
+import { useTranslatedMenuItems } from './hooks/useTranslatedMenu';
+import { APP_NAME } from '../../hooks/constants/Locale';
 
 type SideMenuProps = {
     items?: SideMenuItem[];
@@ -10,6 +12,8 @@ type SideMenuProps = {
 };
 
 const SideMenu = (props: SideMenuProps) => {
+    const translatedItems = useTranslatedMenuItems(props.items);
+
     const expandAllItems = useMemo((): SideMenuItem[] => {
         if (!props?.items) return [];
         
@@ -31,13 +35,13 @@ const SideMenu = (props: SideMenuProps) => {
     const renderSideMenu = useCallback(() => {
         return (
             <>
-                <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">Onefocus</h1>
-                <PanelMenu model={props.items} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys}
+                <h1 className="mt-0 mb-1 text-6xl font-normal text-primary">{APP_NAME}</h1>
+                <PanelMenu model={translatedItems} expandedKeys={expandedKeys} onExpandedKeysChange={setExpandedKeys}
                            className="w-full flex-auto overflow-auto" multiple/>
             </>
 
         );
-    }, [props.items, expandedKeys]);
+    }, [translatedItems, expandedKeys]);
 
     return (
         <>
