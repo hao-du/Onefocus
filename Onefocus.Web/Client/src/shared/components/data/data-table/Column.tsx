@@ -2,7 +2,7 @@ import { ColumnEditorOptions, Column as PiColumn } from 'primereact/column';
 import { ColumnBodyOptions } from './interfaces';
 import { useLocale } from '../../../hooks';
 
-type ColumnProps<TValue> = {
+export type ColumnProps<TValue> = {
     field?: string;
     header?: string;
     style?: React.CSSProperties;

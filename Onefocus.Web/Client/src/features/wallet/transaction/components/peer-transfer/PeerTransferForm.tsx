@@ -8,6 +8,7 @@ import { CurrencyResponse } from '../../../currency';
 import PeerTransferFormInput from './interfaces/PeerTransferFormInput';
 import { CounterpartyResponse } from '../../../counterparty/apis';
 import { EditableDataView } from '../../../../../shared/components/data';
+import { useLocale } from '../../../../../shared/hooks';
 
 type PeerTransferFormProps = {
     selectedPeerTransfer: PeerTransferFormInput | null | undefined;
@@ -18,6 +19,8 @@ type PeerTransferFormProps = {
 }
 
 const PeerTransferForm = (props: PeerTransferFormProps) => {
+    const {translate} = useLocale();
+
     const formValues = useMemo(() => {
         return props.selectedPeerTransfer ??
         {
@@ -69,13 +72,13 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
 
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} Bank Account`}</h3>
+            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} Peer Transfer`}</h3>
             <form key={props.selectedPeerTransfer?.id ?? 'new'}>
                 <Dropdown control={form.control} name="type" label="Type" className="w-full of-w-max" options={[
-                    { label: 'Lent to', value: 100 },
-                    { label: 'Borrowed from', value: 200 },
-                    { label: 'Gave to', value: 300 },
-                    { label: 'Received from', value: 400 }
+                    { label: translate('Lent to'), value: 100 },
+                    { label: translate('Borrowed from'), value: 200 },
+                    { label: translate('Gave to'), value: 300 },
+                    { label: translate('Received from'), value: 400 }
                 ]} rules={{
                     validate: {
                         required: (value) => value && value != 0 ? true : 'Type is required.'
@@ -87,10 +90,10 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                     }
                 }} />
                 <Dropdown control={form.control} name="status" label="Status" className="w-full of-w-max" options={[
-                    { label: 'Completed', value: 100 },
-                    { label: 'Failed', value: 200 },
-                    { label: 'Processing', value: 300 },
-                    { label: 'Pending', value: 400 }
+                    { label: translate('Completed'), value: 100 },
+                    { label: translate('Failed'), value: 200 },
+                    { label: translate('Processing'), value: 300 },
+                    { label: translate('Pending'), value: 400 }
                 ]} rules={{
                     validate: {
                         required: (value) => value && value != 0 ? true : 'Status is required.'
@@ -156,7 +159,7 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                         (index, isEditing) => <Dropdown
                             control={form.control}
                             name={`transferTransactions.${index}.isInFlow`}
-                            options={[{ label: 'Inflow', value: true }, { label: 'Outflow', value: false }]}
+                            options={[{ label: translate('Inflow'), value: true }, { label: translate('Outflow'), value: false }]}
                             className="w-full of-w-max"
                             size="small"
                             textOnly={!isEditing}

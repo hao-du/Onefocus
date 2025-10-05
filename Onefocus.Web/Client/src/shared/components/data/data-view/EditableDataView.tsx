@@ -248,7 +248,7 @@ const EditableDataView = <TFormInput extends FieldValues, TName extends FieldArr
             <DataView
                 value={fields}
                 listTemplate={listTemplate}
-                emptyMessage="No records found"
+                emptyMessage={translate("No records found")}
                 isPending={props.isPending}
             />
         </Panel>

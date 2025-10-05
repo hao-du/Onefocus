@@ -1,6 +1,9 @@
 import { DataTableHeaderTemplateType, DataTableRowEditCompleteEvent, DataTableRowEditEvent, DataTableRowEditSaveEvent, DataTableValueArray, DataTable as PiDataTable } from 'primereact/datatable';
 import * as React from 'react';
 import { BaseProps } from '../../props';
+import { Column as PiColumn } from 'primereact/column';
+import { useLocale } from '../../../hooks';
+import { ColumnProps } from './Column';
 
 type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     value?: TValue | undefined;
@@ -20,7 +23,22 @@ type DataTableProps<TValue extends DataTableValueArray> = BaseProps & {
     scrollType?: 'flex' | 'responsive';
 }
 
-const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<TValue>) => {
+const DataTable = <TValue extends DataTableValueArray>(props: DataTableProps<TValue>) => {
+    const { translate } = useLocale();
+
+    const processedChildren = React.Children.map(props.children, (child) => {
+        if (!React.isValidElement(child)) return child;
+
+        const { header, ...rest } = child.props as ColumnProps<TValue>;
+
+        return (
+            <PiColumn
+                {...rest}
+                header={translate(header)}
+            />
+        );
+    });
+
     return (
         <PiDataTable
             value={props.value}
@@ -43,7 +61,7 @@ const DataTable = <TValue extends DataTableValueArray> (props : DataTableProps<T
             scrollHeight={props.scrollType ?? 'flex'}
             showGridlines
         >
-            {props.children}
+            {processedChildren}
         </PiDataTable>
     );
 };
