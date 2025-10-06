@@ -22,6 +22,7 @@ export default {
     "Description": "Mô tả",
     "Is active": "Hiệu lực",
     "No records found": "Chưa có dữ liệu",
+    "Success": "Thành công",
 
     // menu
     "Home": "Trang chủ",
@@ -144,7 +145,13 @@ export default {
     "Status is required.":"Vui lòng chọn trạng thái.",
     "Cash flow is required.": "Vui lòng chọn dòng tiền",
 
-    //Messages
+    //Messages:
+    "Application is starting...": "Đang mở ứng dụng...",
     "Saved successfully.": "Lưu thành công.",
-    "Updated successfully.": "Cập nhật thành công."
+    "Updated successfully.": "Cập nhật thành công.",
+
+    //Server responses:
+    "Server error": "Lỗi máy chủ",
+    "Either name or short name is existed.": "Tên hoặc mã tiền tệ đã tồn tại.",
+    "Oops! Something went wrong.": "Ôi! Có gì đó không ổn."
 }

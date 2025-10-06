@@ -15,23 +15,23 @@ type MainProps = PropsWithChildren & {
 const Main = (props: MainProps) => {
     return (
         <BrowserRouter>
-            <WindowsProvider>
-                <ErrorHandlerProvider>
-                    <PrimeReactProvider>
-                        <QueryClientProvider client={props.queryClient}>
-                            <TokenProvider>
-                                <ClientProvider unauthorizedCallback={props.unauthorizedCallback}>
-                                    <SettingsProvider>
-                                        <LocaleProvider>
+            <LocaleProvider>
+                <WindowsProvider>
+                    <ErrorHandlerProvider>
+                        <PrimeReactProvider>
+                            <QueryClientProvider client={props.queryClient}>
+                                <TokenProvider>
+                                    <ClientProvider unauthorizedCallback={props.unauthorizedCallback}>
+                                        <SettingsProvider>
                                             {props.children}
-                                        </LocaleProvider>
-                                    </SettingsProvider>
-                                </ClientProvider>
-                            </TokenProvider>
-                        </QueryClientProvider>
-                    </PrimeReactProvider>
-                </ErrorHandlerProvider>
-            </WindowsProvider>
+                                        </SettingsProvider>
+                                    </ClientProvider>
+                                </TokenProvider>
+                            </QueryClientProvider>
+                        </PrimeReactProvider>
+                    </ErrorHandlerProvider>
+                </WindowsProvider>
+            </LocaleProvider>
         </BrowserRouter>
     );
 };

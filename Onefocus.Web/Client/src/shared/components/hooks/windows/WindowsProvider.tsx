@@ -1,11 +1,12 @@
 import { PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
-import { ApiResponseBase } from '../../../hooks';
+import { ApiResponseBase, useLocale } from '../../../hooks';
 import { Toast, ToastMessage, ToastRef } from '../../indicators';
 import WindowsContext from './WindowsContext';
 
 type WindowsProviderProps = PropsWithChildren & {};
 
 const WindowsProvider = (props: WindowsProviderProps) => {
+    const {translate} = useLocale();
     const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
     const toastRef = useRef<ToastRef>(null);
 
@@ -13,7 +14,7 @@ const WindowsProvider = (props: WindowsProviderProps) => {
         const mapSeverityToSummary = (message: ToastMessage) => {
             if (!message.summary) {
                 const severity = message.severity;
-                message.summary = severity ? severity[0].toUpperCase() + severity.slice(1) : severity;
+                message.summary = translate(severity ? severity[0].toUpperCase() + severity.slice(1) : severity);
             }
         }
         if (Array.isArray(message)) {
@@ -29,23 +30,23 @@ const WindowsProvider = (props: WindowsProviderProps) => {
             if(!message) return;
             showToast({
                 severity: 'success',
-                detail: message
+                detail: translate(message),
             });
         } else if (response.errors) {
             showToast(response.errors?.map((error): ToastMessage => {
                 return {
                     severity: 'error',
-                    detail: error.description,
-                    summary: `Server error`,
+                    detail: translate(error.description),
+                    summary: translate(`Server error`),
                 };
             }));
         } else {
             showToast({
                 severity: 'error',
-                detail: 'Oops! Something went wrong.'
+                detail: translate('Oops! Something went wrong.'),
             });
         }
-    }, [showToast]);
+    }, [showToast, translate]);
 
     useEffect(() => {
         const handleResize = () => {

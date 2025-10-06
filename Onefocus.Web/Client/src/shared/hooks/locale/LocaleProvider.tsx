@@ -1,63 +1,73 @@
 import { DateTime } from "luxon";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { findIana } from "windows-iana";
 import { normalizeDateTimeString } from "../../utils";
-import { useSettings } from "../settings";
 import LocaleContext from "./LocaleContext";
 import LocaleContextValue from "./interfaces/LocaleValueContext";
 import { DEFAULT_LANGUAGE, DEFAULT_LOCALE, DEFAULT_TIMEZONE } from "../constants/Locale";
-import { locale } from "primereact/api";
 import { useTranslation } from "react-i18next";
-import { useWindows } from "../../components/hooks";
-import { ApiResponseBase } from "../client";
+import { locale as primeLocale } from "primereact/api";
 
 const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { settings } = useSettings();
     const { t, i18n } = useTranslation();
-    const { showResponseToast } = useWindows();
+
+    const [language, setLanguage] = useState<string>(() => {
+        return localStorage.getItem("language") || DEFAULT_LANGUAGE;
+    });
+    const [timeZone, setTimeZone] = useState<string>(() => {
+        return localStorage.getItem("timeZone") || DEFAULT_TIMEZONE;
+    });
+    const [locale, setLocale] = useState<string>(() => {
+        return localStorage.getItem("locale") || DEFAULT_LOCALE;
+    });
 
     useEffect(() => {
-        if (settings?.language) {
-            locale(settings.language);
-            i18n.changeLanguage(settings.language)
-        }
-    }, [settings?.language, i18n]);
+        primeLocale(language);
+        i18n.changeLanguage(language);
+        localStorage.setItem("language", language);
+    }, [language, i18n]);
+
+    useEffect(() => {
+        localStorage.setItem("timeZone", timeZone);
+    }, [timeZone]);
+
+    useEffect(() => {
+        localStorage.setItem("locale", locale);
+    }, [locale]);
 
     const formatDateTime = useCallback((date: Date | string | number, showTime: boolean) => {
         if (!date) return "";
         const rawDate = date instanceof Date ? date : new Date(date);
         if (isNaN(rawDate.getTime())) return ""; // Invalid date
 
-        const ianaZones = findIana(settings?.timeZone ?? DEFAULT_TIMEZONE);
+        const ianaZones = findIana(timeZone);
         let output = '';
         if (ianaZones && ianaZones.length > 0) {
-            output = DateTime.fromJSDate(rawDate).setZone(ianaZones[0]).setLocale(settings?.locale ?? DEFAULT_LOCALE).toLocaleString(DateTime.DATETIME_SHORT);
+            output = DateTime.fromJSDate(rawDate).setZone(ianaZones[0]).setLocale(locale).toLocaleString(DateTime.DATETIME_SHORT);
         } else {
             output = rawDate.toLocaleString(navigator.language, DateTime.DATETIME_SHORT);
         }
         return normalizeDateTimeString(output, showTime);
-    }, [settings?.locale, settings?.timeZone]);
+    }, [locale, timeZone]);
 
     const translate = useCallback((input?: string) => {
         const value = input ?? '';
-        if (settings?.language) {
+        if (language) {
             return t(value);
         }
         return value;
-    }, [settings?.language, t]);
-
-    const showTranslatedToast = useCallback((response: ApiResponseBase, message?: string) => {
-        showResponseToast(response, translate(message));
-    }, [showResponseToast, translate]);
+    }, [language, t]);
 
     const contextValue: LocaleContextValue = useMemo(() => ({
-        language: settings?.language ?? DEFAULT_LANGUAGE,
-        locale: settings?.locale ?? DEFAULT_LOCALE,
-        timeZone: settings?.timeZone ?? DEFAULT_TIMEZONE,
+        language: language,
+        setLanguage: setLanguage,
+        locale: locale,
+        setLocale: setLocale,
+        timeZone: timeZone,
+        setTimeZone: setTimeZone,
         formatDateTime: formatDateTime,
         translate: translate,
-        showTranslatedToast: showTranslatedToast
-    }), [settings?.language, settings?.locale, settings?.timeZone, formatDateTime, translate, showTranslatedToast]);
+    }), [language, locale, timeZone, formatDateTime, translate]);
 
     return (
         <LocaleContext.Provider value={contextValue}>
