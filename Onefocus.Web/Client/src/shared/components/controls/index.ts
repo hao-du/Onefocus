@@ -13,6 +13,10 @@ import {
     Textarea
 } from "../controls/inputs";
 
+import {
+    TextOnly
+} from "../controls/elements";
+
 export {
     Button,
     ButtonGroup,
@@ -27,7 +31,8 @@ export {
     Switch,
     Text,
     Textarea,
-    Tag
+    Tag,
+    TextOnly
 };
 
 export type {

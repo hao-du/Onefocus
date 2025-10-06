@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import CounterpartyFormInput from './interfaces/CounterpartyFormInput';
 import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
-import { Switch, Text, Textarea } from '../../../../shared/components/controls';
+import { Switch, Text, Textarea, TextOnly } from '../../../../shared/components/controls';
 
 type CounterpartyFormProps = {
     selectedCounterparty: CounterpartyFormInput | null | undefined;
@@ -36,7 +36,7 @@ const CounterpartyForm = (props: CounterpartyFormProps) => {
 
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} Counterparty`}</h3>
+            <h3 className="mt-0 mb-5"><TextOnly value={`${isEditMode ? 'Edit' : 'Add'} Counterparty`} /></h3>
             <form>
                 <Text control={control} name="fullName" label="Full name" className="w-full of-w-max" rules={{
                     required: 'Full name is required.',
@@ -52,7 +52,7 @@ const CounterpartyForm = (props: CounterpartyFormProps) => {
                     maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' }
                 }} />
                 <Textarea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' }
+                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
                 }} />
                 {isEditMode && <Switch control={control} name="isActive" label="Is active" />}
             </form>

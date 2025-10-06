@@ -1,8 +1,7 @@
 import { useForm } from 'react-hook-form';
-import { Switch, Text, Textarea } from '../../../../shared/components/controls';
+import { Switch, Text, Textarea, TextOnly } from '../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../shared/components/layouts/workspace';
 import CurrencyFormInput from './interfaces/CurrencyFormInput';
-import { useLocale } from '../../../../shared/hooks';
 
 type CurrencyFormProps = {
     selectedCurrency: CurrencyFormInput | null | undefined;
@@ -11,8 +10,6 @@ type CurrencyFormProps = {
 }
 
 const CurrencyForm = (props: CurrencyFormProps) => {
-    const { translate } = useLocale();
-
     const {control, handleSubmit} = useForm<CurrencyFormInput>({
         values: props.selectedCurrency ? {...props.selectedCurrency} :
             {
@@ -40,7 +37,9 @@ const CurrencyForm = (props: CurrencyFormProps) => {
 
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{translate(`${isEditMode ? 'Edit' : 'Add'} Currency`)}</h3>
+            <h3 className="mt-0 mb-5">
+                <TextOnly value={`${isEditMode ? 'Edit' : 'Add'} Currency`} />
+            </h3>
             <form>
                 <Text control={control} name="name" label="Name" className="w-full of-w-max" rules={{
                     required: 'Name is required.',
@@ -48,7 +47,7 @@ const CurrencyForm = (props: CurrencyFormProps) => {
                 }}/>
                 <Text control={control} name="shortName" label="Short name" className="w-full of-w-max" rules={{
                     required: 'Short name is required.',
-                    maxLength: {value: 4, message: 'Name cannot exceed 4 characters.'}
+                    maxLength: {value: 4, message: 'Short name cannot exceed 4 characters.'}
                 }}/>
                 <Textarea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
                     maxLength: {value: 255, message: 'Name cannot exceed 255 characters.'}

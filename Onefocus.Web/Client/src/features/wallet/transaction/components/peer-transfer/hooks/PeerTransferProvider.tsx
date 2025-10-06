@@ -30,7 +30,7 @@ const PeerTransferProvider = (props: PeerTransferProviderProps) => {
                     amount: item.amount,
                     currencyId: item.currencyId,
                     description: item.description,
-                    isInFlow: item.isInFlow,
+                    isInFlow: item.isInFlow ?? false,
                     isActive: item.isActive,
                 }))
             });
@@ -52,7 +52,7 @@ const PeerTransferProvider = (props: PeerTransferProviderProps) => {
                     amount: item.amount,
                     currencyId: item.currencyId,
                     description: item.description,
-                    isInFlow: item.isInFlow,
+                    isInFlow: item.isInFlow ?? false,
                     isActive: item.isActive,
                 }))
             });

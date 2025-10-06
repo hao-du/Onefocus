@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Option } from '../../../../../shared/components/controls';
+import { Option, TextOnly } from '../../../../../shared/components/controls';
 import { DatePicker, Dropdown, Number, Switch, Text, Textarea } from '../../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
 import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';
@@ -59,20 +59,25 @@ const CashFlowForm = (props: CashFlowFormProps) => {
 
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} CashFlow`}</h3>
+            <h3 className="mt-0 mb-5">
+                <TextOnly value={`${isEditMode ? 'Edit' : 'Add'} CashFlow`} />
+            </h3>
             <form key={props.selectedCashFlow?.id ?? 'new'}>
                 <DatePicker control={form.control} name="transactedOn" label="Date" showTime className="w-full of-w-max" rules={{
                     required: 'Date is required.',
                 }} />
                 <Number control={form.control} name="amount" label="Amount" className="w-full of-w-max" fractionDigits={2} rules={{
                     required: 'Amount is required.',
-                    min: { value: 0, message: "Minimum amount is 0" },
+                    min: { value: 0, message: "Minimum amount is 0." },
+                    max: { value: 10000000000, message: "Maximum amount is ten billion." },
                 }} />
                 <Dropdown control={form.control} name="currencyId" label="Currency" className="w-full of-w-max" options={currencyDropdownOptions} rules={{
-                    required: 'Currency is required.',
+                    validate: {
+                        required: (value) => value && value !== getEmptyGuid() ? true : 'Currency is required.'
+                    }
                 }} />
                 <Textarea control={form.control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' },
+                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                 }} />
                 <Switch control={form.control} name="isIncome" label="Is income" description="Toggle between income and expense." />
                 {isEditMode && <Switch control={form.control} name="isActive" label="Is active" />}
@@ -97,8 +102,8 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                             className="w-full of-w-max"
                             size='small'
                             rules={{
-                                required: 'Name is required.',
-                                maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                                required: 'Item name is required.',
+                                maxLength: { value: 100, message: 'Item name cannot exceed 100 characters.' }
                             }}
                         />,
                         (index, isEditing) => <Number
@@ -111,7 +116,8 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                             fractionDigits={2}
                             rules={{
                                 required: 'Amount is required.',
-                                min: { value: 0, message: "Minimum amount is 0" },
+                                min: { value: 0, message: "Minimum amount is 0." },
+                                max: { value: 10000000000, message: "Maximum amount is ten billion." },
                             }}
                         />,
                         (index, isEditing) => <Text
@@ -121,6 +127,9 @@ const CashFlowForm = (props: CashFlowFormProps) => {
                             size='small'
                             name={`transactionItems.${index}.description`}
                             className="w-full of-w-max"
+                            rules={{
+                                maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                            }}
                         />
                     ]}
                 />

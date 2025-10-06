@@ -7,7 +7,8 @@ const LocaleContext = createContext<LocaleContextValue>({
     language: DEFAULT_LANGUAGE,
     locale: DEFAULT_LOCALE,
     formatDateTime: () => '',
-    translate: () => ''
+    translate: () => '',
+    showTranslatedToast: () => {}
 });
 
 export default LocaleContext;

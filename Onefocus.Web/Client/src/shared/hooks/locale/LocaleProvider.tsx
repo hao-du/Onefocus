@@ -8,10 +8,13 @@ import LocaleContextValue from "./interfaces/LocaleValueContext";
 import { DEFAULT_LANGUAGE, DEFAULT_LOCALE, DEFAULT_TIMEZONE } from "../constants/Locale";
 import { locale } from "primereact/api";
 import { useTranslation } from "react-i18next";
+import { useWindows } from "../../components/hooks";
+import { ApiResponseBase } from "../client";
 
 const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { settings } = useSettings();
     const { t, i18n } = useTranslation();
+    const { showResponseToast } = useWindows();
 
     useEffect(() => {
         if (settings?.language) {
@@ -43,13 +46,18 @@ const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
         return value;
     }, [settings?.language, t]);
 
+    const showTranslatedToast = useCallback((response: ApiResponseBase, message?: string) => {
+        showResponseToast(response, translate(message));
+    }, [showResponseToast, translate]);
+
     const contextValue: LocaleContextValue = useMemo(() => ({
         language: settings?.language ?? DEFAULT_LANGUAGE,
         locale: settings?.locale ?? DEFAULT_LOCALE,
         timeZone: settings?.timeZone ?? DEFAULT_TIMEZONE,
         formatDateTime: formatDateTime,
-        translate: translate
-    }), [settings?.language, settings?.locale, settings?.timeZone, formatDateTime, translate]);
+        translate: translate,
+        showTranslatedToast: showTranslatedToast
+    }), [settings?.language, settings?.locale, settings?.timeZone, formatDateTime, translate, showTranslatedToast]);
 
     return (
         <LocaleContext.Provider value={contextValue}>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Option } from '../../../../../shared/components/controls';
+import { Option, TextOnly } from '../../../../../shared/components/controls';
 import { DatePicker, Dropdown, Number, Switch, Text, Textarea } from '../../../../../shared/components/controls';
 import { WorkspaceRightPanel } from '../../../../../shared/components/layouts/workspace';
 import { getEmptyGuid } from '../../../../../shared/utils/formatUtils';
@@ -19,7 +19,7 @@ type PeerTransferFormProps = {
 }
 
 const PeerTransferForm = (props: PeerTransferFormProps) => {
-    const {translate} = useLocale();
+    const { translate } = useLocale();
 
     const formValues = useMemo(() => {
         return props.selectedPeerTransfer ??
@@ -72,7 +72,9 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
 
     return (
         <WorkspaceRightPanel buttons={buttons} isPending={props.isPending}>
-            <h3 className="mt-0 mb-5">{`${isEditMode ? 'Edit' : 'Add'} Peer Transfer`}</h3>
+            <h3 className="mt-0 mb-5">
+                <TextOnly value={`${isEditMode ? 'Edit' : 'Add'} Peer Transfer`} />
+            </h3>
             <form key={props.selectedPeerTransfer?.id ?? 'new'}>
                 <Dropdown control={form.control} name="type" label="Type" className="w-full of-w-max" options={[
                     { label: translate('Lent to'), value: 100 },
@@ -100,7 +102,7 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                     }
                 }} filter={false} />
                 <Textarea control={form.control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' },
+                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                 }} />
                 {isEditMode && <Switch control={form.control} name="isActive" label="Is active" />}
 
@@ -139,7 +141,8 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                             fractionDigits={2}
                             rules={{
                                 required: 'Amount is required.',
-                                min: { value: 0, message: "Minimum amount is 0" },
+                                min: { value: 0, message: "Minimum amount is 0." },
+                                max: { value: 10000000000, message: "Maximum amount is ten billion." },
                             }}
                         />,
                         (index, isEditing) => <Dropdown
@@ -163,7 +166,7 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                             className="w-full of-w-max"
                             size="small"
                             textOnly={!isEditing}
-                            label="Cash flow"
+                            label="Cash flow type"
                             filter={false}
                             rules={{
                                 validate: {
@@ -178,6 +181,9 @@ const PeerTransferForm = (props: PeerTransferFormProps) => {
                             size="small"
                             textOnly={!isEditing}
                             label="Description"
+                            rules={{
+                                maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                            }}
                         />
                     ]}
                 />

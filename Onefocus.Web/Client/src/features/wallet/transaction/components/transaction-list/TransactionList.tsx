@@ -14,12 +14,11 @@ import { DataView } from '../../../../../shared/components/data';
 import { formatCurrency } from '../../../../../shared/utils';
 import { Card } from '../../../../../shared/components/panel';
 import { Button, Tag } from '../../../../../shared/components/controls';
-import { useSettings } from '../../../../../shared/hooks';
+import { useLocale } from '../../../../../shared/hooks';
 
 const TransactionList = React.memo(() => {
+    const {formatDateTime} = useLocale();
     const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
-
-    const { formatDateTime } = useSettings();
     const { showForm, setShowForm } = useTransactionPage();
     const { transactions, currencies, banks, counterparties, isListLoading } = useTransactionList();
     const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
