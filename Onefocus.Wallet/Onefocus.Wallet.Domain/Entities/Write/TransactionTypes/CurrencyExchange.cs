@@ -113,21 +113,33 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
 
     public static Result Validate(CurrencyExchangeParams source, CurrencyExchangeParams target, decimal exchangeRate)
     {
-        if (exchangeRate <= 0)
+        if (exchangeRate < 1)
         {
-            return Result.Failure(Errors.CurrencyExchange.ExchangeRateMustGreaterThanZero);
+            return Result.Failure(Errors.CurrencyExchange.ExchangeRateMustEqualOrGreaterThanOne);
         }
-        if (source.Amount <= 0)
+        if (exchangeRate > 100)
         {
-            return Result.Failure(Errors.CurrencyExchange.BaseAmountMustGreaterThanZero);
+            return Result.Failure(Errors.CurrencyExchange.ExchangeRateMustEqualOrLessThanOneHundred);
+        }
+        if (source.Amount < 0)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
+        }
+        if (source.Amount > 10000000000)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
         }
         if (source.CurrencyId == default)
         {
-            return Result.Failure(Errors.CurrencyExchange.BaseCurrencyRequired);
+            return Result.Failure(Errors.CurrencyExchange.SourceCurrencyRequired);
         }
-        if (target.Amount <= 0)
+        if (target.Amount < 0)
         {
-            return Result.Failure(Errors.CurrencyExchange.TargetAmountMustGreaterThanZero);
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
+        }
+        if (target.Amount > 10000000000)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
         }
         if (target.CurrencyId == default)
         {

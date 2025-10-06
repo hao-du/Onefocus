@@ -63,6 +63,10 @@ public class TransactionItem : WriteEntityBase
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
         }
+        if (amount > 10000000000)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
+        }
 
         return Result.Success();
     }

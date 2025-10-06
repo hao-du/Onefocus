@@ -25,7 +25,7 @@ public static class Errors
 
     public static class Bank
     {
-        public static readonly Error NameRequired = new("BankNameRequired", "Bank name is required.");
+        public static readonly Error NameRequired = new("BankNameRequired", "Name is required.");
         public static readonly Error BankRequired = new("BankRequired", "Bank is required.");
         public static readonly Error NameIsExisted = new("NameIsExisted", "Bank name is existed.");
     }
@@ -44,28 +44,28 @@ public static class Errors
     public static class BankAccount
     {
         public static readonly Error AccountNumberRequired = new("AccountNumberRequired", "Account number is required.");
-        public static readonly Error ClosedOnRequired = new("ClosedOnRequired", "Close account date is required.");
-        public static readonly Error IssuedOnRequired = new("IssuedOnRequired", "Issued date is required.");
-        public static readonly Error InterestRateMustEqualOrGreaterThanZero = new("InterestRateMustEqualOrGreaterThanZero", "Interest rate must be equal or greater than 0.");
-        public static readonly Error InterestRateMustGreaterThanZeroWhenClose = new("InterestRateMustGreaterThanZeroWhenClose", "Interest rate must be greater than 0 when account is closed.");
+        public static readonly Error ClosedOnRequired = new("ClosedOnRequired", "Closed On is required when account is closed.");
+        public static readonly Error IssuedOnRequired = new("IssuedOnRequired", "Issued On is required.");
+        public static readonly Error InterestRateMustEqualOrGreaterThanZero = new("InterestRateMustEqualOrGreaterThanZero", "Minimum interest rate is 0.01.");
+        public static readonly Error InterestRateMustEqualOrLessThanOneHundred = new("InterestRateMustEqualOrLessThanOneHundred", "Maximum interest rate is 100.");
     }
 
     public static class Transaction
     {
-        public static readonly Error AmountMustEqualOrGreaterThanZero = new("AmountMustEqualOrGreaterThanZero", "Amount must be equal or greater than 0.");
+        public static readonly Error AmountMustEqualOrGreaterThanZero = new("AmountMustEqualOrGreaterThanZero", "Minimum amount is 0.");
+        public static readonly Error AmountMustEqualOrLessThanTenBillion = new("AmountMustEqualOrLessThanTenBillion", "Maximum amount is ten billion.");
         public static readonly Error TransactionExists = new("TransactionExists", "Transaction exists.");
-        public static readonly Error TransactedOnRequired = new("TransactedOnRequired", "Transaction date is required.");
+        public static readonly Error TransactedOnRequired = new("TransactedOnRequired", "Transacted On is required.");
         public static readonly Error InvalidTransaction = new("InvalidTransaction", "Transaction is invalid.");
         public static readonly Error ClosedOnCannotBeAFutureDate = new("ClosedOnCannotBeAFutureDate", "This bank account cannot be closed before the effective date.");
     }
 
     public static class CurrencyExchange
     {
-        public static readonly Error BaseCurrencyRequired = new("BaseCurrencyRequired", "Base currency is required.");
-        public static readonly Error TargetCurrencyRequired = new("TargetCurrencyRequired", "Target currency is required.");
-        public static readonly Error ExchangeRateMustGreaterThanZero = new("ExchangeRateMustGreaterThanZero", "Exchange rate must be greater than 0.");
-        public static readonly Error BaseAmountMustGreaterThanZero = new("BaseAmountMustGreaterThanZero", "Base amount must be greater than 0.");
-        public static readonly Error TargetAmountMustGreaterThanZero = new("TargetAmountMustGreaterThanZero", "Target amount must be greater than 0.");
+        public static readonly Error SourceCurrencyRequired = new("SourceCurrencyRequired", "Source Currency is required.");
+        public static readonly Error TargetCurrencyRequired = new("TargetCurrencyRequired", "Target Amount is required.");
+        public static readonly Error ExchangeRateMustEqualOrGreaterThanOne = new("ExchangeRateMustEqualOrGreaterThanOne", "Minimum exchange rate is 1.");
+        public static readonly Error ExchangeRateMustEqualOrLessThanOneHundred = new("ExchangeRateMustEqualOrLessThanOneHundred", "Maximum exchange rate is 100.");
     }
 
     public static class PeerTransfer
@@ -73,7 +73,7 @@ public static class Errors
         public static readonly Error CounterpartyRequired = new("CounterpartyRequired", "Counterparty is required.");
         public static readonly Error InvalidStatus = new("InvalidStatus", "Status is invalid.");
         public static readonly Error InvalidType = new("InvalidType", "Type is invalid.");
-        public static readonly Error NoTransactionsProvided = new ("NoTransactionsProvided", "No transactions p rovided.");
+        public static readonly Error NoTransactionsProvided = new ("NoTransactionsProvided", "No transactions are provided.");
     }
 
     public static class TransactionItem

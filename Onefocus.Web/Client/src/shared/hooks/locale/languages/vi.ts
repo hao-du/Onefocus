@@ -112,6 +112,7 @@ export default {
     "Description cannot exceed 255 characters.": "Mô tả không được vượt quá 255 ký tự.",
     "Short name is required.": "Vui lòng nhập mã tiền tệ.",
     "Short name cannot exceed 4 characters.": "Mã tiền tệ không được vượt quá 4 ký tự.",
+    "Short name cannot less than 3 characters.": "Mã tiền tệ không được dưới 3 ký tự.",
     "Full name is required.": "Vui lòng nhập họ và tên.",
     "Full name cannot exceed 100 characters.": "Họ và tên không được vượt quá 100 ký tự.",
     "Email is required.": "Vui lòng nhập email.",
@@ -130,7 +131,7 @@ export default {
     "Bank is required.": "Vui lòng chọn ngân hàng.",
     "Issued On is required.": "Vui lòng nhập ngày cấp sổ.",
     "Interest Rate is required.": "Vui lòng nhập lãi suất.",
-    "Minimum interest rate is 0.01.": "Lãi suất thấp nhất là 0.001.",
+    "Minimum interest rate is 0.01.": "Lãi suất thấp nhất là 0.01.",
     "Maximum interest rate is 100.": "Lãi suất cao nhất là 100.",
     "Closed On is required when account is closed.": "Vui lòng nhập ngày đóng tài khoản.",
     "Transacted On is required.": "Vui lòng nhập ngày giao dịch",
@@ -153,5 +154,10 @@ export default {
     //Server responses:
     "Server error": "Lỗi máy chủ",
     "Either name or short name is existed.": "Tên hoặc mã tiền tệ đã tồn tại.",
-    "Oops! Something went wrong.": "Ôi! Có gì đó không ổn."
+    "Oops! Something went wrong.": "Ôi! Có gì đó không ổn.",
+    "Account number is required.": "Vui lòng nhập số tài khoản.",
+    "No transactions are provided.": "Vui lòng thêm giao dịch nhận/chuyển tiền.",
+    "Status is invalid.": "Giá trị của Trạng thái không hợp lệ.",
+    "Type is invalid.": "Giá trị của Loại không hợp lệ.",
+    "Short name must have 3 to 4 characters.": "Mã tiền tệ phải từ 3 đến 4 ký tự."
 }

@@ -143,6 +143,10 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
         }
+        if (amount > 10000000000)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
+        }
         if (currencyId == default)
         {
             return Result.Failure(Errors.Currency.CurrencyRequired);

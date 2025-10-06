@@ -47,6 +47,7 @@ const CurrencyForm = (props: CurrencyFormProps) => {
                 }}/>
                 <Text control={control} name="shortName" label="Short name" className="w-full of-w-max" rules={{
                     required: 'Short name is required.',
+                    minLength: {value: 3, message: 'Short name cannot less than 3 characters.'},
                     maxLength: {value: 4, message: 'Short name cannot exceed 4 characters.'}
                 }}/>
                 <Textarea control={control} name="description" label="Description" className="w-full of-w-max" rules={{

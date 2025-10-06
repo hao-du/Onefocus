@@ -188,6 +188,10 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrGreaterThanZero);
         }
+        if (amount > 10000000000)
+        {
+            return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
+        }
         if (currencyId == default)
         {
             return Result.Failure(Errors.Currency.CurrencyRequired);
@@ -196,9 +200,13 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.Bank.BankRequired);
         }
-        if (interestRate < 0)
+        if (interestRate < (decimal)0.01)
         {
             return Result.Failure(Errors.BankAccount.InterestRateMustEqualOrGreaterThanZero);
+        }
+        if (interestRate > 100)
+        {
+            return Result.Failure(Errors.BankAccount.InterestRateMustEqualOrLessThanOneHundred);
         }
         if (issuedOn == default)
         {
@@ -213,10 +221,6 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
             if (!closedOn.HasValue || closedOn.Value == default)
             {
                 return Result.Failure(Errors.BankAccount.ClosedOnRequired);
-            }
-            if (interestRate == 0)
-            {
-                return Result.Failure(Errors.BankAccount.InterestRateMustGreaterThanZeroWhenClose);
             }
         }
 
