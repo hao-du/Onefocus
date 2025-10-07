@@ -43,7 +43,6 @@ builder.Services.AddReverseProxy()
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopmentLike())
 {
     app.UseCors(corsPolicyName);
@@ -51,6 +50,7 @@ if (app.Environment.IsDevelopmentLike())
     app.UseSwaggerUI();
 }
 
+app.MapDefaultEndpoints();
 app.UseAuthentication();
 app.MapReverseProxy();
 

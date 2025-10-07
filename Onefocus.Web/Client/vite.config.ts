@@ -1,11 +1,12 @@
-import {defineConfig} from 'vite';
-import {JSDOM} from 'jsdom';
+import { defineConfig } from 'vite';
+import { JSDOM } from 'jsdom';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
     return {
         server: {
-            hmr: false //disable auto-refresh
+            hmr: false,
+            sourcemapIgnoreList: false,
         },
         plugins: [
             react(),
@@ -41,6 +42,7 @@ export default defineConfig(({mode}) => {
         build: {
             sourcemap: mode === 'development' ? true : false,
             chunkSizeWarningLimit: 5120,
+            minify: mode === 'development' ? false : true,
         },
         css: {
             preprocessorOptions: {

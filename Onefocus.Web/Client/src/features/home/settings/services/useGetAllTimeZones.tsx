@@ -7,8 +7,7 @@ const useGetAllTimeZones = () => {
         queryFn: async () => {
             const apiResponse = await getAllTimeZoneOptions();
             return apiResponse.value?.timeZones;
-        },
-        staleTime: Infinity
+        }
     });
 
     return {entity: data, isEntityLoading: isLoading || isFetching};

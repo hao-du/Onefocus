@@ -23,6 +23,7 @@ export default {
     "Is active": "Hiệu lực",
     "No records found": "Chưa có dữ liệu",
     "Success": "Thành công",
+    "Error": "Lỗi",
 
     // menu
     "Home": "Trang chủ",

@@ -4,13 +4,14 @@ import { Loading, NotFound } from '../shared/app';
 import { AppLayout } from '../shared/components/layouts';
 import { SideMenuItem } from '../shared/components/navigations';
 import { Home } from './pages';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
-import { useSettings } from '../shared/hooks';
+import { useClient, useSettings } from '../shared/hooks';
 
 const App = () => {
     const navigate = useNavigate();
-    const { isSettingsReady } = useSettings();
+    const { isSettingsReady, refetch } = useSettings();
+    const { isClientReady } = useClient();
 
     const items = useMemo<SideMenuItem[]>(() => [
         {
@@ -87,18 +88,24 @@ const App = () => {
         }
     ], [navigate]);
 
+    useEffect(() => {
+        if (isClientReady) {
+            refetch();
+        }
+    }, [isClientReady]);
+
     return (
         !isSettingsReady
-           ? <Loading /> : (
-            <AppLayout items={items}>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="wallet/*" element={<WalletRoutes />} />
-                    <Route path="home/*" element={<HomeRoutes />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </AppLayout>
-        )
+            ? <Loading /> : (
+                <AppLayout items={items}>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="wallet/*" element={<WalletRoutes />} />
+                        <Route path="home/*" element={<HomeRoutes />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </AppLayout>
+            )
     );
 }
 

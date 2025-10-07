@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import SettingsContextValue from './interfaces/SettingsContextValue';
-import { QueryObserverResult } from '@tanstack/react-query';
 import { GetSettingsByUserIdResponse, useGetAppSettings } from '../../features/home';
 import SettingsContext from './SettingsContext';
 import { useLocale } from '../locale';
@@ -20,7 +19,7 @@ const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     const contextValue: SettingsContextValue<GetSettingsByUserIdResponse, unknown> = useMemo(() => ({
         settings: isAppSettingsReady ? appSettings : undefined,
         isSettingsReady: isAppSettingsReady,
-        refetch: isAppSettingsReady ? refetchAppSettings : async () => Promise.resolve({} as QueryObserverResult<GetSettingsByUserIdResponse, unknown>),
+        refetch: refetchAppSettings,
     }), [appSettings, refetchAppSettings, isAppSettingsReady]);
 
     return (

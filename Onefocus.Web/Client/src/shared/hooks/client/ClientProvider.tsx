@@ -1,5 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useToken } from '../token';
 import ClientContext from './ClientContext';
@@ -13,34 +12,44 @@ const ClientProvider = (props: ClientProviderProps) => {
     const [isClientReady, setIsClientReady] = useState(false);
     const { token, setToken } = useToken();
     const navigate = useNavigate();
+    const isRefreshing = useRef(false);
+    const interceptorId = useRef<number | null>(null);
+    const unauthorizedCallbackRef = useRef(props.unauthorizedCallback);
 
-    useQuery({
-        queryKey: [token],
-        queryFn: () => {
-            if (token) {
-                client.defaults.headers.common["Authorization"] = 'Bearer ' + token;
-            } else {
-                delete client.defaults.headers.common['Authorization'];
-            }
+    useEffect(() => {
+        unauthorizedCallbackRef.current = props.unauthorizedCallback;
+    }, [props.unauthorizedCallback]);
 
-            client.interceptors.response.use(
-                response => response,
+    useEffect(() => {
+        // Add interceptor only once
+        if (interceptorId.current === null) {
+            interceptorId.current = client.interceptors.response.use(
+                (response) => response,
                 async (error) => {
-                    const originalRequest = error.config;
+                    const { response } = error;
 
-                    //_retry is custom property
-                    if (error.response.status === 401 && !originalRequest._retry) {
-                        originalRequest._retry = true;
+                    if (response?.status === 401) {
+                        setIsClientReady(false);
+                        if (!isRefreshing.current) {
+                            isRefreshing.current = true;
+                            try {
+                                const unauthorizedCallback = unauthorizedCallbackRef.current;
+                                if (unauthorizedCallback) {
+                                    const newToken = await unauthorizedCallback();
+                                    setToken(newToken);
+                                    setIsClientReady(true);
+                                    return Promise.reject(error);
+                                }
+                            } finally {
+                                isRefreshing.current = false;
+                            }
 
-                        if (props.unauthorizedCallback) {
-                            const response = await props.unauthorizedCallback();
-                            setToken(response);
+                            return Promise.reject(error);
                         }
-
-                        //to force it throws exception in order to get response http status for retry.
-                        return Promise.reject(error);
                     }
-                    if (error.response.status === 406) {
+
+                    if (response?.status === 406) {
+                        setIsClientReady(true);
                         navigate('/login');
                     }
 
@@ -49,10 +58,17 @@ const ClientProvider = (props: ClientProviderProps) => {
             );
 
             setIsClientReady(true);
-        }
-    });
+        };
+    }, [navigate, setToken]);
 
-    // Provide the authentication context to the children components
+    useEffect(() => {
+        if (token) {
+            client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+            delete client.defaults.headers.common['Authorization'];
+        }
+    }, [token]);
+
     return (
         <ClientContext.Provider value={{ client, isClientReady }}>
             {props.children}
