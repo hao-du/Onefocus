@@ -37,6 +37,12 @@ export default {
     "Users": "Người dùng",
     "Settings": "Cài đặt",
 
+    //Login page:
+    "Username": "Tên người dùng",
+    "Password": "Mật khẩu",
+    "Login": "Đăng nhập",
+    "Sign in": "Đăng nhập",
+
     // currency page
     "Add Currency": "Thêm tiền tệ",
     "Edit Currency": "Sửa tiền tệ",
@@ -107,6 +113,8 @@ export default {
     "Cash flow type": "Dòng tiền",
 
     //Frontend Validation:
+    "User name is required.": "Vui lòng nhập tên người dùng.",
+    "Password is required.": "Vui lòng nhập mật khẩu.",
     "Name is required.": "Vui lòng nhập tên.",
     "Name cannot exceed 100 characters.": "Tên không được vượt quá 100 ký tự.",
     "Description cannot exceed 255 characters.": "Mô tả không được vượt quá 255 ký tự.",
