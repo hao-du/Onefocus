@@ -1,8 +1,8 @@
-import { refreshToken } from "./apis";
+import { refreshToken, authenticate } from "./apis";
 import Login from "./pages/Login";
 
 export {
     Login,
-    refreshToken
+    refreshToken,
+    authenticate
 };
-

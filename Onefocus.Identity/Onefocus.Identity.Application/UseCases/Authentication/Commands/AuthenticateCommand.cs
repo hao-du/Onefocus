@@ -8,7 +8,7 @@ using Onefocus.Identity.Application.Interfaces.Services;
 namespace Onefocus.Identity.Application.UseCases.Authentication.Commands;
 
 public sealed record AuthenticateCommandRequest(string Email, string Password) : ICommand<AuthenticateCommandResponse>;
-public sealed record AuthenticateCommandResponse(string Token);
+public sealed record AuthenticateCommandResponse(string Token, DateTime ExpiresAtUtc);
 
 internal sealed class AuthenticateCommandHandler(
     ILogger<AuthenticateCommandHandler> logger
@@ -37,7 +37,7 @@ internal sealed class AuthenticateCommandHandler(
         AppendCookie("r", refreshTokenResult.Value.RefreshToken);
         AppendCookie("i", checkPasswordResult.Value.User.Id.ToString());
 
-        return Result.Success(new AuthenticateCommandResponse(accessTokenResult.Value.AccessToken));
+        return Result.Success(new AuthenticateCommandResponse(accessTokenResult.Value.AccessToken, accessTokenResult.Value.ExpiresAtUtc));
     }
 }
 

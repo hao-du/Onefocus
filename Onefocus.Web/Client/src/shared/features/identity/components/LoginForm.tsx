@@ -3,9 +3,13 @@ import { Button } from '../../../components/controls/buttons';
 import { Password, Text } from '../../../components/controls';
 import { useLogin } from '../services';
 import LoginFormInput from './interfaces/LoginFormInput';
+import { useWindows } from '../../../components/hooks';
+import { useNavigate } from 'react-router';
 
 const LoginForm = () => {
     const {onLoginAsync, isPending} = useLogin();
+    const { showResponseToast } = useWindows();
+    const navigate = useNavigate(); 
 
     const {control, handleSubmit} = useForm<LoginFormInput>({
         defaultValues: {
@@ -15,7 +19,9 @@ const LoginForm = () => {
     });
 
     const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-        await onLoginAsync({email: data.userName, password: data.password});
+        const response = await onLoginAsync({email: data.userName, password: data.password});
+        if(response.status == 200) navigate('/wallet');
+        else showResponseToast(response);
     };
 
     return (

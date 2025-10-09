@@ -16,7 +16,7 @@ const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
         }
     }, [appSettings, setLanguage, setLocale, setTimeZone])
 
-    const contextValue: SettingsContextValue<GetSettingsByUserIdResponse, unknown> = useMemo(() => ({
+    const contextValue: SettingsContextValue<GetSettingsByUserIdResponse | undefined, unknown> = useMemo(() => ({
         settings: isAppSettingsReady ? appSettings : undefined,
         isSettingsReady: isAppSettingsReady,
         refetch: refetchAppSettings,

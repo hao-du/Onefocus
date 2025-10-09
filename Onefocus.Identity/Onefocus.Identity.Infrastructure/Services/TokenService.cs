@@ -26,15 +26,17 @@ namespace Onefocus.Identity.Infrastructure.Services
                 new(ClaimTypes.NameIdentifier, request.User.MembershipUserId.ToString())
             };
 
+            var expiresIn = DateTimeExtensions.Now().AddSeconds(authenticationSettings.AuthTokenExpirySpanSeconds).UtcDateTime;
+
             var token = new JwtSecurityToken(
                 issuer: authenticationSettings.Issuer,
                 audience: authenticationSettings.Audience,
-                expires: DateTimeExtensions.Now().AddSeconds(authenticationSettings.AuthTokenExpirySpanSeconds).UtcDateTime,
+                expires: expiresIn,
                 claims: claims,
                 signingCredentials: new SigningCredentials(Cryptography.CreateSymmetricSecurityKey(authenticationSettings.SymmetricSecurityKey), SecurityAlgorithms.HmacSha256)
             );
 
-            return Result.Success<GenerateTokenResponseDto>(new(new JwtSecurityTokenHandler().WriteToken(token)));
+            return Result.Success<GenerateTokenResponseDto>(new(new JwtSecurityTokenHandler().WriteToken(token), expiresIn));
         }
     }
 }

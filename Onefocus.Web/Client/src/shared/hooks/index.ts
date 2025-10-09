@@ -1,16 +1,15 @@
-import { ApiResponse, ApiResponseBase, client, ClientContextValue, ClientProvider, useClient, useMutation, useQuery, useQueryClient } from './client';
-import { TokenProvider, useToken } from './token';
-import { SettingsProvider, useSettings } from './settings';
+import { ApiResponse, ApiResponseBase, client, useMutation, useQuery, useQueryClient } from './client';
 import { LocaleProvider, useLocale } from './locale';
+import { SettingsProvider, useSettings } from './settings';
+import { AuthContextValue, AuthProvider, useAuth } from './auth'
 
 export {
-    client, ClientProvider, TokenProvider, useClient, useMutation,
-    useQuery, useQueryClient, useToken, useSettings, SettingsProvider,
-    LocaleProvider, useLocale
+    client, AuthProvider, LocaleProvider, SettingsProvider, useAuth, useLocale, useMutation,
+    useQuery, useQueryClient, useSettings
 };
 export type {
     ApiResponse,
     ApiResponseBase,
-    ClientContextValue
+    AuthContextValue
 };
 

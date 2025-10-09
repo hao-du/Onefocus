@@ -1,10 +1,10 @@
-import { AuthenticationRequest, AuthenticationResponse } from './interfaces';
 import { ApiResponse } from '../../../hooks';
-import client  from '../../../hooks/client/client';
+import client from '../../../hooks/client/client';
+import { AuthenticationRequest, AuthenticationResponse } from './interfaces';
 
 export const refreshToken = async () => {
     const response = await client.get<ApiResponse<AuthenticationResponse>>('identity/refresh');
-    return response.data.value.token;
+    return response.data.value;
 };
 
 export const authenticate = async (request: AuthenticationRequest) => {

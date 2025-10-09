@@ -9,7 +9,7 @@ using DomainErrors = Onefocus.Identity.Domain.Errors;
 namespace Onefocus.Identity.Application.UseCases.Authentication.Commands;
 
 public sealed record RefreshTokenCommandRequest() : ICommand<RefreshTokenCommandReponse>;
-public sealed record RefreshTokenCommandReponse(string Token);
+public sealed record RefreshTokenCommandReponse(string Token, DateTime ExpiresAtUtc);
 
 internal sealed class RefreshTokenCommandHandler(
     ILogger<RefreshTokenCommandHandler> logger
@@ -48,7 +48,7 @@ internal sealed class RefreshTokenCommandHandler(
 
         AppendCookie("r", refreshTokenResult.Value.RefreshToken);
 
-        return Result.Success<RefreshTokenCommandReponse>(new(accessTokenResult.Value.AccessToken));
+        return Result.Success<RefreshTokenCommandReponse>(new(accessTokenResult.Value.AccessToken, accessTokenResult.Value.ExpiresAtUtc));
     }
 }
 

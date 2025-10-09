@@ -4,14 +4,13 @@ import { Loading, NotFound } from '../shared/app';
 import { AppLayout } from '../shared/components/layouts';
 import { SideMenuItem } from '../shared/components/navigations';
 import { Home } from './pages';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
-import { useClient, useSettings } from '../shared/hooks';
+import { useAuth } from '../shared/hooks';
 
 const App = () => {
     const navigate = useNavigate();
-    const { isSettingsReady, refetch } = useSettings();
-    const { isClientReady } = useClient();
+    const { isAuthenticated } = useAuth();
 
     const items = useMemo<SideMenuItem[]>(() => [
         {
@@ -88,14 +87,8 @@ const App = () => {
         }
     ], [navigate]);
 
-    useEffect(() => {
-        if (isClientReady) {
-            refetch();
-        }
-    }, [isClientReady]);
-
     return (
-        !isSettingsReady
+        !isAuthenticated
             ? <Loading /> : (
                 <AppLayout items={items}>
                     <Routes>
