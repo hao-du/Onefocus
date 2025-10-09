@@ -19,6 +19,7 @@ const ErrorHandlerProvider = (props: PropsWithChildren) => {
 
         const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
             event.preventDefault();
+            if(event.reason.status == 406) return;
             if (event.reason instanceof AxiosError && event.reason.response) {
                 showResponseToast(event.reason.response.data, event.reason.message);
             } else {

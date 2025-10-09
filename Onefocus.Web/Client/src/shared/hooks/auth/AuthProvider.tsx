@@ -12,6 +12,7 @@ type AuthProviderProps = PropsWithChildren & {
 
 const AuthProvider = (props: AuthProviderProps) => {
     const [token, setToken] = useState<string | null>(tokenManager.getToken());
+    const [isFirstAuthCheck, setIsFirstAuthCheck] = useState(true);
     const navigate = useNavigate();
 
     const login = useCallback(async (email: string, password: string) => {
@@ -35,8 +36,20 @@ const AuthProvider = (props: AuthProviderProps) => {
     }, []);
 
     useEffect(() => {
-        if(!token) navigate('/login');
-    }, [navigate, token]);
+        if (isFirstAuthCheck) {
+            refreshToken()
+                .then((response) => {
+                    tokenManager.setToken(response.token, response.expiresAtUtc);
+                    setToken(response.token);
+                })
+                .finally(() => {
+                    setIsFirstAuthCheck(false)
+                });
+        }
+        else if (!token) {
+            navigate('/login');
+        }
+    }, [navigate, token, isFirstAuthCheck]);
 
     // proactive refresh
     useEffect(() => {
