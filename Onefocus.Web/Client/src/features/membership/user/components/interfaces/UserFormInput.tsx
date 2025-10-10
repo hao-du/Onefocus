@@ -1,0 +1,7 @@
+export default interface UserFormInput {
+    id?: string
+    email: string;
+    firstName: string;
+    lastName: string;
+    password?: string;
+}

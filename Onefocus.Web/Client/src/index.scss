@@ -3,6 +3,10 @@
 @use "primeflex/primeflex" as primeflex;
 @use "primeicons/primeicons.css";
 
+html {
+  font-size: 14px;
+}
+
 @mixin of-placement-class($positions, $value-map) {
   @each $position in $positions {
     @each $name, $value in $value-map {

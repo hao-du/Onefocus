@@ -7,6 +7,7 @@ import { Home } from './pages';
 import { useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
 import { useAuth } from '../shared/hooks';
+import MembershipRoutes from '../features/membership/MembershipRoutes';
 
 const App = () => {
     const navigate = useNavigate();
@@ -73,7 +74,7 @@ const App = () => {
                     label: 'Users',
                     icon: 'pi pi-users',
                     command: () => {
-                        navigate("/admin/users");
+                        navigate("/admin/user");
                     }
                 },
                 {
@@ -95,6 +96,7 @@ const App = () => {
                         <Route path="/" element={<Home />} />
                         <Route path="wallet/*" element={<WalletRoutes />} />
                         <Route path="home/*" element={<HomeRoutes />} />
+                        <Route path="admin/*" element={<MembershipRoutes />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </AppLayout>

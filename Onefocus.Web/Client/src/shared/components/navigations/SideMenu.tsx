@@ -1,6 +1,6 @@
 import { PanelMenu } from 'primereact/panelmenu';
 import { Sidebar } from "primereact/sidebar";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import MobileSidebarVisibleState from "./interfaces/MobileSidebarVisibleState";
 import SideMenuItem from "./interfaces/SideMenuItem";
 import { useTranslatedMenuItems } from './hooks/useTranslatedMenu';
@@ -13,24 +13,22 @@ type SideMenuProps = {
 
 const SideMenu = (props: SideMenuProps) => {
     const translatedItems = useTranslatedMenuItems(props.items);
+    const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
 
-    const expandAllItems = useMemo((): SideMenuItem[] => {
-        if (!props?.items) return [];
-        
-        return props?.items?.map(item => {
-            if(!item.items || item.items?.length == 0) {
-                return item;
+    useEffect(() => {
+        if (!props?.items) return;
+
+        const newExpandedKeys: Record<string, boolean> = {};
+        props?.items?.forEach(item => {
+            if (!item.items || item.items?.length == 0) {
+                return;
             }
 
-            return {
-                ...item,
-                expanded: true,
-                items: item.items
-            };
+            newExpandedKeys[item.key] = true; 
         });
-    }, [props?.items]);
 
-    const [expandedKeys, setExpandedKeys] = useState<SideMenuItem[]>(expandAllItems);
+        setExpandedKeys(newExpandedKeys);
+    }, [props?.items]);
 
     const renderSideMenu = useCallback(() => {
         return (

@@ -5,7 +5,7 @@ using Onefocus.Membership.Application.Interfaces.Repositories;
 namespace Onefocus.Membership.Application.UseCases.User.Queries;
 
 public sealed record GetUserByIdQueryRequest(Guid Id) : IQuery<GetUserByIdQueryResponse>;
-public sealed record GetUserByIdQueryResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName);
+public sealed record GetUserByIdQueryResponse(Guid Id, string? Email, string FirstName, string LastName);
 
 internal sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : IQueryHandler<GetUserByIdQueryRequest, GetUserByIdQueryResponse>
 {
@@ -19,8 +19,7 @@ internal sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : 
 
         return Result.Success<GetUserByIdQueryResponse>(new(
             Id: user.Id,
-            UserName: user.UserName,
-            Email: user.Email,
+            Email: user.UserName,
             FirstName: user.FirstName,
             LastName: user.LastName
         ));

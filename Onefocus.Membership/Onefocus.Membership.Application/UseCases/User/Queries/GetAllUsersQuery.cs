@@ -6,7 +6,7 @@ namespace Onefocus.Membership.Application.UseCases.User.Queries;
 
 public sealed record GetAllUsersQueryRequest() : IQuery<GetAllUsersQueryResponse>;
 public sealed record GetAllUsersQueryResponse(List<UserResponse> Users);
-public sealed record UserResponse(Guid Id, string? UserName, string? Email, string FirstName, string LastName);
+public sealed record UserResponse(Guid Id, string? Email, string FirstName, string LastName);
 
 internal sealed class GetAllUsersQueryHandler(IUserRepository userRepository) : IQueryHandler<GetAllUsersQueryRequest, GetAllUsersQueryResponse>
 {
@@ -19,8 +19,7 @@ internal sealed class GetAllUsersQueryHandler(IUserRepository userRepository) : 
         return Result.Success<GetAllUsersQueryResponse>(new(
             Users: [.. users.Select(u => new UserResponse(
                 Id: u.Id,
-                UserName: u.UserName,
-                Email: u.Email,
+                Email: u.UserName,
                 FirstName: u.FirstName,
                 LastName: u.LastName
             ))]

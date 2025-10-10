@@ -39,9 +39,9 @@ internal static class UserEndpoints
             return result.ToResult();
         });
 
-        routes.MapPost("user/sync", async (SyncUserCommandRequest command, ISender sender) =>
+        routes.MapPost("user/sync", async (ISender sender) =>
         {
-            var result = await sender.Send(command);
+            var result = await sender.Send(new SyncUserCommandRequest());
 
             return result.ToResult();
         });

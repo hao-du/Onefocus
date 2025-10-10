@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ActionItem, SplitButton, Button, Menu } from '../../controls';
+import { ActionItem, SplitButton, Button, Menu, TextOnly } from '../../controls';
 import { BaseProps } from '../../props';
 import { MenuRef } from '../../controls/menu';
-import { useLocale } from '../../../hooks';
 
 type WorkspaceActionBarProps = BaseProps & {
     title: string
@@ -12,7 +11,6 @@ type WorkspaceActionBarProps = BaseProps & {
 
 const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
     const menuRef = useRef<MenuRef>(null);
-    const { translate } = useLocale();
     const [hasActionItems, setHasActionItems] = useState(false);
     const [hasPrimaryAction, setHasPrimaryAction] = useState(false);
     const [primaryButton, setPrimaryButton] = useState<ActionItem | undefined>(undefined);
@@ -32,12 +30,12 @@ const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
 
     return (
         <div className="flex justify-content-between align-items-center mb-3">
-            <h2 className="m-0 text-xl font-bold">{translate(props.title)}</h2>
+            <h2 className="m-0 text-xl font-bold"><TextOnly value={props.title} /></h2>
             {primaryButton && (
                 <div className="flex gap-2 align-items-center">
                     {hasActionItems && hasPrimaryAction && (
                         <SplitButton
-                            label={translate(primaryButton.label)}
+                            label={primaryButton.label}
                             icon={primaryButton.icon}
                             actionItems={props.actionItems}
                             onClick={() => primaryButton.command && primaryButton.command(undefined)}
@@ -48,7 +46,7 @@ const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
                         <>
                             <Button
                                 icon={primaryButton.icon ?? 'pi pi-chevron-down'}
-                                label={translate(primaryButton.label)}
+                                label={primaryButton.label}
                                 onClick={(e) => menuRef.current?.toggle(e)}
                                 iconPos="right"
                                 aria-haspopup
@@ -60,7 +58,7 @@ const WorkspaceActionBar = (props: WorkspaceActionBarProps) => {
                     )}
                     {!hasActionItems && (
                         <Button
-                            label={translate(primaryButton.label)}
+                            label={primaryButton.label}
                             icon={primaryButton.icon}
                             onClick={() => primaryButton.command && primaryButton.command(undefined)}
                             isPending={props.isPending}

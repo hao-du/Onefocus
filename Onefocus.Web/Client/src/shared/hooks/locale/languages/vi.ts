@@ -15,12 +15,14 @@ export default {
 
     // common
     "Add": "Thêm",
+    "Edit": "Sửa",
     "Save": "Lưu",
     "Actions...": "Thao tác..",
     "Name": "Tên",
     "Default": "Mặc định",
     "Description": "Mô tả",
     "Is active": "Hiệu lực",
+    "Nothing to show right now.": "Hiện tại chưa có dữ liệu để hiển thị.",
     "No records found": "Chưa có dữ liệu",
     "Success": "Thành công",
     "Error": "Lỗi",
@@ -43,6 +45,14 @@ export default {
     "Password": "Mật khẩu",
     "Login": "Đăng nhập",
     "Sign in": "Đăng nhập",
+
+    //User page
+    "First name": "Tên",
+    "Last name": "Họ",
+    "Sync users": "Đồng bộ",
+    "Confirm Password": "Xác nhận mật khẩu",
+    "Change password": "Đổi mật khẩu",
+    "Change password to ": "Đổi mật khẩu cho ",
 
     // currency page
     "Add Currency": "Thêm tiền tệ",
@@ -155,6 +165,14 @@ export default {
     "Status is required.":"Vui lòng chọn trạng thái.",
     "Cash flow is required.": "Vui lòng chọn dòng tiền",
 
+    "Email cannot exceed 256 characters.": "Email không được vượt quá 256 ký tự.",
+    "First name is required.": "Vui lòng nhập tên.",
+    "First name cannot exceed 50 characters.": "Tên không được vượt quá 50 ký tự.",
+    "Last name is required.": "Vui lòng nhập họ.",
+    "Last name cannot exceed 50 characters.": "Họ không được vượt quá 50 ký tự.",
+    "Confirm Password is required.": "Vui lòng nhập xác nhận mật khẩu.",
+    "Passwords do not match.": "Mật khẩu không trùng khớp.",
+
     //Messages:
     "Application is starting...": "Đang mở ứng dụng...",
     "Saved successfully.": "Lưu thành công.",
@@ -168,5 +186,6 @@ export default {
     "No transactions are provided.": "Vui lòng thêm giao dịch nhận/chuyển tiền.",
     "Status is invalid.": "Giá trị của Trạng thái không hợp lệ.",
     "Type is invalid.": "Giá trị của Loại không hợp lệ.",
-    "Short name must have 3 to 4 characters.": "Mã tiền tệ phải từ 3 đến 4 ký tự."
+    "Short name must have 3 to 4 characters.": "Mã tiền tệ phải từ 3 đến 4 ký tự.",
+    "Synced successfully.": "Đồng bộ thành công."
 }

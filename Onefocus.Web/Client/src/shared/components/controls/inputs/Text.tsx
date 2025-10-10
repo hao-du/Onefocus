@@ -34,7 +34,7 @@ const Text = <TFieldValues extends FieldValues = FieldValues, TName extends Fiel
                                 invalid={controller.fieldState.invalid}
                                 value={controller.field.value}
                                 readOnly={props.isPending || props.readOnly}
-                                autoComplete={props.autoComplete}
+                                autoComplete={props.autoComplete ?? 'off'}
                                 className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
                                 keyfilter={props.keyfilter}
                                 placeholder={props.placeholder}
