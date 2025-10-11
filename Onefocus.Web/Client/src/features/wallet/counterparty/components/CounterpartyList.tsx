@@ -4,10 +4,14 @@ import { Button } from '../../../../shared/components/controls';
 import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import CounterpartyFormInput from './interfaces/CounterpartyFormInput';
 import CounterpartyForm from './CounterpartyForm';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useWindows } from '../../../../shared/components/hooks';
+import { useSearchParams } from 'react-router';
+import { CounterpartyResponse } from '../apis';
 
 const CounterpartyList = React.memo(() => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [showForm, setShowForm] = useState(false);
     const { showResponseToast } = useWindows();
 
@@ -48,6 +52,14 @@ const CounterpartyList = React.memo(() => {
         refetch();
     }, [onCreateAsync, onUpdateAsync, refetch, setCounterpartyId, showResponseToast]);
 
+    useEffect(() => {
+        const id = searchParams.get("id");
+        if (id) {
+            setCounterpartyId(id);
+            setShowForm(true);
+        }
+    }, [searchParams, setCounterpartyId]);
+
     return (
         <Workspace
             title="Counterparties"
@@ -65,17 +77,18 @@ const CounterpartyList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={counterparties} isPending={isPending} className="p-datatable-sm">
-                        <Column field="fullName" header="Full name" className="w-2"/>
-                        <Column field="email" header="Email" className="w-3"/>
-                        <Column field="phoneNumber" header="Phone" className="w-2"/>
-                        <Column field="description" header="Description" className="w-auto"/>
-                        <Column className="w-1rem" body={(counterparty: CounterpartyFormInput) => (
+                        <Column field="fullName" header="Full name" className="w-2" />
+                        <Column field="email" header="Email" className="w-3" />
+                        <Column field="phoneNumber" header="Phone" className="w-2" />
+                        <Column field="description" header="Description" className="w-auto" />
+                        <Column className="w-1rem" body={(counterparty: CounterpartyResponse) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"
                                 onClick={() => {
                                     setCounterpartyId(counterparty.id);
                                     setShowForm(true);
+                                    setSearchParams({ id: counterparty.id });
                                 }}
                             />
                         )} header="" headerStyle={{ width: "4rem" }} />

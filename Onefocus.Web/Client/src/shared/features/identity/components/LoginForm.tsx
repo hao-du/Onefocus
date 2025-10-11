@@ -4,14 +4,12 @@ import { Password, Text } from '../../../components/controls';
 import { useLogin } from '../services';
 import LoginFormInput from './interfaces/LoginFormInput';
 import { useWindows } from '../../../components/hooks';
-import { useNavigate } from 'react-router';
 
 const LoginForm = () => {
-    const {onLoginAsync, isPending} = useLogin();
+    const { onLoginAsync, isPending } = useLogin();
     const { showResponseToast } = useWindows();
-    const navigate = useNavigate(); 
 
-    const {control, handleSubmit} = useForm<LoginFormInput>({
+    const { control, handleSubmit } = useForm<LoginFormInput>({
         defaultValues: {
             userName: 'kevindu1986@gmail.com',
             password: 'Asd@123'
@@ -19,9 +17,10 @@ const LoginForm = () => {
     });
 
     const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-        const response = await onLoginAsync({email: data.userName, password: data.password});
-        if(response.status == 200) navigate('/wallet');
-        else showResponseToast(response);
+        const response = await onLoginAsync({ email: data.userName, password: data.password });
+        if(response.status != 200) {
+            showResponseToast(response);
+        }
     };
 
     return (
@@ -32,7 +31,7 @@ const LoginForm = () => {
             <Password name="password" control={control} label="Password" className="w-full" rules={{
                 required: 'Password is required.'
             }} />
-            <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending}/>
+            <Button type="submit" className="mb-5" label="Sign in" icon="pi-lock" isPending={isPending} />
         </form>
     );
 };

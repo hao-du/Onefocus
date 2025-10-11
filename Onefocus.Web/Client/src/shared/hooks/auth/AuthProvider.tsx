@@ -6,6 +6,7 @@ import AuthContext from './AuthContext';
 import { tokenManager } from '../client/TokenManager';
 import { ApiResponse } from '../client';
 import { AuthenticationResponse } from '../../features/identity/apis';
+import { useWindows } from '../../components/hooks';
 
 type AuthProviderProps = PropsWithChildren & {
 };
@@ -14,6 +15,7 @@ const AuthProvider = (props: AuthProviderProps) => {
     const [token, setToken] = useState<string | null>(tokenManager.getToken());
     const [isFirstAuthCheck, setIsFirstAuthCheck] = useState(true);
     const navigate = useNavigate();
+    const { originalUrl, setOriginalUrl } = useWindows();
 
     const login = useCallback(async (email: string, password: string) => {
         try {
@@ -21,6 +23,13 @@ const AuthProvider = (props: AuthProviderProps) => {
             if (response.status === 200) {
                 tokenManager.setToken(response.value.token, response.value.expiresAtUtc);
                 setToken(response.value.token);
+
+                if (originalUrl && !originalUrl.includes('/login')) {
+                    const relativeUrl = new URL(originalUrl).pathname + new URL(originalUrl).search;
+                    navigate(relativeUrl);
+                }
+                else navigate('/');
+
                 return response;
             }
             else {
@@ -33,7 +42,7 @@ const AuthProvider = (props: AuthProviderProps) => {
             setToken(null);
             return error?.response?.data as ApiResponse<AuthenticationResponse>;
         }
-    }, []);
+    }, [navigate, originalUrl]);
 
     const logout = useCallback(async () => {
         const response = await identityLogout();
@@ -55,9 +64,12 @@ const AuthProvider = (props: AuthProviderProps) => {
                 });
         }
         else if (!token) {
+            if(!window.location.href.includes('/login') && originalUrl != window.location.href) {
+                setOriginalUrl(window.location.href);
+            }
             navigate('/login');
         }
-    }, [navigate, token, isFirstAuthCheck]);
+    }, [navigate, token, isFirstAuthCheck, setOriginalUrl, originalUrl]);
 
     // proactive refresh
     useEffect(() => {

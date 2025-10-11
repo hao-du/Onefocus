@@ -6,8 +6,9 @@ import WindowsContext from './WindowsContext';
 type WindowsProviderProps = PropsWithChildren & {};
 
 const WindowsProvider = (props: WindowsProviderProps) => {
-    const {translate} = useLocale();
+    const { translate } = useLocale();
     const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+    const [originalUrl, setOriginalUrl] = useState(window.location.href);
     const toastRef = useRef<ToastRef>(null);
 
     const showToast = useCallback((message: ToastMessage | ToastMessage[]) => {
@@ -27,7 +28,7 @@ const WindowsProvider = (props: WindowsProviderProps) => {
 
     const showResponseToast = useCallback((response: ApiResponseBase, message?: string) => {
         if (response.status >= 200 && response.status < 300) {
-            if(!message) return;
+            if (!message) return;
             showToast({
                 severity: 'success',
                 detail: translate(message),
@@ -66,9 +67,11 @@ const WindowsProvider = (props: WindowsProviderProps) => {
         <WindowsContext.Provider value={{
             isMobile: isMobile,
             showToast: showToast,
-            showResponseToast: showResponseToast
+            showResponseToast: showResponseToast,
+            originalUrl: originalUrl,
+            setOriginalUrl: setOriginalUrl,
         }}>
-            <Toast ref={toastRef}/>
+            <Toast ref={toastRef} />
             {props.children}
         </WindowsContext.Provider>
     );

@@ -3,13 +3,17 @@ import { useCreateUser, useGetAllUsers, useGetUserById, useSyncUsers, useUpdateP
 import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import UserFormInput from './interfaces/UserFormInput';
 import UserForm from './UserForm';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useWindows } from '../../../../shared/components/hooks';
 import DropdownButton from '../../../../shared/components/controls/buttons/DropdownButton';
 import ChangePasswordForm from './ChangePasswordForm';
 import ChangePasswordFormInput from './interfaces/ChangePasswordFormInput';
+import { useSearchParams } from 'react-router';
+import { UserResponse } from '../apis/interfaces';
 
 const UserList = React.memo(() => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [showForm, setShowForm] = useState(0);
     const { showResponseToast } = useWindows();
 
@@ -56,6 +60,14 @@ const UserList = React.memo(() => {
         showResponseToast(response, 'Updated password successfully.');
     }, [onUpdatePasswordAsync, showResponseToast]);
 
+    useEffect(() => {
+        const id = searchParams.get("id");
+        if (id) {
+            setUserId(id);
+            setShowForm(1);
+        }
+    }, [searchParams, setUserId]);
+
     return (
         <Workspace
             title="Users"
@@ -87,12 +99,11 @@ const UserList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={users} isPending={isPending} className="p-datatable-sm">
-                        <Column field="email" header="Email" className="w-auto"/>
-                        <Column field="firstName" header="First name" className="w-3"/>
-                        <Column field="lastName" header="Last name" className="w-3"/>
-                        <Column className="w-1rem" body={(user: UserFormInput) => (
+                        <Column field="email" header="Email" className="w-auto" />
+                        <Column field="firstName" header="First name" className="w-3" />
+                        <Column field="lastName" header="Last name" className="w-3" />
+                        <Column className="w-1rem" body={(user: UserResponse) => (
                             <DropdownButton
-                                isPending={isPending}
                                 text
                                 rounded
                                 actionItems={[
@@ -102,6 +113,7 @@ const UserList = React.memo(() => {
                                         command: () => {
                                             setUserId(user.id);
                                             setShowForm(1);
+                                            setSearchParams({ id: user.id});
                                         }
                                     },
                                     {

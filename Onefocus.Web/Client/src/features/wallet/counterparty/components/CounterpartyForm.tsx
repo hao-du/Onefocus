@@ -13,6 +13,7 @@ const CounterpartyForm = (props: CounterpartyFormProps) => {
     const { control, handleSubmit } = useForm<CounterpartyFormInput>({
         values: props.selectedCounterparty ? { ...props.selectedCounterparty } :
             {
+                id: '',
                 fullName: '',
                 email: '',
                 phoneNumber: '',

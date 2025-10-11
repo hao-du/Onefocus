@@ -20,6 +20,12 @@ internal static class TransactionEndpoints
             return result.ToResult();
         });
 
+        routes.MapPost("transaction/search", async (SearchTransactionsQueryRequest request, ISender sender) =>
+        {
+            var result = await sender.Send(request);
+            return result.ToResult();
+        });
+
         routes.MapGet("transaction/cashflow/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetCashFlowByTransactionIdQueryRequest(id));

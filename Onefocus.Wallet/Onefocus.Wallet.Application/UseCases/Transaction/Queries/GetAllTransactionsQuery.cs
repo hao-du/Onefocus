@@ -3,14 +3,13 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Wallet.Application.UseCases.Transaction.Queries.Repsonses;
 using Onefocus.Wallet.Domain.Entities.Enums;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 public sealed record GetAllTransactionsQueryRequest() : IQuery<GetAllTransactionsQueryResponse>;
-
 public sealed record GetAllTransactionsQueryResponse(IReadOnlyList<TransactionQueryResponse> Transactions);
-public sealed record TransactionQueryResponse(Guid Id, DateTimeOffset TransactedOn, string CurrencyName, TransactionType Type, IReadOnlyList<string> Tags, decimal Amount, string? Description);
 
 internal sealed class GetAllTransactionsQueryHandler(
     ILogger<GetAllTransactionsQueryHandler> logger,

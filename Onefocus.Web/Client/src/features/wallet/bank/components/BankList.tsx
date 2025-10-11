@@ -4,10 +4,14 @@ import { Button } from '../../../../shared/components/controls';
 import { Column, DataTable } from '../../../../shared/components/data/data-table';
 import BankFormInput from './interfaces/BankFormInput';
 import BankForm from './BankForm';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useWindows } from '../../../../shared/components/hooks';
+import { useSearchParams } from 'react-router';
+import { BankResponse } from '../apis';
 
 const BankList = React.memo(() => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [showForm, setShowForm] = useState(false);
     const { showResponseToast } = useWindows();
 
@@ -44,6 +48,14 @@ const BankList = React.memo(() => {
         refetch();
     }, [onCreateAsync, onUpdateAsync, refetch, setBankId, showResponseToast]);
 
+    useEffect(() => {
+        const id = searchParams.get("id");
+        if (id) {
+            setBankId(id);
+            setShowForm(true);
+        }
+    }, [searchParams, setBankId]);
+
     return (
         <Workspace
             title="Banks"
@@ -61,15 +73,16 @@ const BankList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={banks} isPending={isPending} className="p-datatable-sm">
-                        <Column field="name" header="Name" className="w-3"/>
+                        <Column field="name" header="Name" className="w-3" />
                         <Column field="description" header="Description" className="w-auto" />
-                        <Column className="w-1rem" body={(bank: BankFormInput) => (
+                        <Column className="w-1rem" body={(bank: BankResponse) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"
                                 onClick={() => {
                                     setBankId(bank.id);
                                     setShowForm(true);
+                                    setSearchParams({ id: bank.id });
                                 }}
                             />
                         )} header="" headerStyle={{ width: "4rem" }} />

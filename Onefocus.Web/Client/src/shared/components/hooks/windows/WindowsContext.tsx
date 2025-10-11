@@ -8,6 +8,8 @@ const WindowsContext = createContext<WindowsContextValue>({
     showResponseToast: () => {
     },
     life: 3000,
+    originalUrl: '',
+    setOriginalUrl: () => { },
 });
 
 export default WindowsContext;

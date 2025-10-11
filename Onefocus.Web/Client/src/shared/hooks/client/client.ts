@@ -30,7 +30,7 @@ client.interceptors.response.use(
                     })
                     .catch((error) => {
                         tokenManager.clear();
-                        window.location.href = "/login";
+                        window.location.reload();
                         throw error;
                     })
                     .finally(() => {

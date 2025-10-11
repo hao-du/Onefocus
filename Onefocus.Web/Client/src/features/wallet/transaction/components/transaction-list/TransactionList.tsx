@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Workspace } from '../../../../../shared/components/layouts';
 
@@ -17,10 +17,14 @@ import { Button, Tag } from '../../../../../shared/components/controls';
 import { useLocale } from '../../../../../shared/hooks';
 import { useSearchTransactions } from '../../services';
 import SearchForm from '../search/SearchForm';
+import { useSearchParams } from 'react-router';
 
 const TransactionList = React.memo(() => {
-    const { formatDateTime } = useLocale();
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [selectedFormType, setSelectedFormType] = useState<FormType>(FormType.CashFlow);
+
+    const { formatDateTime } = useLocale();
     const { showForm, setShowForm } = useTransactionPage();
 
     const { transactions, currencies, banks, counterparties, isListLoading } = useTransactionList();
@@ -52,6 +56,34 @@ const TransactionList = React.memo(() => {
         }
 
     }, [selectedFormType, selectedCashFlow, isPending, onCashFlowSubmit, currencies, selectedCurrencyExchange, onCurrencyExchangeSubmit, selectedBankAccount, onBankAccountSubmit, banks, selectedPeerTransfer, onPeerTransferSubmit, counterparties, onSearchAsync, searchCriteria, setSearchCriteria]);
+
+    useEffect(() => {
+        const paramId = searchParams.get("id");
+        if (!paramId) return;
+
+        const paramType = searchParams.get("type");
+        const type = paramType !== null ? (Number(paramType)) : undefined;
+        if (type == null || type == undefined) return;
+        
+        setSelectedFormType(type);
+        switch (type) {
+            case FormType.CashFlow:
+                setCashFlowTransactionId(paramId);
+                break;
+            case FormType.CurrencyExchange:
+                setCurrencyExchangeTransactionId(paramId);
+                break;
+            case FormType.BankAccount:
+                setBankAccountTransactionId(paramId);
+                break;
+            case FormType.PeerTransfer:
+                setPeerTransferTransactionId(paramId);
+                break;
+            case FormType.Search:
+                break;
+        }
+        setShowForm(true);
+    }, [searchParams, setBankAccountTransactionId, setCashFlowTransactionId, setCurrencyExchangeTransactionId, setPeerTransferTransactionId, setShowForm]);
 
     return (
         <Workspace
@@ -167,6 +199,8 @@ const TransactionList = React.memo(() => {
                                                                     setPeerTransferTransactionId(transaction.id);
                                                                     break;
                                                             }
+
+                                                            setSearchParams({ id: transaction.id, type: String(transaction.type) });
                                                             setShowForm(true);
                                                         }} />
                                                 </div>
