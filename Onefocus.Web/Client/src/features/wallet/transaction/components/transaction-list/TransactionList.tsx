@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { Workspace } from '../../../../../shared/components/layouts';
 
 import { TransactionResponse } from '../../apis';
-import { TransactionType } from './enums';
+import { FormType } from './enums';
 import { useTransactionList } from './hooks';
 import { useTransactionPage } from '../../pages/hooks';
 import { CashFlowForm, useCashFlow } from '../cashflow';
@@ -15,48 +15,43 @@ import { formatCurrency } from '../../../../../shared/utils';
 import { Card } from '../../../../../shared/components/panel';
 import { Button, Tag } from '../../../../../shared/components/controls';
 import { useLocale } from '../../../../../shared/hooks';
+import { useSearchTransactions } from '../../services';
+import SearchForm from '../search/SearchForm';
 
 const TransactionList = React.memo(() => {
-    const {formatDateTime} = useLocale();
-    const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionType>(TransactionType.CashFlow);
+    const { formatDateTime } = useLocale();
+    const [selectedFormType, setSelectedFormType] = useState<FormType>(FormType.CashFlow);
     const { showForm, setShowForm } = useTransactionPage();
+
     const { transactions, currencies, banks, counterparties, isListLoading } = useTransactionList();
+    const { onSearchAsync, isSearching, searchCriteria, setSearchCriteria } = useSearchTransactions();
+
     const { selectedCashFlow, isCashFlowLoading, setCashFlowTransactionId, onCashFlowSubmit } = useCashFlow();
     const { selectedBankAccount, isBankAccountLoading, setBankAccountTransactionId, onBankAccountSubmit } = useBankAccount();
     const { selectedCurrencyExchange, isCurrencyExchangeLoading, setCurrencyExchangeTransactionId, onCurrencyExchangeSubmit } = useCurrencyExchange();
     const { selectedPeerTransfer, isPeerTransferLoading, setPeerTransferTransactionId, onPeerTransferSubmit } = usePeerTransfer();
 
-    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading || isCurrencyExchangeLoading || isPeerTransferLoading;
+    const isPending = isListLoading || isCashFlowLoading || isBankAccountLoading || isCurrencyExchangeLoading || isPeerTransferLoading || isSearching;
 
-    const renderForm = useCallback((transactionType: TransactionType, isPending: boolean) => {
-        switch (transactionType) {
-            case TransactionType.CashFlow:
+    const renderForm = useCallback(() => {
+        switch (selectedFormType) {
+            case FormType.CashFlow:
                 return <CashFlowForm selectedCashFlow={selectedCashFlow} isPending={isPending} onSubmit={onCashFlowSubmit} currencies={currencies} />
 
-            case TransactionType.CurrencyExchange:
+            case FormType.CurrencyExchange:
                 return <CurrencyExchangeForm selectedCurrencyExchange={selectedCurrencyExchange} isPending={isPending} onSubmit={onCurrencyExchangeSubmit} currencies={currencies} />;
 
-            case TransactionType.BankAccount:
+            case FormType.BankAccount:
                 return <BankAccountForm selectedBankAccount={selectedBankAccount} isPending={isPending} onSubmit={onBankAccountSubmit} currencies={currencies} banks={banks} />;
 
-            case TransactionType.PeerTransfer:
+            case FormType.PeerTransfer:
                 return <PeerTransferForm selectedPeerTransfer={selectedPeerTransfer} isPending={isPending} onSubmit={onPeerTransferSubmit} currencies={currencies} counterparties={counterparties} />;
 
+            case FormType.Search:
+                return <SearchForm onSearch={onSearchAsync} isPending={isPending} searchCriteria={searchCriteria} setSearchCriteria={setSearchCriteria} />
         }
 
-    }, [
-        banks,
-        counterparties,
-        currencies,
-        onBankAccountSubmit,
-        onCashFlowSubmit,
-        onCurrencyExchangeSubmit,
-        onPeerTransferSubmit,
-        selectedBankAccount,
-        selectedCashFlow,
-        selectedCurrencyExchange,
-        selectedPeerTransfer
-    ]);
+    }, [selectedFormType, selectedCashFlow, isPending, onCashFlowSubmit, currencies, selectedCurrencyExchange, onCurrencyExchangeSubmit, selectedBankAccount, onBankAccountSubmit, banks, selectedPeerTransfer, onPeerTransferSubmit, counterparties, onSearchAsync, searchCriteria, setSearchCriteria]);
 
     return (
         <Workspace
@@ -64,44 +59,54 @@ const TransactionList = React.memo(() => {
             isPending={isPending}
             actionItems={[
                 {
+                    icon: 'pi pi-search',
+                    severity: 'info',
+                    command: () => {
+                        setSelectedFormType(FormType.Search);
+                        setShowForm(true);
+                    }
+                },
+                {
                     label: 'Actions...',
+                    items: [
+                        {
+                            label: 'Cash flow',
+                            icon: 'pi pi-money-bill',
+                            command: () => {
+                                setSelectedFormType(FormType.CashFlow);
+                                setCashFlowTransactionId(null);
+                                setShowForm(true);
+                            }
+                        },
+                        {
+                            label: 'Bank account',
+                            icon: 'pi pi-building-columns',
+                            command: () => {
+                                setSelectedFormType(FormType.BankAccount);
+                                setBankAccountTransactionId(null);
+                                setShowForm(true);
+                            }
+                        },
+                        {
+                            label: 'Exchange',
+                            icon: 'pi pi-arrow-right-arrow-left',
+                            command: () => {
+                                setSelectedFormType(FormType.CurrencyExchange);
+                                setCurrencyExchangeTransactionId(null);
+                                setShowForm(true);
+                            }
+                        },
+                        {
+                            label: 'Peer transfer',
+                            icon: 'pi pi-users',
+                            command: () => {
+                                setSelectedFormType(FormType.PeerTransfer);
+                                setPeerTransferTransactionId(null);
+                                setShowForm(true);
+                            }
+                        }
+                    ],
                 },
-                {
-                    label: 'Cash flow',
-                    icon: 'pi pi-money-bill',
-                    command: () => {
-                        setSelectedTransactionType(TransactionType.CashFlow);
-                        setCashFlowTransactionId(null);
-                        setShowForm(true);
-                    }
-                },
-                {
-                    label: 'Bank account',
-                    icon: 'pi pi-building-columns',
-                    command: () => {
-                        setSelectedTransactionType(TransactionType.BankAccount);
-                        setBankAccountTransactionId(null);
-                        setShowForm(true);
-                    }
-                },
-                {
-                    label: 'Exchange',
-                    icon: 'pi pi-arrow-right-arrow-left',
-                    command: () => {
-                        setSelectedTransactionType(TransactionType.CurrencyExchange);
-                        setCurrencyExchangeTransactionId(null);
-                        setShowForm(true);
-                    }
-                },
-                {
-                    label: 'Peer transfer',
-                    icon: 'pi pi-users',
-                    command: () => {
-                        setSelectedTransactionType(TransactionType.PeerTransfer);
-                        setPeerTransferTransactionId(null);
-                        setShowForm(true);
-                    }
-                }
             ]}
             leftPanel={
                 <DataView
@@ -126,7 +131,7 @@ const TransactionList = React.memo(() => {
                                                 </div>
                                                 <div className="col-12 flex flex-wrap gap-2 py-1">
                                                     {transaction.tags?.map((value, index) => {
-                                                        return <Tag key={index} value={value} className="text-xs"/>
+                                                        return <Tag key={index} value={value} className="text-xs" />
                                                     })}
                                                 </div>
                                             </div>
@@ -145,20 +150,20 @@ const TransactionList = React.memo(() => {
                                                         rounded
                                                         onClick={() => {
                                                             switch (transaction.type) {
-                                                                case TransactionType.CashFlow:
-                                                                    setSelectedTransactionType(TransactionType.CashFlow);
+                                                                case FormType.CashFlow:
+                                                                    setSelectedFormType(FormType.CashFlow);
                                                                     setCashFlowTransactionId(transaction.id);
                                                                     break;
-                                                                case TransactionType.BankAccount:
-                                                                    setSelectedTransactionType(TransactionType.BankAccount);
+                                                                case FormType.BankAccount:
+                                                                    setSelectedFormType(FormType.BankAccount);
                                                                     setBankAccountTransactionId(transaction.id);
                                                                     break;
-                                                                case TransactionType.CurrencyExchange:
-                                                                    setSelectedTransactionType(TransactionType.CurrencyExchange);
+                                                                case FormType.CurrencyExchange:
+                                                                    setSelectedFormType(FormType.CurrencyExchange);
                                                                     setCurrencyExchangeTransactionId(transaction.id);
                                                                     break;
-                                                                case TransactionType.PeerTransfer:
-                                                                    setSelectedTransactionType(TransactionType.PeerTransfer);
+                                                                case FormType.PeerTransfer:
+                                                                    setSelectedFormType(FormType.PeerTransfer);
                                                                     setPeerTransferTransactionId(transaction.id);
                                                                     break;
                                                             }
@@ -178,7 +183,7 @@ const TransactionList = React.memo(() => {
                 </DataView>
             }
             rightPanel={
-                showForm && renderForm(selectedTransactionType, isPending)
+                showForm && renderForm()
             }
         />
     );

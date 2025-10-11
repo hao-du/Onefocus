@@ -21,6 +21,9 @@ import UpdatePeerTransferRequest from "./peer-transfer/UpdatePeerTransferRequest
 import GetAllTransactionsResponse from "./GetAllTransactionsResponse";
 import TransactionResponse from "./TransactionResponse";
 
+import SearchTransactionsRequest from "./search/SearchTransactionsRequest";
+import SearchTransactionsResponse from "./search/SearchTransactionsResponse";
+
 export type {
     TransactionResponse,
     GetAllTransactionsResponse,
@@ -44,5 +47,8 @@ export type {
     CreatePeerTransferResponse,
     GetPeerTransferByTransactionIdResponse,
     UpdatePeerTransferRequest,
+
+    SearchTransactionsRequest,
+    SearchTransactionsResponse
 };
 

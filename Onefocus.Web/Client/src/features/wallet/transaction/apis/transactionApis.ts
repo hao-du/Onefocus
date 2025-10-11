@@ -16,11 +16,18 @@ import {
     GetPeerTransferByTransactionIdResponse,
     CreatePeerTransferRequest,
     CreatePeerTransferResponse,
-    UpdatePeerTransferRequest
+    UpdatePeerTransferRequest,
+    SearchTransactionsRequest,
+    SearchTransactionsResponse
 } from './interfaces';
 
 export const getAllTransactions = async () => {
     const response = await client.get<ApiResponse<GetAllTransactionsResponse>>(`wallet/transaction/all`);
+    return response.data;
+};
+
+export const searchTransactions = async (request: SearchTransactionsRequest) => {
+    const response = await client.post<ApiResponse<SearchTransactionsResponse>>(`wallet/transaction/search`, request);
     return response.data;
 };
 

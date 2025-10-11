@@ -66,13 +66,13 @@ const CurrencyList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={currencies} isPending={isPending} className="p-datatable-sm">
-                        <Column field="name" header="Name" />
-                        <Column field="shortName" header="Short name" />
-                        <Column field="isDefault" header="Default" body={(rowData: CurrencyResponse) => {
-                            return rowData.isDefault ? <i className='pi pi-check-circle'></i> : <></>;
+                        <Column field="name" header="Name" className="w-3"/>
+                        <Column field="shortName" header="Short name" className="w-1"/>
+                        <Column field="isDefault" header="Default" className="w-1 text-center" body={(rowData: CurrencyResponse) => {
+                            return rowData.isDefault ? <i className='pi pi-check-square text-success'></i> : <></>;
                         }}/>
-                        <Column field="description" header="Description" />
-                        <Column body={(currency: CurrencyResponse) => (
+                        <Column field="description" header="Description" className="w-auto"/>
+                        <Column className="w-1rem" body={(currency: CurrencyResponse) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"

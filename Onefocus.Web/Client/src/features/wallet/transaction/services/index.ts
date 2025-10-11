@@ -16,13 +16,15 @@ import useCreatePeerTransfer from "./peer-transfer/useCreatePeerTransfer";
 import useUpdatePeerTransfer from "./peer-transfer/useUpdatePeerTransfer";
 import useGetPeerTransferByTransactionId from "./peer-transfer/useGetPeerTransferByTransactionId";
 
+import useSearchTransactions from "./search/useSearchTransactions";
+import SearchCriteria from "./search/interfaces/SearchCriteria";
+
 export {
     useGetAllTransactions,
-
-    useCreateCashFlow,
+    useSearchTransactions, useCreateCashFlow,
     useUpdateCashFlow,
-    useGetCashFlowByTransactionId, 
-    
+    useGetCashFlowByTransactionId,
+
     useCreateBankAccount,
     useUpdateBankAccount,
     useGetBankAccountByTransactionId,
@@ -35,4 +37,5 @@ export {
     useUpdatePeerTransfer,
     useGetPeerTransferByTransactionId
 };
+export type { SearchCriteria };
 

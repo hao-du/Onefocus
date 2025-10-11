@@ -1,5 +1,5 @@
-import TransactionType from "./transactionType";
+import FormType from "./FormType";
 
 export {
-    TransactionType
+    FormType
 };

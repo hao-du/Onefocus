@@ -65,11 +65,11 @@ const CounterpartyList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={counterparties} isPending={isPending} className="p-datatable-sm">
-                        <Column field="fullName" header="Full name" />
-                        <Column field="email" header="Email" />
-                        <Column field="phoneNumber" header="Phone" />
-                        <Column field="description" header="Description" />
-                        <Column body={(counterparty: CounterpartyFormInput) => (
+                        <Column field="fullName" header="Full name" className="w-2"/>
+                        <Column field="email" header="Email" className="w-3"/>
+                        <Column field="phoneNumber" header="Phone" className="w-2"/>
+                        <Column field="description" header="Description" className="w-auto"/>
+                        <Column className="w-1rem" body={(counterparty: CounterpartyFormInput) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"

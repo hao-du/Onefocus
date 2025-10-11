@@ -63,34 +63,38 @@ const UserList = React.memo(() => {
             actionItems={[
                 {
                     label: 'Actions...',
-                },
-                {
-                    label: 'Add',
-                    icon: 'pi pi-plus',
-                    command: () => {
-                        setUserId(undefined);
-                        setShowForm(1);
-                    }
-                },
-                {
-                    label: 'Sync users',
-                    icon: 'pi pi-sync',
-                    command: async () => {
-                        const response = await onSyncAsync();
-                        showResponseToast(response, 'Synced successfully.');
-                    }
+                    items: [
+                        {
+                            label: 'Add',
+                            icon: 'pi pi-plus',
+                            command: () => {
+                                setUserId(undefined);
+                                setShowForm(1);
+                            }
+                        },
+                        {
+                            label: 'Sync users',
+                            icon: 'pi pi-sync',
+                            command: async () => {
+                                const response = await onSyncAsync();
+                                showResponseToast(response, 'Synced successfully.');
+                            }
+                        },
+                    ],
                 },
             ]}
 
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={users} isPending={isPending} className="p-datatable-sm">
-                        <Column field="email" header="Email" />
-                        <Column field="firstName" header="First name" />
-                        <Column field="lastName" header="Last name" />
-                        <Column body={(user: UserFormInput) => (
+                        <Column field="email" header="Email" className="w-auto"/>
+                        <Column field="firstName" header="First name" className="w-3"/>
+                        <Column field="lastName" header="Last name" className="w-3"/>
+                        <Column className="w-1rem" body={(user: UserFormInput) => (
                             <DropdownButton
                                 isPending={isPending}
+                                text
+                                rounded
                                 actionItems={[
                                     {
                                         label: 'Edit',
@@ -118,8 +122,8 @@ const UserList = React.memo(() => {
                 <>
                     {showForm == 0 && <></>}
                     {showForm == 1 && <UserForm selectedUser={selectedUser} isPending={isPending} onSubmit={onSubmit} />}
-                    {showForm == 2 && <ChangePasswordForm selectedUser={{ 
-                        id: selectedUser?.id ?? '', 
+                    {showForm == 2 && <ChangePasswordForm selectedUser={{
+                        id: selectedUser?.id ?? '',
                         password: '',
                         confirmPassword: '',
                         fullName: selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}`.trim() : undefined

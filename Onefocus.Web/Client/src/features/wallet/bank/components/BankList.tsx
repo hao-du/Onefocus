@@ -61,9 +61,9 @@ const BankList = React.memo(() => {
             leftPanel={
                 <div className="overflow-auto flex-1">
                     <DataTable value={banks} isPending={isPending} className="p-datatable-sm">
-                        <Column field="name" header="Name" />
-                        <Column field="description" header="Description" />
-                        <Column body={(bank: BankFormInput) => (
+                        <Column field="name" header="Name" className="w-3"/>
+                        <Column field="description" header="Description" className="w-auto" />
+                        <Column className="w-1rem" body={(bank: BankFormInput) => (
                             <Button
                                 icon="pi pi-pencil"
                                 className="p-button-text"
