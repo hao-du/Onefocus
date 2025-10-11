@@ -12,7 +12,7 @@ services:
             context: .
             dockerfile: Onefocus.Web/Dockerfile
         ports:
-            - "4000:8080"
+            - "8080"
         networks:
             - proxybackend
 
@@ -23,7 +23,7 @@ services:
             context: .
             dockerfile: Onefocus.Gateway/Dockerfile
         ports:
-            - "4001:8080"
+            - "4000:8080"
         networks:
             - proxybackend
 
