@@ -1,17 +1,28 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Application.UseCases.Counterparty.Queries;
 
 public sealed record GetCounterpartyByIdQueryRequest(Guid Id) : IQuery<GetCounterpartyByIdQueryResponse>;
 public sealed record GetCounterpartyByIdQueryResponse(Guid Id, string FullName, string? Email, string? PhoneNumber, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
-internal sealed class GetCounterpartyByIdQueryHandler(IReadUnitOfWork unitOfWork) : IQueryHandler<GetCounterpartyByIdQueryRequest, GetCounterpartyByIdQueryResponse>
+internal sealed class GetCounterpartyByIdQueryHandler(
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<GetAllTransactionsQueryHandler> logger,
+    IReadUnitOfWork unitOfWork
+) : QueryHandler<GetCounterpartyByIdQueryRequest, GetCounterpartyByIdQueryResponse>(httpContextAccessor, logger)
 {
-    public async Task<Result<GetCounterpartyByIdQueryResponse>> Handle(GetCounterpartyByIdQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetCounterpartyByIdQueryResponse>> Handle(GetCounterpartyByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var counterpartyDtoResult = await unitOfWork.Counterparty.GetCounterpartyByIdAsync(new(request.Id), cancellationToken);
+        var getUserIdResult = GetUserId();
+        if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
+        var userId = getUserIdResult.Value;
+
+        var counterpartyDtoResult = await unitOfWork.Counterparty.GetCounterpartyByIdAsync(new(request.Id, userId), cancellationToken);
         if (counterpartyDtoResult.IsFailure) return counterpartyDtoResult.Failure<GetCounterpartyByIdQueryResponse>();
 
         var counterparty = counterpartyDtoResult.Value.Counterparty;

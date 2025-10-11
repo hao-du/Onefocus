@@ -34,6 +34,11 @@ public abstract class MediatorHandler(IHttpContextAccessor httpContextAccessor, 
         });
     }
 
+    protected void DeleteCookie(string key)
+    {
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete(key);
+    }
+
     protected Result<T?> DeserializeJson<T>(string json)
     {
         try

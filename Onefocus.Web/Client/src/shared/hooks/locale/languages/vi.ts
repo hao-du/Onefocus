@@ -44,6 +44,7 @@ export default {
     "Username": "Tên người dùng",
     "Password": "Mật khẩu",
     "Login": "Đăng nhập",
+    "Logout": "Đăng xuất",
     "Sign in": "Đăng nhập",
 
     //User page

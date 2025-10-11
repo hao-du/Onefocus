@@ -11,14 +11,21 @@ internal static class AuthenticationEndpoints
     {
         app.MapPost("authenticate", async (AuthenticateCommandRequest request, ISender sender, HttpContext context) =>
         {
-            var result = await sender.Send<Result<AuthenticateCommandResponse>>(request);
+            var result = await sender.Send(request);
+
+            return result.ToResult();
+        });
+
+        app.MapPost("logout", async (ISender sender) =>
+        {
+            var result = await sender.Send(new LogOutCommandRequest());
 
             return result.ToResult();
         });
 
         app.MapGet("refresh", async (ISender sender) =>
         {
-            var result = await sender.Send<Result<RefreshTokenCommandReponse>>(new RefreshTokenCommandRequest());
+            var result = await sender.Send(new RefreshTokenCommandRequest());
             if (result.IsFailure)
             {
                 return result.ToNotAcceptableResult();

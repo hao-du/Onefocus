@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { authenticate, refreshToken } from '../../features/identity';
+import { authenticate, refreshToken, logout as identityLogout } from '../../features/identity';
 import AuthContext from './AuthContext';
 import { tokenManager } from '../client/TokenManager';
 import { ApiResponse } from '../client';
@@ -32,6 +32,14 @@ const AuthProvider = (props: AuthProviderProps) => {
             tokenManager.clear();
             setToken(null);
             return error?.response?.data as ApiResponse<AuthenticationResponse>;
+        }
+    }, []);
+
+    const logout = useCallback(async () => {
+        const response = await identityLogout();
+        if (response.status === 200) {
+            tokenManager.clear();
+            setToken(null);
         }
     }, []);
 
@@ -70,7 +78,7 @@ const AuthProvider = (props: AuthProviderProps) => {
     }, [navigate]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated: !!token, login }}>
+        <AuthContext.Provider value={{ isAuthenticated: !!token, login, logout }}>
             {props.children}
         </AuthContext.Provider>
     );

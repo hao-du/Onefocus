@@ -10,11 +10,11 @@ namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
 
 public sealed class CurrencyReadRepository(ILogger<CurrencyReadRepository> logger, WalletReadDbContext context) : BaseContextRepository<CurrencyReadRepository>(logger, context), ICurrencyReadRepository
 {
-    public async Task<Result<GetAllCurrenciesResponseDto>> GetAllCurrenciesAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<GetAllCurrenciesResponseDto>> GetAllCurrenciesAsync(GetAllCurrenciesRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
-            var currencies = await context.Currency.ToListAsync(cancellationToken);
+            var currencies = await context.Currency.Where(c => c.OwnerUserId == request.UserId).ToListAsync(cancellationToken);
             return Result.Success<GetAllCurrenciesResponseDto>(new(currencies));
         });
     }
@@ -23,7 +23,7 @@ public sealed class CurrencyReadRepository(ILogger<CurrencyReadRepository> logge
     {
         return await ExecuteAsync(async () =>
         {
-            var currency = await context.Currency.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+            var currency = await context.Currency.FirstOrDefaultAsync(c => c.Id == request.Id && c.OwnerUserId == request.UserId, cancellationToken);
             return Result.Success<GetCurrencyByIdResponseDto>(new(currency));
         });
     }

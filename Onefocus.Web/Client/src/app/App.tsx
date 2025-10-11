@@ -2,7 +2,6 @@ import { Route, Routes, useNavigate } from 'react-router';
 import { WalletRoutes } from '../features/wallet';
 import { Loading, NotFound } from '../shared/app';
 import { AppLayout } from '../shared/components/layouts';
-import { SideMenuItem } from '../shared/components/navigations';
 import { Home } from './pages';
 import { useMemo } from 'react';
 import { HomeRoutes } from '../features/home';
@@ -11,9 +10,9 @@ import MembershipRoutes from '../features/membership/MembershipRoutes';
 
 const App = () => {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
 
-    const items = useMemo<SideMenuItem[]>(() => [
+    const items = useMemo(() => [
         {
             key: 0,
             label: 'Home',
@@ -88,10 +87,20 @@ const App = () => {
         }
     ], [navigate]);
 
+    const profileActions = useMemo(() => [
+        {
+            label: 'Logout',
+            command: () => {
+                logout();
+            },
+            icon: 'pi pi-sign-out'
+        }
+    ], [logout])
+
     return (
         !isAuthenticated
             ? <Loading /> : (
-                <AppLayout items={items}>
+                <AppLayout items={items} profileActions={profileActions}>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="wallet/*" element={<WalletRoutes />} />

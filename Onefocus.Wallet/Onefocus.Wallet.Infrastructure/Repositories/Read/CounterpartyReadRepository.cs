@@ -13,12 +13,12 @@ public sealed class CounterpartyReadRepository(
         , WalletReadDbContext context
     ) : BaseContextRepository<CounterpartyReadRepository>(logger, context), ICounterpartyReadRepository
 {
-    public async Task<Result<GetAllCounterpartysResponseDto>> GetAllCounterpartysAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<GetAllCounterpartiesResponseDto>> GetAllCounterpartysAsync(GetAllCounterpartiesRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
-            var counterparties = await context.Counterparty.ToListAsync(cancellationToken);
-            return Result.Success<GetAllCounterpartysResponseDto>(new(counterparties));
+            var counterparties = await context.Counterparty.Where(c => c.OwnerUserId == request.UserId).ToListAsync(cancellationToken);
+            return Result.Success<GetAllCounterpartiesResponseDto>(new(counterparties));
         });
     }
 
@@ -26,7 +26,7 @@ public sealed class CounterpartyReadRepository(
     {
         return await ExecuteAsync(async () =>
         {
-            var counterparty = await context.Counterparty.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+            var counterparty = await context.Counterparty.FirstOrDefaultAsync(c => c.Id == request.Id && c.OwnerUserId == request.UserId, cancellationToken);
             return Result.Success<GetCounterpartyByIdResponseDto>(new(counterparty));
         });
     }

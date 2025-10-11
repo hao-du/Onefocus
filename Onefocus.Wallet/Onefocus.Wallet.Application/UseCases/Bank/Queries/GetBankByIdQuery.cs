@@ -1,17 +1,28 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Application.UseCases.Bank.Queries;
 
 public sealed record GetBankByIdQueryRequest(Guid Id) : IQuery<GetBankByIdQueryResponse>;
 public sealed record GetBankByIdQueryResponse(Guid Id, string Name, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
-internal sealed class GetBankByIdQueryHandler(IReadUnitOfWork unitOfWork) : IQueryHandler<GetBankByIdQueryRequest, GetBankByIdQueryResponse>
+internal sealed class GetBankByIdQueryHandler(
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<GetAllTransactionsQueryHandler> logger,
+    IReadUnitOfWork unitOfWork
+) : QueryHandler<GetBankByIdQueryRequest, GetBankByIdQueryResponse>(httpContextAccessor, logger)
 {
-    public async Task<Result<GetBankByIdQueryResponse>> Handle(GetBankByIdQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetBankByIdQueryResponse>> Handle(GetBankByIdQueryRequest request, CancellationToken cancellationToken)
     {
-        var bankDtoResult = await unitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
+        var getUserIdResult = GetUserId();
+        if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
+        var userId = getUserIdResult.Value;
+
+        var bankDtoResult = await unitOfWork.Bank.GetBankByIdAsync(new(request.Id, userId), cancellationToken);
         if (bankDtoResult.IsFailure) return bankDtoResult.Failure<GetBankByIdQueryResponse>();
 
         var bank = bankDtoResult.Value.Bank;

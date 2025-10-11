@@ -1,6 +1,9 @@
-﻿using Onefocus.Common.Abstractions.Messages;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Application.UseCases.Currency.Queries;
 
@@ -8,11 +11,19 @@ public sealed record GetAllCurrenciesQueryRequest() : IQuery<GetAllCurrenciesQue
 public sealed record GetAllCurrenciesQueryResponse(List<CurrencyQueryResponse> Currencies);
 public record CurrencyQueryResponse(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
-internal sealed class GetAllCurrenciesQueryHandler(IReadUnitOfWork unitOfWork) : IQueryHandler<GetAllCurrenciesQueryRequest, GetAllCurrenciesQueryResponse>
+internal sealed class GetAllCurrenciesQueryHandler(
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<GetAllTransactionsQueryHandler> logger,
+    IReadUnitOfWork unitOfWork
+) : QueryHandler<GetAllCurrenciesQueryRequest, GetAllCurrenciesQueryResponse>(httpContextAccessor, logger)
 {
-    public async Task<Result<GetAllCurrenciesQueryResponse>> Handle(GetAllCurrenciesQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetAllCurrenciesQueryResponse>> Handle(GetAllCurrenciesQueryRequest request, CancellationToken cancellationToken)
     {
-        var currencyDtosResult = await unitOfWork.Currency.GetAllCurrenciesAsync(cancellationToken);
+        var getUserIdResult = GetUserId();
+        if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
+        var userId = getUserIdResult.Value;
+
+        var currencyDtosResult = await unitOfWork.Currency.GetAllCurrenciesAsync(new(userId), cancellationToken);
         if (currencyDtosResult.IsFailure) return currencyDtosResult.Failure<GetAllCurrenciesQueryResponse>();
         var currencyDtos = currencyDtosResult.Value.Currencies;
         return Result.Success(new GetAllCurrenciesQueryResponse(

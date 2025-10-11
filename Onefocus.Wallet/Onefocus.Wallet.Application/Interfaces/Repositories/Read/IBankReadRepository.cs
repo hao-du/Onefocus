@@ -6,7 +6,7 @@ namespace Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 
 public interface IBankReadRepository : IBaseContextRepository
 {
-    Task<Result<GetAllBanksResponseDto>> GetAllBanksAsync(CancellationToken cancellationToken = default);
+    Task<Result<GetAllBanksResponseDto>> GetAllBanksAsync(GetAllBanksRequestDto request, CancellationToken cancellationToken = default);
 
     Task<Result<GetBankByIdResponseDto>> GetBankByIdAsync(GetBankByIdRequestDto request, CancellationToken cancellationToken = default);
 

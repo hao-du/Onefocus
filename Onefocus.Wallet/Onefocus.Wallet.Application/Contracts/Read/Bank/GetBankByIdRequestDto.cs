@@ -1,3 +1,3 @@
 ﻿namespace Onefocus.Wallet.Application.Contracts.Read.Bank;
 
-public sealed record GetBankByIdRequestDto(Guid Id);
+public sealed record GetBankByIdRequestDto(Guid Id, Guid UserId);

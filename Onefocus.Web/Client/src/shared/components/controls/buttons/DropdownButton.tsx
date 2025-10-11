@@ -2,14 +2,14 @@ import { useRef } from "react";
 import { Menu } from "../menu";
 import Button from "./Button";
 import { ActionItem } from "../interfaces";
-import { BaseProps } from "../../props";
+import { BaseButtonProps, BaseProps } from "../../props";
 import { UniqueComponentId } from "primereact/utils";
 
 type DropdownButtonRef = {
     toggle: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-type DropdownButtonProps = BaseProps & {
+type DropdownButtonProps = BaseButtonProps & BaseProps & {
     actionItems?: ActionItem[]
     isPending?: boolean;
 };
@@ -22,8 +22,8 @@ const DropdownButton = (props: DropdownButtonProps) => {
         <>
             <Button
                 icon="pi pi-ellipsis-v"
-                text
-                rounded
+                text={props.text}
+                rounded={props.rounded}
                 onClick={(e) => dropdownButtonRef.current?.toggle(e)}
                 aria-haspopup
                 aria-controls={`dropdown_Button_${uniqueComponentId}`}

@@ -9,7 +9,7 @@ public abstract class CommandHandler<TRequest>(IHttpContextAccessor httpContextA
 {
     public virtual Task<Result> Handle(TRequest request, CancellationToken cancellationToken)
     {
-        return Task.Run(() => Result.Failure(CommonErrors.NotImplemented));
+        return Task.FromResult(Result.Failure(CommonErrors.NotImplemented));
     }
 }
 
@@ -17,7 +17,7 @@ public abstract class CommandHandler<TRequest, TResponse>(IHttpContextAccessor h
 {
     public virtual Task<Result<TResponse>> Handle(TRequest request, CancellationToken cancellationToken)
     {
-        return Task.Run(() => Failure(CommonErrors.NotImplemented));
+        return Task.FromResult(Failure(CommonErrors.NotImplemented));
     }
 
     protected Result<TResponse> Failure(Result failure)

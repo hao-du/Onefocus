@@ -4,6 +4,7 @@ import InputWrapper from './InputWrapper';
 import { InputProps, InputWrapperProps } from '../../props';
 import { ReactNode } from 'react';
 import { Option } from '..';
+import { useLocale } from '../../../hooks';
 
 export type DropdownProps<TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     = UseControllerProps<TFieldValues, TName, TTransformedValues>
@@ -15,10 +16,13 @@ export type DropdownProps<TFieldValues extends FieldValues = FieldValues, TName 
         value?: string | number | boolean | null;
         itemTemplate?: (option: Option) => ReactNode;
         filter?: boolean;
+        emptyMessage?: string;
     };
 
 const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>, TTransformedValues = TFieldValues>
     (props: DropdownProps<TFieldValues, TName, TTransformedValues>) => {
+    const {translate} = useLocale();
+
     return (
         <Controller
             name={props.name}
@@ -48,6 +52,7 @@ const Dropdown = <TFieldValues extends FieldValues = FieldValues, TName extends 
                                 checkmark={true}
                                 highlightOnSelect={true}
                                 className={`${props.className} ${props.size == 'small' ? 'p-inputtext-sm' : ''}`}
+                                emptyMessage={props.emptyMessage ?? translate('Nothing to show right now.')}
                             />
                         }
                     </InputWrapper>);

@@ -1,9 +1,10 @@
 import { AuthenticationRequest, AuthenticationResponse } from "./interfaces";
-import { refreshToken, authenticate } from "./identityApis";
+import { refreshToken, authenticate, logout } from "./identityApis";
 
 export {
     refreshToken,
-    authenticate
+    authenticate,
+    logout
 };
 export type {
     AuthenticationRequest,

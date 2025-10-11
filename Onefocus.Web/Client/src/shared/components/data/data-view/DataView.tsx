@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataView as PrimeDataView } from "primereact/dataview";
 import { BaseProps } from "../../props";
+import { useLocale } from "../../../hooks";
 
 type DataViewProps = BaseProps & {
     value?: any[];
@@ -15,6 +16,8 @@ type DataViewProps = BaseProps & {
 }
 
 const DataView = (props: DataViewProps) => {
+    const { translate } = useLocale()
+
     return (
         <PrimeDataView
             value={props.value}
@@ -27,7 +30,7 @@ const DataView = (props: DataViewProps) => {
             header={props.header}
             itemTemplate={props.itemTemplate}
             listTemplate={props.listTemplate}
-            emptyMessage={props.emptyMessage}
+            emptyMessage={props.emptyMessage ?? translate('Nothing to show right now.')}
         />
     );
 };

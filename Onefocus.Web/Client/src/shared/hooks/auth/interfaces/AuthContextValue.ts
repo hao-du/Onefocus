@@ -4,4 +4,6 @@ import { ApiResponse } from "../../client";
 export default interface AuthContextValue {
     isAuthenticated: boolean;
     login: (email: string, password: string) => Promise<ApiResponse<AuthenticationResponse>>;
+
+    logout: () => Promise<void>;
 }

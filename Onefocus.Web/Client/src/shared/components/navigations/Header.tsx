@@ -1,17 +1,21 @@
-import {Button} from "primereact/button";
-import {Avatar} from "primereact/avatar";
-import {OverlayPanel} from "primereact/overlaypanel";
-import {useRef} from "react";
+import { Button } from "primereact/button";
+import { Avatar } from "primereact/avatar";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { useRef } from "react";
 import MobileSidebarVisibleState from "./interfaces/MobileSidebarVisibleState";
 import { useWindows } from "../hooks";
+import { ActionItem, Menu } from "../controls";
+import { UniqueComponentId } from "primereact/utils";
 
 type HeaderProps = {
     mobileVisibleState: MobileSidebarVisibleState;
+    actions?: ActionItem[];
 };
 
 const Header = (props: HeaderProps) => {
     const profilePanelRef = useRef<OverlayPanel>(null);
-    const {isMobile} = useWindows();
+    const uniqueComponentId = UniqueComponentId();
+    const { isMobile } = useWindows();
 
     const handleProfileClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         if (profilePanelRef.current)
@@ -42,13 +46,11 @@ const Header = (props: HeaderProps) => {
             {/* Profile avatar + panel */}
             <div>
                 <Avatar icon="pi pi-user" size="large" shape="circle" className="cursor-pointer"
-                        onClick={handleProfileClick}/>
-                <OverlayPanel ref={profilePanelRef}>
-                    <div className="p-2">
-                        <div className="font-bold mb-2">John Doe</div>
-                        <Button label="Logout" icon="pi pi-sign-out" className="p-button-text p-0"/>
-                    </div>
-                </OverlayPanel>
+                    onClick={handleProfileClick} />
+                <Menu model={props.actions}
+                    ref={profilePanelRef}
+                    id={`dropdown_Button_${uniqueComponentId}`}
+                />
             </div>
         </div>
     );

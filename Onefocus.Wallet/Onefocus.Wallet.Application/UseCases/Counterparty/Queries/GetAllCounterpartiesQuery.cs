@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
+using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Application.UseCases.Counterparty.Queries;
 
@@ -9,11 +12,19 @@ public sealed record GetAllCounterpartiesQueryResponse(List<CounterpartyQueryRes
 public record CounterpartyQueryResponse(Guid Id, string FullName, string? Email, string? PhoneNumber, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
 
-internal sealed class GetAllCounterpartysQueryHandler(IReadUnitOfWork readUnitOfWork) : IQueryHandler<GetAllCounterpartiesQueryRequest, GetAllCounterpartiesQueryResponse>
+internal sealed class GetAllCounterpartysQueryHandler(
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<GetAllTransactionsQueryHandler> logger,
+    IReadUnitOfWork readUnitOfWork
+) : QueryHandler<GetAllCounterpartiesQueryRequest, GetAllCounterpartiesQueryResponse>(httpContextAccessor, logger)
 {
-    public async Task<Result<GetAllCounterpartiesQueryResponse>> Handle(GetAllCounterpartiesQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetAllCounterpartiesQueryResponse>> Handle(GetAllCounterpartiesQueryRequest request, CancellationToken cancellationToken)
     {
-        var counterpartyDtosResult = await readUnitOfWork.Counterparty.GetAllCounterpartysAsync(cancellationToken);
+        var getUserIdResult = GetUserId();
+        if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
+        var userId = getUserIdResult.Value;
+
+        var counterpartyDtosResult = await readUnitOfWork.Counterparty.GetAllCounterpartysAsync(new(userId), cancellationToken);
         if (counterpartyDtosResult.IsFailure) return counterpartyDtosResult.Failure<GetAllCounterpartiesQueryResponse>();
         var counterpartyDtos = counterpartyDtosResult.Value.Counterparties;
         return Result.Success(new GetAllCounterpartiesQueryResponse(

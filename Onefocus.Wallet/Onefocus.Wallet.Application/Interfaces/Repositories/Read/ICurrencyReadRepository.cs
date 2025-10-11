@@ -6,7 +6,7 @@ namespace Onefocus.Wallet.Application.Interfaces.Repositories.Read;
 
 public interface ICurrencyReadRepository : IBaseContextRepository
 {
-    Task<Result<GetAllCurrenciesResponseDto>> GetAllCurrenciesAsync(CancellationToken cancellationToken = default);
+    Task<Result<GetAllCurrenciesResponseDto>> GetAllCurrenciesAsync(GetAllCurrenciesRequestDto request, CancellationToken cancellationToken = default);
 
     Task<Result<GetCurrencyByIdResponseDto>> GetCurrencyByIdAsync(GetCurrencyByIdRequestDto request, CancellationToken cancellationToken = default);
 }
