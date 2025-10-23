@@ -1,0 +1,154 @@
+trigger: none
+
+parameters:
+  - name: ACTION
+    type: string
+    displayName: "Action"
+    default: stop  # default for scheduled run
+    values:
+      - start
+      - stop
+  - name: RESOURCE_GROUP
+    type: string
+    default: "onefocus-rg"
+  - name: CONTAINER_APP_NAME
+    type: string
+    default: "onefocus-ca-rabbitmq"
+  - name: ENVIRONMENT_NAME
+    type: string
+    default: "onefocus-ca-env"
+
+schedules:
+- cron: "0 19 * * 0-4"  # 2:00 AM UTC+7 (Mon-Fri)
+  displayName: "Stop Container App"
+  branches:
+    include:
+      - main
+  always: true
+
+- cron: "0 12 * * 1-5"  # 7:00 PM UTC+7 (Mon-Fri)
+  displayName: "Start Container App"
+  branches:
+    include:
+      - main
+  always: true
+
+stages:
+# ============================
+# Manual Start/Stop Stage
+# ============================
+- stage: ManualStartStopContainerApp
+  displayName: "Manual Start/Stop Container App"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], '')
+  jobs:
+  - job: ManualContainerAppStartStop
+    displayName: "Manual Start/Stop Container App"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: "Manual Start/Stop Container App"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Performing $ACTION on Container App $CONTAINER_APP_NAME in resource group $RESOURCE_GROUP"
+
+          if [ "$ACTION" == "start" ]; then
+            az containerapp revision list \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --query "[?properties.active==\`false\`].name" -o tsv | while read rev; do
+              echo "Activating revision: $rev"
+              az containerapp revision activate \
+                --name $CONTAINER_APP_NAME \
+                --resource-group $RESOURCE_GROUP \
+                --revision $rev
+            done
+          elif [ "$ACTION" == "stop" ]; then
+            echo "Scaling down Container App to zero replicas"
+            az containerapp revision list \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --query "[?properties.active==\`true\`].name" -o tsv | while read rev; do
+              echo "Deactivating revision: $rev"
+              az containerapp revision deactivate \
+                --name $CONTAINER_APP_NAME \
+                --resource-group $RESOURCE_GROUP \
+                --revision $rev
+            done
+          else
+            echo "Invalid ACTION: $ACTION. Must be 'start' or 'stop'."
+            exit 1
+          fi
+      env:
+        ACTION: ${{ parameters.ACTION }}
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        CONTAINER_APP_NAME: ${{ parameters.CONTAINER_APP_NAME }}
+
+# ============================
+# Stop Scheduler Stage
+# ============================
+- stage: StopContainerApp
+  displayName: "Stop Container App Scheduler"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Stop Container App')
+  jobs:
+  - job: StopContainerAppJob
+    displayName: "Stop Container App"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: "Stop Container App"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Scaling down Container App $CONTAINER_APP_NAME in $RESOURCE_GROUP to zero replicas"
+          az containerapp revision list \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --query "[?properties.active==\`true\`].name" -o tsv | while read rev; do
+            az containerapp revision deactivate \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --revision $rev
+          done
+      env:
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        CONTAINER_APP_NAME: ${{ parameters.CONTAINER_APP_NAME }}
+
+# ============================
+# Start Scheduler Stage
+# ============================
+- stage: StartContainerApp
+  displayName: "Start Container App Scheduler"
+  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Start Container App')
+  jobs:
+  - job: StartContainerAppJob
+    displayName: "Start Container App"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: "Start Container App"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Starting Container App $CONTAINER_APP_NAME in $RESOURCE_GROUP"
+          az containerapp revision list \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --query "[?properties.active==\`false\`].name" -o tsv | while read rev; do
+            az containerapp revision activate \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --revision $rev
+          done
+      env:
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        CONTAINER_APP_NAME: ${{ parameters.CONTAINER_APP_NAME }}
