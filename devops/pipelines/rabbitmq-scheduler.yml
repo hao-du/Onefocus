@@ -11,6 +11,9 @@ parameters:
   - name: RESOURCE_GROUP
     type: string
     default: "onefocus-rg"
+  - name: CONTAINERAPP_ENV_NAME
+    type: string
+    default: "onefocus-cae-01"
   - name: CONTAINER_APP_NAME
     type: string
     default: "onefocus-ca-rabbitmq"
@@ -19,14 +22,14 @@ parameters:
     default: "onefocus-ca-env"
 
 schedules:
-- cron: "0 19 * * 0-4"  # 2:00 AM UTC+7 (Mon-Fri)
+- cron: "0 19 * * *" #2:00 AM UTC+7 everyday to save cost. Previously is #"0 19 * * 0-4"  -> 2:00 AM UTC+7 (Mon-Fri)
   displayName: "Stop Container App"
   branches:
     include:
       - main
   always: true
 
-- cron: "0 12 * * 1-5"  # 7:00 PM UTC+7 (Mon-Fri)
+- cron: "0 12 * * *" #7:00 PM UTC+7 everyday to save cost. Previously is #"0 12 * * 1-5"  # 7:00 PM UTC+7 (Mon-Fri)
   displayName: "Start Container App"
   branches:
     include:
@@ -34,12 +37,44 @@ schedules:
   always: true
 
 stages:
+# =====================================
+# Upgrade Stage
+# =====================================
+- stage: Upgrade
+  displayName: "Upgrade Container App Environment"
+  jobs:
+  - job: UpgradeJob
+    displayName: "Upgrade Azure Container App Environment"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: none
+
+    - task: AzureCLI@2
+      displayName: "Upgrade Container App Environment"
+      inputs:
+        azureSubscription: 'Onefocus Service Connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Upgrading Container App Environment..."
+          az extension add --name containerapp --upgrade
+          az extension add --name containerapp-env --upgrade
+
+          az containerapp env upgrade \
+            --name $CONTAINERAPP_ENV_NAME \
+            --resource-group $RESOURCE_GROUP
+
+          echo "Upgrade completed."
+      env:
+        RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
+        CONTAINERAPP_ENV_NAME: ${{ parameters.CONTAINERAPP_ENV_NAME }}
 # ============================
 # Manual Start/Stop Stage
 # ============================
 - stage: ManualStartStopContainerApp
   displayName: "Manual Start/Stop Container App"
-  condition: eq(variables['Build.CronSchedule.DisplayName'], '')
+  condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], ''))
   jobs:
   - job: ManualContainerAppStartStop
     displayName: "Manual Start/Stop Container App"
@@ -100,7 +135,7 @@ stages:
 # ============================
 - stage: StopContainerApp
   displayName: "Stop Container App Scheduler"
-  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Stop Container App')
+  condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], 'Stop Container App'))
   jobs:
   - job: StopContainerAppJob
     displayName: "Stop Container App"
@@ -137,7 +172,7 @@ stages:
 # ============================
 - stage: StartContainerApp
   displayName: "Start Container App Scheduler"
-  condition: eq(variables['Build.CronSchedule.DisplayName'], 'Start Container App')
+  condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], 'Start Container App'))
   jobs:
   - job: StartContainerAppJob
     displayName: "Start Container App"
