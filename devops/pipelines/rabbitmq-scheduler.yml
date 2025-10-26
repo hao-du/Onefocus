@@ -66,6 +66,10 @@ stages:
                 --resource-group $RESOURCE_GROUP \
                 --revision $rev
             done
+            echo "Start Container App"
+            az containerapp start \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP
           elif [ "$ACTION" == "stop" ]; then
             echo "Scaling down Container App to zero replicas"
             az containerapp revision list \
@@ -78,6 +82,10 @@ stages:
                 --resource-group $RESOURCE_GROUP \
                 --revision $rev
             done
+            echo "Stop Container App"
+            az containerapp stop \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP
           else
             echo "Invalid ACTION: $ACTION. Must be 'start' or 'stop'."
             exit 1
@@ -116,6 +124,10 @@ stages:
               --resource-group $RESOURCE_GROUP \
               --revision $rev
           done
+          echo "Stop Container App"
+          az containerapp stop \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP
       env:
         RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
         CONTAINER_APP_NAME: ${{ parameters.CONTAINER_APP_NAME }}
@@ -149,6 +161,10 @@ stages:
               --resource-group $RESOURCE_GROUP \
               --revision $rev
           done
+          echo "Start Container App"
+          az containerapp start \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP
       env:
         RESOURCE_GROUP: ${{ parameters.RESOURCE_GROUP }}
         CONTAINER_APP_NAME: ${{ parameters.CONTAINER_APP_NAME }}
