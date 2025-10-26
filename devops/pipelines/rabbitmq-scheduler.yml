@@ -103,7 +103,7 @@ stages:
                 --revision $rev
             done
             echo "Start Container App"
-            az containerapp start \
+            az containerapp job start \
               --name $CONTAINER_APP_NAME \
               --resource-group $RESOURCE_GROUP
           elif [ "$ACTION" == "stop" ]; then
@@ -119,7 +119,7 @@ stages:
                 --revision $rev
             done
             echo "Stop Container App"
-            az containerapp stop \
+            az containerapp job stop \
               --name $CONTAINER_APP_NAME \
               --resource-group $RESOURCE_GROUP
           else
@@ -162,7 +162,7 @@ stages:
               --revision $rev
           done
           echo "Stop Container App"
-          az containerapp stop \
+          az containerapp job stop \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP
       env:
@@ -200,7 +200,7 @@ stages:
               --revision $rev
           done
           echo "Start Container App"
-          az containerapp start \
+          az containerapp job start \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP
       env:
