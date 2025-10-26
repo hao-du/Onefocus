@@ -40,7 +40,7 @@ stages:
 # =====================================
 # Upgrade Stage
 # =====================================
-- stage: Upgrade
+- stage: UpgradeEnvironment
   displayName: "Upgrade Container App Environment"
   jobs:
   - job: UpgradeJob
@@ -74,6 +74,7 @@ stages:
 # ============================
 - stage: ManualStartStopContainerApp
   displayName: "Manual Start/Stop Container App"
+  dependsOn: UpgradeEnvironment
   condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], ''))
   jobs:
   - job: ManualContainerAppStartStop
@@ -135,6 +136,7 @@ stages:
 # ============================
 - stage: StopContainerApp
   displayName: "Stop Container App Scheduler"
+  dependsOn: UpgradeEnvironment
   condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], 'Stop Container App'))
   jobs:
   - job: StopContainerAppJob
@@ -172,6 +174,7 @@ stages:
 # ============================
 - stage: StartContainerApp
   displayName: "Start Container App Scheduler"
+  dependsOn: UpgradeEnvironment
   condition: and(succeeded('UpgradeEnvironment'), eq(variables['Build.CronSchedule.DisplayName'], 'Start Container App'))
   jobs:
   - job: StartContainerAppJob
