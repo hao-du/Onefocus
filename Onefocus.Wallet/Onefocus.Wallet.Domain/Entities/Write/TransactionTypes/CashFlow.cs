@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Onefocus.Wallet.Domain.Events.Transaction;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
@@ -39,6 +40,8 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
             ));
         if (createTransactionResult.IsFailure) return (Result<CashFlow>)createTransactionResult;
 
+        cashFlow.AddDomainEvent(CashFlowUpsertedEvent.Create(cashFlow));
+
         return Result.Success(cashFlow);
     }
 
@@ -59,6 +62,8 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
                 transactionItems: transactionItems
             ));
         if (updateTransactionResult.IsFailure) return updateTransactionResult;
+
+        AddDomainEvent(CashFlowUpsertedEvent.Create(this));
 
         return Result.Success();
     }

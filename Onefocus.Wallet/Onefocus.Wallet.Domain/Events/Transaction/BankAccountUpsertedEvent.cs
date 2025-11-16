@@ -7,7 +7,7 @@ namespace Onefocus.Wallet.Domain.Events.Transaction;
 public class BankAccountUpsertedEvent: IDomainEvent<WriteEntity.BankAccount>
 {
     public WriteEntity.BankAccount Entity { get; private set; }
-    public string IndexName => nameof(WriteEntity.BankAccount);
+    public string IndexName => nameof(Entities.Write.Transaction);
     public string EntityId => Entity.Id.ToString();
     public string Payload { get; private set; } = default!;
     public string EventType => GetType().Name;
@@ -17,12 +17,14 @@ public class BankAccountUpsertedEvent: IDomainEvent<WriteEntity.BankAccount>
         Entity = bankAccount;
         Payload = JsonSerializer.Serialize(new
         {
+            type = nameof(WriteEntity.BankAccount),
             bankId = bankAccount.BankId,
             bankName = bankAccount.Bank.Name,
             currencyId = bankAccount.CurrencyId,
             currencyName = bankAccount.Currency.Name,
             accountNumber = bankAccount.AccountNumber,
             issuedOn = bankAccount.IssuedOn,
+            isClosed = bankAccount.IsClosed,
             closedOn = bankAccount.ClosedOn,
             ownerUserId = bankAccount.OwnerUserId,
             description = bankAccount.Description,

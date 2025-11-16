@@ -2,6 +2,7 @@
 using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Onefocus.Wallet.Domain.Events.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -58,6 +59,8 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
             if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<BankAccount>();
         }
 
+        bankAccount.AddDomainEvent(BankAccountUpsertedEvent.Create(bankAccount));
+
         return Result.Success(bankAccount);
     }
 
@@ -88,6 +91,8 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
         var deleteInterestsResult = DeleteInterests(actionedBy, transactionParams);
         if (deleteInterestsResult.IsFailure) return deleteInterestsResult;
+
+        AddDomainEvent(BankAccountUpsertedEvent.Create(this));
 
         return Result.Success();
     }

@@ -3,6 +3,7 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Onefocus.Wallet.Domain.Events.Transaction;
 using System;
 using static Onefocus.Wallet.Domain.Errors;
 
@@ -47,6 +48,8 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
             if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<PeerTransfer>();
         }
 
+        peerTransfer.AddDomainEvent(PeerTransferUpsertedEvent.Create(peerTransfer));
+
         return Result.Success(peerTransfer);
     }
 
@@ -69,6 +72,8 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         if (deleteInterestsResult.IsFailure) return deleteInterestsResult;
 
         UpsertTransferDetails(ownerId, actionedBy, transactionParams);
+
+        AddDomainEvent(PeerTransferUpsertedEvent.Create(this));
 
         return Result.Success();
     }

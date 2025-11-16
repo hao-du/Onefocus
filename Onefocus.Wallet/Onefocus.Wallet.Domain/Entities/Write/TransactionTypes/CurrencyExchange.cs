@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
+using Onefocus.Wallet.Domain.Events.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -64,6 +65,8 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         exchange._currencyExchangeTransactions.Add(createExchangeSourceTransactionResult.Value);
         exchange._currencyExchangeTransactions.Add(createExchangeTargetTransactionResult.Value);
 
+        exchange.AddDomainEvent(CurrencyExchangeUpsertedEvent.Create(exchange));
+
         return Result.Success(exchange);
     }
 
@@ -107,6 +110,8 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
             actionedBy: actionedBy
         );
         if (updateTargetTransactionResult.IsFailure) return updateTargetTransactionResult;
+
+        AddDomainEvent(CurrencyExchangeUpsertedEvent.Create(this));
 
         return Result.Success();
     }
