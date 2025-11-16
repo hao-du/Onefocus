@@ -5,5 +5,5 @@ namespace Onefocus.Membership.Application.Interfaces.ServiceBus;
 
 public interface IUserSyncedPublisher
 {
-    Task<Result> Publish(IUserSyncedMessage message, CancellationToken cancellationToken = default);
+    Task<Result> Publish(ISyncUserMessage message, CancellationToken cancellationToken = default);
 }

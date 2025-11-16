@@ -1,0 +1,81 @@
+version: '3.4'
+
+networks:
+    proxybackend:
+        name: proxybackend
+        driver: bridge
+
+services:
+    web:
+        image: ${DOCKER_REGISTRY-}onefocusweb
+        build:
+            context: .
+            dockerfile: Onefocus.Web/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
+
+    gateway:
+        image: ${DOCKER_REGISTRY-}onefocusgateway
+        build:
+            context: .
+            dockerfile: Onefocus.Gateway/Dockerfile
+        ports:
+            - "4000:8080"
+        networks:
+            - proxybackend
+
+    home:
+        image: ${DOCKER_REGISTRY-}onefocushomeapi
+        build:
+            context: .
+            dockerfile: Onefocus.Home/Onefocus.Home.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
+
+    identity:
+        image: ${DOCKER_REGISTRY-}onefocusidentityapi
+        build:
+            context: .
+            dockerfile: Onefocus.Identity/Onefocus.Identity.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
+
+    membership:
+        image: ${DOCKER_REGISTRY-}onefocusmembershipapi
+        build:
+            context: .
+            dockerfile: Onefocus.Membership/Onefocus.Membership.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
+    wallet:
+        image: ${DOCKER_REGISTRY-}onefocuswalletapi
+        build:
+            context: .
+            dockerfile: Onefocus.Wallet/Onefocus.Wallet.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+
+    search:
+        image: ${DOCKER_REGISTRY-}onefocussearchapi
+        build:
+            context: .
+            dockerfile: Onefocus.Search/Onefocus.Search.Api/Dockerfile
+        ports:
+            - "8080"
+        networks:
+            - proxybackend
+

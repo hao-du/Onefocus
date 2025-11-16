@@ -50,9 +50,9 @@ public static class DependencyInjection
                     host.Password(messageBrokerSettings.Password);
                 });
 
-                configure.Message<IUserSyncedMessage>(message =>
+                configure.Message<ISyncUserMessage>(message =>
                 {
-                    message.SetEntityName(MessageQueueNames.UserSynced);
+                    message.SetEntityName(MessageQueueNames.SyncUser);
                 });
 
                 configure.ConfigureEndpoints(context);

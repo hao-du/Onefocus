@@ -14,7 +14,7 @@ namespace Onefocus.Membership.Infrastructure.ServiceBus
         private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
         private readonly ILogger<UserSyncedPublisher> _logger = logger;
 
-        public async Task<Result> Publish(IUserSyncedMessage message, CancellationToken cancellationToken = default)
+        public async Task<Result> Publish(ISyncUserMessage message, CancellationToken cancellationToken = default)
         {
             try
             {

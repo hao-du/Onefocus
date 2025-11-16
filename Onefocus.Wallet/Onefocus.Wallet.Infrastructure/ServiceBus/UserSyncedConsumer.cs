@@ -10,9 +10,9 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
     internal class UserSyncedConsumer(
         IWriteUnitOfWork unitOfWork
             , ILogger<UserSyncedConsumer> logger
-        ) : IConsumer<IUserSyncedMessage>
+        ) : IConsumer<ISyncUserMessage>
     {
-        public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
+        public async Task Consume(ConsumeContext<ISyncUserMessage> context)
         {
             var getUserResult = await unitOfWork.User.GetUserByIdAsync(new(context.Message.Id));
             if (getUserResult.IsFailure)
@@ -60,7 +60,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
             }
         }
 
-        private void LogError(Result result, IUserSyncedMessage message)
+        private void LogError(Result result, ISyncUserMessage message)
         {
             foreach (var error in result.Errors)
             {

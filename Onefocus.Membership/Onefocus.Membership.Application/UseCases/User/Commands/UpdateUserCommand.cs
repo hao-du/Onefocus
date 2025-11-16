@@ -38,7 +38,7 @@ internal sealed class UpdateUserCommandHandler(
 
     private async Task<Result> PublishUserUpdateEvent(Entity.User user, CancellationToken cancellationToken = default)
     {
-        var eventPublishResult = await userSyncedPublisher.Publish(new UserSyncedPublishMessage(
+        var eventPublishResult = await userSyncedPublisher.Publish(new SyncUserPublishMessage(
             Id: user.Id,
             Email: user.Email!,
             FirstName: user.FirstName,

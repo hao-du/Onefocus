@@ -15,9 +15,9 @@ namespace Onefocus.Identity.Infrastructure.ServiceBus
             , IPasswordHasher<User> passwordHasher
             , IAuthenticationSettings authenticationSettings
             , ILogger<UserSyncedConsumer> logger
-        ) : IConsumer<IUserSyncedMessage>
+        ) : IConsumer<ISyncUserMessage>
     {
-        public async Task Consume(ConsumeContext<IUserSyncedMessage> context)
+        public async Task Consume(ConsumeContext<ISyncUserMessage> context)
         {
             var getUserResult = await userRepository.GetUserByEmailAsync(new(context.Message.Email), context.CancellationToken);
             if (getUserResult.IsFailure) LogError(getUserResult, context.Message);
@@ -57,7 +57,7 @@ namespace Onefocus.Identity.Infrastructure.ServiceBus
             logger.LogInformation("User: {Email} was synched successfully.", context.Message.Email);
         }
 
-        private void LogError(Result result, IUserSyncedMessage message)
+        private void LogError(Result result, ISyncUserMessage message)
         {
             foreach (var error in result.Errors)
             {

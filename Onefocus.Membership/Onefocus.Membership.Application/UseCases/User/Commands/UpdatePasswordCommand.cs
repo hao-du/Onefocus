@@ -46,7 +46,7 @@ internal sealed class UpdatePasswordCommandHandler(
     private async Task<Result> PublishUserCreationEvent(Entity.User user, string password, string securityKey, CancellationToken cancellationToken = default)
     {
         var encryptedPassword = await Cryptography.Encrypt(password, securityKey);
-        var eventPublishResult = await userSyncedPublisher.Publish(new UserSyncedPublishMessage(
+        var eventPublishResult = await userSyncedPublisher.Publish(new SyncUserPublishMessage(
             Id: user.Id,
             Email: user.Email!,
             FirstName: user.FirstName,

@@ -31,7 +31,7 @@ internal sealed class SyncUserCommandHandler(
         var errors = new List<Error>();
         foreach (var user in allUsersResult.Value.Users)
         {
-            tasks.Add(Publish(new UserSyncedPublishMessage(
+            tasks.Add(Publish(new SyncUserPublishMessage(
                 Id: user.Id,
                 Email: user.Email!,
                 FirstName: user.FirstName,
@@ -50,7 +50,7 @@ internal sealed class SyncUserCommandHandler(
         return Result.Success();
     }
 
-    private async Task Publish(IUserSyncedMessage message, List<Error> errors, CancellationToken cancellationToken)
+    private async Task Publish(ISyncUserMessage message, List<Error> errors, CancellationToken cancellationToken)
     {
         var eventResult = await userSyncedPublisher.Publish(message, cancellationToken);
         if (eventResult.IsFailure)

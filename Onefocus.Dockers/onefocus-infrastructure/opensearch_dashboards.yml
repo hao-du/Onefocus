@@ -1,0 +1,6 @@
+opensearch.hosts: ["https://localhost:9200"]
+opensearch.username: "admin"
+opensearch.password: "R6zntmydkm2?"
+opensearch.ssl.verificationMode: none
+server.host: "0.0.0.0"
+server.port: 5601
