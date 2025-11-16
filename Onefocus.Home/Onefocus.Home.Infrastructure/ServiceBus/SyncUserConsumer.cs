@@ -7,9 +7,9 @@ using Entity = Onefocus.Home.Domain.Entities.Write;
 
 namespace Onefocus.Home.Infrastructure.ServiceBus
 {
-    internal class UserSyncedConsumer(
+    internal class SyncUserConsumer(
         IWriteUnitOfWork unitOfWork
-            , ILogger<UserSyncedConsumer> logger
+            , ILogger<SyncUserConsumer> logger
         ) : IConsumer<ISyncUserMessage>
     {
         public async Task Consume(ConsumeContext<ISyncUserMessage> context)

@@ -1,4 +1,5 @@
 version: "3.8"
+name: onefocusinfrastructure
 services:
   opensearch:
     image: opensearchproject/opensearch:2.19.1
@@ -30,5 +31,30 @@ services:
     depends_on:
       - opensearch
 
+  rabbitmq:
+      image: rabbitmq:3-management
+      container_name: rabbitmq
+      ports:
+        - "5672:5672"      # AMQP
+        - "15672:15672"    # Management UI
+      environment:
+        RABBITMQ_DEFAULT_USER: azureadministrator
+        RABBITMQ_DEFAULT_PASS: R6zntmydkm2?
+      volumes:
+        - rabbitmq-data:/var/lib/rabbitmq
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "R6zntmydkm2?"]
+    environment:
+      REDIS_PASSWORD: "R6zntmydkm2?"
+    volumes:
+      - redis-data:/data
+
 volumes:
   opensearch-data:
+  rabbitmq-data:
+  redis-data:

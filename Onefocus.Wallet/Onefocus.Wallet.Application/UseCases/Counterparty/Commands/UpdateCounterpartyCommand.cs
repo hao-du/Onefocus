@@ -14,8 +14,9 @@ namespace Onefocus.Wallet.Application.UseCases.Counterparty.Commands;
 public sealed record UpdateCounterpartyCommandRequest(Guid Id, string FullName, string? Email, string? PhoneNumber, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateCounterpartyCommandHandler(
-    ILogger<UpdateCounterpartyCommandHandler> logger,
     IWriteUnitOfWork writeUnitOfWork,
+    ICounterpartyService counterpartyService,
+    ILogger<UpdateCounterpartyCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateCounterpartyCommandRequest>(httpContextAccessor, logger)
 {
@@ -29,9 +30,12 @@ internal sealed class UpdateCounterpartyCommandHandler(
 
         var getCounterpartyResult = await writeUnitOfWork.Counterparty.GetCounterpartyByIdAsync(new(request.Id), cancellationToken);
         if (getCounterpartyResult.IsFailure) return getCounterpartyResult;
-        if (getCounterpartyResult.Value.Counterparty == null) return Result.Failure(CommonErrors.NullReference);
 
-        var updateResult = getCounterpartyResult.Value.Counterparty.Update(
+        var counterparty = getCounterpartyResult.Value.Counterparty;
+
+        if (counterparty == null) return Result.Failure(CommonErrors.NullReference);
+
+        var updateResult = counterparty.Update(
             request.FullName,
             request.Email,
             request.PhoneNumber,
@@ -43,6 +47,8 @@ internal sealed class UpdateCounterpartyCommandHandler(
 
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await counterpartyService.PublishEvents(counterparty, cancellationToken);
 
         return Result.Success();
     }

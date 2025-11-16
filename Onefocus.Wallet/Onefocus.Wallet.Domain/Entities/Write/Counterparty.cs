@@ -2,6 +2,8 @@
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
+using Onefocus.Wallet.Domain.Events.Bank;
+using Onefocus.Wallet.Domain.Events.Counterparty;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -38,7 +40,11 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
         var validationResult = Validate(fullName);
         if (validationResult.IsFailure) return (Result<Counterparty>)validationResult;
 
-        return new Counterparty(fullName, email, phoneNumber, description, ownerId, actionedBy);
+        var counterparty = new Counterparty(fullName, email, phoneNumber, description, ownerId, actionedBy);
+
+        counterparty.AddDomainEvent(CounterpartyUpsertedEvent.Create(counterparty));
+
+        return counterparty;
     }
 
     public Result Update(string fullName, string? email, string? phoneNumber, string? description, bool isActive, Guid actionedBy)
@@ -55,6 +61,8 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
         Description = description;
 
         SetActiveFlag(isActive, actionedBy);
+
+        AddDomainEvent(CounterpartyUpsertedEvent.Create(this));
 
         return Result.Success();
     }

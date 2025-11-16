@@ -16,7 +16,7 @@ public sealed record UpdateUserCommandRequest(Guid Id, string Email, string Firs
 internal sealed class UpdateUserCommandHandler(
     ILogger<UpdateUserCommandHandler> logger
     , IUserRepository userRepository
-    , IUserSyncedPublisher userSyncedPublisher
+    , ISyncUserPublisher syncUserPublisher
     , IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateUserCommandRequest>(httpContextAccessor, logger)
 {
@@ -38,7 +38,7 @@ internal sealed class UpdateUserCommandHandler(
 
     private async Task<Result> PublishUserUpdateEvent(Entity.User user, CancellationToken cancellationToken = default)
     {
-        var eventPublishResult = await userSyncedPublisher.Publish(new SyncUserPublishMessage(
+        var eventPublishResult = await syncUserPublisher.Publish(new SyncUserPublishMessage(
             Id: user.Id,
             Email: user.Email!,
             FirstName: user.FirstName,

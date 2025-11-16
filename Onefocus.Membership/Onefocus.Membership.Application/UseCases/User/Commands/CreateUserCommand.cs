@@ -19,7 +19,7 @@ public sealed record CreateUserCommandResponse(Guid Id);
 internal sealed class CreateUserCommandHandler(
     ILogger<CreateUserCommandHandler> logger
         , IUserRepository userRepository
-        , IUserSyncedPublisher userSyncedPublisher
+        , ISyncUserPublisher syncUserPublisher
         , IAuthenticationSettings authenticationSettings
         , IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<CreateUserCommandRequest, CreateUserCommandResponse>(httpContextAccessor, logger)
@@ -48,7 +48,7 @@ internal sealed class CreateUserCommandHandler(
     private async Task<Result> PublishUserCreationEvent(Entity.User user, string password, string securityKey, CancellationToken cancellationToken = default)
     {
         var encryptedPassword = await Cryptography.Encrypt(password, securityKey);
-        var eventPublishResult = await userSyncedPublisher.Publish(new SyncUserPublishMessage(
+        var eventPublishResult = await syncUserPublisher.Publish(new SyncUserPublishMessage(
             Id: user.Id,
             Email: user.Email!,
             FirstName: user.FirstName,

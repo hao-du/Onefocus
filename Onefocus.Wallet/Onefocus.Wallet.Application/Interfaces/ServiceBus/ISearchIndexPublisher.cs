@@ -1,4 +1,4 @@
-﻿using Onefocus.Common.Abstractions.ServiceBus.Membership;
+﻿using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Results;
 
 namespace Onefocus.Wallet.Application.Interfaces.ServiceBus;

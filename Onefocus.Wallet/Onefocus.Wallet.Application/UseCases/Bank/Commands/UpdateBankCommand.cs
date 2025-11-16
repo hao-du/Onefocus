@@ -2,11 +2,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
+using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Membership.Application.Contracts.ServiceBus;
+using Onefocus.Wallet.Application.Interfaces.ServiceBus;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
+using Onefocus.Wallet.Domain.Events.Bank;
+using Onefocus.Wallet.Domain.Events.Counterparty;
+using static MassTransit.Monitoring.Performance.BuiltInCounters;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
@@ -14,9 +20,9 @@ namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
 public sealed record UpdateBankCommandRequest(Guid Id, string Name, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateBankCommandHandler(
-    ILogger<UpdateBankCommandHandler> logger,
     IBankService bankService,
     IWriteUnitOfWork writeUnitOfWork,
+    ILogger<UpdateBankCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateBankCommandRequest>(httpContextAccessor, logger)
 {
@@ -30,13 +36,18 @@ internal sealed class UpdateBankCommandHandler(
 
         var getBankResult = await writeUnitOfWork.Bank.GetBankByIdAsync(new(request.Id), cancellationToken);
         if (getBankResult.IsFailure) return getBankResult;
-        if (getBankResult.Value.Bank == null) return Result.Failure(CommonErrors.NullReference);
 
-        var updateResult = getBankResult.Value.Bank.Update(request.Name, request.Description, request.IsActive, actionByResult.Value);
+        var bank = getBankResult.Value.Bank;
+
+        if (bank == null) return Result.Failure(CommonErrors.NullReference);
+
+        var updateResult = bank.Update(request.Name, request.Description, request.IsActive, actionByResult.Value);
         if (updateResult.IsFailure) return updateResult;
 
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await bankService.PublishEvents(bank, cancellationToken);
 
         return Result.Success();
     }

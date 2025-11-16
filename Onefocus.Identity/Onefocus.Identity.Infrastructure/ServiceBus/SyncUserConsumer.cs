@@ -10,11 +10,11 @@ using Onefocus.Identity.Domain.Entities;
 
 namespace Onefocus.Identity.Infrastructure.ServiceBus
 {
-    internal class UserSyncedConsumer(
+    internal class SyncUserConsumer(
         IUserRepository userRepository
             , IPasswordHasher<User> passwordHasher
             , IAuthenticationSettings authenticationSettings
-            , ILogger<UserSyncedConsumer> logger
+            , ILogger<SyncUserConsumer> logger
         ) : IConsumer<ISyncUserMessage>
     {
         public async Task Consume(ConsumeContext<ISyncUserMessage> context)

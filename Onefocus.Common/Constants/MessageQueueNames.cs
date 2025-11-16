@@ -8,7 +8,7 @@ namespace Onefocus.Common.Constants
 {
     public class MessageQueueNames
     {
-        public const string SyncUser = "sync_user";
-        public const string SearchIndex = "search_index";
+        public const string SyncUser = "publisher-sync-user";
+        public const string SearchIndex = "publisher-search-index";
     }
 }

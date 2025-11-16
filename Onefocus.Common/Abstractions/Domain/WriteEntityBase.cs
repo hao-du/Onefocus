@@ -5,7 +5,7 @@ namespace Onefocus.Common.Abstractions.Domain;
 
 public abstract class WriteEntityBase : EntityBase
 {
-    private List<IDomainEvent> _domainEvents => [];
+    private readonly List<IDomainEvent> _domainEvents = [];
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected void Init(Guid? id, string? description, Guid actionedBy)

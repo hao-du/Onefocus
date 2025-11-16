@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Onefocus.Identity\Onefocus.Identity.Api\Onefocus.Identity.Api.csproj" />
     <ProjectReference Include="..\Onefocus.Membership\Onefocus.Membership.Api\Onefocus.Membership.Api.csproj" />
     <ProjectReference Include="..\Onefocus.Wallet\Onefocus.Wallet.Api\Onefocus.Wallet.Api.csproj" />
+	<ProjectReference Include="..\Onefocus.Search\Onefocus.Search.Api\Onefocus.Search.Api.csproj" />
     <ProjectReference Include="..\Onefocus.Web\Onefocus.Web.csproj" />
   </ItemGroup>
 

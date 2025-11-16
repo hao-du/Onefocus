@@ -17,7 +17,7 @@ public sealed record UpdatePasswordCommandRequest(Guid Id, string Password, stri
 internal sealed class UpdatePasswordCommandHandler(
     ILogger<UpdatePasswordCommandHandler> logger
         , IUserRepository userRepository
-        , IUserSyncedPublisher userSyncedPublisher
+        , ISyncUserPublisher syncUserPublisher
         , IPasswordHasher<Entity.User> passwordHasher
         , IAuthenticationSettings authenticationSettings
         , IHttpContextAccessor httpContextAccessor
@@ -46,7 +46,7 @@ internal sealed class UpdatePasswordCommandHandler(
     private async Task<Result> PublishUserCreationEvent(Entity.User user, string password, string securityKey, CancellationToken cancellationToken = default)
     {
         var encryptedPassword = await Cryptography.Encrypt(password, securityKey);
-        var eventPublishResult = await userSyncedPublisher.Publish(new SyncUserPublishMessage(
+        var eventPublishResult = await syncUserPublisher.Publish(new SyncUserPublishMessage(
             Id: user.Id,
             Email: user.Email!,
             FirstName: user.FirstName,

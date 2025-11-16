@@ -50,8 +50,6 @@ namespace Onefocus.Search.Infrastructure.Services
                 return Results.Result.Failure(Errors.IndexIsRequired);
 
             var existsResponse = await client.Indices.ExistsAsync(index);
-            if (!existsResponse.IsValid)
-                return Results.Result.Failure("EnsureIndexExists", GetError(existsResponse));
             if (existsResponse.Exists)
                 return Results.Result.Success();
 
@@ -68,8 +66,8 @@ namespace Onefocus.Search.Infrastructure.Services
 
         private string GetIndexName(SearchIndexDto env)
         {
-            if (!string.IsNullOrWhiteSpace(env.EntityType))
-                return $"index_{env.EntityType!.Trim().ToLowerInvariant()}";
+            if (!string.IsNullOrWhiteSpace(env.IndexName))
+                return $"index_{env.IndexName!.Trim().ToLowerInvariant()}";
 
             if (!string.IsNullOrWhiteSpace(searchSettings.DefaultIndexName))
                 return searchSettings.DefaultIndexName;

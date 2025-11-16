@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -11,8 +12,9 @@ public sealed record CreateCounterpartyCommandRequest(string FullName, string? E
 public sealed record CreateCounterpartyCommandResponse(Guid Id);
 
 internal sealed class CreateCounterpartyCommandHandler(
-    ILogger<CreateCounterpartyCommandHandler> logger,
     IWriteUnitOfWork writeUnitOfWork,
+    ICounterpartyService counterpartyService,
+    ILogger<CreateCounterpartyCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateCounterpartyCommandRequest, CreateCounterpartyCommandResponse>(httpContextAccessor, logger)
 {
@@ -32,15 +34,19 @@ internal sealed class CreateCounterpartyCommandHandler(
             ownerId: actionByResult.Value,
             actionByResult.Value
         );
-        if (counterpartyCreationResult.IsFailure) return Failure(counterpartyCreationResult); ;
+        if (counterpartyCreationResult.IsFailure) return Failure(counterpartyCreationResult);
 
-        var createResult = await writeUnitOfWork.Counterparty.AddCounterpartyAsync(new(counterpartyCreationResult.Value), cancellationToken);
+        var counterparty = counterpartyCreationResult.Value;
+
+        var createResult = await writeUnitOfWork.Counterparty.AddCounterpartyAsync(new(counterparty), cancellationToken);
         if (createResult.IsFailure) return Failure(createResult); ;
 
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
 
-        return Result.Success<CreateCounterpartyCommandResponse>(new(counterpartyCreationResult.Value.Id));
+        await counterpartyService.PublishEvents(counterparty, cancellationToken);
+
+        return Result.Success<CreateCounterpartyCommandResponse>(new(counterparty.Id));
     }
 
     private Result ValidateRequest(CreateCounterpartyCommandRequest request, CancellationToken cancellationToken)

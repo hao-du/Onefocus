@@ -4,6 +4,8 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 using Onefocus.Wallet.Domain.Events.Bank;
+using Onefocus.Wallet.Domain.Events.Counterparty;
+using Onefocus.Wallet.Domain.Events.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -38,7 +40,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
         var bank = new Bank(name, description, ownerId, actionedBy);
 
-        bank.AddDomainEvent(BankCreatedEvent.Create(bank));
+        bank.AddDomainEvent(BankUpsertedEvent.Create(bank));
 
         return bank;
     }
@@ -56,7 +58,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
         SetActiveFlag(isActive, actionedBy);
 
-        AddDomainEvent(BankUpdatedEvent.Create(this));
+        AddDomainEvent(BankUpsertedEvent.Create(this));
 
         return Result.Success();
     }

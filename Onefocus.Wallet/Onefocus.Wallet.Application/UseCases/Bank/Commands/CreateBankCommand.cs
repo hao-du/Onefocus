@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
+using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Results;
 using Onefocus.Membership.Application.Contracts.ServiceBus;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
@@ -11,6 +12,7 @@ using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Application.Services;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Events.Bank;
+using Onefocus.Wallet.Domain.Events.Counterparty;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
@@ -21,7 +23,6 @@ public sealed record CreateBankCommandResponse(Guid Id);
 internal sealed class CreateBankCommandHandler(
     IBankService bankService,
     IWriteUnitOfWork writeUnitOfWork,
-    ISearchIndexPublisher searchIndexPublisher,
     ILogger<CreateBankCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateBankCommandRequest, CreateBankCommandResponse>(httpContextAccessor, logger)
@@ -50,26 +51,9 @@ internal sealed class CreateBankCommandHandler(
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
 
-        await PublishEvents(bank);
+        await bankService.PublishEvents(bank, cancellationToken);
 
         return Result.Success<CreateBankCommandResponse>(new(bankCreationResult.Value.Id));
-    }
-
-    private async Task PublishEvents(Entity.Bank bank)
-    {
-        var tasks = new List<Task>();
-        foreach (var domainEvent in bank.DomainEvents)
-        {
-            if (domainEvent.EventType == typeof(BankCreatedEvent).Name)
-            {
-                var message = new SearchIndexPublishMessage(
-                    EntityType: domainEvent.EntityName,
-                    EntityId: domainEvent.EntityId,
-                    Payload: domainEvent.Payload);
-                tasks.Add(searchIndexPublisher.Publish(message));
-            }
-        }
-        await Task.WhenAll(tasks);
     }
 
     private async Task<Result> ValidateRequest(CreateBankCommandRequest request, CancellationToken cancellationToken)

@@ -7,12 +7,12 @@ using Onefocus.Membership.Application.Interfaces.ServiceBus;
 
 namespace Onefocus.Membership.Infrastructure.ServiceBus
 {
-    public class UserSyncedPublisher(
+    public class SyncUserPublisher(
         IPublishEndpoint publishEndpoint
-        , ILogger<UserSyncedPublisher> logger) : IUserSyncedPublisher
+        , ILogger<SyncUserPublisher> logger) : ISyncUserPublisher
     {
         private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
-        private readonly ILogger<UserSyncedPublisher> _logger = logger;
+        private readonly ILogger<SyncUserPublisher> _logger = logger;
 
         public async Task<Result> Publish(ISyncUserMessage message, CancellationToken cancellationToken = default)
         {

@@ -30,9 +30,9 @@ public static class DependencyInjection
 
         services.AddMassTransit(busConfigure =>
         {
-            busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
+            busConfigure.AddConsumer<SyncUserConsumer>().Endpoint(configure =>
             {
-                configure.InstanceId = messageBrokerSettings.InstanceId;
+                configure.InstanceId = $"-consumer-identity-{messageBrokerSettings.InstanceId}";
             });
 
             busConfigure.UsingRabbitMq((context, configure) =>

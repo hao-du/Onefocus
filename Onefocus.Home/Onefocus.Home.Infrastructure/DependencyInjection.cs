@@ -37,9 +37,9 @@ public static class DependencyInjection
         var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
         services.AddMassTransit(busConfigure =>
         {
-            busConfigure.AddConsumer<UserSyncedConsumer>().Endpoint(configure =>
+            busConfigure.AddConsumer<SyncUserConsumer>().Endpoint(configure =>
             {
-                configure.InstanceId = messageBrokerSettings.InstanceId;
+                configure.InstanceId = $"-consumer-home-{messageBrokerSettings.InstanceId}";
             });
 
             busConfigure.UsingRabbitMq((context, configure) =>

@@ -59,7 +59,7 @@ services
     .AddInfrastructure(configuration)
     .AddApplication();
 
-services.AddScoped<IUserSyncedPublisher, UserSyncedPublisher>();
+services.AddScoped<ISyncUserPublisher, SyncUserPublisher>();
 services.AddScoped<IUserRepository, UserRepository>();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();

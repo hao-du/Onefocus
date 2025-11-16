@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Search.Application.Interfaces.Services;
@@ -20,11 +20,9 @@ public static class DependencyInjection
         var messageBrokerSettings = configuration.GetSection(IMessageBrokerSettings.SettingName).Get<MessageBrokerSettings>()!;
         services.AddMassTransit(busConfigure =>
         {
-            busConfigure.SetKebabCaseEndpointNameFormatter();
-
             busConfigure.AddConsumer<SearchIndexConsumer>().Endpoint(configure =>
             {
-                configure.InstanceId = messageBrokerSettings.InstanceId;
+                configure.InstanceId = $"-consumer-search-{messageBrokerSettings.InstanceId}";
             });
 
             busConfigure.UsingRabbitMq((context, configure) =>

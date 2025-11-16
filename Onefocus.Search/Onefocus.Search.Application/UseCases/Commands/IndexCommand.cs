@@ -22,7 +22,7 @@ internal sealed class IndexCommandHandler(
     {
         var bulkIndexResult = await indexingService.AddIndex([..request.envelops.Select(request => new SearchIndexDto(
              EntityId: request.EntityId,
-             EntityType: request.EntityType,
+             IndexName: request.EntityType,
              Payload: request.Payload
             ))
         ], cancellationToken);

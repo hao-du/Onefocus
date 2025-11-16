@@ -13,7 +13,7 @@
     <None Remove="Onefocus.Wallet\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="docker-compose-search.yml" />
+    <None Include="infrastructure.yml" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

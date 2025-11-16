@@ -13,7 +13,7 @@ public sealed record SyncUserCommandRequest() : ICommand;
 
 internal sealed class SyncUserCommandHandler(
     IUserRepository userRepository
-        , IUserSyncedPublisher userSyncedPublisher
+        , ISyncUserPublisher syncUserPublisher
         , IHttpContextAccessor httpContextAccessor
         , ILogger<SyncUserCommandHandler> logger) : CommandHandler<SyncUserCommandRequest>(httpContextAccessor, logger)
 {
@@ -52,7 +52,7 @@ internal sealed class SyncUserCommandHandler(
 
     private async Task Publish(ISyncUserMessage message, List<Error> errors, CancellationToken cancellationToken)
     {
-        var eventResult = await userSyncedPublisher.Publish(message, cancellationToken);
+        var eventResult = await syncUserPublisher.Publish(message, cancellationToken);
         if (eventResult.IsFailure)
         {
             errors.Add(eventResult.Error);

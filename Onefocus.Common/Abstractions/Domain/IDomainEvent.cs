@@ -2,7 +2,7 @@
 
 public interface IDomainEvent
 {
-    string EntityName { get; }
+    string IndexName { get; }
     string EntityId { get; }
     string EventType { get; }
     string Payload { get; }

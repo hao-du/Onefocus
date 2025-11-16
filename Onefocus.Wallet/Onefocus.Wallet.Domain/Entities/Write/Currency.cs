@@ -2,6 +2,7 @@
 using Onefocus.Common.Abstractions.Domain.Fields;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
+using Onefocus.Wallet.Domain.Events.Currency;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -40,7 +41,11 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
         var validationResult = Validate(name, shortName);
         if (validationResult.IsFailure) return (Result<Currency>)validationResult;
 
-        return new Currency(name, shortName, description, isDefault, ownerId, actionedBy);
+        var currency = new Currency(name, shortName, description, isDefault, ownerId, actionedBy);
+
+        currency.AddDomainEvent(CurrencyUpsertedEvent.Create(currency));
+
+        return currency;
     }
 
     public Result Update(string name, string shortName, string? description, bool isDefault, bool isActive, Guid actionedBy)
@@ -57,6 +62,8 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
         IsDefault = isDefault;
 
         SetActiveFlag(isActive, actionedBy);
+
+        AddDomainEvent(CurrencyUpsertedEvent.Create(this));
 
         return Result.Success();
     }

@@ -27,9 +27,11 @@ internal sealed class UpdateCurrencyCommandHandler(
 
         var currencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.Id), cancellationToken);
         if (currencyResult.IsFailure) return currencyResult;
-        if (currencyResult.Value.Currency == null) return Result.Failure(CommonErrors.NullReference);
+        var currency = currencyResult.Value.Currency;
 
-        var updateResult = currencyResult.Value.Currency.Update(
+        if (currency == null) return Result.Failure(CommonErrors.NullReference);
+
+        var updateResult = currency.Update(
             name: request.Name,
             shortName: request.ShortName,
             description: request.Description,
@@ -50,6 +52,8 @@ internal sealed class UpdateCurrencyCommandHandler(
             var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
             return saveChangesResult;
         }, cancellationToken);
+
+        await currencyService.PublishEvents(currency, cancellationToken);
 
         return transactionResult;
     }

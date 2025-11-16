@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.ServiceBus.Membership;
+using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
@@ -23,7 +23,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Cannot index {message.EntityType} - {message.EntityId} with error: {ex.Message}", message.EntityType, message.EntityId, ex.Message);
+                _logger.LogError(ex, "Cannot index with error: {ex.Message}", ex.Message);
                 return Result.Failure(ex.ToErrors());
             }
         }
