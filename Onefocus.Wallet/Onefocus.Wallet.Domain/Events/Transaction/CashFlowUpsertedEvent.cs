@@ -17,6 +17,7 @@ public class CashFlowUpsertedEvent : IDomainEvent<WriteEntity.CashFlow>
         Entity = cashFlow;
         Payload = JsonSerializer.Serialize(new
         {
+            id = cashFlow.Id,
             type = nameof(WriteEntity.CashFlow),
             currencyId = cashFlow.Transaction.CurrencyId,
             currencyName = cashFlow.Transaction.Currency.Name,
@@ -24,8 +25,9 @@ public class CashFlowUpsertedEvent : IDomainEvent<WriteEntity.CashFlow>
             ownerUserId = cashFlow.Transaction.OwnerUserId,
             description = cashFlow.Transaction.Description,
             isActive = cashFlow.Transaction.IsActive,
-            transactions = cashFlow.Transaction.TransactionItems.Select(item => new
+            items = cashFlow.Transaction.TransactionItems.Select(item => new
             {
+                id = item.Id,
                 name = item.Name,
                 description = item.Description,
                 isActive = cashFlow.Transaction.IsActive,

@@ -2,5 +2,5 @@
 
 public interface ISearchIndexMessage
 {
-    IReadOnlyList<ISearchIndexEntity> Entities { get; }
+    IReadOnlyList<ISearchIndexDocument> Documents { get; }
 }

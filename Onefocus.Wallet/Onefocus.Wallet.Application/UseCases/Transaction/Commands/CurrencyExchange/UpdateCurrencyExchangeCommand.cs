@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.Services;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -21,10 +23,11 @@ public sealed record UpdateCurrencyExchangeCommandRequest(
 ) : ICommand;
 
 internal sealed class UpdateCurrencyExchangeCommandHandler(
-    ILogger<UpdateCurrencyExchangeCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCurrencyExchangeCommandRequest>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<UpdateCurrencyExchangeCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdateCurrencyExchangeCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCurrencyExchangeCommandRequest request, CancellationToken cancellationToken)
     {
@@ -53,6 +56,8 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await transactionService.PublishEvents(currencyExchange, cancellationToken);
 
         return Result.Success();
     }

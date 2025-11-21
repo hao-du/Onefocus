@@ -17,11 +17,13 @@ public class CurrencyExchangeUpsertedEvent: IDomainEvent<WriteEntity.CurrencyExc
         Entity = currencyExchange;
         Payload = JsonSerializer.Serialize(new
         {
+            id = currencyExchange.Id,
             type = nameof(WriteEntity.CurrencyExchange),
             description = currencyExchange.Description,
             isActive = currencyExchange.IsActive,
             transactions = currencyExchange.CurrencyExchangeTransactions.Select(cet => new
             {
+                id = cet.Transaction.Id,
                 transactedOn = cet.Transaction.TransactedOn,
                 currencyId = cet.Transaction.CurrencyId,
                 currencyName = cet.Transaction.Currency.Name,

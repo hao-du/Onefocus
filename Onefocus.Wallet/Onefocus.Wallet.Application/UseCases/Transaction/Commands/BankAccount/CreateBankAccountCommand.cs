@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.Services;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
@@ -28,9 +30,10 @@ public sealed record CreateTransaction(
 public sealed record CreateBankAccountCommandResponse(Guid Id);
 
 internal sealed class CreateBankAccountCommandHandler(
-    ILogger<CreateBankAccountCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
+    ITransactionService transactionService,
+    ILogger<CreateBankAccountCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork, 
+    IHttpContextAccessor httpContextAccessor
     ) : CommandHandler<CreateBankAccountCommandRequest, CreateBankAccountCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateBankAccountCommandResponse>> Handle(CreateBankAccountCommandRequest request, CancellationToken cancellationToken)
@@ -68,6 +71,8 @@ internal sealed class CreateBankAccountCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
+        await transactionService.PublishEvents(bankAccount, cancellationToken);
 
         return Result.Success<CreateBankAccountCommandResponse>(new(bankAccount.Id));
     }

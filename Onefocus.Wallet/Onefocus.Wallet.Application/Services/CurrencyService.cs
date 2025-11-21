@@ -2,12 +2,11 @@
 using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Results;
-using Onefocus.Membership.Application.Contracts.ServiceBus;
+using Onefocus.Wallet.Application.Contracts.ServiceBus.Search;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Events.Bank;
 using Onefocus.Wallet.Domain.Events.Currency;
 using Onefocus.Wallet.Domain.Specifications.Write.Currency;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
@@ -36,22 +35,21 @@ namespace Onefocus.Wallet.Application.Services
 
         public async Task PublishEvents(Entity.Currency currency, CancellationToken cancellationToken)
         {
-            var tasks = new List<Task>();
-            var entities = new List<ISearchIndexEntity>();
+            var documents = new List<ISearchIndexDocument>();
             foreach (var domainEvent in currency.DomainEvents)
             {
                 if (domainEvent.EventType == typeof(CurrencyUpsertedEvent).Name)
                 {
-                    entities.Add(new SearchIndexEntity(
+                    documents.Add(new SearchIndexDocument(
                         IndexName: domainEvent.IndexName,
-                        EntityId: domainEvent.EntityId,
+                        DocumentId: domainEvent.EntityId,
                         Payload: domainEvent.Payload)
                     );
                 }
             }
-            if (entities.Count > 0)
+            if (documents.Count > 0)
             {
-                await searchIndexPublisher.Publish(new SearchIndexMessage(entities), cancellationToken);
+                await searchIndexPublisher.Publish(new SearchIndexMessage(documents), cancellationToken);
             }
         }
     }

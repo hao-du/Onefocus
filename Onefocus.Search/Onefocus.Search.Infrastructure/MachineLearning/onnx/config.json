@@ -1,5 +1,5 @@
 {
-  "_name_or_path": "intfloat/multilingual-e5-small",
+  "_name_or_path": "tmp/",
   "architectures": [
     "BertModel"
   ],
@@ -18,7 +18,8 @@
   "pad_token_id": 0,
   "position_embedding_type": "absolute",
   "tokenizer_class": "XLMRobertaTokenizer",
-  "transformers_version": "4.30.2",
+  "torch_dtype": "float32",
+  "transformers_version": "4.29.0",
   "type_vocab_size": 2,
   "use_cache": true,
   "vocab_size": 250037

@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -12,10 +14,11 @@ public sealed record CreateTransactionItem(string Name, decimal Amount, string? 
 public sealed record CreateCashFlowCommandResponse(Guid Id);
 
 internal sealed class CreateCashFlowCommandHandler(
-    ILogger<CreateCashFlowCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateCashFlowCommandRequest, CreateCashFlowCommandResponse>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<CreateCashFlowCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<CreateCashFlowCommandRequest, CreateCashFlowCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateCashFlowCommandResponse>> Handle(CreateCashFlowCommandRequest request, CancellationToken cancellationToken)
     {
@@ -43,6 +46,8 @@ internal sealed class CreateCashFlowCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
+        await transactionService.PublishEvents(cashFlow, cancellationToken);
 
         return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }

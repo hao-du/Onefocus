@@ -1,10 +1,8 @@
-﻿using Onefocus.Common.Results;
-using Entity = Onefocus.Wallet.Domain.Entities.Write;
+﻿using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
-namespace Onefocus.Wallet.Application.Interfaces.Services
+namespace Onefocus.Wallet.Application.Interfaces.Services;
+
+internal interface ICounterpartyService
 {
-    internal interface ICounterpartyService
-    {
-        Task PublishEvents(Entity.Counterparty counterparty, CancellationToken cancellationToken);
-    }
+    Task PublishEvents(Entity.Counterparty counterparty, CancellationToken cancellationToken);
 }

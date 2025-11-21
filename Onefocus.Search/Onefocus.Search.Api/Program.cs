@@ -11,6 +11,15 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var preLoggerFactory = LoggerFactory.Create(logging =>
+{
+    logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+    logging.AddConsole();
+    logging.AddDebug();
+});
+var logger = preLoggerFactory.CreateLogger("SearchApiLog");
+builder.Services.AddSingleton(preLoggerFactory);
+
 builder.AddServiceDefaults();
 var services = builder.Services;
 var configuration = builder.Configuration;
@@ -52,7 +61,7 @@ services.AddSwaggerGen(option =>
 services.AddAuthenticationSettings(configuration);
 services.AddAuthorization();
 
-services.AddInfrastructure(configuration).AddApplication();
+services.AddInfrastructure(logger, configuration).AddApplication();
 
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();

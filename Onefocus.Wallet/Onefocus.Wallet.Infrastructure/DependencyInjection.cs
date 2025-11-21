@@ -16,6 +16,7 @@ using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 using Onefocus.Wallet.Infrastructure.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.ServiceBus;
+using Onefocus.Wallet.Infrastructure.ServiceBus.Search;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
@@ -85,6 +86,10 @@ public static class DependencyInjection
                     message.SetEntityName(MessageQueueNames.SearchIndex);
                 });
 
+                configure.Message<ISearchSchemaMessage>(message =>
+                {
+                    message.SetEntityName(MessageQueueNames.SearchSchema);
+                });
 
                 configure.ConfigureEndpoints(context);
             });

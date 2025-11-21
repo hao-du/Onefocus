@@ -11,25 +11,19 @@ using System.Threading;
 namespace Onefocus.Search.Infrastructure.ServiceBus;
 
 internal class SearchIndexConsumer(
-    IIndexingService indexingService,
+    ISearchIndexService indexingService,
     ILogger<SearchIndexConsumer> logger
     ) : IConsumer<ISearchIndexMessage>
 {
-    private static readonly JsonSerializerOptions _payloadJsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = false,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never
-    };
-
     public async Task Consume(ConsumeContext<ISearchIndexMessage> context)
     {
-        var searchIndexDtos = context.Message.Entities.Select(entity => new SearchIndexDto(
-            EntityId: entity.EntityId,
+        var searchIndexDtos = context.Message.Documents.Select(entity => new SearchIndexDocumentDto(
+            EntityId: entity.DocumentId,
             IndexName: entity.IndexName,
-            Payload: JsonSerializer.Deserialize<JsonElement>(entity.Payload, _payloadJsonOptions)
+            Payload: entity.Payload
         )).ToList();
 
-        var indexResult = await indexingService.AddIndex(searchIndexDtos, context.CancellationToken);
+        var indexResult = await indexingService.IndexEntities(searchIndexDtos, context.CancellationToken);
 
         if (indexResult.IsFailure)
             LogError(indexResult);

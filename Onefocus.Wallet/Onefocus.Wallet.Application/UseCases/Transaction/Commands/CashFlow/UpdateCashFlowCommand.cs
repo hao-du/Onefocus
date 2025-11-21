@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.Services;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -12,10 +14,11 @@ public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateT
 public sealed record UpdateTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
 internal sealed class UpdateCashFlowCommandHandler(
-        ILogger<UpdateCashFlowCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<UpdateCashFlowCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCashFlowCommandRequest request, CancellationToken cancellationToken)
     {
@@ -45,6 +48,8 @@ internal sealed class UpdateCashFlowCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await transactionService.PublishEvents(cashFlow, cancellationToken);
 
         return Result.Success();
     }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
@@ -32,10 +33,11 @@ public sealed record UpdateTransaction(
 );
 
 internal sealed class UpdateBankAccountCommandHandler(
-    ILogger<UpdateBankAccountCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateBankAccountCommandRequest>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<UpdateBankAccountCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdateBankAccountCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateBankAccountCommandRequest request, CancellationToken cancellationToken)
     {
@@ -76,6 +78,8 @@ internal sealed class UpdateBankAccountCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await transactionService.PublishEvents(bankAccount, cancellationToken);
 
         return Result.Success();
     }

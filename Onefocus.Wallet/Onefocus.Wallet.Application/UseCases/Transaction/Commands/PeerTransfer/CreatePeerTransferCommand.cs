@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
@@ -26,10 +28,11 @@ public sealed record CreateTransferTransaction(
 public sealed record CreatePeerTransferCommandResponse(Guid Id);
 
 internal sealed class CreatePeerTransferCommandHandler(
-        ILogger<CreatePeerTransferCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreatePeerTransferCommandRequest, CreatePeerTransferCommandResponse>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<CreatePeerTransferCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<CreatePeerTransferCommandRequest, CreatePeerTransferCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreatePeerTransferCommandResponse>> Handle(CreatePeerTransferCommandRequest request, CancellationToken cancellationToken)
     {
@@ -62,6 +65,8 @@ internal sealed class CreatePeerTransferCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
+        await transactionService.PublishEvents(peerTransfer, cancellationToken);
 
         return Result.Success<CreatePeerTransferCommandResponse>(new(peerTransfer.Id));
     }

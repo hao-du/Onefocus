@@ -10,5 +10,6 @@ namespace Onefocus.Common.Constants
     {
         public const string SyncUser = "publisher-sync-user";
         public const string SearchIndex = "publisher-search-index";
+        public const string SearchSchema = "publisher-search-schema";
     }
 }

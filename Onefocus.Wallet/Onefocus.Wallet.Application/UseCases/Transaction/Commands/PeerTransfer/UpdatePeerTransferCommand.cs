@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Enums;
@@ -30,10 +31,11 @@ public sealed record UpdateTransferTransaction(
 );
 
 internal sealed class UpdatePeerTransferCommandHandler(
-        ILogger<UpdatePeerTransferCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdatePeerTransferCommandRequest>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<UpdatePeerTransferCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdatePeerTransferCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdatePeerTransferCommandRequest request, CancellationToken cancellationToken)
     {
@@ -71,6 +73,8 @@ internal sealed class UpdatePeerTransferCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
+
+        await transactionService.PublishEvents(peerTransfer, cancellationToken);
 
         return Result.Success();
     }

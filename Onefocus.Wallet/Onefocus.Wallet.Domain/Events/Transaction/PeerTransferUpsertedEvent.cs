@@ -17,6 +17,7 @@ public class PeerTransferUpsertedEvent : IDomainEvent<WriteEntity.PeerTransfer>
         Entity = peerTransfer;
         Payload = JsonSerializer.Serialize(new
         {
+            id = peerTransfer.Id,
             type = nameof(WriteEntity.CurrencyExchange),
             counterpartyId = peerTransfer.CounterpartyId,
             counterpartyName = peerTransfer.Counterparty.FullName,
@@ -26,6 +27,7 @@ public class PeerTransferUpsertedEvent : IDomainEvent<WriteEntity.PeerTransfer>
             isActive = peerTransfer.IsActive,
             transactions = peerTransfer.PeerTransferTransactions.Select(ptt => new
             {
+                id = ptt.Transaction.Id,
                 transactedOn = ptt.Transaction.TransactedOn,
                 currencyId = ptt.Transaction.CurrencyId,
                 currencyName = ptt.Transaction.Currency.Name,
@@ -33,7 +35,7 @@ public class PeerTransferUpsertedEvent : IDomainEvent<WriteEntity.PeerTransfer>
                 description = ptt.Transaction.Description,
                 isActive = ptt.Transaction.IsActive,
             }).ToArray()
-        }); ;
+        });
     }
 
     public static PeerTransferUpsertedEvent Create(WriteEntity.PeerTransfer peerTransfer)

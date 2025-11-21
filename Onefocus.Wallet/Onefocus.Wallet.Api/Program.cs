@@ -6,15 +6,7 @@ using Onefocus.Common.Utilities;
 using Onefocus.ServiceDefaults;
 using Onefocus.Wallet.Api.Endpoints;
 using Onefocus.Wallet.Application;
-using Onefocus.Wallet.Application.Interfaces.Repositories.Read;
-using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
-using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Read;
-using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Infrastructure;
-using Onefocus.Wallet.Infrastructure.Repositories.Read;
-using Onefocus.Wallet.Infrastructure.Repositories.Write;
-using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
-using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +57,8 @@ services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddProblemDetails();
 
 var app = builder.Build();
+
+await app.UseSearch();
 
 app.MapDefaultEndpoints();
 

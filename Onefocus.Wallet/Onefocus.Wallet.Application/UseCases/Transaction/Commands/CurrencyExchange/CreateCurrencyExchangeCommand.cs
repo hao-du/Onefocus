@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
+using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -19,10 +21,11 @@ public sealed record CreateCurrencyExchangeCommandRequest(
 public sealed record CreateCurrencyExchangeCommandResponse(Guid Id);
 
 internal sealed class CreateCurrencyExchangeCommandHandler(
-    ILogger<CreateCurrencyExchangeCommandHandler> logger
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateCurrencyExchangeCommandRequest, CreateCurrencyExchangeCommandResponse>(httpContextAccessor, logger)
+    ITransactionService transactionService,
+    ILogger<CreateCurrencyExchangeCommandHandler> logger,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<CreateCurrencyExchangeCommandRequest, CreateCurrencyExchangeCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateCurrencyExchangeCommandResponse>> Handle(CreateCurrencyExchangeCommandRequest request, CancellationToken cancellationToken)
     {
@@ -49,6 +52,8 @@ internal sealed class CreateCurrencyExchangeCommandHandler(
 
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
+
+        await transactionService.PublishEvents(currencyExchange, cancellationToken);
 
         return Result.Success<CreateCurrencyExchangeCommandResponse>(new(currencyExchange.Id));
     }
