@@ -22,7 +22,7 @@ internal sealed class UpdateCounterpartyCommandHandler(
 {
     public override async Task<Result> Handle(UpdateCounterpartyCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request, cancellationToken);
+        var validationResult = ValidateRequest(request);
         if (validationResult.IsFailure) return validationResult;
 
         var actionByResult = GetUserId();
@@ -53,7 +53,7 @@ internal sealed class UpdateCounterpartyCommandHandler(
         return Result.Success();
     }
 
-    private Result ValidateRequest(UpdateCounterpartyCommandRequest request, CancellationToken cancellationToken)
+    private static Result ValidateRequest(UpdateCounterpartyCommandRequest request)
     {
         var validationResult = Entity.Counterparty.Validate(request.FullName);
         return validationResult;

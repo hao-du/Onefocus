@@ -15,4 +15,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Search\" />
+  </ItemGroup>
+
 </Project>

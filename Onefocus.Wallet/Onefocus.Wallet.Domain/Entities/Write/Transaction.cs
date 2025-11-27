@@ -34,38 +34,40 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         // Required for EF Core
     }
 
-    private Transaction(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy)
+    private Transaction(decimal amount, DateTimeOffset transactedOn, Currency currency, string? description, Guid ownerId, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
         Amount = amount;
         TransactedOn = transactedOn;
         OwnerUserId = ownerId;
-        CurrencyId = currencyId;
+        Currency = currency;
+        CurrencyId = currency.Id;
     }
 
-    public static Result<Transaction> Create(decimal amount, DateTimeOffset transactedOn, Guid currencyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
+    public static Result<Transaction> Create(decimal amount, DateTimeOffset transactedOn, Currency currency, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
     {
-        var validationResult = Validate(amount, currencyId, transactedOn);
+        var validationResult = Validate(amount, currency, transactedOn);
         if (validationResult.IsFailure) return (Result<Transaction>)validationResult;
 
-        var transaction = new Transaction(amount, transactedOn, currencyId, description, ownerId, actionedBy);
+        var transaction = new Transaction(amount, transactedOn, currency, description, ownerId, actionedBy);
         var itemCreationResult = transaction.UpsertTransactionItems(transactionItems, actionedBy);
         if (itemCreationResult.IsFailure) return (Result<Transaction>)itemCreationResult;
 
         return transaction;
     }
 
-    public Result Update(decimal amount, DateTimeOffset transactedOn, Guid currencyId, bool isActive, string? description, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
+    public Result Update(decimal amount, DateTimeOffset transactedOn, Currency currency, bool isActive, string? description, Guid actionedBy, IReadOnlyList<TransactionItemParams>? transactionItems = null)
     {
-        var validationResult = Validate(amount, currencyId, transactedOn);
+        var validationResult = Validate(amount, currency, transactedOn);
         if (validationResult.IsFailure)
         {
             return validationResult;
         }
 
         Amount = amount;
-        CurrencyId = currencyId;
+        Currency = currency;
+        CurrencyId = currency.Id;
         TransactedOn = transactedOn;
         Description = description;
 
@@ -137,7 +139,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         return Result.Success();
     }
 
-    public static Result Validate(decimal amount, Guid currencyId, DateTimeOffset transactedOn)
+    public static Result Validate(decimal amount, Currency? currency, DateTimeOffset transactedOn)
     {
         if (amount < 0)
         {
@@ -147,7 +149,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
         }
-        if (currencyId == default)
+        if (currency == null)
         {
             return Result.Failure(Errors.Currency.CurrencyRequired);
         }

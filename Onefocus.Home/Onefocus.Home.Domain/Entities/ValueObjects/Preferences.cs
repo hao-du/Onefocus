@@ -4,18 +4,12 @@ using Onefocus.Home.Domain.Entities.Write.Params;
 
 namespace Onefocus.Home.Domain.Entities.ValueObjects
 {
-    public class Preferences
+    public class Preferences(string locale, string timeZone)
     {
-        public string Locale { get; private set; }
-        public string TimeZone { get; private set; }
+        public string Locale { get; private set; } = locale;
+        public string TimeZone { get; private set; } = timeZone;
 
-        public Preferences(string locale, string timeZone)
-        {
-            Locale = locale;
-            TimeZone = timeZone;
-        }
-
-        public static Preferences Default() => new Preferences(CultureInfoHelper.DefaultLocale, CultureInfoHelper.DefaultTimeZoneId);
+        public static Preferences Default() => new(CultureInfoHelper.DefaultLocale, CultureInfoHelper.DefaultTimeZoneId);
 
         public static Result<Preferences> Create(PreferenceParams preferenceParams)
         {

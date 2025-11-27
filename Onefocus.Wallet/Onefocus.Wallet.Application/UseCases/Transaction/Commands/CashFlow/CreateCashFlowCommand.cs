@@ -4,7 +4,7 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
+using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -22,7 +22,11 @@ internal sealed class CreateCashFlowCommandHandler(
 {
     public override async Task<Result<CreateCashFlowCommandResponse>> Handle(CreateCashFlowCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.CurrencyId), cancellationToken);
+        if (getCurrencyResult.IsFailure) { return Failure(getCurrencyResult); }
+        var currency = getCurrencyResult.Value.Currency;
+
+        var validationResult = ValidateRequest(request, currency);
         if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
@@ -32,7 +36,7 @@ internal sealed class CreateCashFlowCommandHandler(
                amount: request.Amount,
                transactedOn: request.TransactedOn,
                isIncome: request.IsIncome,
-               currencyId: request.CurrencyId,
+               currency: currency!,
                description: request.Description,
                ownerId: actionByResult.Value,
                actionedBy: actionByResult.Value,
@@ -52,11 +56,11 @@ internal sealed class CreateCashFlowCommandHandler(
         return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }
 
-    private static Result ValidateRequest(CreateCashFlowCommandRequest request)
+    private static Result ValidateRequest(CreateCashFlowCommandRequest request, Entity.Currency? currency)
     {
         var validationResult = Entity.Transaction.Validate(
             request.Amount,
-            request.CurrencyId,
+            currency,
             request.TransactedOn
         );
         if(validationResult.IsFailure) return validationResult;

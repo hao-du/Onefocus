@@ -41,7 +41,11 @@ internal sealed class UpdateBankAccountCommandHandler(
 {
     public override async Task<Result> Handle(UpdateBankAccountCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.CurrencyId), cancellationToken);
+        if (getCurrencyResult.IsFailure) { return getCurrencyResult; }
+        var currency = getCurrencyResult.Value.Currency;
+
+        var validationResult = ValidateRequest(request, currency);
         if (validationResult.IsFailure) return validationResult;
 
         var actionByResult = GetUserId();
@@ -56,7 +60,7 @@ internal sealed class UpdateBankAccountCommandHandler(
         var updateBankAccountResult = bankAccount.Update(
            amount: request.Amount,
             interestRate: request.InterestRate,
-            currencyId: request.CurrencyId,
+            currency: currency!,
             accountNumber: request.AccountNumber,
             description: request.Description,
             issuedOn: request.IssuedOn,
@@ -69,7 +73,7 @@ internal sealed class UpdateBankAccountCommandHandler(
                 id: t.Id,
                 amount: t.Amount,
                 transactedOn: t.TransactedOn,
-                currencyId: request.CurrencyId,
+                currency: currency!,
                 description: t.Description,
                 isActive: t.IsActive
             ))]
@@ -84,11 +88,11 @@ internal sealed class UpdateBankAccountCommandHandler(
         return Result.Success();
     }
 
-    private static Result ValidateRequest(UpdateBankAccountCommandRequest request)
+    private static Result ValidateRequest(UpdateBankAccountCommandRequest request, Entity.Currency? currency)
     {
         var validationResult = Entity.TransactionTypes.BankAccount.Validate(
             amount: request.Amount,
-            currencyId: request.CurrencyId,
+            currency: currency,
             bankId: request.BankId,
             interestRate: request.InterestRate,
             issuedOn: request.IssuedOn,
@@ -101,7 +105,7 @@ internal sealed class UpdateBankAccountCommandHandler(
         {
             var transactionValidationResult = Entity.Transaction.Validate(
                 amount: transaction.Amount,
-                currencyId: request.CurrencyId,
+                currency: currency,
                 transactedOn: transaction.TransactedOn
                 );
             if (transactionValidationResult.IsFailure) return transactionValidationResult;

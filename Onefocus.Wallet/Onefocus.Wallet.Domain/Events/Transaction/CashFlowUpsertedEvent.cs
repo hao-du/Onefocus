@@ -1,4 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
+using Onefocus.Wallet.Domain.Constants;
 using System.Text.Json;
 using WriteEntity = Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -7,15 +8,15 @@ namespace Onefocus.Wallet.Domain.Events.Transaction;
 public class CashFlowUpsertedEvent : IDomainEvent<WriteEntity.CashFlow>
 {
     public WriteEntity.CashFlow Entity { get; private set; }
-    public string IndexName => nameof(Entities.Write.Transaction);
+    public string IndexName => SchemaNames.Transaction;
     public string EntityId => Entity.Id.ToString();
-    public string Payload { get; private set; } = default!;
+    public object Payload { get; private set; }
     public string EventType => GetType().Name;
 
     private CashFlowUpsertedEvent(WriteEntity.CashFlow cashFlow)
     {
         Entity = cashFlow;
-        Payload = JsonSerializer.Serialize(new
+        Payload = new
         {
             id = cashFlow.Id,
             type = nameof(WriteEntity.CashFlow),
@@ -32,7 +33,7 @@ public class CashFlowUpsertedEvent : IDomainEvent<WriteEntity.CashFlow>
                 description = item.Description,
                 isActive = cashFlow.Transaction.IsActive,
             }).ToArray()
-        });
+        };
     }
 
     public static CashFlowUpsertedEvent Create(WriteEntity.CashFlow cashFlow)

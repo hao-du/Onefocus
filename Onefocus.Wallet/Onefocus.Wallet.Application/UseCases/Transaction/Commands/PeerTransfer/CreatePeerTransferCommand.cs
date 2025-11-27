@@ -36,7 +36,15 @@ internal sealed class CreatePeerTransferCommandHandler(
 {
     public override async Task<Result<CreatePeerTransferCommandResponse>> Handle(CreatePeerTransferCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrenciesResult = await unitOfWork.Currency.GetCurrenciesByIdsAsync(new([.. request.TransferTransactions.Select(t => t.CurrencyId)]), cancellationToken);
+        if (getCurrenciesResult.IsFailure) { return Failure(getCurrenciesResult); }
+        var currencies = getCurrenciesResult.Value.Currencies;
+
+        var getCounterpartyResult = await unitOfWork.Counterparty.GetCounterpartyByIdAsync(new(request.CounterpartyId), cancellationToken);
+        if (getCounterpartyResult.IsFailure) { return Failure(getCounterpartyResult); }
+        var counterparty = getCounterpartyResult.Value.Counterparty;
+
+        var validationResult = ValidateRequest(request, counterparty, currencies);
         if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
@@ -45,14 +53,14 @@ internal sealed class CreatePeerTransferCommandHandler(
         var addPeerTransferResult = Entity.TransactionTypes.PeerTransfer.Create(
                status: request.Status,
                type: request.Type,
-               counterpartyId: request.CounterpartyId,
+               counterparty: counterparty!,
                description: request.Description,
                ownerId: actionByResult.Value,
                actionedBy: actionByResult.Value,
                transactionParams: [.. request.TransferTransactions.Select(t => TransferTransactionParams.CreateNew(
                     amount: t.Amount,
                     transactedOn: t.TransactedOn,
-                    currencyId: t.CurrencyId,
+                    currency: currencies.First(c => c.Id == t.CurrencyId),
                     isInFlow: t.IsInFlow,
                     description: t.Description
                 ))]
@@ -71,10 +79,10 @@ internal sealed class CreatePeerTransferCommandHandler(
         return Result.Success<CreatePeerTransferCommandResponse>(new(peerTransfer.Id));
     }
 
-    private static Result ValidateRequest(CreatePeerTransferCommandRequest request)
+    private static Result ValidateRequest(CreatePeerTransferCommandRequest request, Entity.Counterparty? counterparty, IReadOnlyList<Entity.Currency> currencies)
     {
         var validationResult = Entity.TransactionTypes.PeerTransfer.Validate(
-            request.CounterpartyId,
+            counterparty,
             request.Status,
             request.Type,
             request.TransferTransactions.ToArray()
@@ -85,7 +93,7 @@ internal sealed class CreatePeerTransferCommandHandler(
         {
             var itemValidationResult = Entity.Transaction.Validate(
                 item.Amount,
-                item.CurrencyId,
+                currencies.FirstOrDefault(c => c.Id == item.CurrencyId),
                 item.TransactedOn
             );
             if (itemValidationResult.IsFailure) return itemValidationResult;

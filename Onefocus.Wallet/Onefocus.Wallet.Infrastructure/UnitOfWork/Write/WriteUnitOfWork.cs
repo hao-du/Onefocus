@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
+using Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
+using System.Linq.Expressions;
 
 namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
@@ -16,7 +19,6 @@ public class WriteUnitOfWork(WalletWriteDbContext context
         , ITransactionWriteRepository transactionRepository
     ) : IWriteUnitOfWork
 {
-    private readonly WalletWriteDbContext _context = context;
     protected ILogger<WriteUnitOfWork> Logger { get; } = logger;
     public IUserWriteRepository User { get; } = userRepository;
     public IBankWriteRepository Bank { get; } = bankRepository;
@@ -28,7 +30,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
     {
         try
         {
-            var effectedRows = await _context.SaveChangesAsync(cancellationToken);
+            var effectedRows = await context.SaveChangesAsync(cancellationToken);
 
             return Result.Success(effectedRows);
         }
@@ -41,7 +43,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
 
     public async Task<Result> WithTransactionAsync(Func<CancellationToken, Task<Result>> action, CancellationToken cancellationToken = default)
     {
-        using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+        using (var transaction = await context.Database.BeginTransactionAsync(cancellationToken))
         {
             try
             {
@@ -63,7 +65,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
 
     public async Task<Result<TRepsonse>> WithTransactionAsync<TRepsonse>(Func<CancellationToken, Task<Result<TRepsonse>>> action, CancellationToken cancellationToken = default)
     {
-        using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+        using (var transaction = await context.Database.BeginTransactionAsync(cancellationToken))
         {
             try
             {

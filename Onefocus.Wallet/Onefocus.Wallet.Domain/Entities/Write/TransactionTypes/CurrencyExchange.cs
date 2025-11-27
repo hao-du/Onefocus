@@ -35,7 +35,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         var createSourceTransactionResult = Transaction.Create(
             amount: source.Amount,
             transactedOn: transactedOn,
-            currencyId: source.CurrencyId,
+            currency: source.Currency!,
             description: description,
             ownerId: ownerId,
             actionedBy: actionedBy
@@ -50,7 +50,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         var createTargetTransactionResult = Transaction.Create(
             amount: target.Amount,
             transactedOn: transactedOn,
-            currencyId: target.CurrencyId,
+            currency: target.Currency!,
             description: description,
             ownerId: ownerId,
             actionedBy: actionedBy
@@ -94,7 +94,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         var updateSourceTransactionResult = sourceTransaction.Update(
             amount: source.Amount,
             transactedOn: transactedOn,
-            currencyId: source.CurrencyId,
+            currency: source.Currency!,
             isActive: isActive,
             description: description,
             actionedBy: actionedBy
@@ -104,7 +104,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         var updateTargetTransactionResult = targetTransaction.Update(
             amount: target.Amount,
             transactedOn: transactedOn,
-            currencyId: target.CurrencyId,
+            currency: target.Currency!,
             isActive: isActive,
             description: description,
             actionedBy: actionedBy
@@ -134,7 +134,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
         }
-        if (source.CurrencyId == default)
+        if (source.Currency == null)
         {
             return Result.Failure(Errors.CurrencyExchange.SourceCurrencyRequired);
         }
@@ -146,7 +146,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.Transaction.AmountMustEqualOrLessThanTenBillion);
         }
-        if (target.CurrencyId == default)
+        if (target.Currency == null)
         {
             return Result.Failure(Errors.CurrencyExchange.TargetCurrencyRequired);
         }

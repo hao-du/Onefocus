@@ -22,23 +22,26 @@ namespace Onefocus.Search.Infrastructure.Services
             {
                 var bulkDescriptor = new BulkDescriptor();
 
-                foreach (var document in documentDtos)
+                var sb = new StringBuilder();
+                foreach (var doc in documentDtos)
                 {
-                    bulkDescriptor.Index<object>(i => i
-                        .Index(document.IndexName)
-                        .Id(document.EntityId)
-                        .Document(document.Payload)
-                    );
+                    var rawJson = ((JsonElement)doc.Payload).GetRawText();
+                    var jsonDoc = JsonDocument.Parse(rawJson);
+                    string minifiedJson = JsonSerializer.Serialize(jsonDoc.RootElement);
+
+                    // action/metadata line
+                    sb.AppendLine($@"{{ ""index"": {{ ""_index"": ""{doc.IndexName}"", ""_id"": ""{doc.EntityId}"" }} }}");
+                    // source line (raw JSON)
+                    sb.AppendLine(minifiedJson);
                 }
 
-                var response = await client.BulkAsync(bulkDescriptor, ct: cancellationToken);
+                var bulkString = sb.ToString();
+                var response = await client.LowLevel.BulkAsync<StringResponse>(PostData.String(bulkString), ctx: cancellationToken);
 
-                if (!response.IsValid || response.Errors)
+
+                if (!response.Success)
                 {
-                    foreach (var item in response.ItemsWithErrors)
-                    {
-                        logger.LogError("Error bulk indexing document {DocumentId}: {Error}", item.Id, item.Error?.Reason);
-                    }
+                    logger.LogError("Low-level bulk failed: {Status} {Response}", response.HttpStatusCode, response.Body);
                     return Results.Result.Failure(Errors.IndexError);
                 }
 

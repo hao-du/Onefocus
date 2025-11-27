@@ -32,9 +32,11 @@ public sealed class Settings : WriteEntityBase, IAggregateRoot
         var preferencesResult = Preferences.Create(preferenceParams);
         if (preferencesResult.IsFailure) return preferencesResult.Failure<Settings>();
 
-        var settings = new Settings(actionedBy);
-        settings.UserId = actionedBy;
-        settings.Preferences = preferencesResult.Value;
+        var settings = new Settings(actionedBy)
+        {
+            UserId = actionedBy,
+            Preferences = preferencesResult.Value
+        };
         return settings;
     }
 

@@ -1,0 +1,196 @@
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "type": {
+        "type": "keyword"
+      },
+      "description": {
+        "analyzer": "autocomplete_index",
+        "search_analyzer": "autocomplete_search",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "isActive": {
+        "type": "boolean"
+      },
+      "ownerUserId": {
+        "type": "keyword"
+      },
+      "createdAt": {
+        "format": "strict_date_optional_time||epoch_millis",
+        "type": "date"
+      },
+      "updatedAt": {
+        "format": "strict_date_optional_time||epoch_millis",
+        "type": "date"
+      },
+      "bankId": {
+        "type": "keyword"
+      },
+      "bankName": {
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "currencyId": {
+        "type": "keyword"
+      },
+      "currencyName": {
+        "type": "keyword"
+      },
+      "accountNumber": {
+        "type": "keyword"
+      },
+      "issuedOn": {
+        "type": "date"
+      },
+      "isClosed": {
+        "type": "boolean"
+      },
+      "closedOn": {
+        "type": "date"
+      },
+      "transactedOn": {
+        "type": "date"
+      },
+      "amount": {
+        "type": "double"
+      },
+      "counterpartyId": {
+        "type": "keyword"
+      },
+      "counterpartyName": {
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "status": {
+        "type": "integer"
+      },
+      "peerTransferType": {
+        "type": "integer"
+      },
+      "transactions": {
+        "dynamic": true,
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "transactedOn": {
+            "type": "date"
+          },
+          "description": {
+            "analyzer": "autocomplete_index",
+            "search_analyzer": "autocomplete_search",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            },
+            "type": "text"
+          },
+          "amount": {
+            "type": "double"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "currencyId": {
+            "type": "keyword"
+          },
+          "currencyName": {
+            "type": "keyword"
+          },
+          "isTarget": {
+            "type": "boolean"
+          },
+          "isInFlow": {
+            "type": "boolean"
+          },
+          "name": {
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            },
+            "type": "text"
+          }
+        },
+        "type": "nested"
+      },
+      "items": {
+        "dynamic": true,
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "description": {
+            "analyzer": "autocomplete_index",
+            "search_analyzer": "autocomplete_search",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            },
+            "type": "text"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "name": {
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            },
+            "type": "text"
+          }
+        },
+        "type": "nested"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1,
+      "refresh_interval": "1s"
+    },
+    "analysis": {
+      "filter": {
+        "folding": {
+          "type": "asciifolding",
+          "preserve_original": false
+        },
+        "edge_ngram_filter": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 20
+        }
+      },
+      "analyzer": {
+        "autocomplete_index": {
+          "tokenizer": "standard",
+          "filter": [ "lowercase", "folding", "edge_ngram_filter" ]
+        },
+        "autocomplete_search": {
+          "tokenizer": "standard",
+          "filter": [ "lowercase", "folding" ]
+        }
+      }
+    }
+  }
+}

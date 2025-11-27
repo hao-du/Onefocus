@@ -5,7 +5,7 @@ public interface IDomainEvent
     string IndexName { get; }
     string EntityId { get; }
     string EventType { get; }
-    string Payload { get; }
+    object Payload { get; }
 }
 
 public interface IDomainEvent<T> : IDomainEvent

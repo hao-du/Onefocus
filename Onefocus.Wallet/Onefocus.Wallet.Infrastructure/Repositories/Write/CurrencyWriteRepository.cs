@@ -6,6 +6,7 @@ using Onefocus.Common.Utilities;
 using Onefocus.Wallet.Application.Contracts.Write.Currency;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
+using System.Linq;
 
 namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
 
@@ -20,6 +21,15 @@ public sealed class CurrencyWriteRepository(
         {
             var currency = await context.Currency.FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
             return Result.Success<GetCurrencyByIdResponseDto>(new(currency));
+        });
+    }
+
+    public async Task<Result<GetCurrenciesByIdsResponseDto>> GetCurrenciesByIdsAsync(GetCurrenciesByIdsRequestDto request, CancellationToken cancellationToken = default)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var currencies = await context.Currency.Where(c => request.Ids.Contains(c.Id)).ToListAsync(cancellationToken);
+            return Result.Success<GetCurrenciesByIdsResponseDto>(new(currencies));
         });
     }
 

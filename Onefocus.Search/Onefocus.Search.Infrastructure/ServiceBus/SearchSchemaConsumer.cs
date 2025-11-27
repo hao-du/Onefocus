@@ -1,12 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Search;
-using Onefocus.Common.Results;
-using Onefocus.Search.Application.Contracts;
 using Onefocus.Search.Application.Interfaces.Services;
-using Onefocus.Search.Infrastructure.Services;
-using System.Text.Json;
-using System.Threading;
 
 namespace Onefocus.Search.Infrastructure.ServiceBus;
 
@@ -23,7 +18,11 @@ internal class SearchSchemaConsumer(
 
         try
         {
-            var upsertSchemaResult = await searchSchemaService.UpsertIndexMappings(message.Schema, context.CancellationToken);
+            var upsertSchemaResult = await searchSchemaService.UpsertIndexMappings(new(
+                SchemaName: message.SchemaName,
+                IndexName: message.IndexName,
+                Mappings: message.Mappings
+            ), context.CancellationToken);
 
             if (upsertSchemaResult.IsFailure)
             {

@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Databases\Migrations\" />
+	  <Folder Include="ServiceBus\Search\SchemaBuilders\" />
 	</ItemGroup>
 
 </Project>

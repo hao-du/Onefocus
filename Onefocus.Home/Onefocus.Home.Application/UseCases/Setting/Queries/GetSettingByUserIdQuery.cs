@@ -2,14 +2,11 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
-using Onefocus.Home.Application.Interfaces.Repositories.Read;
 using Onefocus.Home.Application.Interfaces.UnitOfWork.Read;
 using Onefocus.Home.Domain.Entities.ValueObjects;
 using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace Onefocus.Home.Application.UseCases.Settings.Queries;
+namespace Onefocus.Home.Application.UseCases.Setting.Queries;
 
 public sealed record GetSettingsByUserIdQueryRequest() : IQuery<GetSettingsByUserIdQueryResponse>;
 public sealed record GetSettingsByUserIdQueryResponse(string Locale, string TimeZone, string Language);

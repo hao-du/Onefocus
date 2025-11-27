@@ -25,7 +25,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
         IsIncome = isIncome;
     }
 
-    public static Result<CashFlow> Create(decimal amount, DateTimeOffset transactedOn, bool isIncome, Guid currencyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams> transactionItems)
+    public static Result<CashFlow> Create(decimal amount, DateTimeOffset transactedOn, bool isIncome, Currency currency, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransactionItemParams> transactionItems)
     {
         var cashFlow = new CashFlow(isIncome, description, actionedBy);
 
@@ -33,7 +33,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
                 id: null,
                 amount: amount,
                 transactedOn: transactedOn,
-                currencyId: currencyId,
+                currency: currency,
                 description: description,
                 isActive: true,
                 transactionItems: transactionItems
@@ -45,7 +45,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
         return Result.Success(cashFlow);
     }
 
-    public Result Update(decimal amount, DateTimeOffset transactedOn, bool isIncome, Guid currencyId, string? description, Guid actionedBy, bool isActive, IReadOnlyList<TransactionItemParams> transactionItems)
+    public Result Update(decimal amount, DateTimeOffset transactedOn, bool isIncome, Currency currency, string? description, Guid actionedBy, bool isActive, IReadOnlyList<TransactionItemParams> transactionItems)
     {
         IsIncome = isIncome;
         Description = description;
@@ -56,7 +56,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
                 id: null,
                 amount: amount,
                 transactedOn: transactedOn,
-                currencyId: currencyId,
+                currency: currency,
                 description: description,
                 isActive: isActive,
                 transactionItems: transactionItems
@@ -78,7 +78,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
         var createTransactionResult = Entity.Transaction.Create(
                     amount: param.Amount,
                     transactedOn: param.TransactedOn,
-                    currencyId: param.CurrencyId,
+                    currency: param.Currency,
                     description: param.Description,
                     ownerId: ownerId,
                     actionedBy: actionedBy,
@@ -100,7 +100,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
         Transaction.Update(
                 amount: param.Amount,
                 transactedOn: param.TransactedOn,
-                currencyId: param.CurrencyId,
+                currency: param.Currency,
                 description: param.Description,
                 isActive: param.IsActive,
                 actionedBy: actionedBy,

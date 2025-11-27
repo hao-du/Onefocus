@@ -1,10 +1,9 @@
-﻿using Onefocus.Common.Abstractions.ServiceBus.Search;
-using Onefocus.Common.Results;
-using Onefocus.Common.Search.Schema;
+﻿using Onefocus.Common.Results;
+using Onefocus.Search.Application.Contracts;
 
 namespace Onefocus.Search.Application.Interfaces.Services;
 
 public interface ISearchSchemaService
 {
-    Task<Result> UpsertIndexMappings(MappingSchema schemaMessage, CancellationToken cancellationToken);
+    Task<Result> UpsertIndexMappings(SearchSchemaDto searchSchemaDto, CancellationToken cancellationToken);
 }

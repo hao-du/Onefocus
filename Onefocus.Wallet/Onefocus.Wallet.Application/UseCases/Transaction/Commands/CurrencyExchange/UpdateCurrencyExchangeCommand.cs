@@ -6,6 +6,7 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Application.Services;
+using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -31,7 +32,15 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
 {
     public override async Task<Result> Handle(UpdateCurrencyExchangeCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getSourceCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.SourceCurrencyId), cancellationToken);
+        if (getSourceCurrencyResult.IsFailure) { return getSourceCurrencyResult; }
+        var sourceCurrency = getSourceCurrencyResult.Value.Currency;
+
+        var getTargetCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.TargetCurrencyId), cancellationToken);
+        if (getTargetCurrencyResult.IsFailure) { return getTargetCurrencyResult; }
+        var targetCurrency = getTargetCurrencyResult.Value.Currency;
+
+        var validationResult = ValidateRequest(request, sourceCurrency, targetCurrency);
         if (validationResult.IsFailure) return validationResult;
 
         var actionByResult = GetUserId();
@@ -44,8 +53,8 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
         if (currencyExchange == null) return Result.Failure(CommonErrors.NullReference);
 
         var updateCashflowResult = currencyExchange.Update(
-            source: CurrencyExchangeParams.Create(request.SourceAmount, request.SourceCurrencyId),
-            target: CurrencyExchangeParams.Create(request.TargetAmount, request.TargetCurrencyId),
+            source: CurrencyExchangeParams.Create(request.SourceAmount, sourceCurrency),
+            target: CurrencyExchangeParams.Create(request.TargetAmount, targetCurrency),
             exchangeRate: request.ExchangeRate,
             transactedOn: request.TransactedOn,
             description: request.Description,
@@ -62,11 +71,11 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
         return Result.Success();
     }
 
-    private static Result ValidateRequest(UpdateCurrencyExchangeCommandRequest request)
+    private static Result ValidateRequest(UpdateCurrencyExchangeCommandRequest request, Entity.Currency? sourceCurrency, Entity.Currency? targetCurrency)
     {
         return Entity.TransactionTypes.CurrencyExchange.Validate(
-            source: CurrencyExchangeParams.Create(request.SourceAmount, request.SourceCurrencyId),
-            target: CurrencyExchangeParams.Create(request.TargetAmount, request.TargetCurrencyId),
+            source: CurrencyExchangeParams.Create(request.SourceAmount, sourceCurrency),
+            target: CurrencyExchangeParams.Create(request.TargetAmount, targetCurrency),
             exchangeRate: request.ExchangeRate
         );
     }

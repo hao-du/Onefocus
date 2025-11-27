@@ -11,22 +11,23 @@ using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
+
 public sealed record UpdatePeerTransferCommandRequest(
-    Guid Id, 
-    int Status, 
-    int Type, 
-    Guid CounterpartyId, 
-    bool IsActive, 
-    string? Description, 
+    Guid Id,
+    int Status,
+    int Type,
+    Guid CounterpartyId,
+    bool IsActive,
+    string? Description,
     IReadOnlyList<UpdateTransferTransaction> TransferTransactions
 ) : ICommand;
 public sealed record UpdateTransferTransaction(
-    Guid? Id, 
-    decimal Amount, 
-    DateTimeOffset TransactedOn, 
-    Guid CurrencyId, 
-    bool IsInFlow, 
-    bool IsActive, 
+    Guid? Id,
+    decimal Amount,
+    DateTimeOffset TransactedOn,
+    Guid CurrencyId,
+    bool IsInFlow,
+    bool IsActive,
     string? Description
 );
 
@@ -39,7 +40,15 @@ internal sealed class UpdatePeerTransferCommandHandler(
 {
     public override async Task<Result> Handle(UpdatePeerTransferCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrenciesResult = await unitOfWork.Currency.GetCurrenciesByIdsAsync(new([.. request.TransferTransactions.Select(t => t.CurrencyId)]), cancellationToken);
+        if (getCurrenciesResult.IsFailure) { return getCurrenciesResult; }
+        var currencies = getCurrenciesResult.Value.Currencies;
+
+        var getCounterpartyResult = await unitOfWork.Counterparty.GetCounterpartyByIdAsync(new(request.CounterpartyId), cancellationToken);
+        if (getCounterpartyResult.IsFailure) { return getCounterpartyResult; }
+        var counterparty = getCounterpartyResult.Value.Counterparty;
+
+        var validationResult = ValidateRequest(request, counterparty, currencies);
         if (validationResult.IsFailure) return validationResult;
 
         var actionByResult = GetUserId();
@@ -54,7 +63,7 @@ internal sealed class UpdatePeerTransferCommandHandler(
         var updateCashflowResult = peerTransfer.Update(
             status: request.Status,
             type: request.Type,
-            counterpartyId: request.CounterpartyId,
+            counterparty: counterparty!,
             description: request.Description,
             isActive: request.IsActive,
             ownerId: actionByResult.Value,
@@ -63,7 +72,7 @@ internal sealed class UpdatePeerTransferCommandHandler(
                 id: t.Id,
                 amount: t.Amount,
                 transactedOn: t.TransactedOn,
-                currencyId: t.CurrencyId,
+                currency: currencies.First(c => c.Id == t.CurrencyId),
                 isInFlow: t.IsInFlow,
                 isActive: t.IsActive,
                 description: t.Description
@@ -79,10 +88,10 @@ internal sealed class UpdatePeerTransferCommandHandler(
         return Result.Success();
     }
 
-    private static Result ValidateRequest(UpdatePeerTransferCommandRequest request)
+    private static Result ValidateRequest(UpdatePeerTransferCommandRequest request, Entity.Counterparty? counterparty, IReadOnlyList<Entity.Currency> currencies)
     {
         var validationResult = Entity.TransactionTypes.PeerTransfer.Validate(
-            request.CounterpartyId,
+            counterparty,
             request.Status,
             request.Type,
             request.TransferTransactions.ToArray()
@@ -93,7 +102,7 @@ internal sealed class UpdatePeerTransferCommandHandler(
         {
             var itemValidationResult = Entity.Transaction.Validate(
                 item.Amount,
-                item.CurrencyId,
+                currencies.FirstOrDefault(c => c.Id == item.CurrencyId),
                 item.TransactedOn
             );
             if (itemValidationResult.IsFailure) return itemValidationResult;

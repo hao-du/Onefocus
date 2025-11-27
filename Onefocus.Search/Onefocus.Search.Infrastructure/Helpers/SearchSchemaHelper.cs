@@ -3,7 +3,7 @@ using OpenSearch.Client;
 using DynamicTemplate = Onefocus.Common.Search.Schema.DynamicTemplate;
 using FieldMapping = Onefocus.Common.Search.Schema.FieldMapping;
 
-namespace Onefocus.Common.Search
+namespace Onefocus.Search.Infrastructure.Helpers
 {
     internal class SearchSchemaHelper
     {
@@ -84,7 +84,7 @@ namespace Onefocus.Common.Search
                     {
                         var nestedDesc = n.Name(fieldName).Dynamic(true);
 
-                        if (mapping.NestedProperties != null && mapping.NestedProperties.Any())
+                        if (mapping.NestedProperties != null && mapping.NestedProperties.Count != 0)
                         {
                             nestedDesc = nestedDesc.Properties(p =>
                             {
@@ -137,28 +137,22 @@ namespace Onefocus.Common.Search
 
                 templateDesc = templateDesc.Mapping(m =>
                 {
-                    switch (template.Mapping.Type.ToLower())
+                    return template.Mapping.Type.ToLower() switch
                     {
-                        case "keyword":
-                            return m.Keyword(k => k);
-                        case "text":
-                            return m.Text(t =>
-                            {
-                                if (template.Mapping.Fields?.ContainsKey("keyword") == true)
-                                {
-                                    return t.Fields(f => f.Keyword(k => k.Name("keyword")));
-                                }
-                                return t;
-                            });
-                        case "date":
-                            return m.Date(d => d);
-                        case "long":
-                            return m.Number(n => n.Type(NumberType.Long));
-                        case "double":
-                            return m.Number(n => n.Type(NumberType.Double));
-                        default:
-                            return m.Keyword(k => k);
-                    }
+                        "keyword" => m.Keyword(k => k),
+                        "text" => m.Text(t =>
+                                                    {
+                                                        if (template.Mapping.Fields?.ContainsKey("keyword") == true)
+                                                        {
+                                                            return t.Fields(f => f.Keyword(k => k.Name("keyword")));
+                                                        }
+                                                        return t;
+                                                    }),
+                        "date" => m.Date(d => d),
+                        "long" => m.Number(n => n.Type(NumberType.Long)),
+                        "double" => m.Number(n => n.Type(NumberType.Double)),
+                        _ => m.Keyword(k => k),
+                    };
                 });
 
                 return templateDesc;

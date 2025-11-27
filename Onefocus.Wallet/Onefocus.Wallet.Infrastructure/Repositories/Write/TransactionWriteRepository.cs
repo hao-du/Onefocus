@@ -9,7 +9,7 @@ using Onefocus.Wallet.Application.Contracts.Write.Transaction.PeerTransfer;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
-namespace Onefocus.Wallet.Infrastructure.Repositories.Read;
+namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
 
 public sealed class TransactionWriteRepository(
     ILogger<TransactionWriteRepository> logger
@@ -70,6 +70,12 @@ public sealed class TransactionWriteRepository(
         return await ExecuteAsync(async () =>
         {
             await context.AddAsync(request.CashFlow, cancellationToken);
+
+            if(request.CashFlow.Transaction != null && request.CashFlow.Transaction.CurrencyId != Guid.Empty)
+            {
+                await context.Entry(request.CashFlow).Reference(c => c.Transaction.Currency).LoadAsync();
+            }
+
             return Result.Success();
         });
     }

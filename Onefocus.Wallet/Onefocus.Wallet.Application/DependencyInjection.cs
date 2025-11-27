@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
 
         services.AddScoped<ISchemaManagementService, SchemaManagementService>();
+        services.AddScoped<ICounterpartyService, CounterpartyService>();
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IBankService, BankService>();

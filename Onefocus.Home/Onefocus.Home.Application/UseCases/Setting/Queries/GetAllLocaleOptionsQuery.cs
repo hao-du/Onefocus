@@ -9,7 +9,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Onefocus.Home.Application.UseCases.Settings.Queries;
+namespace Onefocus.Home.Application.UseCases.Setting.Queries;
 
 public sealed record GetAllLocaleOptionsRequest() : IQuery<GetAllLocaleOptionsResponse>;
 public sealed record GetAllLocaleOptionsResponse(List<LocaleResponse> Locales);

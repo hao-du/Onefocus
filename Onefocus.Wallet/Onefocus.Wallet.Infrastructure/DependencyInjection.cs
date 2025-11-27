@@ -95,6 +95,7 @@ public static class DependencyInjection
             });
         });
 
+        services.AddScoped<ISchemaPublisher, SchemaPublisher>();
         services.AddScoped<ISearchIndexPublisher, SearchIndexPublisher>(); 
 
         return services;

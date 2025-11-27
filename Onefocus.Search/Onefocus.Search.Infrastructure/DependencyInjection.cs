@@ -79,14 +79,16 @@ public static class DependencyInjection
         var searchSettings = configuration.GetSection(ISearchSettings.SettingName).Get<SearchSettings>()!;
         services.AddSingleton<ISearchSettings>(searchSettings);
 
-        var settings = new ConnectionSettings(new Uri(searchSettings.Url)).OnRequestCompleted(callDetails =>
-        {
-            if (callDetails.RequestBodyInBytes != null)
+        var settings = new ConnectionSettings(new Uri(searchSettings.Url))
+            .DisableDirectStreaming()
+            .OnRequestCompleted(callDetails =>
             {
-                logger.LogInformation("Request call details: httpMethod - {0}, uri - {1}, requestbody - {2}",
-                    callDetails.HttpMethod, callDetails.Uri, Encoding.UTF8.GetString(callDetails.RequestBodyInBytes));
-            }
-        });
+                if (callDetails.RequestBodyInBytes != null)
+                {
+                    logger.LogInformation("Request call details: httpMethod - {HttpMethod}, uri - {URI}, requestbody - {RequestBody}",
+                        callDetails.HttpMethod, callDetails.Uri, Encoding.UTF8.GetString(callDetails.RequestBodyInBytes));
+                }
+            });
         var client = new OpenSearchClient(settings);
         services.AddSingleton<IOpenSearchClient>(client);
         

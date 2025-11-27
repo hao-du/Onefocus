@@ -1,4 +1,4 @@
-﻿namespace Onefocus.Search.Infrastructure.MachineLearning.Models;
+﻿namespace Onefocus.Search.Infrastructure.Models;
 
 public class TokenizerOutput
 {

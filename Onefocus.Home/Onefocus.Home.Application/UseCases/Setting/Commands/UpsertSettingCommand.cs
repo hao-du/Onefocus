@@ -3,12 +3,11 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Home.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Home.Domain;
 using Onefocus.Home.Domain.Entities.ValueObjects;
 using Onefocus.Home.Domain.Entities.Write.Params;
 using Entity = Onefocus.Home.Domain.Entities.Write;
 
-namespace Onefocus.Wallet.Application.UseCases.Bank.Commands;
+namespace Onefocus.Home.Application.UseCases.Setting.Commands;
 
 public sealed record UpsertSettingCommandRequest(string Locale, string Timezone) : ICommand;
 
@@ -29,7 +28,7 @@ internal sealed class UpsertSettingCommandHandler(
         if (actionByResult.IsFailure) return actionByResult;
         var userId = actionByResult.Value;
 
-        var getSettingResult = await writeUnitOfWork.Settings.GetSettingsByUserIdAsync(new(userId));
+        var getSettingResult = await writeUnitOfWork.Settings.GetSettingsByUserIdAsync(new(userId), cancellationToken);
         if (getSettingResult.IsFailure) return getSettingResult;
         var settings = getSettingResult.Value.Settings;
 
@@ -53,7 +52,7 @@ internal sealed class UpsertSettingCommandHandler(
         return Result.Success();
     }
 
-    private Result ValidateRequest(PreferenceParams preferenceParams)
+    private static Result ValidateRequest(PreferenceParams preferenceParams)
     {
         var validationResult = Preferences.Validate(preferenceParams);
         return validationResult;

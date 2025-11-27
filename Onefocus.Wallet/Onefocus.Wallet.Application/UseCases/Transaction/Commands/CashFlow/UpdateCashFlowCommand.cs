@@ -6,6 +6,7 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Onefocus.Wallet.Application.Services;
+using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -22,7 +23,11 @@ internal sealed class UpdateCashFlowCommandHandler(
 {
     public override async Task<Result> Handle(UpdateCashFlowCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.CurrencyId), cancellationToken);
+        if (getCurrencyResult.IsFailure) { return getCurrencyResult; }
+        var currency = getCurrencyResult.Value.Currency;
+
+        var validationResult = ValidateRequest(request, currency);
         if (validationResult.IsFailure) return validationResult;
 
         var actionByResult = GetUserId();
@@ -38,7 +43,7 @@ internal sealed class UpdateCashFlowCommandHandler(
             amount: request.Amount,
             transactedOn: request.TransactedOn,
             isIncome: request.IsIncome,
-            currencyId: request.CurrencyId,
+            currency: currency!,
             description: request.Description,
             isActive: request.IsActive,
             actionedBy: actionByResult.Value,
@@ -54,11 +59,11 @@ internal sealed class UpdateCashFlowCommandHandler(
         return Result.Success();
     }
 
-    private static Result ValidateRequest(UpdateCashFlowCommandRequest request)
+    private static Result ValidateRequest(UpdateCashFlowCommandRequest request, Entity.Currency? currency)
     {
         var validationResult = Entity.Transaction.Validate(
             request.Amount,
-            request.CurrencyId,
+            currency,
             request.TransactedOn
         );
         if (validationResult.IsFailure) return validationResult;

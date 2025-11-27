@@ -1,5 +1,7 @@
-﻿using Onefocus.Common.Results;
+﻿using Onefocus.Common.Abstractions.Domain;
+using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
+using System.Linq.Expressions;
 
 namespace Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 

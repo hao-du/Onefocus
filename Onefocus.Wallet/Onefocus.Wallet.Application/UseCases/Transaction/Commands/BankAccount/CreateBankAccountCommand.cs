@@ -38,7 +38,11 @@ internal sealed class CreateBankAccountCommandHandler(
 {
     public override async Task<Result<CreateBankAccountCommandResponse>> Handle(CreateBankAccountCommandRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = ValidateRequest(request);
+        var getCurrencyResult = await unitOfWork.Currency.GetCurrencyByIdAsync(new(request.CurrencyId), cancellationToken);
+        if (getCurrencyResult.IsFailure) { return Failure(getCurrencyResult); }
+        var currency = getCurrencyResult.Value.Currency;
+
+        var validationResult = ValidateRequest(request, currency);
         if (validationResult.IsFailure) return Failure(validationResult);
 
         var actionByResult = GetUserId();
@@ -47,7 +51,7 @@ internal sealed class CreateBankAccountCommandHandler(
         var addBankAccountResult = Entity.TransactionTypes.BankAccount.Create(
             amount: request.Amount,
             interestRate: request.InterestRate,
-            currencyId: request.CurrencyId,
+            currency: currency!,
             accountNumber: request.AccountNumber,
             description: request.Description,
             issuedOn: request.IssuedOn,
@@ -59,7 +63,7 @@ internal sealed class CreateBankAccountCommandHandler(
             transactionParams: [.. request.Transactions.Select(t => TransactionParams.CreateNew(
                 amount: t.Amount,
                 transactedOn: t.TransactedOn,
-                currencyId: request.CurrencyId,
+                currency: currency!,
                 description: t.Description
             ))]
         );
@@ -77,11 +81,11 @@ internal sealed class CreateBankAccountCommandHandler(
         return Result.Success<CreateBankAccountCommandResponse>(new(bankAccount.Id));
     }
 
-    private static Result ValidateRequest(CreateBankAccountCommandRequest request)
+    private static Result ValidateRequest(CreateBankAccountCommandRequest request, Entity.Currency? currency)
     {
         var validationResult = Entity.TransactionTypes.BankAccount.Validate(
             amount: request.Amount,
-            currencyId: request.CurrencyId,
+            currency: currency,
             bankId: request.BankId,
             interestRate: request.InterestRate,
             issuedOn: request.IssuedOn,
@@ -94,7 +98,7 @@ internal sealed class CreateBankAccountCommandHandler(
         {
             var transactionValidationResult = Entity.Transaction.Validate(
                 amount: transaction.Amount,
-                currencyId: request.CurrencyId,
+                currency: currency,
                 transactedOn: transaction.TransactedOn
                 );
             if (transactionValidationResult.IsFailure) return transactionValidationResult;

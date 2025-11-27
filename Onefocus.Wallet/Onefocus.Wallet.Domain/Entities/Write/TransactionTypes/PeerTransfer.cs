@@ -1,6 +1,7 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
+using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Events.Transaction;
@@ -26,21 +27,22 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         // Required for EF Core
     }
 
-    private PeerTransfer(PeerTransferStatus status, PeerTransferType type, Guid counterpartyId, string? description, Guid actionedBy)
+    private PeerTransfer(PeerTransferStatus status, PeerTransferType type, Counterparty counterparty, string? description, Guid actionedBy)
     {
         Init(Guid.NewGuid(), description, actionedBy);
 
         Status = status;
         Type = type;
-        CounterpartyId = counterpartyId;
+        Counterparty = counterparty;
+        CounterpartyId = counterparty.Id;
     }
 
-    public static Result<PeerTransfer> Create(int status, int type, Guid counterpartyId, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
+    public static Result<PeerTransfer> Create(int status, int type, Counterparty counterparty, string? description, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
+        var validationResult = Validate(counterparty, status, type, transactionParams.ToArray());
         if (validationResult.IsFailure) return validationResult.Failure<PeerTransfer>();
 
-        var peerTransfer = new PeerTransfer((PeerTransferStatus)status, (PeerTransferType)type, counterpartyId, description, actionedBy);
+        var peerTransfer = new PeerTransfer((PeerTransferStatus)status, (PeerTransferType)type, counterparty, description, actionedBy);
 
         if (transactionParams.Count > 0)
         {
@@ -53,14 +55,15 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         return Result.Success(peerTransfer);
     }
 
-    public Result Update(int status, int type, Guid counterpartyId, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
+    public Result Update(int status, int type, Counterparty counterparty, string? description, bool isActive, Guid ownerId, Guid actionedBy, IReadOnlyList<TransferTransactionParams> transactionParams)
     {
-        var validationResult = Validate(counterpartyId, status, type, transactionParams.ToArray());
+        var validationResult = Validate(counterparty, status, type, transactionParams.ToArray());
         if (validationResult.IsFailure) return validationResult;
 
         Status = (PeerTransferStatus)status;
         Type = (PeerTransferType)type;
-        CounterpartyId = counterpartyId;
+        Counterparty = counterparty;
+        CounterpartyId = counterparty.Id;
         Description = description;
 
         SetActiveFlag(isActive, actionedBy);
@@ -103,7 +106,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         var createTransactionResult = Transaction.Create(
             amount: param.Amount,
             transactedOn: param.TransactedOn,
-            currencyId: param.CurrencyId,
+            currency: param.Currency,
             description: param.Description,
             ownerId: ownerId,
             actionedBy: actionedBy,
@@ -129,7 +132,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 
         peerTransferTransaction.Update(isInFlow: param.IsInFlow, param.IsActive, actionedBy);
 
-        var updateResult = peerTransferTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.CurrencyId, param.IsActive, param.Description, actionedBy);
+        var updateResult = peerTransferTransaction.Transaction.Update(param.Amount, param.TransactedOn, param.Currency, param.IsActive, param.Description, actionedBy);
         if (updateResult.IsFailure) return updateResult;
 
         return Result.Success();
@@ -150,9 +153,9 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         return Result.Success();
     }
 
-    public static Result Validate(Guid counterpartyId, int status, int type, Array transactions)
+    public static Result Validate(Counterparty? counterparty, int status, int type, Array transactions)
     {
-        if (counterpartyId == default)
+        if (counterparty == null)
         {
             return Result.Failure(Errors.PeerTransfer.CounterpartyRequired);
         }
