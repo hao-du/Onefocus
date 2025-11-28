@@ -8,8 +8,8 @@
         "type": "keyword"
       },
       "description": {
-        "analyzer": "autocomplete_index",
-        "search_analyzer": "autocomplete_search",
+        "analyzer": "startwith_index",
+        "search_analyzer": "search",
         "fields": {
           "keyword": {
             "type": "keyword"
@@ -23,33 +23,21 @@
       "ownerUserId": {
         "type": "keyword"
       },
-      "createdAt": {
-        "format": "strict_date_optional_time||epoch_millis",
-        "type": "date"
-      },
-      "updatedAt": {
-        "format": "strict_date_optional_time||epoch_millis",
-        "type": "date"
-      },
       "bankId": {
         "type": "keyword"
       },
-      "bankName": {
+      "currencyId": {
+        "type": "keyword"
+      },
+      "accountNumber": {
+        "analyzer": "wildcard_index",
+        "search_analyzer": "search",
         "fields": {
           "keyword": {
             "type": "keyword"
           }
         },
         "type": "text"
-      },
-      "currencyId": {
-        "type": "keyword"
-      },
-      "currencyName": {
-        "type": "keyword"
-      },
-      "accountNumber": {
-        "type": "keyword"
       },
       "issuedOn": {
         "type": "date"
@@ -69,14 +57,6 @@
       "counterpartyId": {
         "type": "keyword"
       },
-      "counterpartyName": {
-        "fields": {
-          "keyword": {
-            "type": "keyword"
-          }
-        },
-        "type": "text"
-      },
       "status": {
         "type": "integer"
       },
@@ -93,8 +73,8 @@
             "type": "date"
           },
           "description": {
-            "analyzer": "autocomplete_index",
-            "search_analyzer": "autocomplete_search",
+            "analyzer": "startwith_index",
+            "search_analyzer": "search",
             "fields": {
               "keyword": {
                 "type": "keyword"
@@ -111,9 +91,6 @@
           "currencyId": {
             "type": "keyword"
           },
-          "currencyName": {
-            "type": "keyword"
-          },
           "isTarget": {
             "type": "boolean"
           },
@@ -121,6 +98,8 @@
             "type": "boolean"
           },
           "name": {
+            "analyzer": "startwith_index",
+            "search_analyzer": "search",
             "fields": {
               "keyword": {
                 "type": "keyword"
@@ -138,8 +117,8 @@
             "type": "keyword"
           },
           "description": {
-            "analyzer": "autocomplete_index",
-            "search_analyzer": "autocomplete_search",
+            "analyzer": "startwith_index",
+            "search_analyzer": "search",
             "fields": {
               "keyword": {
                 "type": "keyword"
@@ -151,6 +130,8 @@
             "type": "boolean"
           },
           "name": {
+            "analyzer": "startwith_index",
+            "search_analyzer": "search",
             "fields": {
               "keyword": {
                 "type": "keyword"
@@ -175,6 +156,11 @@
           "type": "asciifolding",
           "preserve_original": false
         },
+        "ngram_filter": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 20
+        },
         "edge_ngram_filter": {
           "type": "edge_ngram",
           "min_gram": 2,
@@ -182,13 +168,17 @@
         }
       },
       "analyzer": {
-        "autocomplete_index": {
+        "startwith_index": {
           "tokenizer": "standard",
           "filter": [ "lowercase", "folding", "edge_ngram_filter" ]
         },
-        "autocomplete_search": {
+        "search": {
           "tokenizer": "standard",
           "filter": [ "lowercase", "folding" ]
+        },
+        "wildcard_index": {
+          "tokenizer": "standard",
+          "filter": [ "lowercase", "folding", "ngram" ]
         }
       }
     }

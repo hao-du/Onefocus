@@ -5,7 +5,7 @@ using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
 
-namespace Onefocus.Wallet.Infrastructure.ServiceBus.Search
+namespace Onefocus.Wallet.Infrastructure.ServiceBus
 {
     public class SearchIndexPublisher(
         IPublishEndpoint publishEndpoint

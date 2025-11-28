@@ -18,6 +18,7 @@ public class CounterpartyUpsertedEvent : IDomainEvent<WriteEntity.Counterparty>
         Entity = counterparty;
         Payload = JsonSerializer.Serialize(new
         {
+            id = counterparty.Id,
             name = counterparty.FullName,
             phone = counterparty.PhoneNumber,
             email = counterparty.Email,

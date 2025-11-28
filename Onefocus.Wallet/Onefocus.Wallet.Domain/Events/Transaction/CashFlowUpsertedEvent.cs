@@ -21,7 +21,6 @@ public class CashFlowUpsertedEvent : IDomainEvent<WriteEntity.CashFlow>
             id = cashFlow.Id,
             type = nameof(WriteEntity.CashFlow),
             currencyId = cashFlow.Transaction.CurrencyId,
-            currencyName = cashFlow.Transaction.Currency.Name,
             transactedOn = cashFlow.Transaction.TransactedOn,
             ownerUserId = cashFlow.Transaction.OwnerUserId,
             description = cashFlow.Transaction.Description,

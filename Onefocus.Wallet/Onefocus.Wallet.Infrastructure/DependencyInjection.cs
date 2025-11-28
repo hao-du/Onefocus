@@ -16,7 +16,6 @@ using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 using Onefocus.Wallet.Infrastructure.Repositories.Read;
 using Onefocus.Wallet.Infrastructure.Repositories.Write;
 using Onefocus.Wallet.Infrastructure.ServiceBus;
-using Onefocus.Wallet.Infrastructure.ServiceBus.Search;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Read;
 using Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
@@ -95,7 +94,7 @@ public static class DependencyInjection
             });
         });
 
-        services.AddScoped<ISchemaPublisher, SchemaPublisher>();
+        services.AddScoped<ISearchSchemaPublisher, SearchSchemaPublisher>();
         services.AddScoped<ISearchIndexPublisher, SearchIndexPublisher>(); 
 
         return services;

@@ -18,6 +18,7 @@ public class BankUpsertedEvent: IDomainEvent<WriteEntity.Bank>
         Entity = bank;
         Payload = JsonSerializer.Serialize(new
         {
+            id = bank.Id,
             name = bank.Name,
             ownerUserId = bank.OwnerUserId,
             description = bank.Description,

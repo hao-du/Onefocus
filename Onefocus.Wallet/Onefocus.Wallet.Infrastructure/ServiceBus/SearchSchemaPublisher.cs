@@ -5,13 +5,28 @@ using Onefocus.Wallet.Application.Contracts.ServiceBus.Search;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
 using System.Reflection;
 
-namespace Onefocus.Wallet.Infrastructure.ServiceBus.Search;
+namespace Onefocus.Wallet.Infrastructure.ServiceBus;
 
-public class SchemaPublisher(
+public class SearchSchemaPublisher(
     IPublishEndpoint publishEndpoint,
     ILogger<SearchIndexPublisher> logger
-) : ISchemaPublisher
+) : ISearchSchemaPublisher
 {
+    public Task PublishBankSchema()
+    {
+        return PublishSchema("bank", "bank.json");
+    }
+
+    public Task PublishCurrencySchema()
+    {
+        return PublishSchema("currency", "currency.json");
+    }
+
+    public Task PublishCounterpartySchema()
+    {
+        return PublishSchema("counterparty", "counterparty.json");
+    }
+
     public Task PublishTransactionSchema()
     {
         return PublishSchema("transaction", "transaction.json");

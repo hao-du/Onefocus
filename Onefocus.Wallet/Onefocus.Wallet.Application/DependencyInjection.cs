@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.Services.Search;
 using Onefocus.Wallet.Application.Services;
-using Onefocus.Wallet.Application.Services.Search;
 
 namespace Onefocus.Wallet.Application;
 
@@ -13,7 +12,7 @@ public static class DependencyInjection
     {
         services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
 
-        services.AddScoped<ISchemaManagementService, SchemaManagementService>();
+        services.AddScoped<ISearchSchemaManagementService, SearchSchemaManagementService>();
         services.AddScoped<ICounterpartyService, CounterpartyService>();
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
@@ -26,7 +25,7 @@ public static class DependencyInjection
     {
         using (var scope = app.Services.CreateScope())
         {
-            var schemaService = scope.ServiceProvider.GetRequiredService<ISchemaManagementService>();
+            var schemaService = scope.ServiceProvider.GetRequiredService<ISearchSchemaManagementService>();
             await schemaService.InitializeSchemaAsync();
         }
 

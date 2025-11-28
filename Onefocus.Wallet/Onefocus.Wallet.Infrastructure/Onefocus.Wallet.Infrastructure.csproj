@@ -7,9 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="ServiceBus\Search\SchemaBuilders\**" />
-	  <EmbeddedResource Remove="ServiceBus\Search\SchemaBuilders\**" />
-	  <None Remove="ServiceBus\Search\SchemaBuilders\**" />
+	  <Content Include="SearchSchemas\currency.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="SearchSchemas\bank.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="SearchSchemas\transaction.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -27,7 +27,6 @@ public class CurrencyExchangeUpsertedEvent: IDomainEvent<WriteEntity.CurrencyExc
                 id = cet.Transaction.Id,
                 transactedOn = cet.Transaction.TransactedOn,
                 currencyId = cet.Transaction.CurrencyId,
-                currencyName = cet.Transaction.Currency.Name,
                 isTarget = cet.IsTarget,
                 description = cet.Transaction.Description,
                 isActive = cet.Transaction.IsActive,

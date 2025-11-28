@@ -1,0 +1,75 @@
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "name": {
+        "analyzer": "startwith_index",
+        "search_analyzer": "search",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "shortName": {
+        "analyzer": "startwith_index",
+        "search_analyzer": "search",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "description": {
+        "analyzer": "startwith_index",
+        "search_analyzer": "search",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        },
+        "type": "text"
+      },
+      "isActive": {
+        "type": "boolean"
+      },
+      "ownerUserId": {
+        "type": "keyword"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1,
+      "refresh_interval": "1s"
+    },
+    "analysis": {
+      "filter": {
+        "folding": {
+          "type": "asciifolding",
+          "preserve_original": false
+        },
+        "edge_ngram_filter": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 20
+        }
+      },
+      "analyzer": {
+        "startwith_index": {
+          "tokenizer": "standard",
+          "filter": [ "lowercase", "folding", "edge_ngram_filter" ]
+        },
+        "search": {
+          "tokenizer": "standard",
+          "filter": [ "lowercase", "folding" ]
+        }
+      }
+    }
+  }
+}
