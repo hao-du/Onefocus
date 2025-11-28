@@ -14,12 +14,11 @@ internal class SearchSchemaConsumer(
     {
         var message = context.Message;
 
-        logger.LogInformation("Received schema change event: {SchemaName}", message.SchemaName);
+        logger.LogInformation("Received schema change event: {indexName}", message.IndexName);
 
         try
         {
             var upsertSchemaResult = await searchSchemaService.UpsertIndexMappings(new(
-                SchemaName: message.SchemaName,
                 IndexName: message.IndexName,
                 Mappings: message.Mappings
             ), context.CancellationToken);
@@ -34,7 +33,7 @@ internal class SearchSchemaConsumer(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing schema change: {SchemaName}", message.SchemaName);
+            logger.LogError(ex, "Error processing schema change: {indexName}", message.IndexName);
         }
     }
 }

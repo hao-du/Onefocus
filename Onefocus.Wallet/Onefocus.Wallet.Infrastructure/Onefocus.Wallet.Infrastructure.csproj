@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="ServiceBus\Search\SchemaBuilders\**" />
+	  <EmbeddedResource Remove="ServiceBus\Search\SchemaBuilders\**" />
+	  <None Remove="ServiceBus\Search\SchemaBuilders\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="MassTransit.RabbitMQ" Version="8.5.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 	</ItemGroup>
@@ -18,7 +24,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Databases\Migrations\" />
-	  <Folder Include="ServiceBus\Search\SchemaBuilders\" />
 	</ItemGroup>
 
 </Project>
