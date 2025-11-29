@@ -148,7 +148,8 @@
     "index": {
       "number_of_shards": 1,
       "number_of_replicas": 1,
-      "refresh_interval": "1s"
+      "refresh_interval": "1s",
+      "max_ngram_diff": 18
     },
     "analysis": {
       "filter": {
@@ -178,7 +179,7 @@
         },
         "wildcard_index": {
           "tokenizer": "standard",
-          "filter": [ "lowercase", "folding", "ngram" ]
+          "filter": [ "lowercase", "folding", "ngram_filter" ]
         }
       }
     }

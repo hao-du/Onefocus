@@ -1,15 +1,11 @@
-﻿using MassTransit;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Onefocus.Common.Configurations;
-using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using Onefocus.Search.Application.Contracts;
 using Onefocus.Search.Application.Interfaces.Services;
 using OpenSearch.Client;
 using OpenSearch.Net;
 using System.Text;
-using System.Text.Json;
-using Error = Onefocus.Common.Results.Error;
 using Results = Onefocus.Common.Results;
 
 namespace Onefocus.Search.Infrastructure.Services
@@ -25,9 +21,7 @@ namespace Onefocus.Search.Infrastructure.Services
                 var sb = new StringBuilder();
                 foreach (var doc in documentDtos)
                 {
-                    var rawJson = ((JsonElement)doc.Payload).GetRawText();
-                    var jsonDoc = JsonDocument.Parse(rawJson);
-                    string minifiedJson = JsonSerializer.Serialize(jsonDoc.RootElement);
+                    string minifiedJson = JsonHelper.SerializeJson(doc.Payload);
 
                     // action/metadata line
                     sb.AppendLine($@"{{ ""index"": {{ ""_index"": ""{doc.IndexName}"", ""_id"": ""{doc.EntityId}"" }} }}");

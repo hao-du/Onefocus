@@ -1,11 +1,10 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Wallet.Domain.Constants;
-using System.Text.Json;
 using WriteEntity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Domain.Events.Bank;
 
-public class BankUpsertedEvent: IDomainEvent<WriteEntity.Bank>
+public class BankUpsertedEvent : IDomainEvent<WriteEntity.Bank>
 {
     public WriteEntity.Bank Entity { get; private set; }
     public string IndexName => SchemaNames.Bank;
@@ -16,14 +15,14 @@ public class BankUpsertedEvent: IDomainEvent<WriteEntity.Bank>
     private BankUpsertedEvent(WriteEntity.Bank bank)
     {
         Entity = bank;
-        Payload = JsonSerializer.Serialize(new
+        Payload = new
         {
             id = bank.Id,
             name = bank.Name,
             ownerUserId = bank.OwnerUserId,
             description = bank.Description,
             isActive = bank.IsActive
-        });
+        };
     }
 
     public static BankUpsertedEvent Create(WriteEntity.Bank bank)

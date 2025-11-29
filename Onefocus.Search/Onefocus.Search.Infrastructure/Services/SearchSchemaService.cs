@@ -28,10 +28,10 @@ namespace Onefocus.Search.Infrastructure.Services
 
             try
             {
-                var schema = JsonHelper.MinifyJson(searchSchemaDto.Mappings);
+                var schema = JsonHelper.SerializeJson(searchSchemaDto.Mappings);
 
                 var response = await client.LowLevel.Indices.CreateAsync<StringResponse>(
-                    index: searchSchemaDto.IndexName, 
+                    index: searchSchemaDto.IndexName,
                     body: PostData.String(schema),
                     ctx: cancellationToken
                 );
@@ -57,19 +57,7 @@ namespace Onefocus.Search.Infrastructure.Services
 
             try
             {
-                var schema = JsonHelper.MinifyJson(searchSchemaDto.Mappings);
-                var schemaSectionDictionary = JsonHelper.SplitJson(schema, [ "mappings", "settings"]);
-
-                var settingsResponse = await client.LowLevel.Indices.UpdateSettingsAsync<StringResponse>(
-                    index: searchSchemaDto.IndexName,
-                    body: schemaSectionDictionary["settings"],
-                    ctx: cancellationToken
-                );
-                if (!settingsResponse.Success)
-                {
-                    Log(searchSchemaDto.IndexName, settingsResponse);
-                    return Results.Result.Failure(Errors.InvalidSettingsUpdate);
-                }
+                var schemaSectionDictionary = JsonHelper.GetSections(searchSchemaDto.Mappings, ["mappings"]);
 
                 var mappingsResponse = await client.LowLevel.Indices.PutMappingAsync<StringResponse>(
                     index: searchSchemaDto.IndexName,

@@ -1,9 +1,21 @@
-﻿using System.Text.Json;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 namespace Onefocus.Common.Utilities;
 
 public static class JsonHelper
 {
+    public static JsonSerializerOptions GetOptions()
+    {
+        var options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+        };
+
+        return options;
+    }
+
     public static bool IsValidJson(string content)
     {
         if (string.IsNullOrWhiteSpace(content))
@@ -22,7 +34,7 @@ public static class JsonHelper
         }
     }
 
-    public static string MinifyJson(object content)
+    public static string SerializeJson(object content)
     {
         if (content is null) return string.Empty;
 
@@ -33,26 +45,23 @@ public static class JsonHelper
             _ => string.Empty
         };
 
-        if(string.IsNullOrWhiteSpace(json)) return string.Empty;
-
         using var doc = JsonDocument.Parse(json);
-        return JsonSerializer.Serialize(doc.RootElement);
+        return JsonSerializer.Serialize(doc.RootElement, GetOptions());
     }
 
-    public static Dictionary<string, string> SplitJson(string originalJson, string[] keyPropertyNames)
+    public static Dictionary<string, string> GetSections(string originalJson, string[] keyPropertyNames)
     {
         var splitedJsonList = new List<(string property, string json)>();
         if (string.IsNullOrWhiteSpace(originalJson)) return splitedJsonList.ToDictionary();
 
         using var doc = JsonDocument.Parse(originalJson);
         var root = doc.RootElement;
-        var opts = new JsonSerializerOptions { WriteIndented = true };
 
         foreach (var keyProperty in keyPropertyNames)
         {
             if (root.TryGetProperty(keyProperty, out JsonElement mappingsElement))
             {
-                var serializedJson = JsonSerializer.Serialize(mappingsElement, opts);
+                var serializedJson = SerializeJson(mappingsElement);
                 splitedJsonList.Add(new()
                 {
                     property = keyProperty,

@@ -7,6 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="SearchSchemas\counterparty.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="SearchSchemas\counterparty.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <Content Include="SearchSchemas\currency.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>

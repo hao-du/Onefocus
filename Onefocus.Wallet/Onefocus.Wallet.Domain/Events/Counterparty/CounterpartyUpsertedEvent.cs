@@ -1,6 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Wallet.Domain.Constants;
-using System.Text.Json;
 using WriteEntity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Domain.Events.Counterparty;
@@ -16,7 +15,7 @@ public class CounterpartyUpsertedEvent : IDomainEvent<WriteEntity.Counterparty>
     private CounterpartyUpsertedEvent(WriteEntity.Counterparty counterparty)
     {
         Entity = counterparty;
-        Payload = JsonSerializer.Serialize(new
+        Payload = new
         {
             id = counterparty.Id,
             name = counterparty.FullName,
@@ -25,7 +24,7 @@ public class CounterpartyUpsertedEvent : IDomainEvent<WriteEntity.Counterparty>
             ownerUserId = counterparty.OwnerUserId,
             description = counterparty.Description,
             isActive = counterparty.IsActive
-        });
+        };
     }
 
     public static CounterpartyUpsertedEvent Create(WriteEntity.Counterparty counterparty)
