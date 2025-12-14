@@ -11,6 +11,7 @@ public class CounterpartyUpsertedEvent : IDomainEvent<WriteEntity.Counterparty>
     public string EntityId => Entity.Id.ToString();
     public object Payload { get; private set; }
     public string EventType => GetType().Name;
+    public Dictionary<string, string> VectorSearchTerms { get; } = [];
 
     private CounterpartyUpsertedEvent(WriteEntity.Counterparty counterparty)
     {

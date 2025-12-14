@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Membership;
 using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -62,10 +63,7 @@ namespace Onefocus.Wallet.Infrastructure.ServiceBus
 
         private void LogError(Result result, ISyncUserMessage message)
         {
-            foreach (var error in result.Errors)
-            {
-                logger.LogError("Error when synching User: {Email} with Code: {Code}, Description: {Description}", message.Email, error.Code, error.Description);
-            }
+            logger.LogErrors(result.Errors, $"Error when synching User: {message.Email}");
             throw new InvalidOperationException($"Error when synching User: {message.Email} with Code: {result.Error.Code}, Description: {result.Error.Description}");
         }
     }

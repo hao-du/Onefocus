@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Onefocus.Common.Abstractions.Domain;
+﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Abstractions.ServiceBus.Search;
-using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Contracts.ServiceBus.Search;
 using Onefocus.Wallet.Application.Interfaces.ServiceBus;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.BankAccount;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 using Onefocus.Wallet.Domain.Events.Transaction;
 
@@ -51,7 +44,8 @@ internal class TransactionService(
                 documents.Add(new SearchIndexDocument(
                     IndexName: domainEvent.IndexName,
                     DocumentId: domainEvent.EntityId,
-                    Payload: domainEvent.Payload)
+                    Payload: domainEvent.Payload,
+                    VectorSearchTerms: domainEvent.VectorSearchTerms)
                 );
             }
         }

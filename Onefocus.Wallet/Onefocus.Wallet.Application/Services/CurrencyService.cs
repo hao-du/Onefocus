@@ -43,7 +43,8 @@ namespace Onefocus.Wallet.Application.Services
                     documents.Add(new SearchIndexDocument(
                         IndexName: domainEvent.IndexName,
                         DocumentId: domainEvent.EntityId,
-                        Payload: domainEvent.Payload)
+                        Payload: domainEvent.Payload,
+                        VectorSearchTerms: domainEvent.VectorSearchTerms)
                     );
                 }
             }

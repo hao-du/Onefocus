@@ -6,6 +6,7 @@ public interface IDomainEvent
     string EntityId { get; }
     string EventType { get; }
     object Payload { get; }
+    Dictionary<string, string> VectorSearchTerms { get; }
 }
 
 public interface IDomainEvent<T> : IDomainEvent

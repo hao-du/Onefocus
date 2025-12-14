@@ -38,6 +38,8 @@ public class Result
     public static Result Failure(string code, string description) => new Error(code, description);
 
     public static Result<TValue> Failure<TValue>(Error error) => new(default, false, [error]);
+    public static Result<TValue> Failure<TValue>(string code, string description) => new(default, false, [new Error(code, description)]);
+
 
     public static Result Failure(IReadOnlyList<Error> errors) => new(false, errors);
 

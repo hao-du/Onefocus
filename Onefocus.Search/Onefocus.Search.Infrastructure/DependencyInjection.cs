@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
+using Onefocus.Common.Infrastructure.Http;
 using Onefocus.Search.Application.Interfaces.Services;
 using Onefocus.Search.Infrastructure.ServiceBus;
 using Onefocus.Search.Infrastructure.Services;
@@ -22,9 +23,8 @@ public static class DependencyInjection
     {
         services
             .AddMessage(configuration)
-            .AddSearch(logger, configuration);
-
-        services.AddScoped<ISearchIndexService, SearchIndexService>();
+            .AddSearch(logger, configuration)
+            .AddClient(configuration);
 
         return services;
     }
@@ -89,10 +89,32 @@ public static class DependencyInjection
                         callDetails.HttpMethod, callDetails.Uri, Encoding.UTF8.GetString(callDetails.RequestBodyInBytes));
                 }
             });
-        var client = new OpenSearchClient(settings);
-        services.AddSingleton<IOpenSearchClient>(client);
-        
+
+        services.AddSingleton<IOpenSearchClient>(new OpenSearchClient(settings));
+
+        services.AddScoped<IEmbeddingService, EmbeddingService>();
         services.AddScoped<ISearchSchemaService, SearchSchemaService>();
+        services.AddScoped<ISearchIndexService, SearchIndexService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddClient(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var embeddingSettings = configuration.GetSection(IEmbeddingSettings.SettingName).Get<EmbeddingSettings>()!;
+
+        services
+            .AddHttpClientWrapper()
+            .AddResilientHttpClients(
+                HttpClientNames.Embedding,
+                embeddingSettings.BaseAddress,
+                (headers) =>
+                {
+                    headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                }
+            );
 
         return services;
     }

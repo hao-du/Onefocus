@@ -5,4 +5,5 @@ public interface ISearchIndexDocument
     string? IndexName { get; }
     string? DocumentId { get; }
     object Payload { get; }
+    Dictionary<string, string> VectorSearchTerms { get; }
 }

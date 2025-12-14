@@ -29,6 +29,19 @@
       },
       "ownerUserId": {
         "type": "keyword"
+      },
+      "embedding": {
+        "type": "knn_vector",
+        "dimension": 384,
+        "method": {
+          "name": "hnsw",
+          "engine": "faiss",
+          "space_type": "cosinesimil",
+          "parameters": {
+            "ef_construction": 256,
+            "m": 16
+          }
+        }
       }
     }
   },
@@ -36,7 +49,8 @@
     "index": {
       "number_of_shards": 1,
       "number_of_replicas": 1,
-      "refresh_interval": "1s"
+      "refresh_interval": "1s",
+      "knn": true
     },
     "analysis": {
       "filter": {

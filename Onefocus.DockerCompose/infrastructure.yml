@@ -2,7 +2,7 @@ version: "3.8"
 name: onefocusinfrastructure
 services:
   opensearch:
-    image: opensearchproject/opensearch:2.19.1
+    image: public.ecr.aws/opensearchproject/opensearch:3.3.2
     container_name: opensearch
     environment:
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=R6zntmydkm2?
@@ -21,7 +21,7 @@ services:
       - opensearch-data:/usr/share/opensearch/data
 
   dashboards:
-    image: opensearchproject/opensearch-dashboards:2.19.1
+    image: public.ecr.aws/opensearchproject/opensearch-dashboards:3.3.0
     container_name: opensearch-dashboards
     environment:
       - OPENSEARCH_HOSTS=["http://opensearch:9200"]
@@ -32,7 +32,7 @@ services:
       - opensearch
 
   rabbitmq:
-      image: rabbitmq:3-management
+      image: rabbitmq:4-management
       container_name: rabbitmq
       ports:
         - "5672:5672"      # AMQP
@@ -44,7 +44,7 @@ services:
         - rabbitmq-data:/var/lib/rabbitmq
 
   redis:
-    image: redis:7
+    image: redis:8
     container_name: redis
     ports:
       - "6379:6379"
@@ -54,7 +54,24 @@ services:
     volumes:
       - redis-data:/data
 
+  embedding:
+    build:
+        context: ../Others/Onefocus.Embedding
+        dockerfile: Dockerfile
+    image: onefocus-embedding
+    container_name: onefocusembedding
+    ports:
+      - "15601:8000"
+    environment:
+      - MODEL_NAME=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      - TRANSFORMERS_CACHE=/models
+      - HF_HOME=/models
+    volumes:
+      - model_cache:/models
+    restart: unless-stopped
+
 volumes:
   opensearch-data:
   rabbitmq-data:
   redis-data:
+  model_cache:

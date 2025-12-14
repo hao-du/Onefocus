@@ -1,17 +1,17 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Wallet.Domain.Constants;
-using System.Text.Json;
 using WriteEntity = Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
 namespace Onefocus.Wallet.Domain.Events.Transaction;
 
-public class CurrencyExchangeUpsertedEvent: IDomainEvent<WriteEntity.CurrencyExchange>
+public class CurrencyExchangeUpsertedEvent : IDomainEvent<WriteEntity.CurrencyExchange>
 {
     public WriteEntity.CurrencyExchange Entity { get; private set; }
     public string IndexName => SchemaNames.Transaction;
     public string EntityId => Entity.Id.ToString();
     public object Payload { get; private set; }
     public string EventType => GetType().Name;
+    public Dictionary<string, string> VectorSearchTerms { get; } = [];
 
     private CurrencyExchangeUpsertedEvent(WriteEntity.CurrencyExchange currencyExchange)
     {

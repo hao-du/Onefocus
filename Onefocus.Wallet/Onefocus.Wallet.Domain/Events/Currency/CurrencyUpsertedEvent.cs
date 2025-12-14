@@ -11,6 +11,7 @@ public class CurrencyUpsertedEvent : IDomainEvent<WriteEntity.Currency>
     public string EntityId => Entity.Id.ToString();
     public object Payload { get; private set; }
     public string EventType => GetType().Name;
+    public Dictionary<string, string> VectorSearchTerms { get; } = [];
 
     private CurrencyUpsertedEvent(WriteEntity.Currency currency)
     {

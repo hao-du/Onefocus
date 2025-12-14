@@ -4,9 +4,6 @@ using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Results;
 using Onefocus.Search.Application.Contracts;
 using Onefocus.Search.Application.Interfaces.Services;
-using Onefocus.Search.Infrastructure.Services;
-using System.Text.Json;
-using System.Threading;
 
 namespace Onefocus.Search.Infrastructure.ServiceBus;
 
@@ -20,7 +17,8 @@ internal class SearchIndexConsumer(
         var searchIndexDtos = context.Message.Documents.Select(entity => new SearchIndexDocumentDto(
             EntityId: entity.DocumentId,
             IndexName: entity.IndexName,
-            Payload: entity.Payload
+            Payload: entity.Payload,
+            VectorSearchTerms: entity.VectorSearchTerms
         )).ToList();
 
         var indexResult = await indexingService.IndexEntities(searchIndexDtos, context.CancellationToken);

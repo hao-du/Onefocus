@@ -13,7 +13,7 @@ using Entity = Onefocus.Wallet.Domain.Entities.Write;
 namespace Onefocus.Wallet.Application.Services
 {
     internal class BankService(
-        IWriteUnitOfWork unitOfWork, 
+        IWriteUnitOfWork unitOfWork,
         ISearchIndexPublisher searchIndexPublisher
     ) : IBankService
     {
@@ -37,7 +37,8 @@ namespace Onefocus.Wallet.Application.Services
                     documents.Add(new SearchIndexDocument(
                         IndexName: domainEvent.IndexName,
                         DocumentId: domainEvent.EntityId,
-                        Payload: domainEvent.Payload)
+                        Payload: domainEvent.Payload,
+                        VectorSearchTerms: domainEvent.VectorSearchTerms)
                     );
                 }
             }

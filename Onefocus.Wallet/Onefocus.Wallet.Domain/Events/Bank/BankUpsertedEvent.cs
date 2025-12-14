@@ -11,6 +11,7 @@ public class BankUpsertedEvent : IDomainEvent<WriteEntity.Bank>
     public string EntityId => Entity.Id.ToString();
     public object Payload { get; private set; }
     public string EventType => GetType().Name;
+    public Dictionary<string, string> VectorSearchTerms { get; private set; }
 
     private BankUpsertedEvent(WriteEntity.Bank bank)
     {
@@ -21,7 +22,12 @@ public class BankUpsertedEvent : IDomainEvent<WriteEntity.Bank>
             name = bank.Name,
             ownerUserId = bank.OwnerUserId,
             description = bank.Description,
-            isActive = bank.IsActive
+            isActive = bank.IsActive,
+            embedding = "{{knn_vectorsearch_bank}}"
+        };
+        VectorSearchTerms = new Dictionary<string, string>()
+        {
+            { "{{knn_vectorsearch_bank}}", $"{bank.Name} {bank.Description}" }
         };
     }
 

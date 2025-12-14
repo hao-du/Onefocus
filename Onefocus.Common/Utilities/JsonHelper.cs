@@ -72,4 +72,23 @@ public static class JsonHelper
 
         return splitedJsonList.ToDictionary();
     }
+
+    public static string AppendEmbeddings(string originalJson, Dictionary<string, string> vectorTerms, Dictionary<string, List<float>> embeddings)
+    {
+        var json = originalJson;
+        if (embeddings.Count > 0)
+        {
+            foreach (var term in vectorTerms)
+            {
+                var vectors = embeddings[term.Value];
+                if (vectors != null && vectors.Count > 0)
+                {
+                    string floatJson = JsonSerializer.Serialize(vectors);
+                    json = originalJson.Replace($"\"{term.Key}\"", floatJson, StringComparison.InvariantCultureIgnoreCase);
+                }
+            }
+        }
+
+        return json;
+    }
 }
