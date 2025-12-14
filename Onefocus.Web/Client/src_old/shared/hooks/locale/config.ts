@@ -1,11 +1,9 @@
-import { addLocale } from "primereact/api";
-
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import { DEFAULT_LANGUAGE, VIETNAMESE_LANGUAGE } from "./constants";
-import en from "./languages/en";
-import vi from "./languages/vi";
+import { DEFAULT_LANGUAGE, VIETNAMESE_LANGUAGE } from "../constants/Locale";
+import { en, vi } from "./languages";
+import { addLocale } from "primereact/api";
 
 //Add locales to PrimeReact
 addLocale(DEFAULT_LANGUAGE, en);

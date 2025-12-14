@@ -1,4 +1,4 @@
-export const normalizeDateTimeString = (input: string, showTime: boolean) => {
+const normalizeDateTimeString = (input: string, showTime: boolean) => {
     if (!input || typeof input !== "string") return "";
 
     // Step 1: split into tokens
@@ -53,22 +53,18 @@ export const normalizeDateTimeString = (input: string, showTime: boolean) => {
         : datePart;
 }
 
-export const formatCurrency = (value: number) => {
+const formatCurrency = (value: number) => {
     return new Intl.NumberFormat(navigator.language, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(value);
 }
 
-export const getEmptyGuid = () => {
+const getEmptyGuid = () => {
     return '00000000-0000-0000-0000-000000000000';
 }
 
-export const newGuid = () => {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return getEmptyGuid();
-}
-
+export {
+    formatCurrency, normalizeDateTimeString, getEmptyGuid
+};
 
