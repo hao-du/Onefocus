@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Onefocus.Common;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Utilities;

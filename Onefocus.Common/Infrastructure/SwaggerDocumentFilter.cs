@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Onefocus.Common.Infrastructure
@@ -7,6 +7,8 @@ namespace Onefocus.Common.Infrastructure
     {
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
+            if (swaggerDoc.Servers == null) return;
+
             foreach (var path in basePaths)
             {
                 swaggerDoc.Servers.Add(new OpenApiServer() { Description = path.Key, Url = path.Value });
