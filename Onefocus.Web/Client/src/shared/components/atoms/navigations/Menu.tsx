@@ -1,9 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Menu as PiMenu } from 'primereact/menu';
 
-import { ActionItem } from '../../options/ActionItem';
-import { useLocale } from '../../../../hooks/locale/LocaleContext';
-import { BaseHtmlProps, BaseIdentityProps } from '../../../../props/BaseProps';
+import { ActionItem } from '../options/ActionItem';
+import { useLocale } from '../../../hooks/locale/LocaleContext';
+import { BaseHtmlProps, BaseIdentityProps } from '../../../props/BaseProps';
 
 interface MenuProps extends BaseIdentityProps, BaseHtmlProps {
     model?: ActionItem[];

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export interface BaseIdentityProps {
     id?:string;
@@ -7,6 +7,10 @@ export interface BaseIdentityProps {
 
 export interface BaseHtmlProps {
     className?: string;
+};
+
+export interface BaseStyleProps {
+    style?: CSSProperties;
 };
 
 export interface ChildrenProps {

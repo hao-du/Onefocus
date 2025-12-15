@@ -16,7 +16,7 @@ type DropdownButtonRef = {
     toggle: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
-const DropdownButton = (props: DropdownButtonProps) => {
+export const DropdownButton = (props: DropdownButtonProps) => {
     const dropdownButtonRef = useRef<DropdownButtonRef>(null);
     const uniqueComponentId = newGuid();
    
@@ -34,13 +34,11 @@ const DropdownButton = (props: DropdownButtonProps) => {
                 isPending={props.isPending}
             />
             <Menu 
-                model={props.actionItems} 
-                ref={dropdownButtonRef} 
                 id={`dropdown_Button_${props.id ?? uniqueComponentId}`} 
                 key={`dropdown_Button_Key_${props.key ?? uniqueComponentId}`}
+                ref={dropdownButtonRef} 
+                model={props.actionItems} 
             />
         </>
     );
-}
-
-export default DropdownButton;
+};
