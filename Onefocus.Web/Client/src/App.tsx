@@ -1,9 +1,8 @@
+import { MainTemplate } from "./shared/components/templates/MainTemplate";
 
 const App = () => {
     return (
-        <>
-        APP
-        </>
+        <MainTemplate />
     );
 }
 

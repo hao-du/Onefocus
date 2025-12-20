@@ -9,6 +9,10 @@ export interface BaseHtmlProps {
     className?: string;
 };
 
+export interface BaseIconProps {
+    icon?: React.ReactNode | string;
+}
+
 export interface BaseStyleProps {
     style?: CSSProperties;
 };

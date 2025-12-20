@@ -1,11 +1,11 @@
 import { Button as PrimeButton } from 'primereact/button';
 import { useLocale } from '../../../hooks/locale/LocaleContext';
 import { MouseEventHandler } from 'react';
-import { BaseHtmlProps, BaseIdentityProps } from '../../../props/BaseProps';
+import { BaseHtmlProps, BaseIconProps, BaseIdentityProps } from '../../../props/BaseProps';
+import { ImSpinner5 } from "react-icons/im";
 
-type ButtonProps = BaseIdentityProps & BaseHtmlProps & {
+type ButtonProps = BaseIdentityProps & BaseHtmlProps & BaseIconProps & {
     label?: string;
-    icon?: string;
     disabled?: boolean;
     onClick?: MouseEventHandler<HTMLButtonElement>;
     isPending?: boolean;
@@ -29,7 +29,7 @@ export const Button = (props: ButtonProps) => {
             type={props.type ? props.type : 'button'}
             className={props.className}
             label={translate(props.label)}
-            icon={props.isPending && props.icon ? 'pi pi-spin pi-spinner' : 'pi ' + props.icon}
+            icon={props.isPending && props.icon ? <ImSpinner5 className='spin'/> : props.icon}
             disabled={props.disabled || props.isPending}
             onClick={props.onClick}
             link={props.link}

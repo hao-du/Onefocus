@@ -1,8 +1,40 @@
 @use 'sass:math';
 @use 'sass:list';
-@use "primeflex/primeflex" as primeflex;
-@use "primeicons/primeicons.css";
+
+@layer tailwind-base, primereact, tailwind-utilities;
+@import 'primereact/resources/themes/lara-light-blue/theme.css';
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+/**********************************************/
+/*normalize styles*/
+/**********************************************/
+body {
+  margin: 0;
+}
 
 html {
   font-size: 14px;
+}
+/**********************************************/
+
+.of-sidebar {
+  background-color: aqua;
+}
+
+.of-spin {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

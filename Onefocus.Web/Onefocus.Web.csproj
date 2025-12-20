@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Client\src\shared\components\templates\" />
+	</ItemGroup>
+
 </Project>
