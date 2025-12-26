@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import tailwindcss from '@tailwindcss/vite';
 import { JSDOM } from 'jsdom';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     return {
+        server: {
+            hmr: false,
+            sourcemapIgnoreList: false,
+        },
         plugins: [
             react(),
-            tailwindcss(),
             {
                 name: "html-remove-first-slash",
                 enforce: "post",
@@ -42,5 +44,13 @@ export default defineConfig(({ mode }) => {
             chunkSizeWarningLimit: 5120,
             minify: mode === 'development' ? false : true,
         },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern',
+                    quietDeps: true,
+                },
+            },
+        },
     };
-})
+});

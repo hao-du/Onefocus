@@ -1,0 +1,41 @@
+
+import { useCallback, useMemo } from 'react';
+import { Button as AntButton } from 'antd';
+import type { BaseButtonProps } from '../../../props/BaseButtonProps';
+import Icon from '../misc/Icon';
+
+interface ButtonProps extends BaseButtonProps {
+    text?: string;
+    type?: 'default' | 'primary' | 'dashed' | 'link' | 'text'
+}
+
+export default function Button(props: ButtonProps) {
+    const renderIcon = useMemo(() => {
+        if (!props.icon) return undefined;
+        if (!props.isPending) return props.icon;
+        return <Icon name='loader' />
+    }, [props.icon, props.isPending]);
+
+    const onInternalClick = useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        e.preventDefault();
+        if (props.onClick) {
+            props.onClick(e);
+        }
+    }, [props]);
+
+    return (
+        <AntButton
+            id={props.id}
+            key={props.key}
+            type={props.type}
+            className={props.className}
+            styles={props.styles}
+            disabled={props.disabled || props.isPending}
+            icon={renderIcon}
+            onClick={onInternalClick}
+            {...props}
+        >
+            {props.text}
+        </AntButton>
+    );
+}

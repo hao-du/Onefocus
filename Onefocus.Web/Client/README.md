@@ -1,11 +1,4 @@
-# How to setup
-
-## Steps:
-
-1. Navigate to ..\Onefocus.Web\Client\wallet
-1. Run "npm run dev" for development
-1. Run "npm run staging" for staging
-1. Run "npm run prod" for production
+# React + TypeScript + Vite
 
 ## Technical Points
 
