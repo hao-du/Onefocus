@@ -24,9 +24,7 @@ const AppLayout = (props: AppLayoutProps) => {
 
                 {/* Main Workspace */}
                 <div className="flex-auto overflow-auto bg-gray-50">
-                    <div className="h-full w-full">
-                        {props.children}
-                    </div>
+                    {props.children}
                 </div>
             </div>
         </div>

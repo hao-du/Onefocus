@@ -396,3 +396,11 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/Onefocus.Web/Onefocus.Web.csproj
+/Onefocus.Web/Client/src/shared/components/atoms/buttons/Button.tsx
+/Onefocus.Web/Client/index.html
+/Onefocus.Web/Client/package.json
+/Onefocus.Web/Client/src/App.tsx
+/Onefocus.Web/Client/src/index.scss
+/Onefocus.Web/Client/src/main.tsx
+/Onefocus.Web/Client/src/shared/props/BaseProps.ts

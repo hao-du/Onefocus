@@ -21,8 +21,4 @@
 	  <ProjectReference Include="..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Client\" />
-	</ItemGroup>
-
 </Project>
