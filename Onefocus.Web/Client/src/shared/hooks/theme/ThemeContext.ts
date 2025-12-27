@@ -1,9 +1,6 @@
 import { createContext } from 'react';
 import type ThemeContextValue from './ThemeContextValue';
-import { cssClassDefinitions } from './CssClassDefinitions';
 
-const ThemeContext = createContext<ThemeContextValue>({
-    cssClasses: cssClassDefinitions
-});
+const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export default ThemeContext;

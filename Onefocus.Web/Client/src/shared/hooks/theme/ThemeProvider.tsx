@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 interface ThemeProviderProps extends ChildrenProps {
 }
 
-export default function ThemeProvider(props: ThemeProviderProps) {
+const ThemeProvider = (props: ThemeProviderProps) => {
     const value = useMemo(() => ({
         cssClasses: cssClassDefinitions
     }), []);
@@ -26,4 +26,6 @@ export default function ThemeProvider(props: ThemeProviderProps) {
             </ConfigProvider>
         </StyleProvider>
     );
-}
+};
+
+export default ThemeProvider;

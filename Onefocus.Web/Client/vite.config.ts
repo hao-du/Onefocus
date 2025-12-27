@@ -41,6 +41,13 @@ export default defineConfig(({ mode }) => {
             sourcemap: mode === 'development' ? true : false,
             chunkSizeWarningLimit: 5120,
             minify: mode === 'development' ? false : true,
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        icons: ['lucide-react']
+                    }
+                }
+            }
         },
     };
 })

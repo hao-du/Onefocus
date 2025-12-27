@@ -12,15 +12,23 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@tanstack/react-query": "^5.90.12",
         "antd": "^6.1.1",
+        "axios": "^1.13.2",
+        "i18next": "^25.7.3",
         "lucide-react": "^0.562.0",
+        "luxon": "^3.7.2",
         "react": "^19.2.0",
-        "react-dom": "^19.2.0"
+        "react-dom": "^19.2.0",
+        "react-i18next": "^16.5.0",
+        "react-router": "^7.11.0",
+        "windows-iana": "^5.1.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@tailwindcss/vite": "^4.1.18",
         "@types/jsdom": "^27.0.0",
+        "@types/luxon": "^3.7.1",
         "@types/node": "^24.10.1",
         "@types/react": "^19.2.5",
         "@types/react-dom": "^19.2.3",

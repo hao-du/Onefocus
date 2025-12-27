@@ -1,0 +1,17 @@
+$colors: (
+    primary,
+    success,
+    error,
+    warning,
+    info
+);
+
+@each $color in $colors {
+    .one-#{$color}-text {
+        color: var(--ant-color-#{$color}-text);
+    }
+
+    .one-#{$color}-bg {
+        background-color: var(--ant-color-#{$color}-bg);
+    }
+}
