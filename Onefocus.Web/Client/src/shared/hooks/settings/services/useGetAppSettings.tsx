@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import homeApi from '../apis/homeApis';
+import homeApi from '../../../apis/homeApis';
 
 const useGetAppSettings = () => {
     const { data, isSuccess, refetch } = useQuery({

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import SettingsContext from './SettingsContext';
 import useLocale from '../locale/useLocale';
-import useGetAppSettings from '../../services/useGetAppSettings';
+import useGetAppSettings from './services/useGetAppSettings';
 
 const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { appSettings, isAppSettingsReady, refetchAppSettings } = useGetAppSettings();

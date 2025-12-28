@@ -63,3 +63,7 @@ export const formatCurrency = (value: number) => {
 export const getEmptyGuid = () => {
     return '00000000-0000-0000-0000-000000000000';
 }
+
+export const joinClassNames = (...classes: Array<string | undefined | null | false>) => {
+    return classes.filter(Boolean).join(' ');
+}

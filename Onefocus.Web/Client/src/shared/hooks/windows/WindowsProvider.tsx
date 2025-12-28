@@ -24,8 +24,7 @@ const WindowsProvider = (props: WindowsProviderProps) => {
         }
         if (Array.isArray(message)) {
             message.map((c) => mapSeverityToSummary(c));
-        } else {
-            mapSeverityToSummary(message);
+            return;
         }
 
         const castedMessage = message as ToastMessage;

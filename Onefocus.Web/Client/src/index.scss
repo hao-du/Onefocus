@@ -15,3 +15,11 @@ $colors: (
         background-color: var(--ant-color-#{$color}-bg);
     }
 }
+
+.one-layout-bg {
+    background-color: var(--ant-color-bg-layout);
+}
+
+.one-container-bg {
+    background-color: var(--ant-color-bg-container);
+}

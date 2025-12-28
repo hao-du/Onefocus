@@ -1,8 +1,30 @@
 export const cssClassDefinitions = {
-    testH1: 'lg:w-48 text-3xl font-bold underline',
+    size: {
+        height: {
+            dynamic: 'h-dvh',
+            full: 'h-full'
+        },
+        width: {
+            full: 'w-full'
+        }
+    },
     icon: {
         small: 'w-4 h-4',
-        medium: 'w-6 h-6',
+        middle: 'w-6 h-6',
         large: 'w-8 h-8'
-    }
+    },
+    padding: {
+        default: 'p-3'
+    },
+    background: {
+        layout: 'one-layout-bg'
+    },
+    flex: {
+        center: 'flex flex-wrap justify-center content-center',
+    },
+    text: {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right'
+    },
 }

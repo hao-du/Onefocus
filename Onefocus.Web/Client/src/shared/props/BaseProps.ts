@@ -9,6 +9,10 @@ export interface IdentityProps {
     id?: string;
 }
 
+export interface LabelProps {
+    label?: string;
+}
+
 export interface ClassNameProps {
     className?: string;
 }

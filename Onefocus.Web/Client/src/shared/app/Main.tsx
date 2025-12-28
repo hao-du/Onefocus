@@ -17,17 +17,18 @@ const Main = (props: MainProps) => {
         <BrowserRouter>
             <ClientProvider>
                 <LocaleProvider>
-                    <WindowsProvider>
-                        <ErrorHandlerProvider>
-                            <AuthProvider>
-                                <SettingsProvider>
-                                    <ThemeProvider>
+                    <ThemeProvider>
+                        <WindowsProvider>
+                            <ErrorHandlerProvider>
+                                <AuthProvider>
+                                    <SettingsProvider>
+
                                         {props.children}
-                                    </ThemeProvider>
-                                </SettingsProvider>
-                            </AuthProvider>
-                        </ErrorHandlerProvider>
-                    </WindowsProvider>
+                                    </SettingsProvider>
+                                </AuthProvider>
+                            </ErrorHandlerProvider>
+                        </WindowsProvider>
+                    </ThemeProvider>
                 </LocaleProvider>
             </ClientProvider>
         </BrowserRouter>
