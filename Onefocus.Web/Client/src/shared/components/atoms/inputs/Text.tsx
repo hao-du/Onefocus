@@ -1,9 +1,10 @@
-import { Input } from "antd";
-import { ClassNameProps, IdentityProps, InteractionProps } from "../../../props/BaseProps";
+import { Input as AntInput } from "antd";
+import { ClassNameProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { StateType } from "../../../types";
 
-export interface TextProps extends ClassNameProps, IdentityProps, InteractionProps {
+export interface TextProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps {
+    autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
     defaultValue?: string | number | readonly string[];
@@ -11,16 +12,19 @@ export interface TextProps extends ClassNameProps, IdentityProps, InteractionPro
     onChange?: (value: string) => void;
 }
 
-const Text = (props: TextProps) => {
+const TextInput = (props: TextProps) => {
     return (
-        <Input
+        <AntInput
             key={props.key}
             id={props.id}
+            name={props.name}
             className={props.className}
             size={props.size}
             defaultValue={props.defaultValue}
             status={props.status}
             disabled={props.disabled || props.isPending}
+            autoComplete={props.autoComplete}
+            onFocus={(e) => e.target.select()}
             onChange={(e) => {
                 e.preventDefault();
                 if (props.onChange) props.onChange(e.target.value);
@@ -29,4 +33,4 @@ const Text = (props: TextProps) => {
     );
 };
 
-export default Text;
+export default TextInput;

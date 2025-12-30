@@ -1,9 +1,12 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useWindows from '../../shared/hooks/windows/useWindows';
 import useLogin from './services/useLogin';
-import FormText from '../../shared/components/organisms/forms/FormText';
-import FormPassword from '../../shared/components/organisms/forms/FormPassword';
+import FormText from '../../shared/components/molecules/forms/FormText';
+import FormPassword from '../../shared/components/molecules/forms/FormPassword';
 import Button from '../../shared/components/atoms/buttons/Button';
+import Form from '../../shared/components/molecules/forms/Form';
+import Icon from '../../shared/components/atoms/misc/Icon';
+import Card from '../../shared/components/molecules/panels/Card';
 
 interface LoginFormInput {
     userName: string,
@@ -16,8 +19,8 @@ const LoginForm = () => {
 
     const { control, handleSubmit } = useForm<LoginFormInput>({
         defaultValues: {
-            userName: 'kevindu1986@gmail.com',
-            password: 'Asd@123'
+            userName: undefined,
+            password: undefined
         }
     });
 
@@ -29,15 +32,24 @@ const LoginForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <FormText name="userName" control={control} label="Username" className="w-full" rules={{
-                required: 'User name is required.'
-            }} />
-            <FormPassword name="password" control={control} label="Password" className="w-full" rules={{
-                required: 'Password is required.'
-            }} />
-            <Button htmlType="submit" text="Log in" isPending={isPending} />
-        </form>
+        <Form layout="vertical" onSubmit={handleSubmit(onSubmit)}>
+            <Card className="z-10"
+                title="Signin" titleAlign="center"
+                body={
+                    <>
+                        <FormText name="userName" control={control} label="Username" className="w-full" autoComplete="username" rules={{
+                            required: 'User name is required.'
+                        }} />
+                        <FormPassword name="password" control={control} label="Password" className="w-full" autoComplete="current-password" rules={{
+                            required: 'Password is required.'
+                        }} />
+                    </>
+                }
+                actions={
+                    <Button htmlType="submit" text="Sign in" isPending={isPending} block icon={<Icon name="login" size="small" />} />
+                }
+            />
+        </Form>
     );
 };
 

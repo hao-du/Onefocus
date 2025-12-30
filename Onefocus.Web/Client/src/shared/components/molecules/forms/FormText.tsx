@@ -1,6 +1,6 @@
 import { Form } from "antd";
 import { Controller, FieldPath, FieldPathValue, FieldValues, UseControllerProps } from "react-hook-form";
-import Text, { TextProps } from "../../atoms/inputs/Text";
+import TextInput, { TextProps } from "../../atoms/inputs/Text";
 import { LabelProps } from "../../../props/BaseProps";
 
 interface FormTextProps<
@@ -9,7 +9,7 @@ interface FormTextProps<
     TTransformedValues = TFieldValues
 > extends
     UseControllerProps<TFieldValues, TName, TTransformedValues>,
-    TextProps,
+    Omit<TextProps, 'name'>,
     LabelProps {
     defaultValue?: FieldPathValue<TFieldValues, TName>;
     required?: boolean;
@@ -30,12 +30,14 @@ const FormText = <
                     <Form.Item
                         colon={false}
                         label={props.label}
+                        htmlFor={props.id ?? props.name}
                         validateStatus={controller.fieldState.error ? 'error' : ''}
                         help={controller.fieldState.error?.message}
-                        required={props.required}
+                        required={Boolean(props.rules?.required)}
                     >
-                        <Text
+                        <TextInput
                             {...props}
+                            id={props.id ?? props.name}
                             onChange={(value) => {
                                 controller.field.onChange(value);
                                 if (props.onChange) props.onChange(value);

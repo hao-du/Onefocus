@@ -1,29 +1,29 @@
 import { Typography } from "antd";
-import { ClassNameProps } from "../../../props/BaseProps";
+import { ClassNameProps, StyleProps } from "../../../props/BaseProps";
 import { joinClassNames } from "../../../utils";
 import useTheme from "../../../hooks/theme/useTheme";
 import { HAlignType } from "../../../types";
 
-interface PageTitleProps extends ClassNameProps {
+interface CardTitleProps extends ClassNameProps, StyleProps {
     title: string
     align?: HAlignType
 }
 
-const PageTitle = ({
+const CardTitle = ({
     align = 'left',
     ...props
-}: PageTitleProps) => {
+}: CardTitleProps) => {
     const { cssClasses } = useTheme();
 
     return (
         <Typography.Title
-            level={1}
+            level={3}
             className={joinClassNames(props.className, cssClasses.text[align])}
-            style={{ margin: 0 }}
+            style={props.style ?? { margin: 0 }}
         >
             {props.title}
         </Typography.Title>
     );
 };
 
-export default PageTitle;
+export default CardTitle;

@@ -9,7 +9,7 @@ interface FormPasswordProps<
     TTransformedValues = TFieldValues
 > extends
     UseControllerProps<TFieldValues, TName, TTransformedValues>,
-    PasswordProps,
+    Omit<PasswordProps, 'name'>,
     LabelProps {
     defaultValue?: FieldPathValue<TFieldValues, TName>;
     required?: boolean;
@@ -30,12 +30,14 @@ const FormPassword = <
                     <Form.Item
                         colon={false}
                         label={props.label}
+                        htmlFor={props.id ?? props.name}
                         validateStatus={controller.fieldState.error ? 'error' : ''}
                         help={controller.fieldState.error?.message}
-                        required={props.required}
+                        required={Boolean(props.rules?.required)}
                     >
                         <Password
                             {...props}
+                            id={props.id ?? props.name}
                             onChange={(value) => {
                                 controller.field.onChange(value);
                                 if (props.onChange) props.onChange(value);

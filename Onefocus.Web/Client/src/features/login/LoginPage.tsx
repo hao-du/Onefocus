@@ -1,9 +1,10 @@
-import Card from "../../shared/components/atoms/panels/Card";
 import Space from "../../shared/components/atoms/panels/Space";
-import PageTitle from "../../shared/components/atoms/Typography/PageTitle";
 import useTheme from "../../shared/hooks/theme/useTheme";
 import { joinClassNames } from "../../shared/utils";
 import LoginForm from "./LoginForm";
+import PageTitle from "../../shared/components/atoms/typography/PageTitle";
+import Section from "../../shared/components/atoms/panels/Section";
+import ExtraInfo from "../../shared/components/atoms/typography/Text";
 
 
 const LoginPage = () => {
@@ -11,17 +12,22 @@ const LoginPage = () => {
 
     return (
         <div className={joinClassNames(
+            'flex-col gap-y-3',
             cssClasses.size.height.dynamic,
             cssClasses.flex.center,
             cssClasses.padding.default,
             cssClasses.background.layout
         )}>
-            <Space vertical className={joinClassNames(cssClasses.size.width.full, 'justify-center max-w-xl', 'md:w-2/3 xl:w-1/3')}>
-                <PageTitle title="Login" align="center" />
-                <Card >
-                    <LoginForm />
-                </Card>
+            <Space size="large" vertical className={joinClassNames(cssClasses.size.width.full, 'xl:w-2/3 xxl:w-1/5', 'justify-center sm:max-w-md')}>
+                <Section justify="center">
+                    <PageTitle title="Onefocus" align="center" />
+                    <ExtraInfo text="Please enter your details to sign in." align="center" />
+                </Section>
+                <LoginForm />
             </Space>
+            <Section justify="center">
+                <ExtraInfo text="© 2026 Crafted with care by Hao Du." align="center" />
+            </Section>
         </div >
     );
 };

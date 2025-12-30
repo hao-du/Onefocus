@@ -1,19 +1,33 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import { ConfigProvider, App } from 'antd';
+import { ConfigProvider, App, theme } from 'antd';
 import { autoPrefixTransformer, StyleProvider } from '@ant-design/cssinjs';
 import ThemeContext from './ThemeContext';
 import { cssClassDefinitions } from './CssClassDefinitions';
 import type { ChildrenProps } from '../../props/BaseProps';
 import { useMemo } from 'react';
+import ThemeContextValue from './ThemeContextValue';
 
 interface ThemeProviderProps extends ChildrenProps {
 }
 
 const ThemeProvider = (props: ThemeProviderProps) => {
-    const value = useMemo(() => ({
-        cssClasses: cssClassDefinitions
-    }), []);
+    const { token } = theme.useToken();
+
+    const value = useMemo<ThemeContextValue>(() => ({
+        cssClasses: cssClassDefinitions,
+        styles: {
+            size: {
+                base: token.sizeUnit,
+                margin: token.margin,
+                marginSM: token.marginSM,
+                marginMD: token.marginMD,
+                marginLG: token.marginLG,
+                marginXL: token.marginXL,
+                marginXXL: token.marginXXL
+            }
+        }
+    }), [token]);
 
     return (
         <StyleProvider transformers={[autoPrefixTransformer]}>

@@ -1,5 +1,5 @@
 
-import { Save, Search, User } from 'lucide-react';
+import { LogIn, Save, Search, User } from 'lucide-react';
 import type { ClassNameProps, IdentityProps } from '../../../props/BaseProps';
 import useTheme from '../../../hooks/theme/useTheme';
 import { SizeType, StateColorType } from '../../../types';
@@ -8,10 +8,11 @@ const ICONS = {
     search: Search,
     save: Save,
     user: User,
+    login: LogIn
 };
 
 interface IconProps extends IdentityProps, ClassNameProps {
-    name: 'search' | 'save' | 'user';
+    name: 'search' | 'save' | 'user' | 'login';
     size?: SizeType;
     type?: StateColorType
 }

@@ -9,6 +9,10 @@ export interface IdentityProps {
     id?: string;
 }
 
+export interface NameProps {
+    name?: string;
+}
+
 export interface LabelProps {
     label?: string;
 }
