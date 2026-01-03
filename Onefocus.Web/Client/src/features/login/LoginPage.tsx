@@ -4,7 +4,7 @@ import { joinClassNames } from "../../shared/utils";
 import LoginForm from "./LoginForm";
 import PageTitle from "../../shared/components/atoms/typography/PageTitle";
 import Section from "../../shared/components/atoms/panels/Section";
-import ExtraInfo from "../../shared/components/atoms/typography/Text";
+import ExtraInfo from "../../shared/components/atoms/typography/ExtraInfo";
 
 
 const LoginPage = () => {

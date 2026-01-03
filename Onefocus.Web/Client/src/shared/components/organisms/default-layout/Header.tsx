@@ -1,0 +1,15 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import { ChildrenProps } from '../../../props/BaseProps';
+
+interface HeaderProps extends ChildrenProps {
+};
+
+function Header(props: HeaderProps) {
+    return (
+        <div className="p-4 bg-(--ant-color-bg-container) border-b border-(--ant-color-border-secondary) h-15">
+            {props.children}
+        </div>
+    );
+};
+
+export default Header;

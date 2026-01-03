@@ -8,10 +8,12 @@ import type { ChildrenProps } from '../../props/BaseProps';
 import { useMemo } from 'react';
 import ThemeContextValue from './ThemeContextValue';
 
+const { defaultAlgorithm } = theme;
+
 interface ThemeProviderProps extends ChildrenProps {
 }
 
-const ThemeProvider = (props: ThemeProviderProps) => {
+const ThemeInner = ({ children }: ChildrenProps) => {
     const { token } = theme.useToken();
 
     const value = useMemo<ThemeContextValue>(() => ({
@@ -24,18 +26,34 @@ const ThemeProvider = (props: ThemeProviderProps) => {
                 marginMD: token.marginMD,
                 marginLG: token.marginLG,
                 marginXL: token.marginXL,
-                marginXXL: token.marginXXL
-            }
-        }
+                marginXXL: token.marginXXL,
+            },
+        },
     }), [token]);
 
     return (
+        <ThemeContext.Provider value={value}>
+            {children}
+        </ThemeContext.Provider>
+    );
+};
+
+const ThemeProvider = (props: ThemeProviderProps) => {
+    return (
         <StyleProvider transformers={[autoPrefixTransformer]}>
-            <ConfigProvider>
+            <ConfigProvider theme={{
+                algorithm: defaultAlgorithm,
+                components: {
+                    Menu: {
+                        lineWidth: 0,
+                        itemPaddingInline: 0,
+                    }
+                }
+            }}>
                 <App>
-                    <ThemeContext.Provider value={value}>
+                    <ThemeInner>
                         {props.children}
-                    </ThemeContext.Provider>
+                    </ThemeInner>
                 </App>
             </ConfigProvider>
         </StyleProvider>

@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 export interface ChildrenProps {
-    children: ReactNode
+    children?: ReactNode
 }
 
 export interface IdentityProps {

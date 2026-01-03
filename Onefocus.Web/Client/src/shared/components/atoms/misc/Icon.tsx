@@ -1,18 +1,34 @@
 
-import { LogIn, Save, Search, User } from 'lucide-react';
+import { BookUser, CircleDollarSign, Gauge, HandCoins, House, Landmark, LogIn, Menu, Save, Search, Settings2, User, Users, Wallet } from 'lucide-react';
 import type { ClassNameProps, IdentityProps } from '../../../props/BaseProps';
 import useTheme from '../../../hooks/theme/useTheme';
 import { SizeType, StateColorType } from '../../../types';
 
 const ICONS = {
+    //actions
     search: Search,
     save: Save,
+    hambugger: Menu,
+    login: LogIn,
+    //features
+    house: House,
+    wallet: Wallet,
+    membership: Users,
+    //sub-features
     user: User,
-    login: LogIn
+    dashboard: Gauge,
+    transaction: HandCoins,
+    bank: Landmark,
+    currency: CircleDollarSign,
+    counterParty: BookUser,
+    //settings
+    setting: Settings2,
 };
 
 interface IconProps extends IdentityProps, ClassNameProps {
-    name: 'search' | 'save' | 'user' | 'login';
+    name: 'search' | 'save' | 'hambugger' | 'login' |
+    'user' | 'house' | 'wallet' | 'membership' | 'dashboard' | 'transaction' | 'bank' | 'currency' | 'counterParty' |
+    'setting';
     size?: SizeType;
     type?: StateColorType
 }

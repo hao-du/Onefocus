@@ -17,7 +17,7 @@ const CardTitle = ({
 
     return (
         <Typography.Title
-            level={3}
+            level={4}
             className={joinClassNames(props.className, cssClasses.text[align])}
             style={props.style ?? { margin: 0 }}
         >

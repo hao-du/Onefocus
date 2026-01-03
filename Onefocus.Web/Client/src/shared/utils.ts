@@ -1,3 +1,4 @@
+
 export const normalizeDateTimeString = (input: string, showTime: boolean) => {
     if (!input || typeof input !== "string") return "";
 
@@ -51,19 +52,25 @@ export const normalizeDateTimeString = (input: string, showTime: boolean) => {
     return showTime
         ? `${datePart} ${timePart}`.trim()
         : datePart;
-}
+};
 
 export const formatCurrency = (value: number) => {
     return new Intl.NumberFormat(navigator.language, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(value);
-}
+};
+
+export const getGuid = () => {
+    return crypto.randomUUID();
+};
 
 export const getEmptyGuid = () => {
     return '00000000-0000-0000-0000-000000000000';
-}
+};
 
 export const joinClassNames = (...classes: Array<string | undefined | null | false>) => {
     return classes.filter(Boolean).join(' ');
-}
+};
+
+export const getRemUnit = () => parseFloat(getComputedStyle(document.documentElement).fontSize);

@@ -33,7 +33,7 @@ const LoginForm = () => {
 
     return (
         <Form layout="vertical" onSubmit={handleSubmit(onSubmit)}>
-            <Card className="z-10"
+            <Card
                 title="Signin" titleAlign="center"
                 body={
                     <>

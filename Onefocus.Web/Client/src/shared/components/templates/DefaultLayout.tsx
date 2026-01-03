@@ -1,72 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { MenuOption } from '../../options/MenuOption';
+import Sidebar from '../organisms/default-layout/Sidebar';
+import Header from '../organisms/default-layout/Header';
+import Workspace from '../organisms/default-layout/WorkSpace';
+import { ChildrenProps } from '../../props/BaseProps';
 
-interface DefaultLayoutProps {
+interface DefaultLayoutProps extends ChildrenProps {
     header?: React.ReactNode;
-    sidebar?: React.ReactNode;
-    children?: React.ReactNode;
+    title?: string;
+    menuOptions?: MenuOption[];
 };
 
 export default function DefaultLayout(props: DefaultLayoutProps) {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-
     return (
-        <div className="flex w-screen h-screen bg-white">
-            {/* Sidebar */}
-            <div
-                className={`
-                    fixed inset-y-0 left-0 z-1 w-3xs bg-(--ant-color-bg-layout)
-                    transition-transform duration-300 ease-in-out
-                    md:relative md:translate-x-0
-                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-                `}
-            >
-                {/* Close Button (Mobile/Tablet) */}
-                <div className="md:hidden p-4 flex justify-end">
-                    <button
-                        onClick={() => setSidebarOpen(false)}
-                        className="p-1 hover:bg-gray-200 rounded"
-                        aria-label="Close sidebar"
-                    >
-                        X
-                    </button>
-                </div>
+        <div className="flex w-screen h-screen">
+            <Sidebar menuItems={props.menuOptions ?? []}></Sidebar>
 
-                {/* Sidebar Content */}
-                <div className="overflow-y-auto h-full">
-                    {props.sidebar}
-                </div>
-            </div>
-
-            {/* Overlay (Mobile/Tablet) */}
-            {sidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-black/20 z-0 md:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                />
-            )}
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0">
-                {/* Header */}
-                <div className="flex items-center border-b border-gray-200 bg-white">
-                    {/* Hamburger Button (Mobile/Tablet) */}
-                    <button
-                        onClick={() => setSidebarOpen(true)}
-                        className="md:hidden p-4 hover:bg-gray-100"
-                        aria-label="Open sidebar"
-                    > X
-                    </button>
-
-                    {/* Header Content */}
-                    <div className="flex-1 p-4">
-                        {props.header}
-                    </div>
-                </div>
-
-                {/* Workspace/Main Content */}
-                <div className="flex-1 overflow-auto">
-                    {props.children}
-                </div>
+            <div className="flex-1 flex flex-col">
+                <Header>{props.header}</Header>
+                <Workspace title={props.title}>{props.children}</Workspace>
             </div>
         </div>
     );
