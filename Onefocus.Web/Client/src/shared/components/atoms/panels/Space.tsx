@@ -3,7 +3,7 @@ import { ChildrenProps, ClassNameProps } from '../../../props/BaseProps';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 interface SpaceProps extends ClassNameProps, ChildrenProps {
-    vertical: boolean;
+    vertical?: boolean;
     size?: SizeType | number;
 }
 

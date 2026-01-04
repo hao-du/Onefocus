@@ -15,6 +15,7 @@ interface CardProps extends ClassNameProps {
     leftActions?: ReactNode;
     actions?: ReactNode;
     rightActions?: ReactNode;
+    actionMargin?: number;
 }
 
 const Card = (props: CardProps) => {
@@ -31,7 +32,7 @@ const Card = (props: CardProps) => {
 
         const size = GRID_COLUMNS / placeHolderNumber;
         return (
-            <Row>
+            <Row style={{ marginTop: props.actionMargin ?? styles.size.margin }}>
                 {props.leftActions && (
                     <Col span={size}>
                         {props.leftActions}
@@ -50,7 +51,7 @@ const Card = (props: CardProps) => {
 
             </Row>
         )
-    }, [props.actions, props.leftActions, props.rightActions]);
+    }, [props.actionMargin, props.actions, props.leftActions, props.rightActions, styles.size.margin]);
 
     return (
         <AntCard

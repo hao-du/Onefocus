@@ -1,4 +1,4 @@
-export interface NavigableMenuItem {
+export interface NavigableOption {
     key?: string;
     label?: string;
     url: string;

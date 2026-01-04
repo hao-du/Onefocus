@@ -1,6 +1,6 @@
 import { MenuProps } from "antd";
 import { MenuOption } from "../../../../options/MenuOption";
-import { NavigableMenuItem } from "../../../../options/NavigableMenuItem";
+import { NavigableOption } from "../../../../options/NavigableOption";
 import { getGuid } from "../../../../utils";
 
 type AntMenuItem = Required<MenuProps>['items'][number];
@@ -41,7 +41,7 @@ export const toAntMenuItems = (items: MenuOption[]): AntMenuItem[] => {
     });
 };
 
-export const menuItemsToFlattenMap = (items: MenuOption[], map = new Map<string, NavigableMenuItem>()): Map<string, NavigableMenuItem> => {
+export const menuItemsToFlattenMap = (items: MenuOption[], map = new Map<string, NavigableOption>()): Map<string, NavigableOption> => {
     for (const item of items) {
         if (item.url) {
             map.set(item.key ?? getGuid(), {

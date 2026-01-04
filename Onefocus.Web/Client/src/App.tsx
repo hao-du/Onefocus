@@ -5,6 +5,7 @@ import useWindows from './shared/hooks/windows/useWindows';
 import { MenuOption } from './shared/options/MenuOption';
 import Card from './shared/components/molecules/panels/Card';
 import ExtraInfo from './shared/components/atoms/typography/ExtraInfo';
+import { ActionOption } from './shared/options/ActionOption';
 
 const menuItems: MenuOption[] = [
     {
@@ -81,16 +82,67 @@ const menuItems: MenuOption[] = [
     }
 ];
 
-
 const App = () => {
     const { showToast } = useWindows();
 
+    const actions: ActionOption[] = [
+        {
+            id: 'btnPrimarty',
+            icon: <Icon name='bank' />,
+            label: 'Bank',
+            command: () => {
+                showToast({
+                    title: "Test Bank",
+                    description: "Test Bank",
+                    icon: <Icon name='save' size='middle' type='warning' />,
+                    severity: 'success',
+                    canBeExpired: false
+                })
+            },
+        },
+        {
+            id: 'btnPrimarty1',
+            icon: <Icon name='currency' />,
+            label: 'Currency',
+            command: () => {
+                showToast({
+                    title: "Test Currency",
+                    description: "Test Currency",
+                    icon: <Icon name='save' size='middle' type='warning' />,
+                    severity: 'success',
+                    canBeExpired: false
+                })
+            },
+        },
+        {
+            id: 'btnPrimarty2',
+            icon: <Icon name='dashboard' />,
+            label: 'Dashboard',
+            command: () => {
+                showToast({
+                    title: "Test Dashboard",
+                    description: "Test Dashboard",
+                    icon: <Icon name='save' size='middle' type='warning' />,
+                    severity: 'success',
+                    canBeExpired: false
+                })
+            },
+        }
+    ];
+
+
+
     return (
-        <DefaultLayout menuOptions={menuItems} title="Transaction list">
+        <DefaultLayout
+            title="Transaction list"
+            menuOptions={menuItems}
+            showPrimaryButton
+            workSpaceActions={actions}
+        >
             <Card
                 title='First Card'
                 body={
-                    <ExtraInfo text="This is the first card of layout" />
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
                 }
                 rightActions={
                     <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
@@ -104,7 +156,125 @@ const App = () => {
                     }} />
                 }
             />
-
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
+            <Card
+                title='First Card'
+                body={
+                    <ExtraInfo text="This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout This is the first card of layout" />
+                }
+                rightActions={
+                    <Button type="primary" text="Click me" icon={<Icon name='save' />} onClick={() => {
+                        showToast({
+                            title: "Test title",
+                            description: "Test description",
+                            icon: <Icon name='save' size='middle' type='warning' />,
+                            severity: 'success',
+                            canBeExpired: false
+                        })
+                    }} />
+                }
+            />
         </DefaultLayout>
     );
 }

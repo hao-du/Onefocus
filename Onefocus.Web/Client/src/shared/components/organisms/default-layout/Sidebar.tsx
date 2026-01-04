@@ -17,7 +17,7 @@ const Sidebar = (props: SidebarProps) => {
         <>
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-(--ant-color-bg-mask) z-1 md:hidden"
+                    className="fixed inset-0 bg-(--ant-color-bg-mask) z-1 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
@@ -27,8 +27,8 @@ const Sidebar = (props: SidebarProps) => {
                     border-r border-(--ant-color-border-secondary)
                     left-0 z-1 w-3xs bg-(--ant-color-bg-container)
                     transition-transform duration-300 ease-in-out
-                    fixed md:relative md:translate-x-0
-                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                    fixed lg:relative lg:translate-x-0
+                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 `}
             >
                 <div className="overflow-y-auto h-full">
@@ -42,7 +42,7 @@ const Sidebar = (props: SidebarProps) => {
             <Button
                 type="text"
                 onClick={() => setSidebarOpen(true)}
-                className="md:hidden! fixed! inset-4"
+                className="lg:hidden! fixed! inset-4"
                 icon={<Icon name="hambugger" />}
             />
         </>

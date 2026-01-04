@@ -3,13 +3,13 @@ import { Menu as AntMenu } from "antd";
 import { useNavigate } from "react-router";
 import { ClassNameProps } from "../../../../props/BaseProps";
 import { MenuOption } from "../../../../options/MenuOption";
-import { NavigableMenuItem } from "../../../../options/NavigableMenuItem";
+import { NavigableOption } from "../../../../options/NavigableOption";
 import { getAllMenuOptionKeys, menuItemsToFlattenMap, toAntMenuItems } from "./menuUtils";
 import { getRemUnit } from "../../../../utils";
 
 interface MenuProps extends ClassNameProps {
     items: MenuOption[];
-    onItemClick?: (item: NavigableMenuItem) => void;
+    onItemClick?: (item: NavigableOption) => void;
     expandAll?: boolean
 }
 
