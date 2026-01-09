@@ -6,12 +6,14 @@ import { HAlignType } from '../../../types';
 import useTheme from '../../../hooks/theme/useTheme';
 import { GRID_COLUMNS } from '../../../constants';
 import Col from '../../atoms/panels/Col';
+import { joinClassNames } from '../../../utils';
 
 interface CardProps extends ClassNameProps {
     title?: string;
     titleAlign?: HAlignType
     titleMargin?: number;
     body?: ReactNode;
+    bodyStyle?: React.CSSProperties;
     leftActions?: ReactNode;
     actions?: ReactNode;
     rightActions?: ReactNode;
@@ -55,7 +57,8 @@ const Card = (props: CardProps) => {
 
     return (
         <AntCard
-            className={props.className}
+            className={joinClassNames(props.className, 'w-full')}
+            styles={{ body: props.bodyStyle }}
         >
             {props.title && <CardTitle title={props.title} align={props.titleAlign ?? 'left'} style={{ marginBottom: props.titleMargin ?? styles.size.margin }} />}
             {props.body}

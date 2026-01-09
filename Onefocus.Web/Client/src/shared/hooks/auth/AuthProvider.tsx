@@ -112,7 +112,7 @@ const AuthProvider = (props: AuthProviderProps) => {
     }, [navigate]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated: !!token, login, logout }}>
+        <AuthContext.Provider value={{ isAuthReady: !isFirstAuthCheck, login, logout }}>
             {props.children}
         </AuthContext.Provider>
     );

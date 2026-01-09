@@ -22,7 +22,6 @@ const Main = (props: MainProps) => {
                             <ErrorHandlerProvider>
                                 <AuthProvider>
                                     <SettingsProvider>
-
                                         {props.children}
                                     </SettingsProvider>
                                 </AuthProvider>

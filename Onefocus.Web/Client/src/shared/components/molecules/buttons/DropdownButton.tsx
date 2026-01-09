@@ -23,6 +23,7 @@ const DropdownButton = (props: DropdownButtonProps) => {
                     key={primaryAction.key}
                     id={primaryAction.key}
                     text={primaryAction.label}
+                    icon={primaryAction.icon}
                     onClick={primaryAction.command}
                     type="primary"
                     disabled={primaryAction.disabled}

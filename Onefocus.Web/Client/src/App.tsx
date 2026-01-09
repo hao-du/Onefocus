@@ -1,4 +1,4 @@
-import DefaultLayout from './shared/components/templates/DefaultLayout';
+import DefaultTemplate from './shared/components/templates/DefaultTemplate';
 import Button from './shared/components/atoms/buttons/Button';
 import Icon from './shared/components/atoms/misc/Icon';
 import useWindows from './shared/hooks/windows/useWindows';
@@ -133,7 +133,7 @@ const App = () => {
 
 
     return (
-        <DefaultLayout
+        <DefaultTemplate
             title="Transaction list"
             menuOptions={menuItems}
             showPrimaryButton
@@ -275,7 +275,7 @@ const App = () => {
                     }} />
                 }
             />
-        </DefaultLayout>
+        </DefaultTemplate>
     );
 }
 

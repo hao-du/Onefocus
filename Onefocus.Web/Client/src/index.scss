@@ -23,3 +23,8 @@ $colors: (
 .one-container-bg {
     background-color: var(--ant-color-bg-container);
 }
+
+.ant-table-body {
+    overflow-y: auto !important;
+    scrollbar-gutter: stable both-edges;
+}

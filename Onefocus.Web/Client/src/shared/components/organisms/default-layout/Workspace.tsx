@@ -10,13 +10,14 @@ interface WorkspaceProps extends ChildrenProps {
     title?: string;
     actions?: ActionOption[];
     showPrimaryAction?: boolean;
+    singleCard?: boolean;
 };
 
 const Workspace = (props: WorkspaceProps) => {
     return (
-        <div className="flex-1 overflow-auto p-4 pt-0 bg-(--ant-color-bg-layout)">
+        <div className="flex-1 pt-0 bg-(--ant-color-bg-layout) flex flex-col">
             {(props.title || props.actions) && (
-                <Row justify="start" className="sticky top-0 z-1 py-4 bg-(--ant-color-bg-layout)">
+                <Row justify="start" className="p-4 bg-(--ant-color-bg-layout)">
                     <Col xs={16} className="content-center">
                         <PageTitle title={props.title ?? ''} />
                     </Col>
@@ -25,9 +26,19 @@ const Workspace = (props: WorkspaceProps) => {
                     </Col>
                 </Row>
             )}
-            <Space vertical>
-                {props.children}
-            </Space>
+            <div className="flex-1 overflow-y-auto min-h-0">
+                <div className={props.singleCard ? 'h-full' : 'h-0'}>
+                    {props.singleCard ? (
+                        <div className="h-full px-4 pb-4">
+                            {props.children}
+                        </div>
+                    ) : (
+                        <Space vertical className="w-full px-4 pb-4">
+                            {props.children}
+                        </Space>
+                    )}
+                </div>
+            </div>
         </div >
     );
 };
