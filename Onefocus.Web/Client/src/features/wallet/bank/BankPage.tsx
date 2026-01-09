@@ -7,11 +7,14 @@ import { ActionOption } from "../../../shared/options/ActionOption";
 import useGetAllBanks from "./services/useGetAllBanks";
 
 const BankPage = () => {
+    const { entities, isListLoading, refetch } = useGetAllBanks();
+
     const actions: ActionOption[] = useMemo(() => [
         {
             id: 'btnFilter',
             icon: <Icon name="filter" />,
             label: 'Filter',
+            isPending: isListLoading,
             command: () => {
             },
         },
@@ -19,12 +22,11 @@ const BankPage = () => {
             id: 'btnAdd',
             icon: <Icon name="add" />,
             label: 'Add',
+            isPending: isListLoading,
             command: () => {
             },
         },
-    ], []);
-
-    const { entities, isListLoading, refetch } = useGetAllBanks();
+    ], [isListLoading]);
 
     return (
         <DefaultLayout
@@ -39,6 +41,7 @@ const BankPage = () => {
                 body={
                     <Table
                         dataSource={entities}
+                        isPending={isListLoading}
                         columns={[
                             {
                                 key: 'name',

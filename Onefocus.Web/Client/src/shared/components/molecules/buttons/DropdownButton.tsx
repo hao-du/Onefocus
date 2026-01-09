@@ -4,6 +4,7 @@ import Button from '../../atoms/buttons/Button';
 import { ActionOption } from '../../../options/ActionOption';
 import Dropdown from '../../atoms/buttons/Dropdown';
 import Icon from '../../atoms/misc/Icon';
+import Space from '../../atoms/panels/Space';
 
 interface DropdownButtonProps extends BaseButtonProps {
     showPrimaryButton?: boolean;
@@ -17,7 +18,7 @@ const DropdownButton = (props: DropdownButtonProps) => {
     const dropdownActions = hasPrimaryButton ? actions.slice(1) : actions;
 
     return (
-        <>
+        <Space size="small">
             {primaryAction && (
                 <Button
                     key={primaryAction.key}
@@ -34,11 +35,12 @@ const DropdownButton = (props: DropdownButtonProps) => {
                 <Dropdown actions={dropdownActions} placement="bottomRight">
                     <Button
                         icon={<Icon name='ellipsis' />}
-                        type="text"
+                        type="default"
+                        isPending={dropdownActions[0].isPending}
                     />
                 </Dropdown>
             )}
-        </>
+        </Space>
     );
 };
 

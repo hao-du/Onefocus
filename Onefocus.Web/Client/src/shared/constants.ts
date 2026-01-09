@@ -8,8 +8,9 @@ export const DEFAULT_TIMEZONE = "UTC";
 export const VIETNAMESE_LANGUAGE = "vi";
 export const CHECK_ACCESS_TOKEN_INTERVAL_MILLISECOND = 60_000;
 export const GRID_COLUMNS = 24;
-export const NUMBER_BY_SIZE_TYPE: Record<SizeType, number> = {
+export const NUMBER_BY_SIZE_TYPE: Record<SizeType | 'xlarge', number> = {
     small: 4,
     middle: 6,
     large: 8,
+    xlarge: 10,
 }

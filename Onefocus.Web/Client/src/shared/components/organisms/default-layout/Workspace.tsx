@@ -26,14 +26,14 @@ const Workspace = (props: WorkspaceProps) => {
                     </Col>
                 </Row>
             )}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto min-h-0 scrollbar-stable scrollbar-custom">
                 <div className={props.singleCard ? 'h-full' : 'h-0'}>
                     {props.singleCard ? (
-                        <div className="h-full px-4 pb-4">
+                        <div className="h-full pl-4 pr-0 pb-4">
                             {props.children}
                         </div>
                     ) : (
-                        <Space vertical className="w-full px-4 pb-4">
+                        <Space vertical className="w-full pl-4 pr-0 pb-4">
                             {props.children}
                         </Space>
                     )}
