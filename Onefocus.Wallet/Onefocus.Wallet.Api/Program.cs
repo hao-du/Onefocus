@@ -45,8 +45,6 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
-await app.UseSearch();
-
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopmentLike())

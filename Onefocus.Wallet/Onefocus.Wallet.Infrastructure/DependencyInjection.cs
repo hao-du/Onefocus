@@ -27,8 +27,8 @@ public static class DependencyInjection
     {
         services
             .AddDbContexts(configuration)
-            .AddMessage(configuration)
-            .AddRepositories();
+            .AddRepositories()
+            .AddMessage(configuration);
 
         return services;
     }
@@ -73,6 +73,7 @@ public static class DependencyInjection
                 {
                     host.Username(messageBrokerSettings.UserName);
                     host.Password(messageBrokerSettings.Password);
+                    host.Heartbeat(30);
                 });
 
                 configure.Message<ISyncUserMessage>(message =>
@@ -95,7 +96,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<ISearchSchemaPublisher, SearchSchemaPublisher>();
-        services.AddScoped<ISearchIndexPublisher, SearchIndexPublisher>(); 
+        services.AddScoped<ISearchIndexPublisher, SearchIndexPublisher>();
 
         return services;
     }

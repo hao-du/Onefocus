@@ -10,6 +10,7 @@ export interface TextProps extends ClassNameProps, IdentityProps, InteractionPro
     defaultValue?: string | number | readonly string[];
     status?: Exclude<StateType, 'info'> | 'validating';
     onChange?: (value: string) => void;
+    value?: string;
 }
 
 const TextInput = (props: TextProps) => {
@@ -18,6 +19,7 @@ const TextInput = (props: TextProps) => {
             key={props.key}
             id={props.id}
             name={props.name}
+            value={props.value}
             className={props.className}
             size={props.size}
             defaultValue={props.defaultValue}

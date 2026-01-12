@@ -3,24 +3,26 @@ import { ClassNameProps, IdentityProps, InteractionProps, NameProps } from "../.
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { StateType } from "../../../types";
 
-export interface PasswordProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps {
+export interface TextAreaProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps {
     autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
     defaultValue?: string | number | readonly string[];
     status?: Exclude<StateType, 'info'> | 'validating';
     onChange?: (value: string) => void;
+    rows?: number;
     value?: string;
 }
 
-const Password = (props: PasswordProps) => {
+const TextArea = (props: TextAreaProps) => {
     return (
-        <Input.Password
+        <Input.TextArea
             key={props.key}
             id={props.id}
             name={props.name}
             value={props.value}
             className={props.className}
+            rows={props.rows ?? 5}
             size={props.size}
             defaultValue={props.defaultValue}
             status={props.status}
@@ -35,4 +37,4 @@ const Password = (props: PasswordProps) => {
     );
 };
 
-export default Password;
+export default TextArea;

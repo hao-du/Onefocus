@@ -1,5 +1,5 @@
 
-import { BookUser, CircleDollarSign, EllipsisVertical, Funnel, Gauge, HandCoins, House, Landmark, LogIn, Menu, Plus, Save, Search, Settings2, User, Users, Wallet } from 'lucide-react';
+import { BookUser, CircleDollarSign, EllipsisVertical, Funnel, Gauge, HandCoins, House, Landmark, LogIn, Menu, Plus, RotateCcw, Save, Search, SearchCheck, Settings2, User, Users, Wallet } from 'lucide-react';
 import type { ClassNameProps, IdentityProps } from '../../../props/BaseProps';
 import useTheme from '../../../hooks/theme/useTheme';
 import { SizeType, StateColorType } from '../../../types';
@@ -13,6 +13,8 @@ const ICONS = {
     ellipsis: EllipsisVertical,
     filter: Funnel,
     add: Plus,
+    apply: SearchCheck,
+    reset: RotateCcw,
     //features
     house: House,
     wallet: Wallet,
@@ -29,7 +31,7 @@ const ICONS = {
 };
 
 interface IconProps extends IdentityProps, ClassNameProps {
-    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' |
+    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' | 'apply' | 'reset' |
     'user' | 'house' | 'wallet' | 'membership' | 'dashboard' | 'transaction' | 'bank' | 'currency' | 'counterParty' |
     'setting';
     size?: SizeType;

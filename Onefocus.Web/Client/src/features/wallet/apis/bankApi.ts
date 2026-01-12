@@ -2,13 +2,14 @@ import client from "../../../shared/apis/client";
 import ApiResponse from "../../../shared/apis/interfaces/ApiResponse";
 import CreateBankRequest from "./interfaces/CreateBankRequest";
 import CreateBankResponse from "./interfaces/CreateBankResponse";
-import GetAllBanksResponse from "./interfaces/GetAllBanksResponse";
+import GetBanksResponse from "./interfaces/GetBanksResponse";
 import GetBankByIdResponse from "./interfaces/GetBankByIdResponse";
 import UpdateBankRequest from "./interfaces/UpdateBankRequest";
+import GetBanksRequest from "./interfaces/GetBanksRequest";
 
 const bankApi = {
-    getAllBanks: async () => {
-        const response = await client.get<ApiResponse<GetAllBanksResponse>>(`wallet/bank/all`);
+    getBanks: async (request: GetBanksRequest) => {
+        const response = await client.post<ApiResponse<GetBanksResponse>>(`wallet/bank/get`, request);
         return response.data;
     },
     getBankById: async (id: string) => {

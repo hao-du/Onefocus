@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Onefocus.Wallet.Application.BackgroundServices;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.Services.Search;
 using Onefocus.Wallet.Application.Services;
@@ -18,17 +18,8 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IBankService, BankService>();
 
+        services.AddHostedService<SearchSchemaInitializerHostedService>();
+
         return services;
-    }
-
-    public static async Task<WebApplication> UseSearch(this WebApplication app)
-    {
-        using (var scope = app.Services.CreateScope())
-        {
-            var schemaService = scope.ServiceProvider.GetRequiredService<ISearchSchemaManagementService>();
-            await schemaService.InitializeSchemaAsync();
-        }
-
-        return app;
     }
 }

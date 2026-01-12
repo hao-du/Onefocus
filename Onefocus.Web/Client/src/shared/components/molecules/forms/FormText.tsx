@@ -37,6 +37,7 @@ const FormText = <
                     >
                         <TextInput
                             {...props}
+                            value={controller.field.value}
                             id={props.id ?? props.name}
                             onChange={(value) => {
                                 controller.field.onChange(value);

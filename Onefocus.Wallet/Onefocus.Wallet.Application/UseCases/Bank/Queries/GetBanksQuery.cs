@@ -7,27 +7,27 @@ using Onefocus.Wallet.Application.UseCases.Transaction.Queries;
 
 namespace Onefocus.Wallet.Application.UseCases.Bank.Queries;
 
-public sealed record GetAllBanksQueryRequest() : IQuery<GetAllBanksQueryResponse>;
-public sealed record GetAllBanksQueryResponse(List<BankQueryResponse> Banks);
+public sealed record GetBanksQueryRequest(string? Name, string? Description) : IQuery<GetBanksQueryResponse>;
+public sealed record GetBanksQueryResponse(List<BankQueryResponse> Banks);
 public record BankQueryResponse(Guid Id, string Name, bool IsActive, string? Description, DateTimeOffset? ActionedOn, Guid? ActionedBy);
 
 
-internal sealed class GetAllBanksQueryHandler(
+internal sealed class GetBanksQueryHandler(
     IHttpContextAccessor httpContextAccessor,
     ILogger<GetAllTransactionsQueryHandler> logger,
     IReadUnitOfWork readUnitOfWork
-) : QueryHandler<GetAllBanksQueryRequest, GetAllBanksQueryResponse>(httpContextAccessor, logger)
+) : QueryHandler<GetBanksQueryRequest, GetBanksQueryResponse>(httpContextAccessor, logger)
 {
-    public override async Task<Result<GetAllBanksQueryResponse>> Handle(GetAllBanksQueryRequest request, CancellationToken cancellationToken)
+    public override async Task<Result<GetBanksQueryResponse>> Handle(GetBanksQueryRequest request, CancellationToken cancellationToken)
     {
         var getUserIdResult = GetUserId();
         if (getUserIdResult.IsFailure) return Failure(getUserIdResult);
         var userId = getUserIdResult.Value;
 
-        var bankDtosResult = await readUnitOfWork.Bank.GetAllBanksAsync(new(userId), cancellationToken);
-        if (bankDtosResult.IsFailure) return bankDtosResult.Failure<GetAllBanksQueryResponse>();
+        var bankDtosResult = await readUnitOfWork.Bank.GetBanksAsync(new(userId, request.Name, request.Description), cancellationToken);
+        if (bankDtosResult.IsFailure) return bankDtosResult.Failure<GetBanksQueryResponse>();
         var bankDtos = bankDtosResult.Value.Banks;
-        return Result.Success(new GetAllBanksQueryResponse(
+        return Result.Success(new GetBanksQueryResponse(
             Banks: [.. bankDtos.Select(c => new BankQueryResponse(
                 Id: c.Id,
                 Name: c.Name,

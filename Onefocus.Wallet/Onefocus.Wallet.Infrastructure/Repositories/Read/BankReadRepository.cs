@@ -13,12 +13,16 @@ public sealed class BankReadRepository(
         , WalletReadDbContext context
     ) : BaseContextRepository<BankReadRepository>(logger, context), IBankReadRepository
 {
-    public async Task<Result<GetAllBanksResponseDto>> GetAllBanksAsync(GetAllBanksRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<Result<GetBanksResponseDto>> GetBanksAsync(GetBanksRequestDto request, CancellationToken cancellationToken = default)
     {
         return await ExecuteAsync(async () =>
         {
-            var banks = await context.Bank.Where(c=>c.OwnerUserId == request.UserId).ToListAsync(cancellationToken);
-            return Result.Success<GetAllBanksResponseDto>(new(banks));
+            var banks = await context.Bank.Where(c =>
+                c.OwnerUserId == request.UserId
+                && (string.IsNullOrEmpty(request.Name) || c.Name.Contains(request.Name))
+                && (string.IsNullOrEmpty(request.Description) || c.Description.Contains(request.Description))
+            ).ToListAsync(cancellationToken);
+            return Result.Success<GetBanksResponseDto>(new(banks));
         });
     }
 

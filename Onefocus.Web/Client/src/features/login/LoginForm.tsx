@@ -34,7 +34,6 @@ const LoginForm = () => {
     return (
         <Form layout="vertical" onSubmit={handleSubmit(onSubmit)}>
             <Card
-                title="Signin" titleAlign="center"
                 body={
                     <>
                         <FormText name="userName" control={control} label="Username" className="w-full" autoComplete="username" rules={{
@@ -46,7 +45,7 @@ const LoginForm = () => {
                     </>
                 }
                 actions={
-                    <Button htmlType="submit" text="Sign in" isPending={isPending} block icon={<Icon name="login" size="small" />} />
+                    <Button id="btnSignin" htmlType="submit" text="Sign in" isPending={isPending} block icon={<Icon name="login" size="small" />} />
                 }
             />
         </Form>

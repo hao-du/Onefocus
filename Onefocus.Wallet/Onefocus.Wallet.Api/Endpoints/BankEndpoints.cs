@@ -11,9 +11,9 @@ internal static class BankEndpoints
     {
         var routes = app.MapGroup(prefix: string.Empty).RequireAuthorization();
 
-        routes.MapGet("bank/all", async (ISender sender) =>
+        routes.MapPost("bank/get", async (GetBanksQueryRequest request, ISender sender) =>
         {
-            var result = await sender.Send(new GetAllBanksQueryRequest());
+            var result = await sender.Send(request);
             return result.ToResult();
         });
 

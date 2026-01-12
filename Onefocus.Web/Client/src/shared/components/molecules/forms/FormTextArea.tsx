@@ -1,25 +1,25 @@
 import { Form } from "antd";
 import { Controller, FieldPath, FieldPathValue, FieldValues, UseControllerProps } from "react-hook-form";
-import Password, { PasswordProps } from "../../atoms/inputs/Password";
 import { LabelProps } from "../../../props/BaseProps";
+import TextArea, { TextAreaProps } from "../../atoms/inputs/TextArea";
 
-interface FormPasswordProps<
+interface FormTextAreaProps<
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
     TTransformedValues = TFieldValues
 > extends
     UseControllerProps<TFieldValues, TName, TTransformedValues>,
-    Omit<PasswordProps, 'name'>,
+    Omit<TextAreaProps, 'name'>,
     LabelProps {
     defaultValue?: FieldPathValue<TFieldValues, TName>;
     required?: boolean;
 }
 
-const FormPassword = <
+const FormTextArea = <
     TFieldValues extends FieldValues = FieldValues,
     TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
     TTransformedValues = TFieldValues
->(props: FormPasswordProps<TFieldValues, TName, TTransformedValues>) => {
+>(props: FormTextAreaProps<TFieldValues, TName, TTransformedValues>) => {
     return (
         <Controller
             name={props.name}
@@ -35,7 +35,7 @@ const FormPassword = <
                         help={controller.fieldState.error?.message}
                         required={Boolean(props.rules?.required)}
                     >
-                        <Password
+                        <TextArea
                             {...props}
                             value={controller.field.value}
                             id={props.id ?? props.name}
@@ -51,4 +51,4 @@ const FormPassword = <
     );
 };
 
-export default FormPassword;
+export default FormTextArea;

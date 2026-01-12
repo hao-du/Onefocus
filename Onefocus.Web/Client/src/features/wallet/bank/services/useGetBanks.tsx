@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import bankApi from "../../apis/bankApi";
+import GetBanksRequest from "../../apis/interfaces/GetBanksRequest";
 
-const useGetAllBanks = () => {
+const useGetBanks = (request: GetBanksRequest) => {
     const { data, isLoading, refetch, isFetching } = useQuery({
-        queryKey: ['getAllBanks'],
+        queryKey: ['getBanks', request],
         queryFn: async () => {
-            const apiResponse = await bankApi.getAllBanks();
+            const apiResponse = await bankApi.getBanks(request);
             return apiResponse.value.banks;
         }
     });
@@ -13,4 +14,4 @@ const useGetAllBanks = () => {
     return { entities: data, isListLoading: isLoading || isFetching, refetch };
 };
 
-export default useGetAllBanks;
+export default useGetBanks;
