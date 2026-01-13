@@ -6,6 +6,8 @@ import GetBanksRequest from "../apis/interfaces/GetBanksRequest";
 import { Form } from "antd";
 import FormText from "../../../shared/components/molecules/forms/FormText";
 import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
+import { BANK_COMPONENT_NAMES } from "../../constants";
+import { useCallback } from "react";
 
 interface BankFilterInput {
     name?: string | null,
@@ -15,10 +17,11 @@ interface BankFilterInput {
 const BankFilter = () => {
     const {
         requestRefresh,
-        currentComponentId,
-        setCurrentComponentId,
+        isActiveComponent,
+        closeComponent,
         setFilter,
-        isPageLoading
+        resetFilter,
+        hasAnyLoading
     } = usePage();
 
     const { control, handleSubmit, reset } = useForm<BankFilterInput>({
@@ -36,11 +39,17 @@ const BankFilter = () => {
         requestRefresh?.();
     });
 
+    const onReset = useCallback(() => {
+        reset();
+        resetFilter();
+        requestRefresh?.();
+    }, [requestRefresh, reset, resetFilter]);
+
     return (
         <Drawer
             title="Filter"
-            open={currentComponentId == BankFilter.id}
-            onClose={() => setCurrentComponentId(undefined)}
+            open={isActiveComponent(BANK_COMPONENT_NAMES.BankFilter)}
+            onClose={closeComponent}
             showPrimaryButton
             actions={[
                 {
@@ -48,18 +57,14 @@ const BankFilter = () => {
                     label: 'Apply',
                     command: onApply,
                     icon: <Icon name="apply" />,
-                    isPending: isPageLoading()
+                    isPending: hasAnyLoading
                 },
                 {
                     id: 'btnResetFilter',
                     label: 'Reset',
-                    command: () => {
-                        reset();
-                        setFilter({});
-                        requestRefresh?.();
-                    },
+                    command: onReset,
                     icon: <Icon name="reset" />,
-                    isPending: isPageLoading()
+                    isPending: hasAnyLoading
                 },
             ]}
         >
@@ -70,6 +75,4 @@ const BankFilter = () => {
         </Drawer>
     );
 }
-
-BankFilter.id = 'BankFilter';
 export default BankFilter;

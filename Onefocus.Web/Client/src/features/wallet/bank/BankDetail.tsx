@@ -1,18 +1,17 @@
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
+import { BANK_COMPONENT_NAMES } from "../../constants";
 
 const BankDetail = () => {
-    const { currentComponentId, setCurrentComponentId } = usePage();
+    const { isActiveComponent, closeComponent } = usePage();
 
     return (
         <Drawer
-            open={currentComponentId == BankDetail.id}
-            onClose={() => { setCurrentComponentId(undefined); console.log('BankDetail close') }}
+            open={isActiveComponent(BANK_COMPONENT_NAMES.BankDetail)}
+            onClose={closeComponent}
         >
             BankSaveForm
         </Drawer>
     );
 }
-
-BankDetail.id = 'BankDetail';
 export default BankDetail;

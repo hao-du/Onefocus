@@ -6,11 +6,10 @@ import Card from "../../../shared/components/molecules/panels/Card";
 import { ActionOption } from "../../../shared/options/ActionOption";
 import useGetBanks from "./services/useGetBanks";
 import usePage from "../../../shared/hooks/page/usePage";
-import BankDetail from "./BankDetail";
-import BankFilter from "./BankFilter";
+import { BANK_COMPONENT_NAMES } from "../../constants";
 
 const BankList = () => {
-    const { filter, setCurrentComponentId, registerRefreshCallback, isPageLoading, setPageLoading } = usePage();
+    const { filter, openComponent, registerRefreshCallback, hasAnyLoading, setLoadings } = usePage();
     const { entities, isListLoading, refetch } = useGetBanks(filter);
 
     const actions = useMemo<ActionOption[]>(() => [
@@ -18,29 +17,31 @@ const BankList = () => {
             id: 'btnFilter',
             icon: <Icon name="filter" />,
             label: 'Filter',
-            isPending: isPageLoading(),
+            isPending: hasAnyLoading,
             command: () => {
-                setCurrentComponentId(BankFilter.id);
+                openComponent(BANK_COMPONENT_NAMES.BankFilter);
             },
         },
         {
             id: 'btnAdd',
             icon: <Icon name="add" />,
             label: 'Add',
-            isPending: isPageLoading(),
+            isPending: hasAnyLoading,
             command: () => {
-                setCurrentComponentId(BankDetail.id);
+                openComponent(BANK_COMPONENT_NAMES.BankDetail);
             },
         },
-    ], [isPageLoading, setCurrentComponentId]);
+    ], [hasAnyLoading, openComponent]);
 
     useEffect(() => {
         registerRefreshCallback(refetch);
     }, [refetch, registerRefreshCallback])
 
     useEffect(() => {
-        setPageLoading(isListLoading);
-    }, [isListLoading, setPageLoading]);
+        setLoadings({
+            isListLoading,
+        });
+    }, [isListLoading, setLoadings]);
 
     return (
         <DefaultLayout
@@ -55,7 +56,7 @@ const BankList = () => {
                 body={
                     <Table
                         dataSource={entities}
-                        isPending={isListLoading}
+                        isPending={hasAnyLoading}
                         columns={[
                             {
                                 key: 'name',

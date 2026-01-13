@@ -1,4 +1,4 @@
-import BankFilterForm from "./BankFilter";
+import BankFilter from "./BankFilter";
 import PageProvider from "../../../shared/hooks/page/PageProvider";
 import BankList from "./BankList";
 import BankDetail from "./BankDetail";
@@ -9,7 +9,7 @@ const BankPage = () => {
         <PageProvider<GetBanksRequest>>
             <BankList />
             <BankDetail />
-            <BankFilterForm />
+            <BankFilter />
         </PageProvider>
     );
 }
