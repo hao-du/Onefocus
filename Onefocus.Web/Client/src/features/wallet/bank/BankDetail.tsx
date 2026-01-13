@@ -11,6 +11,7 @@ import useCreateBank from "./services/useCreateBank";
 import useUpdateBank from "./services/useUpdateBank";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
+import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
 
 interface BankDetailInput {
     id?: string
@@ -61,7 +62,7 @@ const BankDetail = () => {
             const response = await updateAsync({
                 id: data.id,
                 name: data.name ?? '',
-                isActive: true,
+                isActive: data.isActive,
                 description: data.description
             });
             showResponseToast(response, 'Updated successfully.');
@@ -89,13 +90,14 @@ const BankDetail = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" className="w-full" rules={{
+                <FormText name="name" control={control} label="Bank Name" rules={{
                     required: 'Name is required.',
                     maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
                 }} />
-                <FormTextArea name="description" control={control} label="Description" className="w-full" rules={{
+                <FormTextArea name="description" control={control} label="Description" rules={{
                     maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
                 }} />
+                {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
             </Form>
         </Drawer>
     );

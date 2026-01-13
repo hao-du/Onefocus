@@ -36,10 +36,10 @@ const LoginForm = () => {
             <Card
                 body={
                     <>
-                        <FormText name="userName" control={control} label="Username" className="w-full" autoComplete="username" rules={{
+                        <FormText focus name="userName" control={control} label="Username" autoComplete="username" rules={{
                             required: 'User name is required.'
                         }} />
-                        <FormPassword name="password" control={control} label="Password" className="w-full" autoComplete="current-password" rules={{
+                        <FormPassword focus name="password" control={control} label="Password" autoComplete="current-password" rules={{
                             required: 'Password is required.'
                         }} />
                     </>

@@ -4,7 +4,7 @@ import GetBanksRequest from "../../apis/interfaces/GetBanksRequest";
 
 const useGetBanks = (request: GetBanksRequest) => {
     const { data, isLoading, refetch, isFetching } = useQuery({
-        queryKey: ['getBanks', request],
+        queryKey: ['bank', 'useGetBanks', request],
         queryFn: async () => {
             const apiResponse = await bankApi.getBanks(request);
             return apiResponse.value.banks;

@@ -29,6 +29,10 @@ export interface IconProps {
     icon?: ReactNode;
 }
 
+export interface FocusProps {
+    focus?: boolean;
+}
+
 export interface InteractionProps {
     disabled?: boolean;
     isPending?: boolean;

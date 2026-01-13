@@ -1,9 +1,10 @@
 import { Input } from "antd";
-import { ClassNameProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
+import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { StateType } from "../../../types";
+import { joinClassNames } from "../../../utils";
 
-export interface TextAreaProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps {
+export interface TextAreaProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps {
     autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
@@ -21,14 +22,15 @@ const TextArea = (props: TextAreaProps) => {
             id={props.id}
             name={props.name}
             value={props.value}
-            className={props.className}
+            className={joinClassNames('w-full', props.className)}
             rows={props.rows ?? 5}
             size={props.size}
             defaultValue={props.defaultValue}
             status={props.status}
             disabled={props.disabled || props.isPending}
             autoComplete={props.autoComplete}
-            onFocus={(e) => e.target.select()}
+            placeholder={props.placeHolder}
+            onFocus={(e) => { if (props.focus) e.target.select(); }}
             onChange={(e) => {
                 e.preventDefault();
                 if (props.onChange) props.onChange(e.target.value);

@@ -1,40 +1,40 @@
-import { Input } from "antd";
+import { DatePicker as AntDatePicker } from 'antd';
 import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { StateType } from "../../../types";
-import { joinClassNames } from "../../../utils";
+import { joinClassNames } from '../../../utils';
 
-export interface PasswordProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps {
+export interface DatePickerProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps {
     autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
-    defaultValue?: string | number | readonly string[];
+    picker?: 'time' | 'date' | 'week' | 'month' | 'quarter' | 'year';
+    showTime?: boolean;
     status?: Exclude<StateType, 'info'> | 'validating';
-    onChange?: (value: string) => void;
+    onChange?: (value: string | null) => void;
     value?: string;
 }
 
-const Password = (props: PasswordProps) => {
+const DatePicker = (props: DatePickerProps) => {
     return (
-        <Input.Password
+        <AntDatePicker
             key={props.key}
             id={props.id}
             name={props.name}
             value={props.value}
             className={joinClassNames('w-full', props.className)}
+            picker={props.picker}
+            showTime={props.showTime}
             size={props.size}
-            defaultValue={props.defaultValue}
             status={props.status}
             disabled={props.disabled || props.isPending}
             autoComplete={props.autoComplete}
             placeholder={props.placeHolder}
-            onFocus={(e) => { if (props.focus) e.target.select(); }}
-            onChange={(e) => {
-                e.preventDefault();
-                if (props.onChange) props.onChange(e.target.value);
+            onChange={(value) => {
+                if (props.onChange) props.onChange(value);
             }}
         />
     );
 };
 
-export default Password;
+export default DatePicker;

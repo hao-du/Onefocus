@@ -8,10 +8,17 @@ import FormTextArea from "../../../shared/components/molecules/forms/FormTextAre
 import { BANK_COMPONENT_NAMES } from "../../constants";
 import { useCallback } from "react";
 import Form from "../../../shared/components/molecules/forms/Form";
+import FormNumber from "../../../shared/components/molecules/forms/FormNumber";
+import FormDatePicker from "../../../shared/components/molecules/forms/FormDatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import FormSelect from "../../../shared/components/molecules/forms/FormSelect";
 
 interface BankFilterInput {
     name?: string | null,
     description?: string | null,
+    amount?: number | null;
+    startDate?: Dayjs | null;
+    currencyId?: string | null;
 }
 
 const BankFilter = () => {
@@ -27,7 +34,10 @@ const BankFilter = () => {
     const { control, handleSubmit, reset } = useForm<BankFilterInput>({
         defaultValues: {
             name: null,
-            description: null
+            description: null,
+            amount: 0,
+            startDate: dayjs('2021/5/25'),
+            currencyId: '2'
         }
     });
 
@@ -69,8 +79,29 @@ const BankFilter = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" className="w-full" />
-                <FormTextArea name="description" control={control} label="Description" className="w-full" />
+                <FormText name="name" control={control} label="Bank Name" />
+                <FormTextArea name="description" control={control} label="Description" />
+                <FormNumber name="amount" control={control} label="Amount" />
+                <FormDatePicker name="startDate" control={control} label="Start Date" showTime />
+                <FormSelect name="currencyId" control={control} label="Currency" options={[
+                    {
+                        label: 'VND',
+                        value: '1'
+                    },
+                    {
+                        label: 'AUS',
+                        value: '2'
+                    },
+                    {
+                        label: 'USD',
+                        value: '3'
+                    },
+                    {
+                        label: 'NND',
+                        value: '4'
+                    }
+
+                ]} mode="tags" />
             </Form>
         </Drawer>
     );

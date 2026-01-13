@@ -28,3 +28,7 @@ $colors: (
     overflow-y: auto !important;
     scrollbar-gutter: stable;
 }
+
+.text-right .ant-input-number-input {
+    text-align: right;
+}

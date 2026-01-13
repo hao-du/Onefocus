@@ -6,7 +6,7 @@ const useGetBankById = () => {
     const [bankId, setbankId] = useState<string | undefined>(undefined);
 
     const { data, isLoading } = useQuery({
-        queryKey: [`useGetBankById-${bankId}`],
+        queryKey: ['bank', 'useGetBankById', bankId],
         queryFn: async () => {
             if (!bankId) return null;
 
