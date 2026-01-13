@@ -3,11 +3,11 @@ import Icon from "../../../shared/components/atoms/misc/Icon";
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
 import GetBanksRequest from "../apis/interfaces/GetBanksRequest";
-import { Form } from "antd";
 import FormText from "../../../shared/components/molecules/forms/FormText";
 import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
 import { BANK_COMPONENT_NAMES } from "../../constants";
 import { useCallback } from "react";
+import Form from "../../../shared/components/molecules/forms/Form";
 
 interface BankFilterInput {
     name?: string | null,
@@ -68,7 +68,7 @@ const BankFilter = () => {
                 },
             ]}
         >
-            <Form layout="vertical">
+            <Form>
                 <FormText name="name" control={control} label="Bank Name" className="w-full" />
                 <FormTextArea name="description" control={control} label="Description" className="w-full" />
             </Form>

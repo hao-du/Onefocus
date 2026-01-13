@@ -24,6 +24,7 @@ const PageProvider = <TFilter,>(props: PageProviderProps) => {
     }, []);
 
     const closeComponent = useCallback(() => {
+        setDataId(undefined);
         setCurrentComponentId(undefined);
     }, []);
 

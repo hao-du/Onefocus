@@ -7,9 +7,10 @@ import { ActionOption } from "../../../shared/options/ActionOption";
 import useGetBanks from "./services/useGetBanks";
 import usePage from "../../../shared/hooks/page/usePage";
 import { BANK_COMPONENT_NAMES } from "../../constants";
+import Button from "../../../shared/components/atoms/buttons/Button";
 
 const BankList = () => {
-    const { filter, openComponent, registerRefreshCallback, hasAnyLoading, setLoadings } = usePage();
+    const { filter, openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
     const { entities, isListLoading, refetch } = useGetBanks(filter);
 
     const actions = useMemo<ActionOption[]>(() => [
@@ -62,6 +63,18 @@ const BankList = () => {
                                 key: 'name',
                                 title: 'Bank Name',
                                 dataIndex: 'name',
+                                render: (_, record) => {
+                                    return (
+                                        <Button
+                                            type="link"
+                                            text={record.name}
+                                            onClick={() => {
+                                                setDataId(record.id);
+                                                openComponent(BANK_COMPONENT_NAMES.BankDetail);
+                                            }}
+                                        />
+                                    );
+                                }
                             },
                             {
                                 key: 'description',

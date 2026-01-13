@@ -10,7 +10,7 @@ const Form = (props: FormProps) => {
     return (
         <AntForm
             onFinish={props.onSubmit}
-            layout={props.layout}
+            layout={props.layout ?? 'vertical'}
         >
             {props.children}
         </AntForm>

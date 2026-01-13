@@ -1,16 +1,102 @@
+import { useEffect } from "react";
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
 import { BANK_COMPONENT_NAMES } from "../../constants";
+import useGetBankById from "./services/useGetBankById";
+import Icon from "../../../shared/components/atoms/misc/Icon";
+import Form from "../../../shared/components/molecules/forms/Form";
+import FormText from "../../../shared/components/molecules/forms/FormText";
+import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
+import useCreateBank from "./services/useCreateBank";
+import useUpdateBank from "./services/useUpdateBank";
+import { useForm } from "react-hook-form";
+import useWindows from "../../../shared/hooks/windows/useWindows";
+
+interface BankDetailInput {
+    id?: string
+    name?: string;
+    isActive: boolean;
+    description?: string;
+}
 
 const BankDetail = () => {
-    const { isActiveComponent, closeComponent } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { showResponseToast } = useWindows();
+
+    const { entity, isEntityLoading, setBankId } = useGetBankById();
+    const { createAsync, isCreating } = useCreateBank();
+    const { updateAsync, isUpdating } = useUpdateBank();
+
+    const { control, handleSubmit } = useForm<BankDetailInput>({
+        values: dataId && entity ? { ...entity } : {
+            id: undefined,
+            name: '',
+            isActive: true,
+            description: '',
+        }
+    });
+
+    useEffect(() => {
+        setLoadings({ isFormLoading: isEntityLoading || isCreating || isUpdating });
+    }, [isEntityLoading, isCreating, isUpdating, setLoadings]);
+
+    useEffect(() => {
+        if (dataId) {
+            setBankId(dataId);
+        }
+    }, [dataId, setBankId]);
+
+    const onSave = handleSubmit(async (data) => {
+        if (!data.id) {
+            const response = await createAsync({
+                name: data.name ?? '',
+                description: data.description
+            });
+            showResponseToast(response, 'Saved successfully.');
+            if (response.status === 200 && response.value.id) {
+                setDataId(response.value.id);
+            }
+        }
+        else {
+            const response = await updateAsync({
+                id: data.id,
+                name: data.name ?? '',
+                isActive: true,
+                description: data.description
+            });
+            showResponseToast(response, 'Updated successfully.');
+            if (!data.isActive) {
+                closeComponent();
+            }
+        }
+        requestRefresh?.();
+    });
 
     return (
         <Drawer
+            title={dataId ? 'Create' : 'Edit'}
             open={isActiveComponent(BANK_COMPONENT_NAMES.BankDetail)}
             onClose={closeComponent}
+            showPrimaryButton
+            actions={[
+                {
+                    id: 'btnSaveBank',
+                    label: 'Save',
+                    command: onSave,
+                    icon: <Icon name="save" />,
+                    isPending: hasAnyLoading
+                }
+            ]}
         >
-            BankSaveForm
+            <Form>
+                <FormText name="name" control={control} label="Bank Name" className="w-full" rules={{
+                    required: 'Name is required.',
+                    maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                }} />
+                <FormTextArea name="description" control={control} label="Description" className="w-full" rules={{
+                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
+                }} />
+            </Form>
         </Drawer>
     );
 }
