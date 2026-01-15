@@ -2,7 +2,7 @@ import BankFilter from "./BankFilter";
 import PageProvider from "../../../shared/hooks/page/PageProvider";
 import BankList from "./BankList";
 import BankDetail from "./BankDetail";
-import GetBanksRequest from "../apis/interfaces/GetBanksRequest";
+import GetBanksRequest from "../apis/interfaces/bank/GetBanksRequest";
 
 const BankPage = () => {
     return (

@@ -8,10 +8,10 @@ import PageContextValue from "./PageContextValue";
 interface PageProviderProps extends ChildrenProps {
 }
 
-const PageProvider = <TFilter,>(props: PageProviderProps) => {
+const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     const [currentComponentId, setCurrentComponentId] = useState<string>();
     const [dataId, setDataId] = useState<string>();
-    const [filter, setFilter] = useState<TFilter>({} as TFilter);
+    const [filter, setFilter] = useState<TFilter | undefined>(undefined);
     const [pageLoadings, setPageLoadings] = useState<Record<string, boolean>>({});
     const refreshCallbackRef = useRef<(() => void) | null>(null);
 
@@ -48,7 +48,7 @@ const PageProvider = <TFilter,>(props: PageProviderProps) => {
     }, [pageLoadings]);
 
     const resetFilter = useCallback(() => {
-        setFilter({} as TFilter);
+        setFilter(undefined);
     }, []);
 
     const value = useMemo<PageContextValue<TFilter>>(() => ({

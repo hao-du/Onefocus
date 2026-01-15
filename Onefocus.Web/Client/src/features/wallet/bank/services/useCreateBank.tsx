@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import ApiResponse from "../../../../shared/apis/interfaces/ApiResponse";
-import CreateBankResponse from "../../apis/interfaces/CreateBankResponse";
-import CreateBankRequest from "../../apis/interfaces/CreateBankRequest";
 import bankApi from "../../apis/bankApi";
+import CreateBankResponse from "../../apis/interfaces/bank/CreateBankResponse";
+import CreateBankRequest from "../../apis/interfaces/bank/CreateBankRequest";
 
 
 const useCreateBank = () => {

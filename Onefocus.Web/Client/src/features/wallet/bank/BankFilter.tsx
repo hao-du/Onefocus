@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
-import GetBanksRequest from "../apis/interfaces/GetBanksRequest";
+import GetBanksRequest from "../apis/interfaces/bank/GetBanksRequest";
 import FormText from "../../../shared/components/molecules/forms/FormText";
 import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
 import { BANK_COMPONENT_NAMES } from "../../constants";

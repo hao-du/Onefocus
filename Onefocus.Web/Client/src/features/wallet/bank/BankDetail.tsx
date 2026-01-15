@@ -24,7 +24,7 @@ const BankDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading, setBankId } = useGetBankById();
+    const { entity, isEntityLoading } = useGetBankById(dataId);
     const { createAsync, isCreating } = useCreateBank();
     const { updateAsync, isUpdating } = useUpdateBank();
 
@@ -40,12 +40,6 @@ const BankDetail = () => {
     useEffect(() => {
         setLoadings({ isFormLoading: isEntityLoading || isCreating || isUpdating });
     }, [isEntityLoading, isCreating, isUpdating, setLoadings]);
-
-    useEffect(() => {
-        if (dataId) {
-            setBankId(dataId);
-        }
-    }, [dataId, setBankId]);
 
     const onSave = handleSubmit(async (data) => {
         if (!data.id) {

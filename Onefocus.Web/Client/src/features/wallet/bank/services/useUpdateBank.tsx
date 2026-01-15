@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ApiResponse from "../../../../shared/apis/interfaces/ApiResponse";
-import UpdateBankRequest from "../../apis/interfaces/UpdateBankRequest";
+import UpdateBankRequest from "../../apis/interfaces/bank/UpdateBankRequest";
 import bankApi from "../../apis/bankApi";
 
 const useUpdateBank = () => {

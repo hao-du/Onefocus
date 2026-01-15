@@ -4,8 +4,8 @@ export default interface PageContextValue<TFilter> {
     closeComponent: () => void;
     dataId?: string;
     setDataId: React.Dispatch<React.SetStateAction<string | undefined>>;
-    filter: TFilter;
-    setFilter: React.Dispatch<React.SetStateAction<TFilter>>;
+    filter: TFilter | undefined;
+    setFilter: React.Dispatch<React.SetStateAction<TFilter | undefined>>;
     resetFilter: () => void;
     registerRefreshCallback: (cb: () => void) => void;
     requestRefresh?: () => void;

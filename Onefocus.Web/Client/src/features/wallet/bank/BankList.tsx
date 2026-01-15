@@ -11,7 +11,7 @@ import Button from "../../../shared/components/atoms/buttons/Button";
 
 const BankList = () => {
     const { filter, openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { entities, isListLoading, refetch } = useGetBanks(filter);
+    const { entities, isListLoading, refetch } = useGetBanks(filter ?? {});
 
     const actions = useMemo<ActionOption[]>(() => [
         {

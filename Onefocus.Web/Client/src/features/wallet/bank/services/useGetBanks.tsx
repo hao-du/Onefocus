@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import bankApi from "../../apis/bankApi";
-import GetBanksRequest from "../../apis/interfaces/GetBanksRequest";
+import GetBanksRequest from "../../apis/interfaces/bank/GetBanksRequest";
 
 const useGetBanks = (request: GetBanksRequest) => {
     const { data, isLoading, refetch, isFetching } = useQuery({

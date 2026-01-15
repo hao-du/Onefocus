@@ -1,11 +1,11 @@
 import client from "../../../shared/apis/client";
 import ApiResponse from "../../../shared/apis/interfaces/ApiResponse";
-import CreateBankRequest from "./interfaces/CreateBankRequest";
-import CreateBankResponse from "./interfaces/CreateBankResponse";
-import GetBanksResponse from "./interfaces/GetBanksResponse";
-import GetBankByIdResponse from "./interfaces/GetBankByIdResponse";
-import UpdateBankRequest from "./interfaces/UpdateBankRequest";
-import GetBanksRequest from "./interfaces/GetBanksRequest";
+import CreateBankRequest from "./interfaces/bank/CreateBankRequest";
+import CreateBankResponse from "./interfaces/bank/CreateBankResponse";
+import GetBanksResponse from "./interfaces/bank/GetBanksResponse";
+import GetBankByIdResponse from "./interfaces/bank/GetBankByIdResponse";
+import UpdateBankRequest from "./interfaces/bank/UpdateBankRequest";
+import GetBanksRequest from "./interfaces/bank/GetBanksRequest";
 
 const bankApi = {
     getBanks: async (request: GetBanksRequest) => {

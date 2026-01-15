@@ -28,7 +28,7 @@ const menuItems: MenuOption[] = [
             {
                 key: '2.2',
                 label: 'List',
-                url: '/wallet/transactions',
+                url: '/wallet/transaction',
                 icon: <Icon name="transaction" />,
             },
             {

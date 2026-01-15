@@ -1,0 +1,17 @@
+import { useMutation } from '@tanstack/react-query';
+import transactionApi from '../../../apis/transactionApi';
+import ApiResponse from '../../../../../shared/apis/interfaces/ApiResponse';
+import CreateCashFlowResponse from '../../../apis/interfaces/transaction/cashflow/CreateCashFlowResponse';
+import CreateCashFlowRequest from '../../../apis/interfaces/transaction/cashflow/CreateCashFlowRequest';
+
+const useCreateCashFlow = () => {
+    const { mutateAsync, isPending } = useMutation<ApiResponse<CreateCashFlowResponse>, unknown, CreateCashFlowRequest>({
+        mutationFn: async (request) => {
+            return await transactionApi.createCashFlow(request);
+        }
+    });
+
+    return { onCreateAsync: mutateAsync, isCreating: isPending };
+};
+
+export default useCreateCashFlow;
