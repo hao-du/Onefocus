@@ -23,7 +23,7 @@ const useUpdateCounterparty = () => {
         }
     });
 
-    return { onUpdateAsync: mutateAsync, isUpdating: isPending };
+    return { updateAsync: mutateAsync, isUpdating: isPending };
 };
 
 export default useUpdateCounterparty;

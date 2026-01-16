@@ -1,39 +1,44 @@
 import { useEffect } from "react";
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
-import { BANK_COMPONENT_NAMES } from "../../constants";
-import useGetBankById from "./services/useGetBankById";
+import { COUNTERPARTY_COMPONENT_NAMES } from "../../constants";
+import useGetCounterpartyById from "./services/useGetCounterpartyById";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import Form from "../../../shared/components/molecules/forms/Form";
 import FormText from "../../../shared/components/molecules/forms/FormText";
 import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
-import useCreateBank from "./services/useCreateBank";
-import useUpdateBank from "./services/useUpdateBank";
+import useCreateCounterparty from "./services/useCreateCounterparty";
+import useUpdateCounterparty from "./services/useUpdateCounterparty";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
+import FormNumber from "../../../shared/components/molecules/forms/FormNumber";
 
-interface BankDetailInput {
-    id?: string
-    name?: string;
+interface CounterpartyDetailInput {
+    id?: string;
+    fullName?: string;
+    email?: string;
+    phoneNumber?: string;
     isActive: boolean;
     description?: string;
 }
 
-const BankDetail = () => {
+const CounterpartyDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading } = useGetBankById(dataId);
-    const { createAsync, isCreating } = useCreateBank();
-    const { updateAsync, isUpdating } = useUpdateBank();
+    const { entity, isEntityLoading } = useGetCounterpartyById(dataId);
+    const { createAsync, isCreating } = useCreateCounterparty();
+    const { updateAsync, isUpdating } = useUpdateCounterparty();
 
-    const { control, handleSubmit } = useForm<BankDetailInput>({
+    const { control, handleSubmit } = useForm<CounterpartyDetailInput>({
         values: dataId && entity ? { ...entity } : {
             id: undefined,
-            name: '',
+            fullName: '',
+            email: '',
+            phoneNumber: '',
             isActive: true,
-            description: '',
+            description: ''
         }
     });
 
@@ -44,7 +49,9 @@ const BankDetail = () => {
     const onSave = handleSubmit(async (data) => {
         if (!data.id) {
             const response = await createAsync({
-                name: data.name ?? '',
+                fullName: data.fullName ?? '',
+                email: data.email,
+                phoneNumber: data.phoneNumber,
                 description: data.description
             });
             showResponseToast(response, 'Saved successfully.');
@@ -55,9 +62,11 @@ const BankDetail = () => {
         else {
             const response = await updateAsync({
                 id: data.id,
-                name: data.name ?? '',
+                fullName: data.fullName ?? '',
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                description: data.description,
                 isActive: data.isActive,
-                description: data.description
             });
             showResponseToast(response, 'Updated successfully.');
             if (!data.isActive) {
@@ -70,12 +79,12 @@ const BankDetail = () => {
     return (
         <Drawer
             title={dataId ? 'Create' : 'Edit'}
-            open={isActiveComponent(BANK_COMPONENT_NAMES.BankDetail)}
+            open={isActiveComponent(COUNTERPARTY_COMPONENT_NAMES.CounterpartyDetail)}
             onClose={closeComponent}
             showPrimaryButton
             actions={[
                 {
-                    id: 'btnSaveBank',
+                    id: 'btnSaveCounterparty',
                     label: 'Save',
                     command: onSave,
                     icon: <Icon name="save" />,
@@ -84,11 +93,20 @@ const BankDetail = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" rules={{
-                    required: 'Name is required.',
-                    maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                <FormText control={control} name="fullName" label="Full name" rules={{
+                    required: 'Full name is required.',
+                    maxLength: { value: 100, message: 'Full name cannot exceed 100 characters.' }
                 }} />
-                <FormTextArea name="description" control={control} label="Description" rules={{
+                <FormText control={control} name="email" label="Email" rules={{
+                    required: 'Email is required.',
+                    maxLength: { value: 254, message: 'Email cannot exceed 254 characters.' },
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" }
+                }} />
+                <FormNumber control={control} name="phoneNumber" label="Phone number" rules={{
+                    required: 'Phone is required.',
+                    maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' }
+                }} />
+                <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
                     maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
                 }} />
                 {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
@@ -96,4 +114,4 @@ const BankDetail = () => {
         </Drawer>
     );
 }
-export default BankDetail;
+export default CounterpartyDetail;

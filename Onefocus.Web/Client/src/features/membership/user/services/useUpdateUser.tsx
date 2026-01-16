@@ -1,24 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import currencyApi from "../../apis/currencyApi";
 import ApiResponse from "../../../../shared/apis/interfaces/ApiResponse";
-import UpdateCurrencyRequest from "../../apis/interfaces/currency/UpdateCurrencyRequest";
+import UpdateUserRequest from "../../apis/interfaces/UpdateUserRequest";
+import userApi from "../../apis/userApi";
 
-
-const useUpdateCurrency = () => {
+const useUpdateUser = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync, isPending } = useMutation<ApiResponse, unknown, UpdateCurrencyRequest>({
+    const { mutateAsync, isPending } = useMutation<ApiResponse, unknown, UpdateUserRequest>({
         mutationFn: async (request) => {
-            return await currencyApi.updateCurrency(request);
+            return await userApi.updateUser(request);
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: ['currency', 'useGetAllCurrencies']
+                queryKey: ['user', 'useGetAllUsers']
             });
 
             if (variables.id) {
                 queryClient.invalidateQueries({
-                    queryKey: ['currency', 'useGetCurrencyById', variables.id]
+                    queryKey: ['user', 'useGetUserById', variables.id]
                 });
             }
         }
@@ -27,4 +26,4 @@ const useUpdateCurrency = () => {
     return { updateAsync: mutateAsync, isUpdating: isPending };
 };
 
-export default useUpdateCurrency;
+export default useUpdateUser;

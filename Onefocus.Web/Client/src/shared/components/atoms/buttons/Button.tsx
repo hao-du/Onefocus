@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import { Button as AntButton } from 'antd';
 import type { BaseButtonProps } from '../../../props/BaseButtonProps';
-import { ButtonType } from '../../../types';
+import { ButtonType, ColorType } from '../../../types';
 import Loading from '../misc/Loading';
 
 interface ButtonProps extends BaseButtonProps {
@@ -10,6 +10,7 @@ interface ButtonProps extends BaseButtonProps {
     type?: ButtonType;
     htmlType?: 'submit' | 'button' | 'reset';
     block?: boolean;
+    color?: ColorType;
 }
 
 export default function Button(props: ButtonProps) {
@@ -33,7 +34,7 @@ export default function Button(props: ButtonProps) {
             onClick={onInternalClick}
             htmlType={props.htmlType ?? 'button'}
             block={props.block}
-
+            color={props.color}
         >
             {props.isPending && !props.icon ? <Loading /> : props.text}
         </AntButton>

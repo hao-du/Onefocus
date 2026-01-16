@@ -1,9 +1,12 @@
 import PageProvider from "../../../shared/hooks/page/PageProvider";
+import CounterpartyDetail from "./CounterpartyDetail";
+import CounterpartyList from "./CounterpartyList";
 
 const CounterpartyPage = () => {
     return (
         <PageProvider>
-            Counterparty
+            <CounterpartyList />
+            <CounterpartyDetail />
         </PageProvider>
     );
 }

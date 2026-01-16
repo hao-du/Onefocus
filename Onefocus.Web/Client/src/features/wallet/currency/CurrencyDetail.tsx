@@ -1,38 +1,42 @@
 import { useEffect } from "react";
 import Drawer from "../../../shared/components/molecules/panels/Drawer";
 import usePage from "../../../shared/hooks/page/usePage";
-import { BANK_COMPONENT_NAMES } from "../../constants";
-import useGetBankById from "./services/useGetBankById";
+import { CURRENCY_COMPONENT_NAMES } from "../../constants";
+import useGetCurrencyById from "./services/useGetCurrencyById";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import Form from "../../../shared/components/molecules/forms/Form";
 import FormText from "../../../shared/components/molecules/forms/FormText";
 import FormTextArea from "../../../shared/components/molecules/forms/FormTextArea";
-import useCreateBank from "./services/useCreateBank";
-import useUpdateBank from "./services/useUpdateBank";
+import useCreateCurrency from "./services/useCreateCurrency";
+import useUpdateCurrency from "./services/useUpdateCurrency";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
 
-interface BankDetailInput {
+interface CurrencyDetailInput {
     id?: string
     name?: string;
+    shortName?: string;
     isActive: boolean;
+    isDefault: boolean;
     description?: string;
 }
 
-const BankDetail = () => {
+const CurrencyDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading } = useGetBankById(dataId);
-    const { createAsync, isCreating } = useCreateBank();
-    const { updateAsync, isUpdating } = useUpdateBank();
+    const { entity, isEntityLoading } = useGetCurrencyById(dataId);
+    const { createAsync, isCreating } = useCreateCurrency();
+    const { updateAsync, isUpdating } = useUpdateCurrency();
 
-    const { control, handleSubmit } = useForm<BankDetailInput>({
+    const { control, handleSubmit } = useForm<CurrencyDetailInput>({
         values: dataId && entity ? { ...entity } : {
             id: undefined,
             name: '',
-            isActive: true,
+            shortName: '',
+            isActive: false,
+            isDefault: false,
             description: '',
         }
     });
@@ -45,7 +49,9 @@ const BankDetail = () => {
         if (!data.id) {
             const response = await createAsync({
                 name: data.name ?? '',
-                description: data.description
+                shortName: data.shortName ?? '',
+                description: data.description,
+                isDefault: data.isDefault
             });
             showResponseToast(response, 'Saved successfully.');
             if (response.status === 200 && response.value.id) {
@@ -56,7 +62,9 @@ const BankDetail = () => {
             const response = await updateAsync({
                 id: data.id,
                 name: data.name ?? '',
+                shortName: data.shortName ?? '',
                 isActive: data.isActive,
+                isDefault: data.isDefault,
                 description: data.description
             });
             showResponseToast(response, 'Updated successfully.');
@@ -70,12 +78,12 @@ const BankDetail = () => {
     return (
         <Drawer
             title={dataId ? 'Create' : 'Edit'}
-            open={isActiveComponent(BANK_COMPONENT_NAMES.BankDetail)}
+            open={isActiveComponent(CURRENCY_COMPONENT_NAMES.CurrencyDetail)}
             onClose={closeComponent}
             showPrimaryButton
             actions={[
                 {
-                    id: 'btnSaveBank',
+                    id: 'btnSaveCurrency',
                     label: 'Save',
                     command: onSave,
                     icon: <Icon name="save" />,
@@ -84,16 +92,22 @@ const BankDetail = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" rules={{
+                <FormText control={control} name="name" label="Name" className="w-full of-w-max" rules={{
                     required: 'Name is required.',
                     maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
                 }} />
-                <FormTextArea name="description" control={control} label="Description" rules={{
-                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
+                <FormText control={control} name="shortName" label="Short name" className="w-full of-w-max" rules={{
+                    required: 'Short name is required.',
+                    minLength: { value: 3, message: 'Short name cannot less than 3 characters.' },
+                    maxLength: { value: 4, message: 'Short name cannot exceed 4 characters.' }
                 }} />
+                <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
+                    maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' }
+                }} />
+                {<FormSwitch control={control} name="isDefault" label="Set as Default" extra="Enabling this flag will automatically disable it for all other currencies." />}
                 {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
             </Form>
         </Drawer>
     );
 }
-export default BankDetail;
+export default CurrencyDetail;

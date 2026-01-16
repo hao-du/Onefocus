@@ -6,6 +6,7 @@ export interface SwitchProps extends ClassNameProps, IdentityProps, InteractionP
     checkedLabel?: string;
     uncheckedLabel?: string;
     onChange?: (value: boolean) => void;
+    small?: boolean;
 }
 
 const Switch = (props: SwitchProps) => {
@@ -21,6 +22,7 @@ const Switch = (props: SwitchProps) => {
             onChange={(e) => {
                 if (props.onChange) props.onChange(e);
             }}
+            size={props.small ? 'small' : 'default'}
         />
     );
 };

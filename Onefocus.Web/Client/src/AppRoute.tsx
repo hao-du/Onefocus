@@ -7,6 +7,7 @@ import BankPage from "./features/wallet/bank/BankPage";
 import CurrencyPage from "./features/wallet/currency/CurrencyPage";
 import CounterpartyPage from "./features/wallet/counterparty/CounterpartyPage";
 import TransactionPage from "./features/wallet/transaction/TransactionPage";
+import UserPage from "./features/membership/user/UserPage";
 
 const AppRoute = () => {
     const { isAuthReady } = useAuth();
@@ -24,6 +25,9 @@ const AppRoute = () => {
                 <Route path="currency" element={<CurrencyPage />} />
                 <Route path="counterparty" element={<CounterpartyPage />} />
                 <Route path="transaction" element={<TransactionPage />} />
+            </Route>
+            <Route path="/membership" element={<App />}>
+                <Route path="user" element={<UserPage />} />
             </Route>
             <Route path="/*" element={<App />} />
         </Routes>

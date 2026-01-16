@@ -1,6 +1,7 @@
 import { Controller, FieldPath, FieldPathValue, FieldValues, UseControllerProps } from "react-hook-form";
 import Switch, { SwitchProps } from "../../atoms/inputs/Switch";
 import { Form } from "antd";
+import { LabelProps } from "../../../props/BaseProps";
 
 
 interface FormSwitchProps<
@@ -9,9 +10,11 @@ interface FormSwitchProps<
     TTransformedValues = TFieldValues
 > extends
     UseControllerProps<TFieldValues, TName, TTransformedValues>,
-    Omit<SwitchProps, 'name'> {
+    Omit<SwitchProps, 'name'>,
+    LabelProps {
     defaultValue?: FieldPathValue<TFieldValues, TName>;
     required?: boolean;
+    extra?: string;
 }
 
 const FormSwitch = <
@@ -28,10 +31,12 @@ const FormSwitch = <
                 return (
                     <Form.Item
                         colon={false}
+                        label={props.label}
                         htmlFor={props.id ?? props.name}
                         validateStatus={controller.fieldState.error ? 'error' : ''}
                         help={controller.fieldState.error?.message}
                         required={Boolean(props.rules?.required)}
+                        extra={props.extra}
                     >
                         <Switch
                             {...props}

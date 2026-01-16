@@ -73,4 +73,11 @@ export const joinClassNames = (...classes: Array<string | undefined | null | fal
     return classes.filter(Boolean).join(' ');
 };
 
+export const getFullName = (firstName?: string, lastName?: string) => {
+    return [firstName, lastName]
+        .map(name => name?.trim())
+        .filter(Boolean)
+        .join(" ");
+};
+
 export const getRemUnit = () => parseFloat(getComputedStyle(document.documentElement).fontSize);

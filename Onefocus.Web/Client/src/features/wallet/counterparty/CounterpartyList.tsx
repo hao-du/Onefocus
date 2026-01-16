@@ -1,0 +1,93 @@
+import { useEffect, useMemo } from "react";
+import Icon from "../../../shared/components/atoms/misc/Icon";
+import DefaultLayout from "../../../shared/components/layouts/DefaultLayout";
+import Table from "../../../shared/components/molecules/collections/table/Table";
+import Card from "../../../shared/components/molecules/panels/Card";
+import { ActionOption } from "../../../shared/options/ActionOption";
+import usePage from "../../../shared/hooks/page/usePage";
+import { COUNTERPARTY_COMPONENT_NAMES } from "../../constants";
+import Button from "../../../shared/components/atoms/buttons/Button";
+import useGetAllCounterparties from "./services/useGetAllCounterparties";
+
+const CounterpartyList = () => {
+    const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { entities, isListLoading, refetch } = useGetAllCounterparties();
+
+    const actions = useMemo<ActionOption[]>(() => [
+        {
+            id: 'btnAdd',
+            icon: <Icon name="add" />,
+            label: 'Add',
+            isPending: hasAnyLoading,
+            command: () => {
+                openComponent(COUNTERPARTY_COMPONENT_NAMES.CounterpartyDetail);
+            },
+        },
+    ], [hasAnyLoading, openComponent]);
+
+    useEffect(() => {
+        registerRefreshCallback(refetch);
+    }, [refetch, registerRefreshCallback])
+
+    useEffect(() => {
+        setLoadings({
+            isListLoading,
+        });
+    }, [isListLoading, setLoadings]);
+
+    return (
+        <DefaultLayout
+            title="Counterparty List"
+            showPrimaryButton
+            actions={actions}
+            singleCard
+        >
+            <Card
+                className="h-full"
+                bodyStyle={{ padding: 0 }}
+                body={
+                    <Table
+                        dataSource={entities}
+                        isPending={hasAnyLoading}
+                        columns={[
+                            {
+                                key: 'fullName',
+                                title: 'Full Name',
+                                dataIndex: 'fullName',
+                                render: (_, record) => {
+                                    return (
+                                        <Button
+                                            type="link"
+                                            text={record.fullName}
+                                            onClick={() => {
+                                                setDataId(record.id);
+                                                openComponent(COUNTERPARTY_COMPONENT_NAMES.CounterpartyDetail);
+                                            }}
+                                        />
+                                    );
+                                }
+                            },
+                            {
+                                key: 'email',
+                                title: 'Email',
+                                dataIndex: 'email',
+                            },
+                            {
+                                key: 'phoneNumber',
+                                title: 'Phone',
+                                dataIndex: 'phoneNumber',
+                            },
+                            {
+                                key: 'description',
+                                title: 'Description',
+                                dataIndex: 'description',
+                            }
+                        ]}
+                    />
+                }
+            />
+        </DefaultLayout>
+    );
+}
+
+export default CounterpartyList;
