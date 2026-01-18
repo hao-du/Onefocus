@@ -50,7 +50,7 @@ const UpdatePassword = () => {
     return (
         <Drawer
             title="Update Password"
-            open={isActiveComponent(USER_COMPONENT_NAMES.UserDetail)}
+            open={isActiveComponent(USER_COMPONENT_NAMES.UpdatePassword)}
             onClose={closeComponent}
             showPrimaryButton
             actions={[

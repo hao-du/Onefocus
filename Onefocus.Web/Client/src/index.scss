@@ -24,11 +24,6 @@ $colors: (
     background-color: var(--ant-color-bg-container);
 }
 
-.ant-table-body {
-    overflow-y: auto !important;
-    scrollbar-gutter: stable;
-}
-
 .text-right .ant-input-number-input {
     text-align: right;
 }

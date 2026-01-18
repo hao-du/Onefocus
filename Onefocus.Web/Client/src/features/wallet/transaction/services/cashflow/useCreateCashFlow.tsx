@@ -11,7 +11,7 @@ const useCreateCashFlow = () => {
         }
     });
 
-    return { onCreateAsync: mutateAsync, isCreating: isPending };
+    return { createCashFlowAsync: mutateAsync, isCashFlowCreating: isPending };
 };
 
 export default useCreateCashFlow;

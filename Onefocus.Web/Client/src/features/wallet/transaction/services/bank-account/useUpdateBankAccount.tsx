@@ -23,7 +23,7 @@ const useUpdateBankAccount = () => {
         }
     });
 
-    return { onUpdateAsync: mutateAsync, isUpdating: isPending };
+    return { updateBankAccountAsync: mutateAsync, isBankAccountUpdating: isPending };
 };
 
 export default useUpdateBankAccount;

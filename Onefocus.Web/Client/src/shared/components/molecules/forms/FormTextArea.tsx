@@ -1,6 +1,6 @@
 import { Form } from "antd";
 import { Controller, FieldPath, FieldPathValue, FieldValues, UseControllerProps } from "react-hook-form";
-import { LabelProps } from "../../../props/BaseProps";
+import { LabelProps, ReadOnlyProps } from "../../../props/BaseProps";
 import TextArea, { TextAreaProps } from "../../atoms/inputs/TextArea";
 
 interface FormTextAreaProps<
@@ -9,8 +9,9 @@ interface FormTextAreaProps<
     TTransformedValues = TFieldValues
 > extends
     UseControllerProps<TFieldValues, TName, TTransformedValues>,
-    Omit<TextAreaProps, 'name'>,
-    LabelProps {
+    Omit<TextAreaProps, 'name' | 'readOnly'>,
+    LabelProps,
+    ReadOnlyProps {
     defaultValue?: FieldPathValue<TFieldValues, TName>;
     required?: boolean;
 }
@@ -35,15 +36,25 @@ const FormTextArea = <
                         help={controller.fieldState.error?.message}
                         required={Boolean(props.rules?.required)}
                     >
-                        <TextArea
-                            {...props}
-                            value={controller.field.value}
-                            id={props.id ?? props.name}
-                            onChange={(value) => {
-                                controller.field.onChange(value);
-                                if (props.onChange) props.onChange(value);
-                            }}
-                        />
+                        {props.readOnly && (
+                            <TextArea
+                                {...props}
+                                value={controller.field.value}
+                                id={props.id ?? props.name}
+                                readOnly
+                            />
+                        )}
+                        {!props.readOnly && (
+                            <TextArea
+                                {...props}
+                                value={controller.field.value}
+                                id={props.id ?? props.name}
+                                onChange={(value) => {
+                                    controller.field.onChange(value);
+                                    if (props.onChange) props.onChange(value);
+                                }}
+                            />
+                        )}
                     </Form.Item>
                 );
             }}

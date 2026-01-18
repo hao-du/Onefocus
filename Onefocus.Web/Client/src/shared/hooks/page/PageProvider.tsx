@@ -11,7 +11,7 @@ interface PageProviderProps extends ChildrenProps {
 const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     const [currentComponentId, setCurrentComponentId] = useState<string>();
     const [dataId, setDataId] = useState<string>();
-    const [filter, setFilter] = useState<TFilter | undefined>(undefined);
+    const [filter, setFilter] = useState<TFilter | undefined>();
     const [pageLoadings, setPageLoadings] = useState<Record<string, boolean>>({});
     const refreshCallbackRef = useRef<(() => void) | null>(null);
 

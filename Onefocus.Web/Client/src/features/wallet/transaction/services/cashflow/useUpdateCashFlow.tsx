@@ -23,7 +23,7 @@ const useUpdateCashFlow = () => {
         }
     });
 
-    return { onUpdateAsync: mutateAsync, isUpdating: isPending };
+    return { updateCashFlowAsync: mutateAsync, isCashFlowUpdating: isPending };
 };
 
 export default useUpdateCashFlow;

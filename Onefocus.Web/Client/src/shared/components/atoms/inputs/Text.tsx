@@ -1,10 +1,10 @@
 import { Input as AntInput } from "antd";
-import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
+import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps, ReadOnlyProps } from "../../../props/BaseProps";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import { StateType } from "../../../types";
+import { StateType, InputVariantType } from "../../../types";
 import { joinClassNames } from "../../../utils";
 
-export interface TextProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps {
+export interface TextProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps, ReadOnlyProps {
     autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
@@ -12,6 +12,7 @@ export interface TextProps extends ClassNameProps, IdentityProps, InteractionPro
     status?: Exclude<StateType, 'info'> | 'validating';
     onChange?: (value: string) => void;
     value?: string;
+    variant?: InputVariantType;
 }
 
 const TextInput = (props: TextProps) => {
@@ -21,11 +22,11 @@ const TextInput = (props: TextProps) => {
             id={props.id}
             name={props.name}
             value={props.value}
-            className={joinClassNames('w-full', props.className)}
+            className={joinClassNames('w-full', props.className, props.readOnly ? 'text-(--ant-color-text)!' : undefined)}
             size={props.size}
             defaultValue={props.defaultValue}
             status={props.status}
-            disabled={props.disabled || props.isPending}
+            disabled={props.disabled || props.isPending || props.readOnly}
             autoComplete={props.autoComplete}
             placeholder={props.placeHolder}
             onFocus={(e) => { if (props.focus) e.target.select(); }}
@@ -33,6 +34,7 @@ const TextInput = (props: TextProps) => {
                 e.preventDefault();
                 if (props.onChange) props.onChange(e.target.value);
             }}
+            variant={props.variant ?? props.readOnly ? 'underlined' : undefined}
         />
     );
 };

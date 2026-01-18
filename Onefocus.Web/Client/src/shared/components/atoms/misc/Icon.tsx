@@ -1,5 +1,5 @@
 
-import { BookUser, CircleDollarSign, EllipsisVertical, Funnel, Gauge, HandCoins, House, Landmark, LogIn, Menu, Plus, RefreshCw, RotateCcw, Save, Search, SearchCheck, Settings2, User, Users, Wallet } from 'lucide-react';
+import { BookUser, ChevronLeft, ChevronRight, CircleDollarSign, CreditCard, EllipsisVertical, Funnel, Gauge, Ghost, HandCoins, House, Landmark, LogIn, Menu, Pencil, Plus, RefreshCw, RotateCcw, Save, Search, SearchCheck, Settings2, User, Users, Wallet } from 'lucide-react';
 import type { ClassNameProps, IdentityProps } from '../../../props/BaseProps';
 import useTheme from '../../../hooks/theme/useTheme';
 import { SizeType, StateColorType } from '../../../types';
@@ -13,36 +13,44 @@ const ICONS = {
     ellipsis: EllipsisVertical,
     filter: Funnel,
     add: Plus,
+    edit: Pencil,
     apply: SearchCheck,
     reset: RotateCcw,
     sync: RefreshCw,
+    //settings
+    setting: Settings2,
+    ghost: Ghost,
+    chevronLeft: ChevronLeft,
+    chevronRight: ChevronRight,
     //features
     house: House,
     wallet: Wallet,
     membership: Users,
-    //sub-features
+    //membership-features
     user: User,
+    //wallet-features
     dashboard: Gauge,
     transaction: HandCoins,
     bank: Landmark,
     currency: CircleDollarSign,
     counterParty: BookUser,
-    //settings
-    setting: Settings2,
+    cashFlow: Landmark,
+    bankAccount: CreditCard,
+    peetTransfer: BookUser,
+    currencyExchange: CircleDollarSign,
 };
 
 interface IconProps extends IdentityProps, ClassNameProps {
-    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' | 'apply' | 'reset' | 'sync' |
-    'user' | 'house' | 'wallet' | 'membership' | 'dashboard' | 'transaction' | 'bank' | 'currency' | 'counterParty' |
-    'setting';
-    size?: SizeType;
+    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' | 'edit' | 'apply' | 'reset' | 'sync' |
+    'setting' | 'ghost' | 'chevronLeft' | 'chevronRight' |
+    'house' | 'wallet' | 'membership' |
+    'user' |
+    'dashboard' | 'transaction' | 'bank' | 'currency' | 'counterParty' | 'cashFlow' | 'bankAccount' | 'peetTransfer' | 'currencyExchange';
+    size?: SizeType | 'xLarge' | 'xxLarge';
     type?: StateColorType
 }
 
-export default function Icon({
-    size = 'small',
-    ...props
-}: IconProps) {
+const Icon = ({ size = 'small', ...props }: IconProps) => {
     const { cssClasses } = useTheme();
     const classes = [
         cssClasses.icon[size],
@@ -64,3 +72,5 @@ export default function Icon({
         />
     );
 }
+
+export default Icon;

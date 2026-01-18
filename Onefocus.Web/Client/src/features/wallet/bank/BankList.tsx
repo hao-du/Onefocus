@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import DefaultLayout from "../../../shared/components/layouts/DefaultLayout";
-import Table from "../../../shared/components/molecules/collections/table/Table";
+import Table from "../../../shared/components/molecules/collections/Table";
 import Card from "../../../shared/components/molecules/panels/Card";
 import { ActionOption } from "../../../shared/options/ActionOption";
 import useGetBanks from "./services/useGetBanks";
@@ -11,7 +11,7 @@ import Button from "../../../shared/components/atoms/buttons/Button";
 
 const BankList = () => {
     const { filter, openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { entities, isListLoading, refetch } = useGetBanks(filter ?? {});
+    const { banks, isBanksLoading, refetch } = useGetBanks(filter ?? {});
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -40,23 +40,22 @@ const BankList = () => {
 
     useEffect(() => {
         setLoadings({
-            isListLoading,
+            isBanksLoading,
         });
-    }, [isListLoading, setLoadings]);
+    }, [isBanksLoading, setLoadings]);
 
     return (
         <DefaultLayout
             title="Bank List"
             showPrimaryButton
             actions={actions}
-            singleCard
         >
             <Card
                 className="h-full"
                 bodyStyle={{ padding: 0 }}
                 body={
                     <Table
-                        dataSource={entities}
+                        dataSource={banks}
                         isPending={hasAnyLoading}
                         columns={[
                             {
@@ -66,7 +65,7 @@ const BankList = () => {
                                 render: (_, record) => {
                                     return (
                                         <Button
-                                            type="link"
+                                            variant="link"
                                             text={record.name}
                                             onClick={() => {
                                                 setDataId(record.id);

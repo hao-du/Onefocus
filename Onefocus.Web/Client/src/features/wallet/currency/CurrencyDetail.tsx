@@ -26,12 +26,12 @@ const CurrencyDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading } = useGetCurrencyById(dataId);
+    const { currency, isCurrencyLoading } = useGetCurrencyById(dataId);
     const { createAsync, isCreating } = useCreateCurrency();
     const { updateAsync, isUpdating } = useUpdateCurrency();
 
     const { control, handleSubmit } = useForm<CurrencyDetailInput>({
-        values: dataId && entity ? { ...entity } : {
+        values: dataId && currency ? { ...currency } : {
             id: undefined,
             name: '',
             shortName: '',
@@ -42,8 +42,8 @@ const CurrencyDetail = () => {
     });
 
     useEffect(() => {
-        setLoadings({ isEntityLoading, isCreating, isUpdating });
-    }, [isEntityLoading, isCreating, isUpdating, setLoadings]);
+        setLoadings({ isCurrencyLoading, isCreating, isUpdating });
+    }, [isCurrencyLoading, isCreating, isUpdating, setLoadings]);
 
     const onSave = handleSubmit(async (data) => {
         if (!data.id) {

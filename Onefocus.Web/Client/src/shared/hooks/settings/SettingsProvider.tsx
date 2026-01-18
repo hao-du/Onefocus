@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import SettingsContext from './SettingsContext';
 import useLocale from '../locale/useLocale';
 import useGetAppSettings from './services/useGetAppSettings';
+import SettingsContextValue from './SettingsContextValue';
 
 const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { appSettings, isAppSettingsReady, refetchAppSettings } = useGetAppSettings();
@@ -15,7 +16,7 @@ const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
         }
     }, [appSettings, setLanguage, setLocale, setTimeZone])
 
-    const value = useMemo(() => ({
+    const value = useMemo<SettingsContextValue>(() => ({
         settings: isAppSettingsReady ? appSettings : undefined,
         isSettingsReady: isAppSettingsReady,
         refetch: () => refetchAppSettings(),

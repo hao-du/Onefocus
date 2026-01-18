@@ -1,16 +1,18 @@
 
-import { useCallback } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { Button as AntButton } from 'antd';
 import type { BaseButtonProps } from '../../../props/BaseButtonProps';
-import { ButtonType, ColorType } from '../../../types';
+import { ButtonType, ColorType, ButtonVariantType, SizeType } from '../../../types';
 import Loading from '../misc/Loading';
 
 interface ButtonProps extends BaseButtonProps {
-    text?: string;
+    text?: string | ReactNode;
     type?: ButtonType;
     htmlType?: 'submit' | 'button' | 'reset';
     block?: boolean;
     color?: ColorType;
+    variant?: ButtonVariantType;
+    size?: SizeType;
 }
 
 export default function Button(props: ButtonProps) {
@@ -26,7 +28,7 @@ export default function Button(props: ButtonProps) {
             {...props}
             id={props.id}
             key={props.key}
-            type={props.type ?? 'primary'}
+            type={props.type}
             className={props.className}
             styles={props.styles}
             disabled={props.disabled || props.isPending}
@@ -34,7 +36,9 @@ export default function Button(props: ButtonProps) {
             onClick={onInternalClick}
             htmlType={props.htmlType ?? 'button'}
             block={props.block}
-            color={props.color}
+            color={props.color ?? 'primary'}
+            variant={props.variant ?? 'solid'}
+            size={props.size}
         >
             {props.isPending && !props.icon ? <Loading /> : props.text}
         </AntButton>

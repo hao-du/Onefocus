@@ -11,7 +11,7 @@ const useGetBanks = (request: GetBanksRequest) => {
         }
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { banks: data, isBanksLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetBanks;

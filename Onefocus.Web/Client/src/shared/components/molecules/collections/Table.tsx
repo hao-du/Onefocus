@@ -1,7 +1,7 @@
 import { Table as AntTable } from "antd";
-import { ChildrenProps } from "../../../../props/BaseProps";
-import { ColumnOption } from "../../../../options/ColumnOption";
-import Loading from "../../../atoms/misc/Loading";
+import { ChildrenProps } from "../../../props/BaseProps";
+import { ColumnOption } from "../../../options/ColumnOption";
+import Loading from "../../atoms/misc/Loading";
 
 interface TableProps<T> extends ChildrenProps {
     dataSource?: T[],
@@ -14,13 +14,12 @@ const Table = <T,>(props: TableProps<T>) => {
         <AntTable<T>
             dataSource={props.dataSource}
             columns={props.columns}
-            pagination={{ placement: ["bottomStart"] }}
+            pagination={false}
             loading={{
                 spinning: props.isPending,
                 indicator: <Loading size="xlarge" />
             }}
-            scroll={{ y: 'calc(100vh - 270px)' }}
-            className="scrollbar-custom"
+            sticky={true}
         >
             {props.children}
         </AntTable>

@@ -10,7 +10,7 @@ const useGetAllUsers = () => {
         }
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { users: data, isUsersLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetAllUsers;

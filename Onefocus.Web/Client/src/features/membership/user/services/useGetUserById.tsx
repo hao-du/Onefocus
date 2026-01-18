@@ -13,7 +13,7 @@ const useGetUserById = (userId: string | undefined) => {
         enabled: Boolean(userId)
     });
 
-    return { entity: data, isEntityLoading: isLoading };
+    return { user: data, isUserLoading: isLoading };
 };
 
 export default useGetUserById;

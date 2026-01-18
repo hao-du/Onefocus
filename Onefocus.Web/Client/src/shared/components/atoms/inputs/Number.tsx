@@ -12,7 +12,8 @@ export interface NumberProps extends ClassNameProps, IdentityProps, InteractionP
     status?: Exclude<StateType, 'info'> | 'validating';
     onChange?: (value: string | null) => void;
     value?: string;
-    formatted?: boolean
+    formatted?: boolean;
+    precision?: number;
 }
 
 const Number = (props: NumberProps) => {
@@ -28,7 +29,7 @@ const Number = (props: NumberProps) => {
                 const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 return `${end ? `${v}.${end}` : `${v}`}`;
             } : undefined}
-            precision={2}
+            precision={props.precision}
             parser={props.formatted ? (value) => value?.replace(/\$\s?|(,*)/g, '') ?? '' : undefined}
             controls={false}
             className={joinClassNames(props.formatted ? 'text-right' : 'text-left', props.className)}

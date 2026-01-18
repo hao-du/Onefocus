@@ -13,7 +13,7 @@ const useGetBankById = (bankId: string | undefined) => {
         enabled: Boolean(bankId)
     });
 
-    return { entity: data, isEntityLoading: isLoading };
+    return { bank: data, isBankLoading: isLoading };
 };
 
 export default useGetBankById;

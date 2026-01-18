@@ -11,7 +11,7 @@ const useGetAllTransactions = () => {
         }
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { transactions: data, isTransactionsLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetAllTransactions;

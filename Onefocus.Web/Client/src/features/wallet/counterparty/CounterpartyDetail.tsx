@@ -27,12 +27,12 @@ const CounterpartyDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading } = useGetCounterpartyById(dataId);
+    const { counterparty, isCounterpartyLoading } = useGetCounterpartyById(dataId);
     const { createAsync, isCreating } = useCreateCounterparty();
     const { updateAsync, isUpdating } = useUpdateCounterparty();
 
     const { control, handleSubmit } = useForm<CounterpartyDetailInput>({
-        values: dataId && entity ? { ...entity } : {
+        values: dataId && counterparty ? { ...counterparty } : {
             id: undefined,
             fullName: '',
             email: '',
@@ -43,8 +43,8 @@ const CounterpartyDetail = () => {
     });
 
     useEffect(() => {
-        setLoadings({ isEntityLoading, isCreating, isUpdating });
-    }, [isEntityLoading, isCreating, isUpdating, setLoadings]);
+        setLoadings({ isCounterpartyLoading, isCreating, isUpdating });
+    }, [isCounterpartyLoading, isCreating, isUpdating, setLoadings]);
 
     const onSave = handleSubmit(async (data) => {
         if (!data.id) {

@@ -10,7 +10,7 @@ const useGetAllCurrencies = () => {
         }
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { currencies: data, isCurrenciesLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetAllCurrencies;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import DefaultLayout from "../../../shared/components/layouts/DefaultLayout";
-import Table from "../../../shared/components/molecules/collections/table/Table";
+import Table from "../../../shared/components/molecules/collections/Table";
 import Card from "../../../shared/components/molecules/panels/Card";
 import { ActionOption } from "../../../shared/options/ActionOption";
 import usePage from "../../../shared/hooks/page/usePage";
@@ -12,7 +12,7 @@ import Switch from "../../../shared/components/atoms/inputs/Switch";
 
 const CurrencyList = () => {
     const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { entities, isListLoading, refetch } = useGetAllCurrencies();
+    const { currencies: entities, isCurrenciesLoading: isListLoading, refetch } = useGetAllCurrencies();
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -38,10 +38,9 @@ const CurrencyList = () => {
 
     return (
         <DefaultLayout
-            title="Currency List"
+            title="Counterparty List"
             showPrimaryButton
             actions={actions}
-            singleCard
         >
             <Card
                 className="h-full"
@@ -58,7 +57,7 @@ const CurrencyList = () => {
                                 render: (_, record) => {
                                     return (
                                         <Button
-                                            type="link"
+                                            variant="link"
                                             text={record.name}
                                             onClick={() => {
                                                 setDataId(record.id);

@@ -11,7 +11,7 @@ const useCreateCurrencyExchange = () => {
         }
     });
 
-    return { onCreateAsync: mutateAsync, isCreating: isPending };
+    return { createCurrencyExchangeAsync: mutateAsync, isCurrencyExchangeCreating: isPending };
 };
 
 export default useCreateCurrencyExchange;

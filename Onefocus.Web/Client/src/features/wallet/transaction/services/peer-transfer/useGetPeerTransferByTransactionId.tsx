@@ -13,7 +13,7 @@ const useGetPeerTransferByTransactionId = (peerTransferTransactionId: string | u
         enabled: Boolean(peerTransferTransactionId)
     });
 
-    return { peerTransferEntity: data, isPeerTransferLoading: isLoading };
+    return { peerTransfer: data, isPeerTransferLoading: isLoading };
 };
 
 export default useGetPeerTransferByTransactionId;

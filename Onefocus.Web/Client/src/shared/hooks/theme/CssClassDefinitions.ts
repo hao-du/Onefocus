@@ -11,7 +11,9 @@ export const cssClassDefinitions = {
     icon: {
         small: 'w-4 h-4',
         middle: 'w-6 h-6',
-        large: 'w-8 h-8'
+        large: 'w-8 h-8',
+        xLarge: 'w-10 h-10',
+        xxLarge: 'w-12 h12'
     },
     padding: {
         default: 'p-3'
@@ -25,6 +27,7 @@ export const cssClassDefinitions = {
     text: {
         left: 'text-left',
         center: 'text-center',
-        right: 'text-right'
+        right: 'text-right',
+        justify: 'text-justify'
     },
 }

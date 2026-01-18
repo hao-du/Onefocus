@@ -40,10 +40,11 @@ const Sidebar = (props: SidebarProps) => {
             </div>
 
             <Button
-                type="text"
+                variant="text"
+                color="default"
                 onClick={() => setSidebarOpen(true)}
                 className="lg:hidden! fixed! inset-4"
-                icon={<Icon name="hambugger" />}
+                icon={<Icon name="hambugger" size="middle" />}
             />
         </>
     );

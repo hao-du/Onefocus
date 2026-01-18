@@ -12,7 +12,7 @@ const useCreateBankAccount = () => {
         }
     });
 
-    return { onCreateAsync: mutateAsync, isCreating: isPending };
+    return { createBankAccountAsync: mutateAsync, isBankAccountCreating: isPending };
 };
 
 export default useCreateBankAccount;

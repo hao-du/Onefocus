@@ -13,7 +13,7 @@ const useGetBankAccountByTransactionId = (bankAccountTransactionId: string | und
         enabled: Boolean(bankAccountTransactionId)
     });
 
-    return { bankAccountEntity: data, isBankAccountLoading: isLoading };
+    return { bankAccount: data, isBankAccountLoading: isLoading };
 };
 
 export default useGetBankAccountByTransactionId;

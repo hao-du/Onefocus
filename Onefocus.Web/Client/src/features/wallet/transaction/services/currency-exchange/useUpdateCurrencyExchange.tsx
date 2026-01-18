@@ -23,7 +23,7 @@ const useUpdateCurrencyExchange = () => {
         }
     });
 
-    return { onUpdateAsync: mutateAsync, isUpdating: isPending };
+    return { updateCurrencyExchangeAsync: mutateAsync, isCurrencyExchangeUpdating: isPending };
 };
 
 export default useUpdateCurrencyExchange;

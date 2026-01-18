@@ -13,7 +13,7 @@ const useGetCashFlowByTransactionId = (cashFlowTransactionId: string | undefined
         enabled: Boolean(cashFlowTransactionId)
     });
 
-    return { cashFlowEntity: data, isCashFlowLoading: isLoading };
+    return { cashFlow: data, isCashFlowLoading: isLoading };
 };
 
 export default useGetCashFlowByTransactionId;

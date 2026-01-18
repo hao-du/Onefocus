@@ -3,7 +3,7 @@ import homeApi from '../../../apis/homeApi';
 
 const useGetAppSettings = () => {
     const { data, isSuccess, refetch } = useQuery({
-        queryKey: [`useGetAppSettings`],
+        queryKey: ['home', 'useGetAppSettings'],
         queryFn: async () => {
             const apiResponse = await homeApi.getSettingsByUserId();
             return apiResponse.value;

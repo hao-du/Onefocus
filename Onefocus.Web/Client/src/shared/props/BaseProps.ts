@@ -5,7 +5,7 @@ export interface ChildrenProps {
 }
 
 export interface IdentityProps {
-    key?: string;
+    key?: number | string;
     id?: string;
 }
 
@@ -36,4 +36,8 @@ export interface FocusProps {
 export interface InteractionProps {
     disabled?: boolean;
     isPending?: boolean;
+}
+
+export interface ReadOnlyProps {
+    readOnly?: boolean;
 }

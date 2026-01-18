@@ -12,7 +12,7 @@ interface DefaultTemplateProps extends ChildrenProps {
     menuOptions?: MenuOption[];
     workSpaceActions?: ActionOption[];
     showPrimaryButton?: boolean;
-    singleCard?: boolean;
+    workspaceClassName?: string;
 };
 
 const DefaultTemplate = (props: DefaultTemplateProps) => {
@@ -26,7 +26,7 @@ const DefaultTemplate = (props: DefaultTemplateProps) => {
                     title={props.title}
                     actions={props.workSpaceActions}
                     showPrimaryAction={props.showPrimaryButton}
-                    singleCard={props.singleCard}
+                    className={props.workspaceClassName}
                 >
                     {props.children}
                 </Workspace>

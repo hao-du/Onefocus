@@ -13,7 +13,7 @@ const useGetCurrencyById = (currencyId: string | undefined) => {
         enabled: Boolean(currencyId)
     });
 
-    return { entity: data, isEntityLoading: isLoading };
+    return { currency: data, isCurrencyLoading: isLoading };
 };
 
 export default useGetCurrencyById;

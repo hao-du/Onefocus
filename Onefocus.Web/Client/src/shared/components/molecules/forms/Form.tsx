@@ -1,7 +1,7 @@
 import { Form as AntForm } from "antd";
-import { ChildrenProps } from "../../../props/BaseProps";
+import { ChildrenProps, ClassNameProps } from "../../../props/BaseProps";
 
-interface FormProps extends ChildrenProps {
+interface FormProps extends ChildrenProps, ClassNameProps {
     onSubmit?: () => void;
     layout?: 'horizontal' | 'inline' | 'vertical';
 }
@@ -9,6 +9,7 @@ interface FormProps extends ChildrenProps {
 const Form = (props: FormProps) => {
     return (
         <AntForm
+            className={props.className}
             onFinish={props.onSubmit}
             layout={props.layout ?? 'vertical'}
         >

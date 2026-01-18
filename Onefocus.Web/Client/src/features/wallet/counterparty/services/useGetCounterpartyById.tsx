@@ -13,7 +13,7 @@ const useGetCounterpartyById = (counterpartyId: string | undefined) => {
         enabled: Boolean(counterpartyId)
     });
 
-    return { entity: data, isEntityLoading: isLoading };
+    return { counterparty: data, isCounterpartyLoading: isLoading };
 };
 
 export default useGetCounterpartyById;

@@ -22,7 +22,7 @@ const DropdownButton = (props: DropdownButtonProps) => {
             {primaryAction && (
                 <Button
                     key={primaryAction.key}
-                    id={primaryAction.key}
+                    id={primaryAction.id}
                     text={primaryAction.label}
                     icon={primaryAction.icon}
                     onClick={primaryAction.command}
@@ -35,7 +35,8 @@ const DropdownButton = (props: DropdownButtonProps) => {
                 <Dropdown actions={dropdownActions} placement="bottomRight">
                     <Button
                         icon={<Icon name='ellipsis' />}
-                        type="default"
+                        variant='outlined'
+                        color='default'
                         isPending={dropdownActions[0].isPending}
                     />
                 </Dropdown>

@@ -13,7 +13,7 @@ const useGetCurrencyExchangeByTransactionId = (currencyExchangeTransactionId: st
         enabled: Boolean(currencyExchangeTransactionId)
     });
 
-    return { currencyExchangeEntity: data, isCurrencyExchangeLoading: isLoading };
+    return { currencyExchange: data, isCurrencyExchangeLoading: isLoading };
 };
 
 export default useGetCurrencyExchangeByTransactionId;

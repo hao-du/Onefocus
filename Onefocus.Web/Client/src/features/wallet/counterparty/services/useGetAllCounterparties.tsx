@@ -11,7 +11,7 @@ const useGetAllCounterparties = () => {
         }
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { counterparties: data, isCounterpartiesLoading: isLoading || isFetching, refetch };
 };
 
 export default useGetAllCounterparties;

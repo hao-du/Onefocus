@@ -24,12 +24,12 @@ const UserDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { entity, isEntityLoading: isUserDetailLoading } = useGetUserById(dataId);
+    const { user, isUserLoading } = useGetUserById(dataId);
     const { createAsync, isCreating } = useCreateUser();
     const { updateAsync, isUpdating } = useUpdateUser();
 
     const { control, handleSubmit } = useForm<UserDetailInput>({
-        values: dataId && entity ? { ...entity } : {
+        values: dataId && user ? { ...user } : {
             id: undefined,
             email: '',
             firstName: '',
@@ -38,8 +38,8 @@ const UserDetail = () => {
     });
 
     useEffect(() => {
-        setLoadings({ isUserDetailLoading, isCreating, isUpdating });
-    }, [isUserDetailLoading, isCreating, isUpdating, setLoadings]);
+        setLoadings({ isUserLoading, isCreating, isUpdating });
+    }, [isUserLoading, isCreating, isUpdating, setLoadings]);
 
     const onSave = handleSubmit(async (data) => {
         if (!data.id) {

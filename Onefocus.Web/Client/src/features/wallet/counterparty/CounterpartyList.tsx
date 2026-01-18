@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import Icon from "../../../shared/components/atoms/misc/Icon";
 import DefaultLayout from "../../../shared/components/layouts/DefaultLayout";
-import Table from "../../../shared/components/molecules/collections/table/Table";
+import Table from "../../../shared/components/molecules/collections/Table";
 import Card from "../../../shared/components/molecules/panels/Card";
 import { ActionOption } from "../../../shared/options/ActionOption";
 import usePage from "../../../shared/hooks/page/usePage";
@@ -11,7 +11,7 @@ import useGetAllCounterparties from "./services/useGetAllCounterparties";
 
 const CounterpartyList = () => {
     const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { entities, isListLoading, refetch } = useGetAllCounterparties();
+    const { counterparties, isCounterpartiesLoading, refetch } = useGetAllCounterparties();
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -31,9 +31,9 @@ const CounterpartyList = () => {
 
     useEffect(() => {
         setLoadings({
-            isListLoading,
+            isCounterpartiesLoading,
         });
-    }, [isListLoading, setLoadings]);
+    }, [isCounterpartiesLoading, setLoadings]);
 
     return (
         <DefaultLayout
@@ -47,7 +47,7 @@ const CounterpartyList = () => {
                 bodyStyle={{ padding: 0 }}
                 body={
                     <Table
-                        dataSource={entities}
+                        dataSource={counterparties}
                         isPending={hasAnyLoading}
                         columns={[
                             {
@@ -57,7 +57,7 @@ const CounterpartyList = () => {
                                 render: (_, record) => {
                                     return (
                                         <Button
-                                            type="link"
+                                            variant="link"
                                             text={record.fullName}
                                             onClick={() => {
                                                 setDataId(record.id);

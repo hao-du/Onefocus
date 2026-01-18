@@ -23,7 +23,7 @@ const useUpdatePeerTransfer = () => {
         }
     });
 
-    return { onUpdateAsync: mutateAsync, isUpdating: isPending };
+    return { updatePeerTransferAsync: mutateAsync, isPeerTransferUpdating: isPending };
 };
 
 export default useUpdatePeerTransfer;

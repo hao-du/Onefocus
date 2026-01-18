@@ -11,7 +11,7 @@ const useCreateCounterparty = () => {
         }
     });
 
-    return { onCreateAsync: mutateAsync, isCreating: isPending };
+    return { createAsync: mutateAsync, isCreating: isPending };
 };
 
 export default useCreateCounterparty;

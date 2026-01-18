@@ -12,7 +12,7 @@ const useSearchTransactions = (searchCriteria: SearchCriteria) => {
         enabled: Boolean(searchCriteria)
     });
 
-    return { entities: data, isListLoading: isLoading || isFetching, refetch };
+    return { transactions: data, isTransactionsLoading: isLoading || isFetching, refetch };
 };
 
 export default useSearchTransactions;

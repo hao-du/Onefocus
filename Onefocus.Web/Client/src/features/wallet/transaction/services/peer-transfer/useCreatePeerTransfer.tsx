@@ -11,7 +11,7 @@ const useCreatePeerTransfer = () => {
         }
     });
 
-    return { onCreateAsync: mutateAsync, isCreating: isPending };
+    return { createPeerTransferAsync: mutateAsync, isPeerTransferCreating: isPending };
 };
 
 export default useCreatePeerTransfer;
