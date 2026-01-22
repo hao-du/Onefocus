@@ -28,7 +28,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
 
     private Currency(string name, string shortName, string? description, bool isDefault, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         Name = name;
         ShortName = shortName;

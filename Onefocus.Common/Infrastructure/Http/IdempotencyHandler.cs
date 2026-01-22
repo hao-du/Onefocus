@@ -11,7 +11,7 @@ public sealed class IdempotencyHandler : DelegatingHandler
         {
             request.Headers.Add(
                 "Idempotency-Key",
-                Guid.NewGuid().ToString());
+                Guid.CreateVersion7().ToString());
         }
 
         return base.SendAsync(request, cancellationToken);

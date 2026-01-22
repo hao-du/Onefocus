@@ -1,17 +1,20 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Onefocus.Common.Utilities;
 
-namespace Onefocus.Common.Utilities;
-
-public static class DateTimeExtensions
+public static class GuidExtensions
 {
-    public static DateTimeOffset Now()
+    public static bool IsNullOrEmpty(this Guid? value)
     {
-        return DateTimeOffset.UtcNow;
+        return !value.HasValue || value.Value == Guid.Empty;
+    }
+
+    public static bool IsEmpty(this Guid value)
+    {
+        return value == Guid.Empty;
+    }
+
+    public static bool IsEmpty(this Guid? value)
+    {
+        return value == Guid.Empty;
     }
 }
 

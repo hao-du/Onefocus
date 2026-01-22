@@ -20,7 +20,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
 
     private CashFlow(bool isIncome, string? description, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         IsIncome = isIncome;
     }

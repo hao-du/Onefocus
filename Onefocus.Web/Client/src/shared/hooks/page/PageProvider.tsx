@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import PageContext from "./PageContext";
 import { ChildrenProps } from "../../props/BaseProps";
 import PageContextValue from "./PageContextValue";
@@ -13,7 +13,6 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     const [dataId, setDataId] = useState<string>();
     const [filter, setFilter] = useState<TFilter | undefined>();
     const [pageLoadings, setPageLoadings] = useState<Record<string, boolean>>({});
-    const refreshCallbackRef = useRef<(() => void) | null>(null);
 
     const isActiveComponent = useCallback((componentId: string) => {
         return currentComponentId == componentId;
@@ -26,14 +25,6 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     const closeComponent = useCallback(() => {
         setDataId(undefined);
         setCurrentComponentId(undefined);
-    }, []);
-
-    const registerRefreshCallback = useCallback((cb: () => void) => {
-        refreshCallbackRef.current = cb;
-    }, []);
-
-    const requestRefresh = useCallback(() => {
-        refreshCallbackRef.current?.();
     }, []);
 
     const setLoadings = useCallback((loadings: Record<string, boolean>) => {
@@ -60,11 +51,9 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
         filter,
         setFilter,
         resetFilter,
-        registerRefreshCallback,
-        requestRefresh,
         hasAnyLoading,
         setLoadings
-    }), [isActiveComponent, openComponent, closeComponent, dataId, filter, resetFilter, registerRefreshCallback, requestRefresh, hasAnyLoading, setLoadings]);
+    }), [isActiveComponent, openComponent, closeComponent, dataId, filter, resetFilter, hasAnyLoading, setLoadings]);
 
     return (
         <PageContext.Provider value={value}>

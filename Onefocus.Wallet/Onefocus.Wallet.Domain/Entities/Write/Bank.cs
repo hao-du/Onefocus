@@ -4,8 +4,6 @@ using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 using Onefocus.Wallet.Domain.Events.Bank;
-using Onefocus.Wallet.Domain.Events.Counterparty;
-using Onefocus.Wallet.Domain.Events.Transaction;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
 
@@ -27,7 +25,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
     private Bank(string name, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         Name = name;
         OwnerUserId = ownerId;

@@ -1,12 +1,8 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Enums;
-using Onefocus.Wallet.Domain.Entities.Read;
-using Onefocus.Wallet.Domain.Entities.Read.TransactionTypes;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Events.Transaction;
-using System;
-using static Onefocus.Wallet.Domain.Errors;
 
 namespace Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
 
@@ -29,7 +25,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 
     private PeerTransfer(PeerTransferStatus status, PeerTransferType type, Counterparty counterparty, string? description, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         Status = status;
         Type = type;
@@ -167,7 +163,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
         {
             return Result.Failure(Errors.PeerTransfer.InvalidType);
         }
-        if(transactions == null || transactions.Length == 0)
+        if (transactions == null || transactions.Length == 0)
         {
             return Result.Failure(Errors.PeerTransfer.NoTransactionsProvided);
         }

@@ -23,7 +23,7 @@ const TextArea = (props: TextAreaProps) => {
             id={props.id}
             name={props.name}
             value={props.value}
-            className={joinClassNames('w-full', props.className, props.readOnly ? 'text-(--ant-color-text)!' : undefined)}
+            className={joinClassNames('w-full', props.className)}
             style={{ resize: 'none' }}
             rows={props.rows ?? 3}
             size={props.size}
@@ -38,6 +38,7 @@ const TextArea = (props: TextAreaProps) => {
                 if (props.onChange) props.onChange(e.target.value);
             }}
             variant={props.variant ?? props.readOnly ? 'underlined' : undefined}
+            readOnly={props.readOnly}
         />
     );
 };

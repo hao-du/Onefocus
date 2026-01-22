@@ -2,7 +2,6 @@
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
-using Onefocus.Wallet.Domain.Events.Bank;
 using Onefocus.Wallet.Domain.Events.Counterparty;
 
 namespace Onefocus.Wallet.Domain.Entities.Write;
@@ -27,7 +26,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
 
     private Counterparty(string fullName, string? email, string? phoneNumber, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         FullName = fullName;
         Email = email;

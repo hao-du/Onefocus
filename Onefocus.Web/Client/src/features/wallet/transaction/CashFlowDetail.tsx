@@ -36,7 +36,7 @@ const CashFlowDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { cashFlow, isCashFlowLoading } = useGetCashFlowByTransactionId(dataId);
+    const { cashFlow, isCashFlowLoading, refetchCashFlow } = useGetCashFlowByTransactionId(dataId);
     const { currencies, isCurrenciesLoading } = useGetAllCurrencies();
     const { createCashFlowAsync, isCashFlowCreating } = useCreateCashFlow();
     const { updateCashFlowAsync, isCashFlowUpdating } = useUpdateCashFlow();
@@ -57,10 +57,11 @@ const CashFlowDetail = () => {
         }
     }, [dataId, cashFlow]);
 
-    const { control, handleSubmit, getValues } = useForm<CashFlowDetailInput>({
+    const form = useForm<CashFlowDetailInput>({
         defaultValues: formValues,
         values: formValues
     });
+    const { control, handleSubmit } = form;
 
     useEffect(() => {
         setLoadings({ isCashFlowLoading, isCashFlowCreating, isCashFlowUpdating, isCurrenciesLoading });
@@ -106,9 +107,10 @@ const CashFlowDetail = () => {
             showResponseToast(response, 'Updated successfully.');
             if (!data.isActive) {
                 closeComponent();
+                return;
             }
+            refetchCashFlow();
         }
-        requestRefresh?.();
     });
 
     return (
@@ -148,22 +150,28 @@ const CashFlowDetail = () => {
                 {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
 
                 <FormRepeater
-                    name="transactionItems"
-                    dataSource={getValues('transactionItems')}
-                    control={control}
-                    render={(_, control, index) => {
+                    title="Notes"
+                    form={form}
+                    path='transactionItems'
+                    defaultRowValue={{
+                        name: '',
+                        amount: 0,
+                        description: '',
+                        isActive: true,
+                    }}
+                    render={(_, control, index, isReadMode) => {
                         return (
                             <div>
-                                <FormText control={control} label="Item Name" name={`transactionItems.${index}.name`} rules={{
+                                <FormText readOnly={isReadMode} control={control} label="Item Name" name={`transactionItems.${index}.name`} rules={{
                                     required: 'Item name is required.',
                                     maxLength: { value: 100, message: 'Item name cannot exceed 100 characters.' }
                                 }} />
-                                <FormNumber control={control} label="Amount" formatted precision={2} name={`transactionItems.${index}.amount`} rules={{
+                                <FormNumber readOnly={isReadMode} control={control} label="Amount" formatted precision={2} name={`transactionItems.${index}.amount`} rules={{
                                     required: 'Amount is required.',
                                     min: { value: 0, message: "Minimum amount is 0." },
                                     max: { value: 10000000000, message: "Maximum amount is ten billion." },
                                 }} />
-                                <FormTextArea control={control} label="Description" rows={2} name={`transactionItems.${index}.description`} rules={{
+                                <FormTextArea readOnly={isReadMode} control={control} label="Description" rows={2} name={`transactionItems.${index}.description`} rules={{
                                     maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                                 }} />
                             </div>

@@ -18,9 +18,9 @@ import Space from "../../../shared/components/atoms/panels/Space";
 import { getComponentName } from "./shared";
 
 const TransactionList = () => {
-    const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
     const { formatDateTime } = useLocale();
-    const { transactions, isTransactionsLoading, refetch } = useGetAllTransactions();
+    const { transactions, isTransactionsLoading } = useGetAllTransactions();
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -69,10 +69,6 @@ const TransactionList = () => {
             },
         }
     ], [hasAnyLoading, openComponent]);
-
-    useEffect(() => {
-        registerRefreshCallback(refetch);
-    }, [refetch, registerRefreshCallback])
 
     useEffect(() => {
         setLoadings({

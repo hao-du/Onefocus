@@ -2,7 +2,6 @@ import { Form } from "antd";
 import { Controller, FieldPath, FieldPathValue, FieldValues, UseControllerProps } from "react-hook-form";
 import { LabelProps, ReadOnlyProps } from "../../../props/BaseProps";
 import Number, { NumberProps } from "../../atoms/inputs/Number";
-import TextInput from "../../atoms/inputs/Text";
 
 interface FormNumberProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -38,7 +37,7 @@ const FormNumber = <
                         required={Boolean(props.rules?.required)}
                     >
                         {props.readOnly && (
-                            <TextInput
+                            <Number
                                 {...props}
                                 value={controller.field.value}
                                 id={props.id ?? props.name}

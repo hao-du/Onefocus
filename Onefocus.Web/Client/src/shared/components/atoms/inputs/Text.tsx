@@ -22,11 +22,11 @@ const TextInput = (props: TextProps) => {
             id={props.id}
             name={props.name}
             value={props.value}
-            className={joinClassNames('w-full', props.className, props.readOnly ? 'text-(--ant-color-text)!' : undefined)}
+            className={joinClassNames('w-full', props.className)}
             size={props.size}
             defaultValue={props.defaultValue}
             status={props.status}
-            disabled={props.disabled || props.isPending || props.readOnly}
+            disabled={props.disabled || props.isPending}
             autoComplete={props.autoComplete}
             placeholder={props.placeHolder}
             onFocus={(e) => { if (props.focus) e.target.select(); }}
@@ -35,6 +35,7 @@ const TextInput = (props: TextProps) => {
                 if (props.onChange) props.onChange(e.target.value);
             }}
             variant={props.variant ?? props.readOnly ? 'underlined' : undefined}
+            readOnly={props.readOnly}
         />
     );
 };

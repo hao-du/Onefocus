@@ -1,10 +1,10 @@
 import { InputNumber } from "antd";
-import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps } from "../../../props/BaseProps";
+import { ClassNameProps, FocusProps, IdentityProps, InteractionProps, NameProps, ReadOnlyProps } from "../../../props/BaseProps";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import { StateType } from "../../../types";
+import { InputVariantType, StateType } from "../../../types";
 import { joinClassNames } from "../../../utils";
 
-export interface NumberProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps {
+export interface NumberProps extends ClassNameProps, IdentityProps, InteractionProps, NameProps, FocusProps, ReadOnlyProps {
     autoComplete?: string;
     placeHolder?: string;
     size?: SizeType;
@@ -14,6 +14,7 @@ export interface NumberProps extends ClassNameProps, IdentityProps, InteractionP
     value?: string;
     formatted?: boolean;
     precision?: number;
+    variant?: InputVariantType;
 }
 
 const Number = (props: NumberProps) => {
@@ -42,6 +43,8 @@ const Number = (props: NumberProps) => {
             onChange={(value) => {
                 if (props.onChange) props.onChange(value);
             }}
+            variant={props.variant ?? props.readOnly ? 'underlined' : undefined}
+            readOnly={props.readOnly}
         />
     );
 };

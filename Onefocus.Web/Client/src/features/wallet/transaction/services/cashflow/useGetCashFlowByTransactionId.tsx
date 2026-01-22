@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import transactionApi from '../../../apis/transactionApi';
 
 const useGetCashFlowByTransactionId = (cashFlowTransactionId: string | undefined) => {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ['transaction', 'useGetTransactionById', cashFlowTransactionId],
         queryFn: async () => {
             if (!cashFlowTransactionId) return null;
@@ -13,7 +13,7 @@ const useGetCashFlowByTransactionId = (cashFlowTransactionId: string | undefined
         enabled: Boolean(cashFlowTransactionId)
     });
 
-    return { cashFlow: data, isCashFlowLoading: isLoading };
+    return { cashFlow: data, isCashFlowLoading: isLoading, refetchCashFlow: refetch };
 };
 
 export default useGetCashFlowByTransactionId;

@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Onefocus.Common.Abstractions.Domain;
+﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using Onefocus.Wallet.Domain.Entities.Interfaces;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Entities.Write.TransactionTypes;
@@ -36,7 +36,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
     private Transaction(decimal amount, DateTimeOffset transactedOn, Currency currency, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         Amount = amount;
         TransactedOn = transactedOn;
@@ -74,7 +74,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
         SetActiveFlag(isActive, actionedBy);
 
         var upsertTransactionItemsResult = UpsertTransactionItems(transactionItems, actionedBy);
-        if(upsertTransactionItemsResult.IsFailure) return upsertTransactionItemsResult;
+        if (upsertTransactionItemsResult.IsFailure) return upsertTransactionItemsResult;
 
         var deleteTransactionItemsResult = DeleteTransactionItems(transactionItems, actionedBy);
         if (deleteTransactionItemsResult.IsFailure) return deleteTransactionItemsResult;
@@ -127,7 +127,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
             return Result.Success();
         }
 
-        var transactionItemsToBeDeleted = _transactionItems.FindAll(t => !transactionItems.Any(param => param.Id == t.Id));
+        var transactionItemsToBeDeleted = _transactionItems.FindAll(t => !t.Id.IsEmpty() && !transactionItems.Any(param => param.Id == t.Id));
 
         if (transactionItemsToBeDeleted.Count == 0) return Result.Success();
 

@@ -7,8 +7,6 @@ export default interface PageContextValue<TFilter> {
     filter: TFilter | undefined;
     setFilter: React.Dispatch<React.SetStateAction<TFilter | undefined>>;
     resetFilter: () => void;
-    registerRefreshCallback: (cb: () => void) => void;
-    requestRefresh?: () => void;
     hasAnyLoading: boolean;
     setLoadings: (loadings: Record<string, boolean>) => void;
 }

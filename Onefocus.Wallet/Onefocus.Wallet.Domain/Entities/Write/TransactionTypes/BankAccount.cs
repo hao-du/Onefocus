@@ -1,8 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
-using Onefocus.Common.Abstractions.Domain;
+﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Domain.Entities.Read;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Events.Transaction;
 
@@ -36,7 +33,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     private BankAccount(decimal amount, decimal interestRate, Currency currency, string accountNumber, string? description, DateTimeOffset issuedOn, Guid bankId, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.NewGuid(), description, actionedBy);
+        Init(Guid.CreateVersion7(), description, actionedBy);
 
         Amount = amount;
         InterestRate = interestRate;
