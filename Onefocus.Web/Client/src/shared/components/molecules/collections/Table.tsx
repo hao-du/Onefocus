@@ -19,7 +19,6 @@ const Table = <T,>(props: TableProps<T>) => {
                 spinning: props.isPending,
                 indicator: <Loading size="xlarge" />
             }}
-            sticky={true}
         >
             {props.children}
         </AntTable>

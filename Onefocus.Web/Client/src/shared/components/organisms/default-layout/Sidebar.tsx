@@ -17,22 +17,22 @@ const Sidebar = (props: SidebarProps) => {
         <>
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-(--ant-color-bg-mask) z-1 lg:hidden"
+                    className="fixed inset-0 bg-(--ant-color-bg-mask) z-2 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
             <div
                 className={`
                     h-full
-                    border-r border-(--ant-color-border-secondary)
-                    left-0 z-1 w-3xs bg-(--ant-color-bg-container)
+                    border-r border-(--ant-color-border-secondary) shadow-md
+                    left-0 z-3 w-3xs bg-(--ant-color-bg-container)
                     transition-transform duration-300 ease-in-out
                     fixed lg:relative lg:translate-x-0
                     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 `}
             >
                 <div className="overflow-y-auto h-full">
-                    <Section className="px-3 py-1 h-15 content-center sticky top-0 z-1 bg-(--ant-color-bg-container)">
+                    <Section className="px-3 py-1 h-15 content-center sticky top-0 bg-(--ant-color-bg-container)">
                         <AppTitle title='Onefocus' />
                     </Section>
                     <Menu className="border-r-0" items={props.menuItems} expandAll={true} />
@@ -43,7 +43,7 @@ const Sidebar = (props: SidebarProps) => {
                 variant="text"
                 color="default"
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden! fixed! inset-4"
+                className="lg:hidden! fixed! inset-4 z-2"
                 icon={<Icon name="hambugger" size="middle" />}
             />
         </>

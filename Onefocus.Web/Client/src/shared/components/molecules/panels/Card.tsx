@@ -58,7 +58,7 @@ const Card = (props: CardProps) => {
 
     return (
         <AntCard
-            className={joinClassNames(props.className, 'w-full')}
+            className={joinClassNames(props.className, 'w-full', 'shadow-md')}
             styles={{
                 body: {
                     padding: styles.size.padding,

@@ -27,3 +27,9 @@ $colors: (
 .text-right .ant-input-number-input {
     text-align: right;
 }
+
+.ant-table-thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
