@@ -33,6 +33,7 @@ const Password = (props: PasswordProps) => {
                 e.preventDefault();
                 if (props.onChange) props.onChange(e.target.value);
             }}
+            autoFocus={props.focus}
         />
     );
 };

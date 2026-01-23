@@ -6,7 +6,7 @@ interface HeaderProps extends ChildrenProps {
 
 function Header(props: HeaderProps) {
     return (
-        <div className="p-4 bg-(--ant-color-bg-container) border-b border-(--ant-color-border-secondary) h-15 shrink-0">
+        <div className="p-3 bg-(--ant-color-bg-container) border-b border-(--ant-color-border-secondary) h-15 shrink-0">
             {props.children}
         </div>
     );

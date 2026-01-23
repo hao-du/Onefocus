@@ -12,6 +12,7 @@ import useUpdateCurrency from "./services/useUpdateCurrency";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface CurrencyDetailInput {
     id?: string
@@ -23,7 +24,7 @@ interface CurrencyDetailInput {
 }
 
 const CurrencyDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
     const { showResponseToast } = useWindows();
 
     const { currency, isCurrencyLoading } = useGetCurrencyById(dataId);
@@ -72,7 +73,6 @@ const CurrencyDetail = () => {
                 closeComponent();
             }
         }
-        requestRefresh?.();
     });
 
     return (
@@ -81,6 +81,7 @@ const CurrencyDetail = () => {
             open={isActiveComponent(CURRENCY_COMPONENT_NAMES.CurrencyDetail)}
             onClose={closeComponent}
             showPrimaryButton
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveCurrency',
@@ -92,20 +93,22 @@ const CurrencyDetail = () => {
             ]}
         >
             <Form>
-                <FormText control={control} name="name" label="Name" className="w-full of-w-max" rules={{
-                    required: 'Name is required.',
-                    maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
-                }} />
-                <FormText control={control} name="shortName" label="Short name" className="w-full of-w-max" rules={{
-                    required: 'Short name is required.',
-                    minLength: { value: 3, message: 'Short name cannot less than 3 characters.' },
-                    maxLength: { value: 4, message: 'Short name cannot exceed 4 characters.' }
-                }} />
-                <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' }
-                }} />
-                {<FormSwitch control={control} name="isDefault" label="Set as Default" extra="Enabling this flag will automatically disable it for all other currencies." />}
-                {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                <DrawerSection paddingTop>
+                    <FormText control={control} name="name" label="Name" className="w-full of-w-max" rules={{
+                        required: 'Name is required.',
+                        maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                    }} />
+                    <FormText control={control} name="shortName" label="Short name" className="w-full of-w-max" rules={{
+                        required: 'Short name is required.',
+                        minLength: { value: 3, message: 'Short name cannot less than 3 characters.' },
+                        maxLength: { value: 4, message: 'Short name cannot exceed 4 characters.' }
+                    }} />
+                    <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
+                        maxLength: { value: 255, message: 'Name cannot exceed 255 characters.' }
+                    }} />
+                    {<FormSwitch control={control} name="isDefault" label="Set as Default" extra="Enabling this flag will automatically disable it for all other currencies." />}
+                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                </DrawerSection>
             </Form>
         </Drawer>
     );

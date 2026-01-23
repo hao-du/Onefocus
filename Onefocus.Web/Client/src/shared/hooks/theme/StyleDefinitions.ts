@@ -7,5 +7,6 @@ export default interface StyleDefinitions {
         marginLG: number;
         marginXL: number;
         marginXXL: number;
+        padding: number;
     }
 }

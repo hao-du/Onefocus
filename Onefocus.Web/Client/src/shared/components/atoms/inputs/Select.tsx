@@ -37,6 +37,7 @@ const Select = (props: SelectProps) => {
             onChange={(value) => {
                 if (props.onChange) props.onChange(value);
             }}
+            autoFocus={props.focus}
         />
     );
 };

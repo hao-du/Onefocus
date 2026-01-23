@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import PageContext from "./PageContext";
 import { ChildrenProps } from "../../props/BaseProps";
 import PageContextValue from "./PageContextValue";
+import { getGuid } from "../../utils";
 
 interface PageProviderProps extends ChildrenProps {
 }
@@ -13,6 +14,7 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     const [dataId, setDataId] = useState<string>();
     const [filter, setFilter] = useState<TFilter | undefined>();
     const [pageLoadings, setPageLoadings] = useState<Record<string, boolean>>({});
+    const [expandDrawerTrigger, setExpandDrawerTrigger] = useState<string>(getGuid());
 
     const isActiveComponent = useCallback((componentId: string) => {
         return currentComponentId == componentId;
@@ -20,6 +22,7 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
 
     const openComponent = useCallback((componentId: string) => {
         setCurrentComponentId(componentId);
+        setExpandDrawerTrigger(getGuid());
     }, []);
 
     const closeComponent = useCallback(() => {
@@ -52,8 +55,9 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
         setFilter,
         resetFilter,
         hasAnyLoading,
-        setLoadings
-    }), [isActiveComponent, openComponent, closeComponent, dataId, filter, resetFilter, hasAnyLoading, setLoadings]);
+        setLoadings,
+        expandDrawerTrigger
+    }), [isActiveComponent, openComponent, closeComponent, dataId, filter, resetFilter, hasAnyLoading, setLoadings, expandDrawerTrigger]);
 
     return (
         <PageContext.Provider value={value}>

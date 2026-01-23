@@ -23,6 +23,7 @@ const Switch = (props: SwitchProps) => {
                 if (props.onChange) props.onChange(e);
             }}
             size={props.small ? 'small' : 'default'}
+            autoFocus={props.focus}
         />
     );
 };

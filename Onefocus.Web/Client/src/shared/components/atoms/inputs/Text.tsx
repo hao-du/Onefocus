@@ -29,6 +29,7 @@ const TextInput = (props: TextProps) => {
             disabled={props.disabled || props.isPending}
             autoComplete={props.autoComplete}
             placeholder={props.placeHolder}
+            autoFocus={props.focus}
             onFocus={(e) => { if (props.focus) e.target.select(); }}
             onChange={(e) => {
                 e.preventDefault();

@@ -12,6 +12,7 @@ import useUpdateBank from "./services/useUpdateBank";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface BankDetailInput {
     id?: string
@@ -21,7 +22,7 @@ interface BankDetailInput {
 }
 
 const BankDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
     const { showResponseToast } = useWindows();
 
     const { bank, isBankLoading } = useGetBankById(dataId);
@@ -64,7 +65,6 @@ const BankDetail = () => {
                 closeComponent();
             }
         }
-        requestRefresh?.();
     });
 
     return (
@@ -73,6 +73,7 @@ const BankDetail = () => {
             open={isActiveComponent(BANK_COMPONENT_NAMES.BankDetail)}
             onClose={closeComponent}
             showPrimaryButton
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveBank',
@@ -84,14 +85,16 @@ const BankDetail = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" rules={{
-                    required: 'Name is required.',
-                    maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
-                }} />
-                <FormTextArea name="description" control={control} label="Description" rules={{
-                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
-                }} />
-                {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                <DrawerSection paddingTop>
+                    <FormText name="name" control={control} label="Bank Name" rules={{
+                        required: 'Name is required.',
+                        maxLength: { value: 100, message: 'Name cannot exceed 100 characters.' }
+                    }} />
+                    <FormTextArea name="description" control={control} label="Description" rules={{
+                        maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
+                    }} />
+                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                </DrawerSection>
             </Form>
         </Drawer>
     );

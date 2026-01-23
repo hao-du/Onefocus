@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
 import FormNumber from "../../../shared/components/molecules/forms/FormNumber";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface CounterpartyDetailInput {
     id?: string;
@@ -24,7 +25,7 @@ interface CounterpartyDetailInput {
 }
 
 const CounterpartyDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
     const { showResponseToast } = useWindows();
 
     const { counterparty, isCounterpartyLoading } = useGetCounterpartyById(dataId);
@@ -73,7 +74,6 @@ const CounterpartyDetail = () => {
                 closeComponent();
             }
         }
-        requestRefresh?.();
     });
 
     return (
@@ -82,6 +82,7 @@ const CounterpartyDetail = () => {
             open={isActiveComponent(COUNTERPARTY_COMPONENT_NAMES.CounterpartyDetail)}
             onClose={closeComponent}
             showPrimaryButton
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveCounterparty',
@@ -93,23 +94,25 @@ const CounterpartyDetail = () => {
             ]}
         >
             <Form>
-                <FormText control={control} name="fullName" label="Full name" rules={{
-                    required: 'Full name is required.',
-                    maxLength: { value: 100, message: 'Full name cannot exceed 100 characters.' }
-                }} />
-                <FormText control={control} name="email" label="Email" rules={{
-                    required: 'Email is required.',
-                    maxLength: { value: 254, message: 'Email cannot exceed 254 characters.' },
-                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" }
-                }} />
-                <FormNumber control={control} name="phoneNumber" label="Phone number" rules={{
-                    required: 'Phone is required.',
-                    maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' }
-                }} />
-                <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
-                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
-                }} />
-                {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                <DrawerSection paddingTop>
+                    <FormText control={control} name="fullName" label="Full name" rules={{
+                        required: 'Full name is required.',
+                        maxLength: { value: 100, message: 'Full name cannot exceed 100 characters.' }
+                    }} />
+                    <FormText control={control} name="email" label="Email" rules={{
+                        required: 'Email is required.',
+                        maxLength: { value: 254, message: 'Email cannot exceed 254 characters.' },
+                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" }
+                    }} />
+                    <FormNumber control={control} name="phoneNumber" label="Phone number" rules={{
+                        required: 'Phone is required.',
+                        maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' }
+                    }} />
+                    <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
+                        maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }
+                    }} />
+                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                </DrawerSection>
             </Form>
         </Drawer>
     );

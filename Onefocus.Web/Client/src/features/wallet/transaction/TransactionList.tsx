@@ -11,11 +11,11 @@ import { formatCurrency } from "../../../shared/utils";
 import useLocale from "../../../shared/hooks/locale/useLocale";
 import CardTitle from "../../../shared/components/atoms/typography/CardTitle";
 import ExtraInfo from "../../../shared/components/atoms/typography/ExtraInfo";
-import Text from "../../../shared/components/atoms/typography/Text";
 import Tag from "../../../shared/components/atoms/misc/Tag";
 import Button from "../../../shared/components/atoms/buttons/Button";
 import Space from "../../../shared/components/atoms/panels/Space";
 import { getComponentName } from "./shared";
+import Text from "../../../shared/components/atoms/typography/Text";
 
 const TransactionList = () => {
     const { openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
@@ -38,6 +38,7 @@ const TransactionList = () => {
             label: 'Cashflow',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(TRANSACTION_COMPONENT_NAMES.CashFlow);
             },
         },
@@ -47,6 +48,7 @@ const TransactionList = () => {
             label: 'Bank Account',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(TRANSACTION_COMPONENT_NAMES.BankAccount);
             },
         },
@@ -56,6 +58,7 @@ const TransactionList = () => {
             label: 'Peer Transfer',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(TRANSACTION_COMPONENT_NAMES.PeerTransfer);
             },
         },
@@ -65,10 +68,11 @@ const TransactionList = () => {
             label: 'Currency Exchange',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(TRANSACTION_COMPONENT_NAMES.CurrencyExchange);
             },
         }
-    ], [hasAnyLoading, openComponent]);
+    ], [hasAnyLoading, openComponent, setDataId]);
 
     useEffect(() => {
         setLoadings({
@@ -82,7 +86,7 @@ const TransactionList = () => {
             showPrimaryButton
             actions={actions}
         >
-            <div className="w-full flex flex-row gap-4 flex-wrap lg:flex-nowrap">
+            <div className="w-full flex flex-row gap-3 flex-wrap lg:flex-nowrap">
                 <div className="basis-full lg:basis-2/3 lg:order-2">
                     <div className="sticky top-0">
                         <Card
@@ -102,7 +106,7 @@ const TransactionList = () => {
                                     if (!meta) return null;
 
                                     return (
-                                        <div className="p-4 grid gap-2 grid-cols-6 border-t border-(--ant-color-border-secondary)">
+                                        <div className="p-3 grid gap-2 grid-cols-6 border-t border-(--ant-color-border-secondary)">
                                             <div className="col-span-3">
                                                 <Space size="small">
                                                     <CardTitle title={formatDateTime(record.transactedOn, false)} />

@@ -5,14 +5,15 @@ import { ReactNode, useCallback, useState } from "react";
 import { Control, FieldArray, FieldArrayPath, FieldArrayWithId, FieldValues, Path, PathValue, useFieldArray, UseFormReturn } from "react-hook-form";
 import Card from "../panels/Card";
 import Button from "../../atoms/buttons/Button";
-import { getGuid } from "../../../utils";
+import { getGuid, joinClassNames } from "../../../utils";
 import Space from "../../atoms/panels/Space";
+import Icon from "../../atoms/misc/Icon";
 
 interface FormRepeaterProps<TFormInput extends FieldValues, TName extends FieldArrayPath<TFormInput>> {
     title?: string;
     path: TName;
     form: UseFormReturn<TFormInput>;
-    render: (record: FieldArray<TFormInput, TName>, control: Control<TFormInput, any, TFormInput> | undefined, index: number, isReadMode: boolean) => ReactNode;
+    render: (record: FieldArray<TFormInput, TName>, control: Control<TFormInput, any, TFormInput> | undefined, index: number, isReadMode: boolean, isFocused: boolean) => ReactNode;
     defaultRowValue: FieldArray<TFormInput>;
     isPending?: boolean;
 }
@@ -33,6 +34,7 @@ const FormRepeater = <TFormInput extends FieldValues, TName extends FieldArrayPa
     };
 
     const [backupRows, setBackupRows] = useState<Record<string, any>>({});
+    const [focusedRowIndex, setFocusedRowIndex] = useState<number>(-1);
 
     const { control, setValue, getValues, trigger } = props.form;
     const { fields, update, insert, remove, } = useFieldArray({
@@ -48,6 +50,7 @@ const FormRepeater = <TFormInput extends FieldValues, TName extends FieldArrayPa
                 const rowId = getGuid();
                 const defaultValue = props.defaultRowValue ?? {};
                 insert(rowIndex, { ...defaultValue, rowId, mode: 'edit-new' } as RowMeta);
+                setFocusedRowIndex(rowIndex);
                 break;
             }
             case 'edit': {
@@ -71,6 +74,7 @@ const FormRepeater = <TFormInput extends FieldValues, TName extends FieldArrayPa
                     mode: 'edit-existing'
                 } as RowMeta);
 
+                setFocusedRowIndex(rowAction.rowIndex);
                 break;
             }
             case 'remove': {
@@ -146,28 +150,28 @@ const FormRepeater = <TFormInput extends FieldValues, TName extends FieldArrayPa
         const showCancelButton = rowMeta.mode == 'edit-existing';
 
         const acceptButton = <Button
-            text="Accept"
+            icon={<Icon name="accept" />}
             variant="link"
             color="green"
             onClick={() => switchAction({ rowIndex, action: 'accept' })}
         />;
 
         const cancelButton = <Button
-            text="Cancel"
+            icon={<Icon name="cancel" />}
             variant="link"
             color="default"
             onClick={() => switchAction({ rowIndex, action: 'cancel' })}
         />;
 
         const editButton = <Button
-            text="Edit"
+            icon={<Icon name="edit" />}
             variant="link"
             color="primary"
             onClick={() => switchAction({ rowIndex, action: 'edit' })}
         />;
 
         const removeButton = <Button
-            text="Remove"
+            icon={<Icon name="remove" />}
             variant="link"
             color="danger"
             onClick={() => switchAction({ rowIndex, action: 'remove' })}
@@ -190,26 +194,29 @@ const FormRepeater = <TFormInput extends FieldValues, TName extends FieldArrayPa
     return (
         <Card
             title={props.title}
+            titleExtra={
+                <Button
+                    icon={<Icon name="add" />}
+                    variant="link"
+                    color="default"
+                    onClick={() => {
+                        switchAction({ rowIndex: -1, action: 'new' });
+                    }}
+                />
+            }
             body={
-                <>
-                    <Button
-                        text="Add"
-                        onClick={() => {
-                            switchAction({ rowIndex: -1, action: 'new' });
-                        }}
-                    />
-                    {fields.map((item) => {
-                        const rowMeta = getRowMeta(item);
-                        const index = fields.findIndex(f => (rowMeta.rowId && getRowMeta(f).rowId == rowMeta.rowId) || getRowMeta(f).id == rowMeta.id);
-                        return (
-                            <Card
-                                key={rowMeta.rowId}
-                                body={props.render(item, control, index, isReadMode(rowMeta))}
-                                actions={getActions(index)}
-                            />
-                        );
-                    })}
-                </>
+                fields.map((item) => {
+                    const rowMeta = getRowMeta(item);
+                    const index = fields.findIndex(f => (rowMeta.rowId && getRowMeta(f).rowId == rowMeta.rowId) || getRowMeta(f).id == rowMeta.id);
+                    return (
+                        <Card
+                            key={rowMeta.rowId}
+                            className={joinClassNames(index == fields.length - 1 ? '' : 'mb-3!', index % 2 == 0 ? 'border-(--ant-color-border)!' : '')}
+                            body={props.render(item, control, index, isReadMode(rowMeta), index == focusedRowIndex)}
+                            rightActions={getActions(index)}
+                        />
+                    );
+                })
             }
         />
     );

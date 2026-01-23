@@ -11,10 +11,17 @@ interface DrawerProps extends ClassNameProps, ChildrenProps {
     showPrimaryButton?: boolean;
     actions?: ActionOption[];
     onClose?: () => void;
+    expandDrawerTrigger?: string;
 }
 
 const Drawer = (props: DrawerProps) => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
+    const [expandDrawerTrigger, setExpandDrawerTrigger] = useState(props.expandDrawerTrigger);
+
+    if (props.expandDrawerTrigger != expandDrawerTrigger) {
+        setCollapsed(false);
+        setExpandDrawerTrigger(props.expandDrawerTrigger);
+    }
 
     const onToggle = useCallback(() => {
         setCollapsed(prev => !prev);
@@ -23,6 +30,11 @@ const Drawer = (props: DrawerProps) => {
     return (
         <AntDrawer
             title={props.title}
+            styles={{
+                body: {
+                    padding: 0
+                }
+            }}
             size={collapsed ? 10 : undefined}
             closable={{ placement: 'end' }}
             open={props.open}

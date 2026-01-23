@@ -39,6 +39,7 @@ const TextArea = (props: TextAreaProps) => {
             }}
             variant={props.variant ?? props.readOnly ? 'underlined' : undefined}
             readOnly={props.readOnly}
+            autoFocus={props.focus}
         />
     );
 };

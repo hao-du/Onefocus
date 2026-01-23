@@ -10,8 +10,8 @@ import { BANK_COMPONENT_NAMES } from "../../constants";
 import Button from "../../../shared/components/atoms/buttons/Button";
 
 const BankList = () => {
-    const { filter, openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { banks, isBanksLoading, refetch } = useGetBanks(filter ?? {});
+    const { filter, openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { banks, isBanksLoading } = useGetBanks(filter ?? {});
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -33,10 +33,6 @@ const BankList = () => {
             },
         },
     ], [hasAnyLoading, openComponent]);
-
-    useEffect(() => {
-        registerRefreshCallback(refetch);
-    }, [refetch, registerRefreshCallback])
 
     useEffect(() => {
         setLoadings({

@@ -33,6 +33,7 @@ const DatePicker = (props: DatePickerProps) => {
             onChange={(value) => {
                 if (props.onChange) props.onChange(value);
             }}
+            autoFocus={props.focus}
         />
     );
 };

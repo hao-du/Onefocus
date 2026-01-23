@@ -11,8 +11,8 @@ import useGetAllCurrencies from "./services/useGetAllCurrencies";
 import Switch from "../../../shared/components/atoms/inputs/Switch";
 
 const CurrencyList = () => {
-    const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { currencies: entities, isCurrenciesLoading: isListLoading, refetch } = useGetAllCurrencies();
+    const { openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { currencies: entities, isCurrenciesLoading: isListLoading } = useGetAllCurrencies();
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -25,10 +25,6 @@ const CurrencyList = () => {
             },
         },
     ], [hasAnyLoading, openComponent]);
-
-    useEffect(() => {
-        registerRefreshCallback(refetch);
-    }, [refetch, registerRefreshCallback])
 
     useEffect(() => {
         setLoadings({

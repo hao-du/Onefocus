@@ -9,4 +9,5 @@ export default interface PageContextValue<TFilter> {
     resetFilter: () => void;
     hasAnyLoading: boolean;
     setLoadings: (loadings: Record<string, boolean>) => void;
+    expandDrawerTrigger: string;
 }

@@ -7,7 +7,6 @@ import ToastMessage from './interfaces/ToastMessage';
 import ApiResponseBase from '../../apis/interfaces/ApiResponseBase';
 import { MOBILE_BREAK_POINT } from '../../constants';
 
-const DEFAULT_EXPIRE_SECOND = 5;
 type WindowsProviderProps = PropsWithChildren & {};
 
 const WindowsProvider = (props: WindowsProviderProps) => {
@@ -22,21 +21,29 @@ const WindowsProvider = (props: WindowsProviderProps) => {
                 message.description = translate(severity ? severity[0].toUpperCase() + severity.slice(1) : severity);
             }
         }
+
+        const open = (message: ToastMessage) => {
+            const castedMessage = message as ToastMessage;
+            api[castedMessage.severity ?? 'info']({
+                title: castedMessage.title,
+                description: castedMessage.description,
+                icon: castedMessage.icon,
+                showProgress: true,
+                pauseOnHover: true,
+                placement: 'bottomRight',
+            });
+        }
+
         if (Array.isArray(message)) {
-            message.map((c) => mapSeverityToSummary(c));
+            message.forEach((item) => {
+                mapSeverityToSummary(item);
+                open(item);
+            });
             return;
         }
 
-        const castedMessage = message as ToastMessage;
-        api[castedMessage.severity ?? 'info']({
-            title: castedMessage.title,
-            description: castedMessage.description,
-            icon: castedMessage.icon,
-            showProgress: true,
-            pauseOnHover: true,
-            placement: 'bottomRight',
-            duration: castedMessage.canBeExpired ? DEFAULT_EXPIRE_SECOND : 0,
-        });
+        mapSeverityToSummary(message);
+        open(message);
 
     }, [api, translate]);
 

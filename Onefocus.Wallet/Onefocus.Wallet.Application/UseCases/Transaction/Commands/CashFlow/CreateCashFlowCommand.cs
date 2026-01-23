@@ -51,7 +51,7 @@ internal sealed class CreateCashFlowCommandHandler(
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
 
-        await transactionService.PublishEvents(cashFlow, cancellationToken);
+        //await transactionService.PublishEvents(cashFlow, cancellationToken);
 
         return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }

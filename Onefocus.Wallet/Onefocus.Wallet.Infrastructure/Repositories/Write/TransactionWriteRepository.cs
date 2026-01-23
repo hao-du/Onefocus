@@ -70,12 +70,6 @@ public sealed class TransactionWriteRepository(
         return await ExecuteAsync(async () =>
         {
             await context.AddAsync(request.CashFlow, cancellationToken);
-
-            if(request.CashFlow.Transaction != null && request.CashFlow.Transaction.CurrencyId != Guid.Empty)
-            {
-                await context.Entry(request.CashFlow).Reference(c => c.Transaction.Currency).LoadAsync();
-            }
-
             return Result.Success();
         });
     }

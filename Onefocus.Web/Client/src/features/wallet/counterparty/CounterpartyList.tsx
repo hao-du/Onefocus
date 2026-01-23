@@ -10,8 +10,8 @@ import Button from "../../../shared/components/atoms/buttons/Button";
 import useGetAllCounterparties from "./services/useGetAllCounterparties";
 
 const CounterpartyList = () => {
-    const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { counterparties, isCounterpartiesLoading, refetch } = useGetAllCounterparties();
+    const { openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { counterparties, isCounterpartiesLoading } = useGetAllCounterparties();
 
     const actions = useMemo<ActionOption[]>(() => [
         {
@@ -26,10 +26,6 @@ const CounterpartyList = () => {
     ], [hasAnyLoading, openComponent]);
 
     useEffect(() => {
-        registerRefreshCallback(refetch);
-    }, [refetch, registerRefreshCallback])
-
-    useEffect(() => {
         setLoadings({
             isCounterpartiesLoading,
         });
@@ -40,7 +36,6 @@ const CounterpartyList = () => {
             title="Counterparty List"
             showPrimaryButton
             actions={actions}
-            singleCard
         >
             <Card
                 className="h-full"

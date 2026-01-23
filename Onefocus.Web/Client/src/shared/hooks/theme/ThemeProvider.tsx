@@ -27,6 +27,7 @@ const ThemeInner = ({ children }: ChildrenProps) => {
                 marginLG: token.marginLG,
                 marginXL: token.marginXL,
                 marginXXL: token.marginXXL,
+                padding: token.sizeSM,
             },
         },
     }), [token]);

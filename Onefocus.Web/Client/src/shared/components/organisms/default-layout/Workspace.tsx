@@ -17,7 +17,7 @@ const Workspace = (props: WorkspaceProps) => {
     return (
         <div className={joinClassNames('flex-1 pt-0 bg-(--ant-color-bg-layout) flex flex-col', props.className)}>
             {(props.title || props.actions) && (
-                <Row justify="start" className="p-4 bg-(--ant-color-bg-layout)">
+                <Row justify="start" className="p-3 bg-(--ant-color-bg-layout)">
                     <Col xs={16} className="content-center">
                         <PageTitle title={props.title ?? ''} />
                     </Col>
@@ -28,7 +28,7 @@ const Workspace = (props: WorkspaceProps) => {
             )}
             <div className="flex-1 overflow-y-auto min-h-0">
                 <div className='h-0'>
-                    <Space vertical className="w-full px-4 pb-4">
+                    <Space vertical className="w-full px-3 pb-3">
                         {props.children}
                     </Space>
                 </div>

@@ -1,5 +1,5 @@
 
-import { BookUser, ChevronLeft, ChevronRight, CircleDollarSign, CreditCard, EllipsisVertical, Funnel, Gauge, Ghost, HandCoins, House, Landmark, LogIn, Menu, Pencil, Plus, RefreshCw, RotateCcw, Save, Search, SearchCheck, Settings2, User, Users, Wallet } from 'lucide-react';
+import { BookUser, Check, ChevronLeft, ChevronRight, CircleDollarSign, CreditCard, EllipsisVertical, Funnel, Gauge, Ghost, HandCoins, House, Landmark, LogIn, Menu, Pencil, Plus, RefreshCw, RotateCcw, Save, Search, SearchCheck, Settings2, Trash, User, Users, Wallet, X } from 'lucide-react';
 import type { ClassNameProps, IdentityProps } from '../../../props/BaseProps';
 import useTheme from '../../../hooks/theme/useTheme';
 import { SizeType, StateColorType } from '../../../types';
@@ -15,8 +15,11 @@ const ICONS = {
     add: Plus,
     edit: Pencil,
     apply: SearchCheck,
+    accept: Check,
     reset: RotateCcw,
+    cancel: X,
     sync: RefreshCw,
+    remove: Trash,
     //settings
     setting: Settings2,
     ghost: Ghost,
@@ -41,7 +44,7 @@ const ICONS = {
 };
 
 interface IconProps extends IdentityProps, ClassNameProps {
-    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' | 'edit' | 'apply' | 'reset' | 'sync' |
+    name: 'search' | 'save' | 'hambugger' | 'login' | 'ellipsis' | 'filter' | 'add' | 'edit' | 'apply' | 'accept' | 'reset' | 'cancel' | 'sync' | 'remove' |
     'setting' | 'ghost' | 'chevronLeft' | 'chevronRight' |
     'house' | 'wallet' | 'membership' |
     'user' |

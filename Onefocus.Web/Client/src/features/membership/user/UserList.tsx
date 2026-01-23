@@ -14,8 +14,8 @@ import { getFullName } from "../../../shared/utils";
 import { Space } from "antd";
 
 const UserList = () => {
-    const { openComponent, registerRefreshCallback, setDataId, hasAnyLoading, setLoadings } = usePage();
-    const { users, isUsersLoading, refetch } = useGetAllUsers();
+    const { openComponent, setDataId, hasAnyLoading, setLoadings } = usePage();
+    const { users, isUsersLoading } = useGetAllUsers();
     const { syncAsync, isSynching } = useSyncUsers();
     const { showResponseToast } = useWindows();
 
@@ -40,10 +40,6 @@ const UserList = () => {
             },
         },
     ], [hasAnyLoading, openComponent, showResponseToast, syncAsync]);
-
-    useEffect(() => {
-        registerRefreshCallback(refetch);
-    }, [refetch, registerRefreshCallback])
 
     useEffect(() => {
         setLoadings({

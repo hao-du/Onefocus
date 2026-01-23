@@ -18,6 +18,7 @@ interface CardProps extends ClassNameProps {
     actions?: ReactNode;
     rightActions?: ReactNode;
     actionMargin?: number;
+    titleExtra?: ReactNode
 }
 
 const Card = (props: CardProps) => {
@@ -58,9 +59,24 @@ const Card = (props: CardProps) => {
     return (
         <AntCard
             className={joinClassNames(props.className, 'w-full')}
-            styles={{ body: props.bodyStyle }}
+            styles={{
+                body: {
+                    padding: styles.size.padding,
+                    ...props.bodyStyle
+                }
+            }}
         >
-            {props.title && <CardTitle title={props.title} align={props.titleAlign ?? 'left'} style={{ marginBottom: props.titleMargin ?? styles.size.margin }} />}
+
+            {props.title && (
+                <Row>
+                    <Col span={GRID_COLUMNS / 2}>
+                        <CardTitle title={props.title} align={props.titleAlign ?? 'left'} style={{ marginBottom: props.titleMargin ?? styles.size.margin }} />
+                    </Col>
+                    <Col span={GRID_COLUMNS / 2} className='text-right'>
+                        {props.titleExtra}
+                    </Col>
+                </Row>
+            )}
             {props.body}
             {renderActions}
         </AntCard>

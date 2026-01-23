@@ -32,7 +32,7 @@ const Sidebar = (props: SidebarProps) => {
                 `}
             >
                 <div className="overflow-y-auto h-full">
-                    <Section className="px-4 py-1 h-15 content-center sticky top-0 z-1 bg-(--ant-color-bg-container)">
+                    <Section className="px-3 py-1 h-15 content-center sticky top-0 z-1 bg-(--ant-color-bg-container)">
                         <AppTitle title='Onefocus' />
                     </Section>
                     <Menu className="border-r-0" items={props.menuItems} expandAll={true} />

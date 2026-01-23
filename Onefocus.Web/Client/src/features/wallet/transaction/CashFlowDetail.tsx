@@ -20,6 +20,7 @@ import FormSelect from "../../../shared/components/molecules/forms/FormSelect";
 import dayjs, { Dayjs } from "dayjs";
 import FormRepeater from "../../../shared/components/molecules/forms/FormRepeater";
 import FormText from "../../../shared/components/molecules/forms/FormText";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface CashFlowDetailInput {
     id?: string;
@@ -33,7 +34,7 @@ interface CashFlowDetailInput {
 }
 
 const CashFlowDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger: triggerSignal } = usePage();
     const { showResponseToast } = useWindows();
 
     const { cashFlow, isCashFlowLoading, refetchCashFlow } = useGetCashFlowByTransactionId(dataId);
@@ -119,6 +120,7 @@ const CashFlowDetail = () => {
             open={isActiveComponent(TRANSACTION_COMPONENT_NAMES.CashFlow)}
             onClose={closeComponent}
             showPrimaryButton
+            expandDrawerTrigger={triggerSignal}
             actions={[
                 {
                     id: 'btnSaveCashFlow',
@@ -130,25 +132,26 @@ const CashFlowDetail = () => {
             ]}
         >
             <Form>
-                <FormDatePicker showTime control={control} name="transactedOn" label="Date" rules={{
-                    required: 'Date is required.',
-                }} />
-                <FormNumber control={control} name="amount" label="Amount" formatted precision={2} rules={{
-                    required: 'Amount is required.',
-                    min: { value: 0, message: "Minimum amount is 0." },
-                    max: { value: 10000000000, message: "Maximum amount is ten billion (10,000,000,000)." },
-                }} />
-                <FormSelect control={control} name="currencyId" label="Currency" options={getCurrencyOptions(currencies)} rules={{
-                    validate: {
-                        required: (value) => value && value !== getEmptyGuid() ? true : 'Currency is required.'
-                    }
-                }} />
-                <FormTextArea control={control} name="description" label="Description" rules={{
-                    maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
-                }} />
-                <FormSwitch control={control} name="isIncome" checkedLabel="Income" uncheckedLabel="Expense" extra="Toggle between income and expense." />
-                {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
-
+                <DrawerSection paddingTop>
+                    <FormDatePicker focus showTime control={control} name="transactedOn" label="Date" rules={{
+                        required: 'Date is required.',
+                    }} />
+                    <FormNumber control={control} name="amount" label="Amount" formatted precision={2} rules={{
+                        required: 'Amount is required.',
+                        min: { value: 0, message: "Minimum amount is 0." },
+                        max: { value: 10000000000, message: "Maximum amount is ten billion (10,000,000,000)." },
+                    }} />
+                    <FormSelect control={control} name="currencyId" label="Currency" options={getCurrencyOptions(currencies)} rules={{
+                        validate: {
+                            required: (value) => value && value !== getEmptyGuid() ? true : 'Currency is required.'
+                        }
+                    }} />
+                    <FormTextArea control={control} name="description" label="Description" rules={{
+                        maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                    }} />
+                    <FormSwitch control={control} name="isIncome" checkedLabel="Income" uncheckedLabel="Expense" extra="Toggle between income and expense." />
+                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                </DrawerSection>
                 <FormRepeater
                     title="Notes"
                     form={form}
@@ -159,10 +162,10 @@ const CashFlowDetail = () => {
                         description: '',
                         isActive: true,
                     }}
-                    render={(_, control, index, isReadMode) => {
+                    render={(_, control, index, isReadMode, isFocused) => {
                         return (
                             <div>
-                                <FormText readOnly={isReadMode} control={control} label="Item Name" name={`transactionItems.${index}.name`} rules={{
+                                <FormText readOnly={isReadMode} focus={isFocused} control={control} label="Item Name" name={`transactionItems.${index}.name`} rules={{
                                     required: 'Item name is required.',
                                     maxLength: { value: 100, message: 'Item name cannot exceed 100 characters.' }
                                 }} />
