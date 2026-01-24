@@ -1,4 +1,5 @@
 import PageProvider from "../../../shared/hooks/page/PageProvider";
+import BankAccountDetail from "./BankAccountDetail";
 import CashFlowDetail from "./CashFlowDetail";
 import TransactionList from "./TransactionList";
 
@@ -7,6 +8,7 @@ const TransactionPage = () => {
         <PageProvider>
             <TransactionList />
             <CashFlowDetail />
+            <BankAccountDetail />
         </PageProvider>
     );
 }

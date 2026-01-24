@@ -20,10 +20,11 @@ const CounterpartyList = () => {
             label: 'Add',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(COUNTERPARTY_COMPONENT_NAMES.CounterpartyDetail);
             },
         },
-    ], [hasAnyLoading, openComponent]);
+    ], [hasAnyLoading, openComponent, setDataId]);
 
     useEffect(() => {
         setLoadings({

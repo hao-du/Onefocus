@@ -21,7 +21,7 @@ export const MenuItems: MenuOption[] = [
             },
             {
                 key: '2.2',
-                label: 'List',
+                label: 'Transactions',
                 url: '/wallet/transactions',
                 icon: <Icon name="transaction" />,
             },

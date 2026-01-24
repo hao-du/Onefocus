@@ -29,10 +29,11 @@ const BankList = () => {
             label: 'Add',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(BANK_COMPONENT_NAMES.BankDetail);
             },
         },
-    ], [hasAnyLoading, openComponent]);
+    ], [hasAnyLoading, openComponent, setDataId]);
 
     useEffect(() => {
         setLoadings({

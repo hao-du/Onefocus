@@ -11,6 +11,7 @@ import useUpdateUser from "./services/useUpdateUser";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormPassword from "../../../shared/components/molecules/forms/FormPassword";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface UserDetailInput {
     id?: string
@@ -21,7 +22,7 @@ interface UserDetailInput {
 }
 
 const UserDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, requestRefresh } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
     const { showResponseToast } = useWindows();
 
     const { user, isUserLoading } = useGetUserById(dataId);
@@ -63,7 +64,6 @@ const UserDetail = () => {
             });
             showResponseToast(response, 'Updated successfully.');
         }
-        requestRefresh?.();
     });
 
     return (
@@ -72,6 +72,7 @@ const UserDetail = () => {
             open={isActiveComponent(USER_COMPONENT_NAMES.UserDetail)}
             onClose={closeComponent}
             showPrimaryButton
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveUser',
@@ -83,23 +84,25 @@ const UserDetail = () => {
             ]}
         >
             <Form>
-                <FormText control={control} name="email" label="Email" rules={{
-                    required: 'Email is required.',
-                    maxLength: { value: 256, message: 'Email cannot exceed 256 characters.' }
-                }} />
-                <FormText control={control} name="firstName" label="First name" rules={{
-                    required: 'First name is required.',
-                    maxLength: { value: 50, message: 'First name cannot exceed 50 characters.' }
-                }} />
-                <FormText control={control} name="lastName" label="Last name" rules={{
-                    required: 'Last name is required.',
-                    maxLength: { value: 50, message: 'Last name cannot exceed 50 characters.' }
-                }} />
-                {!dataId && (
-                    <FormPassword control={control} name="password" label="Password" autoComplete="new-password" rules={{
-                        required: 'Password is required.'
+                <DrawerSection paddingTop>
+                    <FormText control={control} name="email" label="Email" rules={{
+                        required: 'Email is required.',
+                        maxLength: { value: 256, message: 'Email cannot exceed 256 characters.' }
                     }} />
-                )}
+                    <FormText control={control} name="firstName" label="First name" rules={{
+                        required: 'First name is required.',
+                        maxLength: { value: 50, message: 'First name cannot exceed 50 characters.' }
+                    }} />
+                    <FormText control={control} name="lastName" label="Last name" rules={{
+                        required: 'Last name is required.',
+                        maxLength: { value: 50, message: 'Last name cannot exceed 50 characters.' }
+                    }} />
+                    {!dataId && (
+                        <FormPassword control={control} name="password" label="Password" autoComplete="new-password" rules={{
+                            required: 'Password is required.'
+                        }} />
+                    )}
+                </DrawerSection>
             </Form>
         </Drawer>
     );

@@ -26,6 +26,7 @@ const UserList = () => {
             label: 'Add',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(USER_COMPONENT_NAMES.UserDetail);
             },
         },
@@ -39,7 +40,7 @@ const UserList = () => {
                 showResponseToast(response, 'Synced successfully.');
             },
         },
-    ], [hasAnyLoading, openComponent, showResponseToast, syncAsync]);
+    ], [hasAnyLoading, openComponent, setDataId, showResponseToast, syncAsync]);
 
     useEffect(() => {
         setLoadings({

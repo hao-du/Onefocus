@@ -21,10 +21,11 @@ const CurrencyList = () => {
             label: 'Add',
             isPending: hasAnyLoading,
             command: () => {
+                setDataId(undefined);
                 openComponent(CURRENCY_COMPONENT_NAMES.CurrencyDetail);
             },
         },
-    ], [hasAnyLoading, openComponent]);
+    ], [hasAnyLoading, openComponent, setDataId]);
 
     useEffect(() => {
         setLoadings({

@@ -1,6 +1,7 @@
 import { SelectOption } from "../../../shared/options/SelectOption";
 import { ColorType } from "../../../shared/types";
 import { TRANSACTION_COMPONENT_NAMES } from "../../constants";
+import BankResponse from "../apis/interfaces/bank/BankResponse";
 import CurrencyResponse from "../apis/interfaces/currency/CurrencyResponse";
 
 export interface TransactionItemInput {
@@ -56,6 +57,16 @@ export const getCurrencyOptions = (currencies: CurrencyResponse[] | undefined): 
         return {
             label: `${currency.shortName} - ${currency.name}`,
             value: currency.id
+        } as SelectOption;
+    });
+};
+
+export const getBankOptions = (banks: BankResponse[] | undefined): SelectOption[] => {
+    if (!banks) return [];
+    return banks.map((bank) => {
+        return {
+            label: bank.name,
+            value: bank.id
         } as SelectOption;
     });
 };

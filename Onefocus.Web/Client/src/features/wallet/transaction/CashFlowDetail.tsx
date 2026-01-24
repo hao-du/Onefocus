@@ -37,7 +37,7 @@ const CashFlowDetail = () => {
     const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger: triggerSignal } = usePage();
     const { showResponseToast } = useWindows();
 
-    const { cashFlow, isCashFlowLoading, refetchCashFlow } = useGetCashFlowByTransactionId(dataId);
+    const { cashFlow, isCashFlowLoading } = useGetCashFlowByTransactionId(dataId);
     const { currencies, isCurrenciesLoading } = useGetAllCurrencies();
     const { createCashFlowAsync, isCashFlowCreating } = useCreateCashFlow();
     const { updateCashFlowAsync, isCashFlowUpdating } = useUpdateCashFlow();
@@ -108,9 +108,7 @@ const CashFlowDetail = () => {
             showResponseToast(response, 'Updated successfully.');
             if (!data.isActive) {
                 closeComponent();
-                return;
             }
-            refetchCashFlow();
         }
     });
 
@@ -164,7 +162,7 @@ const CashFlowDetail = () => {
                     }}
                     render={(_, control, index, isReadMode, isFocused) => {
                         return (
-                            <div>
+                            <>
                                 <FormText readOnly={isReadMode} focus={isFocused} control={control} label="Item Name" name={`transactionItems.${index}.name`} rules={{
                                     required: 'Item name is required.',
                                     maxLength: { value: 100, message: 'Item name cannot exceed 100 characters.' }
@@ -177,7 +175,7 @@ const CashFlowDetail = () => {
                                 <FormTextArea readOnly={isReadMode} control={control} label="Description" rows={2} name={`transactionItems.${index}.description`} rules={{
                                     maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                                 }} />
-                            </div>
+                            </>
                         );
                     }}
                 />
