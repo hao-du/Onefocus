@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Home.Domain.Entities.Write;
 
 namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
@@ -9,6 +8,9 @@ namespace Onefocus.Home.Infrastructure.Databases.DbContexts.Write.Configurations
         public override void Configure(EntityTypeBuilder<User> builder)
         {
             base.Configure(builder);
+
+            builder.Property(e => e.Id).ValueGeneratedNever();
+
             builder.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
             builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
             builder.Property(u => u.Email).HasMaxLength(254).IsRequired();

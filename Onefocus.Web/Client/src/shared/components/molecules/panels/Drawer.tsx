@@ -4,6 +4,8 @@ import { ChildrenProps, ClassNameProps } from '../../../props/BaseProps';
 import { ActionOption } from '../../../options/ActionOption';
 import DropdownButton from '../buttons/DropdownButton';
 import Icon from '../../atoms/misc/Icon';
+import { getGuid } from '../../../utils';
+import { DRAWER_DEFAULT_WIDTH } from '../../../constants';
 
 interface DrawerProps extends ClassNameProps, ChildrenProps {
     title?: string;
@@ -15,8 +17,8 @@ interface DrawerProps extends ClassNameProps, ChildrenProps {
 }
 
 const Drawer = (props: DrawerProps) => {
-    const [collapsed, setCollapsed] = useState(true);
-    const [expandDrawerTrigger, setExpandDrawerTrigger] = useState(props.expandDrawerTrigger);
+    const [collapsed, setCollapsed] = useState(false);
+    const [expandDrawerTrigger, setExpandDrawerTrigger] = useState<string | undefined>(getGuid());
 
     if (props.expandDrawerTrigger != expandDrawerTrigger) {
         setCollapsed(false);
@@ -33,9 +35,12 @@ const Drawer = (props: DrawerProps) => {
             styles={{
                 body: {
                     padding: 0
+                },
+                wrapper: {
+                    right: collapsed ? -DRAWER_DEFAULT_WIDTH : 0
                 }
             }}
-            size={collapsed ? 10 : undefined}
+            size={DRAWER_DEFAULT_WIDTH}
             closable={{ placement: 'end' }}
             open={props.open}
             onClose={props.onClose}

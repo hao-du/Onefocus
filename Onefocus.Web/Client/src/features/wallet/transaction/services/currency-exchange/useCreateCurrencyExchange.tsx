@@ -1,13 +1,20 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import transactionApi from '../../../apis/transactionApi';
 import ApiResponse from '../../../../../shared/apis/interfaces/ApiResponse';
 import CreateCurrencyExchangeResponse from '../../../apis/interfaces/transaction/currency-exchange/CreateCurrencyExchangeResponse';
 import CreateCurrencyExchangeRequest from '../../../apis/interfaces/transaction/currency-exchange/CreateCurrencyExchangeRequest';
 
 const useCreateCurrencyExchange = () => {
+    const queryClient = useQueryClient();
+
     const { mutateAsync, isPending } = useMutation<ApiResponse<CreateCurrencyExchangeResponse>, unknown, CreateCurrencyExchangeRequest>({
         mutationFn: async (request) => {
             return await transactionApi.createCurrencyExchange(request);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['transaction', 'useGetTransactions']
+            });
         }
     });
 

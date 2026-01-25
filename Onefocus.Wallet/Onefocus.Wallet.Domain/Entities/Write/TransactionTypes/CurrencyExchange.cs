@@ -20,7 +20,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
 
     private CurrencyExchange(decimal exchangeRate, string? description, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         ExchangeRate = exchangeRate;
     }

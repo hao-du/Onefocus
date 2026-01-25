@@ -12,7 +12,6 @@ import useUpdateCounterparty from "./services/useUpdateCounterparty";
 import { useForm } from "react-hook-form";
 import useWindows from "../../../shared/hooks/windows/useWindows";
 import FormSwitch from "../../../shared/components/molecules/forms/FormSwitch";
-import FormNumber from "../../../shared/components/molecules/forms/FormNumber";
 import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface CounterpartyDetailInput {
@@ -100,13 +99,12 @@ const CounterpartyDetail = () => {
                         maxLength: { value: 100, message: 'Full name cannot exceed 100 characters.' }
                     }} />
                     <FormText control={control} name="email" label="Email" rules={{
-                        required: 'Email is required.',
                         maxLength: { value: 254, message: 'Email cannot exceed 254 characters.' },
                         pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" }
                     }} />
-                    <FormNumber control={control} name="phoneNumber" label="Phone number" rules={{
-                        required: 'Phone is required.',
-                        maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' }
+                    <FormText control={control} name="phoneNumber" label="Phone number" rules={{
+                        maxLength: { value: 25, message: 'Phone cannot exceed 25 characters.' },
+                        pattern: { value: /^[0-9+\-() ]+$/, message: "Only numbers and + - ( ) are allowed" },
                     }} />
                     <FormTextArea control={control} name="description" label="Description" className="w-full of-w-max" rules={{
                         maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' }

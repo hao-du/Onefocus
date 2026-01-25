@@ -23,8 +23,6 @@ import useWindows from "../../../shared/hooks/windows/useWindows";
 import useGetBanks from "../bank/services/useGetBanks";
 import { getBankOptions, getCurrencyOptions } from "./shared";
 
-
-
 interface BankAccountTransactionInput {
     id?: string;
     transactedOn: Dayjs;
@@ -49,17 +47,21 @@ interface BankAccountDetailInput {
 }
 
 const BankAccountDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger: triggerSignal } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
+
+    const isActive = isActiveComponent(TRANSACTION_COMPONENT_NAMES.BankAccount);
+    const transactionId = isActive ? dataId : undefined;
+
     const { showResponseToast } = useWindows();
 
-    const { bankAccount, isBankAccountLoading } = useGetBankAccountByTransactionId(dataId);
+    const { bankAccount, isBankAccountLoading } = useGetBankAccountByTransactionId(transactionId);
     const { currencies, isCurrenciesLoading } = useGetAllCurrencies();
     const { banks, isBanksLoading } = useGetBanks({})
     const { createBankAccountAsync, isBankAccountCreating } = useCreateBankAccount();
     const { updateBankAccountAsync, isBankAccountUpdating } = useUpdateBankAccount();
 
     const formValues = useMemo<BankAccountDetailInput>(() => {
-        return dataId && bankAccount ? {
+        return transactionId && bankAccount ? {
             ...bankAccount,
             issuedOn: dayjs(bankAccount.issuedOn),
             closedOn: dayjs(bankAccount.closedOn),
@@ -78,7 +80,7 @@ const BankAccountDetail = () => {
             description: '',
             transactions: []
         }
-    }, [dataId, bankAccount]);
+    }, [transactionId, bankAccount]);
 
     const form = useForm<BankAccountDetailInput>({
         defaultValues: formValues,
@@ -150,11 +152,11 @@ const BankAccountDetail = () => {
 
     return (
         <Drawer
-            title={`${!dataId ? 'Create' : 'Edit'} Bank Account`}
-            open={isActiveComponent(TRANSACTION_COMPONENT_NAMES.BankAccount)}
+            title={`${!transactionId ? 'Create' : 'Edit'} Bank Account`}
+            open={isActive}
             onClose={closeComponent}
             showPrimaryButton
-            expandDrawerTrigger={triggerSignal}
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveBankAccount',
@@ -199,7 +201,7 @@ const BankAccountDetail = () => {
                     <FormTextArea control={control} name="description" label="Description" rules={{
                         maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                     }} />
-                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                    {transactionId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
                 </DrawerSection>
                 <FormRepeater
                     title="Interests"

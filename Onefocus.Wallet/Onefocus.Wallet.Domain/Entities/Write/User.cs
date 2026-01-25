@@ -31,8 +31,9 @@ public sealed class User : WriteEntityBase, IAggregateRoot
 
     private User(Guid? id, string email, string firstName, string lastName, string? description, Guid actionedBy)
     {
-        Init(id ?? Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
+        Id = id ?? Guid.CreateVersion7();
         FirstName = firstName;
         LastName = lastName;
         Email = email;

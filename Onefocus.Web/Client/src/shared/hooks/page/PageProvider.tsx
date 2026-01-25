@@ -21,8 +21,8 @@ const PageProvider = <TFilter = unknown,>(props: PageProviderProps) => {
     }, [currentComponentId]);
 
     const openComponent = useCallback((componentId: string) => {
-        setCurrentComponentId(componentId);
         setExpandDrawerTrigger(getGuid());
+        setCurrentComponentId(componentId);
     }, []);
 
     const closeComponent = useCallback(() => {

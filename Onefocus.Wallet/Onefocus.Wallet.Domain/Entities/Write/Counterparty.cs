@@ -26,7 +26,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
 
     private Counterparty(string fullName, string? email, string? phoneNumber, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         FullName = fullName;
         Email = email;

@@ -25,7 +25,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
     private Bank(string name, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         Name = name;
         OwnerUserId = ownerId;

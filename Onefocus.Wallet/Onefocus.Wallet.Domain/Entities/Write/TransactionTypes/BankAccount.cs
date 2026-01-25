@@ -1,5 +1,6 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
+using Onefocus.Common.Utilities;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Onefocus.Wallet.Domain.Events.Transaction;
 
@@ -33,7 +34,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     private BankAccount(decimal amount, decimal interestRate, Currency currency, string accountNumber, string? description, DateTimeOffset issuedOn, Guid bankId, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         Amount = amount;
         InterestRate = interestRate;
@@ -157,7 +158,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
 
     private Result DeleteInterests(Guid actionedBy, IReadOnlyList<TransactionParams> transactionParams)
     {
-        var bankAccountTransactionsToBeDeleted = _bankAccountTransactions.FindAll(t => !transactionParams.Any(param => param.Id == t.TransactionId));
+        var bankAccountTransactionsToBeDeleted = _bankAccountTransactions.FindAll(t => !t.Id.IsEmpty() && !transactionParams.Any(param => param.Id == t.TransactionId));
 
         if (bankAccountTransactionsToBeDeleted.Count == 0) return Result.Success();
 

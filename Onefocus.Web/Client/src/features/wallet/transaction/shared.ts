@@ -2,6 +2,7 @@ import { SelectOption } from "../../../shared/options/SelectOption";
 import { ColorType } from "../../../shared/types";
 import { TRANSACTION_COMPONENT_NAMES } from "../../constants";
 import BankResponse from "../apis/interfaces/bank/BankResponse";
+import CounterpartyResponse from "../apis/interfaces/counterparty/CounterpartyResponse";
 import CurrencyResponse from "../apis/interfaces/currency/CurrencyResponse";
 
 export interface TransactionItemInput {
@@ -67,6 +68,16 @@ export const getBankOptions = (banks: BankResponse[] | undefined): SelectOption[
         return {
             label: bank.name,
             value: bank.id
+        } as SelectOption;
+    });
+};
+
+export const getCounterpartyOptions = (counterparties: CounterpartyResponse[] | undefined): SelectOption[] => {
+    if (!counterparties) return [];
+    return counterparties.map((counterparty) => {
+        return {
+            label: counterparty.fullName,
+            value: counterparty.id
         } as SelectOption;
     });
 };

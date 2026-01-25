@@ -22,7 +22,7 @@ public sealed class Option : WriteEntityBase, INameField, IOwnerUserField, IAggr
 
     private Option(string name, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         Name = name;
         OwnerUserId = ownerId;

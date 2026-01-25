@@ -18,7 +18,7 @@ public class TransactionItem : WriteEntityBase
 
     private TransactionItem(string name, decimal amount, string? description, Guid actionedBy, Guid? transactionId = null)
     {
-        Init(Guid.Empty, description, actionedBy);
+        Init(description, actionedBy);
 
         if (transactionId.HasValue)
         {

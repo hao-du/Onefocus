@@ -25,7 +25,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 
     private PeerTransfer(PeerTransferStatus status, PeerTransferType type, Counterparty counterparty, string? description, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         Status = status;
         Type = type;

@@ -1,5 +1,4 @@
-﻿using Onefocus.Common.Results;
-using Onefocus.Common.Utilities;
+﻿using Onefocus.Common.Utilities;
 
 namespace Onefocus.Common.Abstractions.Domain;
 
@@ -8,9 +7,9 @@ public abstract class WriteEntityBase : EntityBase
     private readonly List<IDomainEvent> _domainEvents = [];
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-    protected void Init(Guid? id, string? description, Guid actionedBy)
+    protected void Init(string? description, Guid actionedBy)
     {
-        Id = id ?? Guid.Empty;
+        Id = Guid.Empty;
         Description = description;
         IsActive = true;
         CreatedBy = actionedBy;
@@ -30,7 +29,8 @@ public abstract class WriteEntityBase : EntityBase
         Update(actionedBy);
     }
 
-    public void AddDomainEvent(IDomainEvent @event) {
+    public void AddDomainEvent(IDomainEvent @event)
+    {
         _domainEvents.Add(@event);
     }
 }

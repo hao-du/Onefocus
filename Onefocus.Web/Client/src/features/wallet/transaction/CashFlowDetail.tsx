@@ -34,16 +34,20 @@ interface CashFlowDetailInput {
 }
 
 const CashFlowDetail = () => {
-    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger: triggerSignal } = usePage();
+    const { isActiveComponent, closeComponent, dataId, setDataId, setLoadings, hasAnyLoading, expandDrawerTrigger } = usePage();
+
+    const isActive = isActiveComponent(TRANSACTION_COMPONENT_NAMES.CashFlow);
+    const transactionId = isActive ? dataId : undefined;
+
     const { showResponseToast } = useWindows();
 
-    const { cashFlow, isCashFlowLoading } = useGetCashFlowByTransactionId(dataId);
+    const { cashFlow, isCashFlowLoading } = useGetCashFlowByTransactionId(transactionId);
     const { currencies, isCurrenciesLoading } = useGetAllCurrencies();
     const { createCashFlowAsync, isCashFlowCreating } = useCreateCashFlow();
     const { updateCashFlowAsync, isCashFlowUpdating } = useUpdateCashFlow();
 
     const formValues = useMemo<CashFlowDetailInput>(() => {
-        return dataId && cashFlow ? {
+        return transactionId && cashFlow ? {
             ...cashFlow,
             transactedOn: dayjs(cashFlow.transactedOn)
         } : {
@@ -56,7 +60,7 @@ const CashFlowDetail = () => {
             isActive: true,
             transactionItems: []
         }
-    }, [dataId, cashFlow]);
+    }, [transactionId, cashFlow]);
 
     const form = useForm<CashFlowDetailInput>({
         defaultValues: formValues,
@@ -114,11 +118,11 @@ const CashFlowDetail = () => {
 
     return (
         <Drawer
-            title={`${!dataId ? 'Create' : 'Edit'} Cashflow`}
-            open={isActiveComponent(TRANSACTION_COMPONENT_NAMES.CashFlow)}
+            title={`${!transactionId ? 'Create' : 'Edit'} Cashflow`}
+            open={isActive}
             onClose={closeComponent}
             showPrimaryButton
-            expandDrawerTrigger={triggerSignal}
+            expandDrawerTrigger={expandDrawerTrigger}
             actions={[
                 {
                     id: 'btnSaveCashFlow',
@@ -148,7 +152,7 @@ const CashFlowDetail = () => {
                         maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
                     }} />
                     <FormSwitch control={control} name="isIncome" checkedLabel="Income" uncheckedLabel="Expense" extra="Toggle between income and expense." />
-                    {dataId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
+                    {transactionId && <FormSwitch control={control} name="isActive" checkedLabel="Active" uncheckedLabel="Inactive" />}
                 </DrawerSection>
                 <FormRepeater
                     title="Notes"

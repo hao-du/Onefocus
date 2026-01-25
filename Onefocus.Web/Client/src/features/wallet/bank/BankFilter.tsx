@@ -8,10 +8,8 @@ import FormTextArea from "../../../shared/components/molecules/forms/FormTextAre
 import { BANK_COMPONENT_NAMES } from "../../constants";
 import { useCallback } from "react";
 import Form from "../../../shared/components/molecules/forms/Form";
-import FormNumber from "../../../shared/components/molecules/forms/FormNumber";
-import FormDatePicker from "../../../shared/components/molecules/forms/FormDatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import FormSelect from "../../../shared/components/molecules/forms/FormSelect";
+import DrawerSection from "../../../shared/components/molecules/panels/DrawerSection";
 
 interface BankFilterInput {
     name?: string | null,
@@ -23,7 +21,6 @@ interface BankFilterInput {
 
 const BankFilter = () => {
     const {
-        requestRefresh,
         isActiveComponent,
         closeComponent,
         setFilter,
@@ -46,14 +43,12 @@ const BankFilter = () => {
             name: data.name,
             description: data.description
         } as GetBanksRequest);
-        requestRefresh?.();
     });
 
     const onReset = useCallback(() => {
         reset();
         resetFilter();
-        requestRefresh?.();
-    }, [requestRefresh, reset, resetFilter]);
+    }, [reset, resetFilter]);
 
     return (
         <Drawer
@@ -79,29 +74,10 @@ const BankFilter = () => {
             ]}
         >
             <Form>
-                <FormText name="name" control={control} label="Bank Name" />
-                <FormTextArea name="description" control={control} label="Description" />
-                <FormNumber name="amount" control={control} label="Amount" />
-                <FormDatePicker name="startDate" control={control} label="Start Date" showTime />
-                <FormSelect name="currencyId" control={control} label="Currency" options={[
-                    {
-                        label: 'VND',
-                        value: '1'
-                    },
-                    {
-                        label: 'AUS',
-                        value: '2'
-                    },
-                    {
-                        label: 'USD',
-                        value: '3'
-                    },
-                    {
-                        label: 'NND',
-                        value: '4'
-                    }
-
-                ]} mode="tags" />
+                <DrawerSection paddingTop>
+                    <FormText name="name" control={control} label="Bank Name" />
+                    <FormTextArea name="description" control={control} label="Description" />
+                </DrawerSection>
             </Form>
         </Drawer>
     );

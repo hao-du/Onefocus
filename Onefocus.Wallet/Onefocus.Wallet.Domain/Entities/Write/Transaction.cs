@@ -36,7 +36,7 @@ public class Transaction : WriteEntityBase, IOwnerUserField
 
     private Transaction(decimal amount, DateTimeOffset transactedOn, Currency currency, string? description, Guid ownerId, Guid actionedBy)
     {
-        Init(Guid.CreateVersion7(), description, actionedBy);
+        Init(description, actionedBy);
 
         Amount = amount;
         TransactedOn = transactedOn;

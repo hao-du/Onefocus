@@ -1,7 +1,5 @@
 ﻿using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Results;
-using Onefocus.Home.Domain;
-using Onefocus.Home.Domain.Entities.Read;
 using Onefocus.Home.Domain.Entities.ValueObjects;
 using Onefocus.Home.Domain.Entities.Write.Params;
 
@@ -21,7 +19,7 @@ public sealed class Settings : WriteEntityBase, IAggregateRoot
 
     private Settings(Guid actionedBy)
     {
-        Init(null, null, actionedBy);
+        Init(null, actionedBy);
     }
 
     public static Result<Settings> Create(PreferenceParams preferenceParams, Guid actionedBy)
@@ -63,7 +61,7 @@ public sealed class Settings : WriteEntityBase, IAggregateRoot
 
     private static Result Validate(PreferenceParams preferenceParams)
     {
-        if(preferenceParams is null)
+        if (preferenceParams is null)
         {
             return Result.Failure(Errors.Preference.PreferencesRequired);
         }
