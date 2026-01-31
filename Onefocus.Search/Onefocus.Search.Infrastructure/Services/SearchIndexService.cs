@@ -29,7 +29,7 @@ public class SearchIndexService(IOpenSearchClient client, IEmbeddingService embe
             var sb = new StringBuilder();
             foreach (var doc in documentDtos)
             {
-                string minifiedJson = JsonHelper.SerializeJson(doc.Payload);
+                var minifiedJson = JsonHelper.SerializeJson(doc.Payload);
                 minifiedJson = JsonHelper.AppendEmbeddings(minifiedJson, doc.VectorSearchTerms, embeddings);
 
                 // action/metadata line

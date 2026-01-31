@@ -6,7 +6,7 @@ This is infrastructure layer in CQRS architecture for Identity app.
 ### Add EF migration cs file
 Under *Onefocus.Wallet.Infrastructure* folder, run this command in **Powershell**:
 
-`dotnet ef migrations add <from-this-migration> <to-this-migration> --context WalletWriteDbContext -o "Databases/Migrations" --startup-project ../Onefocus.Wallet.Api`
+`dotnet ef migrations add <name> --context WalletWriteDbContext -o "Databases/Migrations" --startup-project ../Onefocus.Wallet.Api`
 
 ### Create EF migration SQL script
 Under *Onefocus.Wallet.Infrastructure* folder, run this command in **Powershell**:

@@ -49,6 +49,14 @@ public static class JsonHelper
         return JsonSerializer.Serialize(doc.RootElement, GetOptions());
     }
 
+    public static T DeserializeJson<T>(string? json) where T : new()
+    {
+        if (string.IsNullOrEmpty(json)) return new();
+
+        var value = JsonSerializer.Deserialize<T>(json, GetOptions());
+        return value ?? new T();
+    }
+
     public static Dictionary<string, string> GetSections(string originalJson, string[] keyPropertyNames)
     {
         var splitedJsonList = new List<(string property, string json)>();

@@ -8,21 +8,21 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
 
 public class WalletWriteDbContext(DbContextOptions<WalletWriteDbContext> options) : DbContext(options)
 {
-    public DbSet<Bank> Bank { get; set; }
-    public DbSet<Counterparty> Counterparty { get; set; }
-    public DbSet<Currency> Currency { get; set; }
-    public DbSet<Option> Option { get; set; }
-    public DbSet<Transaction> Transaction { get; set; }
-    public DbSet<TransactionItem> TransactionItem { get; set; }
-    public DbSet<User> User { get; set; }
-
-    public DbSet<BankAccount> BankAccount { get; set; }
-    public DbSet<BankAccountTransaction> BankAccountTransaction { get; set; }
-    public DbSet<CashFlow> CashFlow { get; set; }
-    public DbSet<CurrencyExchange> CurrencyExchange { get; set; }
-    public DbSet<CurrencyExchangeTransaction> CurrencyExchangeTransaction { get; set; }
-    public DbSet<PeerTransfer> PeerTransfer { get; set; }
-    public DbSet<PeerTransferTransaction> PeerTransferTransaction { get; set; }
+    public required DbSet<Bank> Bank { get; set; }
+    public required DbSet<Counterparty> Counterparty { get; set; }
+    public required DbSet<Currency> Currency { get; set; }
+    public required DbSet<Option> Option { get; set; }
+    public required DbSet<OutboxEvent> OutboxEvent { get; set; }
+    public required DbSet<Transaction> Transaction { get; set; }
+    public required DbSet<TransactionItem> TransactionItem { get; set; }
+    public required DbSet<User> User { get; set; }
+    public required DbSet<BankAccount> BankAccount { get; set; }
+    public required DbSet<BankAccountTransaction> BankAccountTransaction { get; set; }
+    public required DbSet<CashFlow> CashFlow { get; set; }
+    public required DbSet<CurrencyExchange> CurrencyExchange { get; set; }
+    public required DbSet<CurrencyExchangeTransaction> CurrencyExchangeTransaction { get; set; }
+    public required DbSet<PeerTransfer> PeerTransfer { get; set; }
+    public required DbSet<PeerTransferTransaction> PeerTransferTransaction { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -31,8 +31,7 @@ public class WalletWriteDbContext(DbContextOptions<WalletWriteDbContext> options
 
         builder.ApplyConfiguration(new BankAccountConfiguration());
         builder.ApplyConfiguration(new CounterpartyConfiguration());
-
-
+        builder.ApplyConfiguration(new OutboxEventConfiguration());
         builder.ApplyConfiguration(new CashFlowConfiguration());
         builder.ApplyConfiguration(new CurrencyExchangeConfiguration());
         builder.ApplyConfiguration(new PeerTransferConfiguration());

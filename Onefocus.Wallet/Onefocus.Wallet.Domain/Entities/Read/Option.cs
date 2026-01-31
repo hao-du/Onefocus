@@ -10,6 +10,5 @@ public sealed class Option : ReadEntityBase, INameField, IOwnerUserField
     public string Name { get; init; } = default!;
     public Guid OwnerUserId { get; init; }
     public OptionType OptionType { get; init; }
-
     public User OwnerUser { get; init; } = default!;
 }
