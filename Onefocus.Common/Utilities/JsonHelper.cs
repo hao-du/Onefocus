@@ -36,17 +36,16 @@ public static class JsonHelper
 
     public static string SerializeJson(object content)
     {
-        if (content is null) return string.Empty;
+        if (content is null)
+            return string.Empty;
 
-        var json = content switch
-        {
-            JsonElement element => element.GetRawText(),
-            string str => str,
-            _ => string.Empty
-        };
+        if (content is string str)
+            return str;
 
-        using var doc = JsonDocument.Parse(json);
-        return JsonSerializer.Serialize(doc.RootElement, GetOptions());
+        if (content is JsonElement element)
+            return JsonSerializer.Serialize(element, GetOptions());
+
+        return JsonSerializer.Serialize(content, GetOptions());
     }
 
     public static T DeserializeJson<T>(string? json) where T : new()

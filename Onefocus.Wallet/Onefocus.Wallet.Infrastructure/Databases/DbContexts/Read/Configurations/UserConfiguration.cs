@@ -21,10 +21,6 @@ namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configuration
                 .WithOne(c => c.OwnerUser)
                 .HasForeignKey(c => c.OwnerUserId);
 
-            builder.HasMany(u => u.Options)
-                .WithOne(o => o.OwnerUser)
-                .HasForeignKey(o => o.OwnerUserId);
-
             builder.HasMany(u => u.Transactions)
                 .WithOne(t => t.OwnerUser)
                 .HasForeignKey(t => t.OwnerUserId);

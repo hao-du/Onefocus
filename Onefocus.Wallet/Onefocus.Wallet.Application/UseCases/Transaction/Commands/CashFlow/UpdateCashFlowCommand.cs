@@ -5,8 +5,6 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.Services;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -15,8 +13,8 @@ public sealed record UpdateCashFlowCommandRequest(Guid Id, decimal Amount, DateT
 public sealed record UpdateTransactionItem(Guid? Id, string Name, decimal Amount, bool IsActive, string? Description);
 
 internal sealed class UpdateCashFlowCommandHandler(
-    ITransactionService transactionService,
     ILogger<UpdateCashFlowCommandHandler> logger,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateCashFlowCommandRequest>(httpContextAccessor, logger)
@@ -51,10 +49,15 @@ internal sealed class UpdateCashFlowCommandHandler(
         );
         if (updateCashflowResult.IsFailure) return updateCashflowResult;
 
+        if (cashFlow.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(cashFlow.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            cashFlow.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await transactionService.PublishEvents(cashFlow, cancellationToken);
 
         return Result.Success();
     }

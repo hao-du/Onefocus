@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Specifications.Write.Currency;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Currency.Commands;
@@ -15,11 +12,12 @@ public sealed record CreateCurrencyCommandRequest(string Name, string ShortName,
 public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateCurrencyCommandHandler(
-        ILogger<CreateCurrencyCommandHandler> logger
-        , ICurrencyService currencyService
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<CreateCurrencyCommandRequest, CreateBankCommandResponse>(httpContextAccessor, logger)
+    ILogger<CreateCurrencyCommandHandler> logger,
+    ICurrencyService currencyService,
+    IDomainEventService domainEventService,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<CreateCurrencyCommandRequest, CreateBankCommandResponse>(httpContextAccessor, logger)
 {
     public override async Task<Result<CreateBankCommandResponse>> Handle(CreateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
@@ -52,14 +50,19 @@ internal sealed class CreateCurrencyCommandHandler(
                 if (bulkUpdateResult.IsFailure) return Failure(bulkUpdateResult);
             }
 
+            if (currency.DomainEvents.Count > 0)
+            {
+                var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(currency.DomainEvents, cancellationToken);
+                if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+                currency.ClearDomainEvents();
+            }
+
             var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
             if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
 
             return Result.Success<CreateBankCommandResponse>(new(currency.Id));
         }, cancellationToken);
-        if(transactionResult.IsFailure) return transactionResult;
-
-        await currencyService.PublishEvents(currency, cancellationToken);
+        if (transactionResult.IsFailure) return transactionResult;
 
         return transactionResult;
     }

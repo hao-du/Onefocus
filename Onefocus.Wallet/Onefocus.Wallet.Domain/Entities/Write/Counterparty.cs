@@ -41,7 +41,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
 
         var counterparty = new Counterparty(fullName, email, phoneNumber, description, ownerId, actionedBy);
 
-        counterparty.AddDomainEvent(CounterpartyUpsertedEvent.Create(counterparty));
+        counterparty.AddDomainEvent(CounterpartyUpsertedEvents.AddSearchIndex(counterparty));
 
         return counterparty;
     }
@@ -61,7 +61,7 @@ public sealed class Counterparty : WriteEntityBase, IOwnerUserField, IAggregateR
 
         SetActiveFlag(isActive, actionedBy);
 
-        AddDomainEvent(CounterpartyUpsertedEvent.Create(this));
+        AddDomainEvent(CounterpartyUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

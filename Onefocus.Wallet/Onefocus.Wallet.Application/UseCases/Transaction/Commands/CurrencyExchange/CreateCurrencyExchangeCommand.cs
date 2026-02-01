@@ -4,26 +4,24 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CashFlow;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
 public sealed record CreateCurrencyExchangeCommandRequest(
-    decimal SourceAmount, 
+    decimal SourceAmount,
     Guid SourceCurrencyId,
     decimal TargetAmount,
     Guid TargetCurrencyId,
     decimal ExchangeRate,
-    DateTimeOffset TransactedOn, 
+    DateTimeOffset TransactedOn,
     string? Description
 ) : ICommand<CreateCurrencyExchangeCommandResponse>;
 public sealed record CreateCurrencyExchangeCommandResponse(Guid Id);
 
 internal sealed class CreateCurrencyExchangeCommandHandler(
-    ITransactionService transactionService,
     ILogger<CreateCurrencyExchangeCommandHandler> logger,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateCurrencyExchangeCommandRequest, CreateCurrencyExchangeCommandResponse>(httpContextAccessor, logger)
@@ -59,10 +57,15 @@ internal sealed class CreateCurrencyExchangeCommandHandler(
         var repoResult = await unitOfWork.Transaction.AddCurrencyExchangeAsync(new(currencyExchange), cancellationToken);
         if (repoResult.IsFailure) return Failure(repoResult);
 
+        if (currencyExchange.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(currencyExchange.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+            currencyExchange.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
-
-        await transactionService.PublishEvents(currencyExchange, cancellationToken);
 
         return Result.Success<CreateCurrencyExchangeCommandResponse>(new(currencyExchange.Id));
     }

@@ -13,6 +13,7 @@ public sealed record UpdateBankCommandRequest(Guid Id, string Name, bool IsActiv
 
 internal sealed class UpdateBankCommandHandler(
     IBankService bankService,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork writeUnitOfWork,
     ILogger<UpdateBankCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
@@ -36,10 +37,15 @@ internal sealed class UpdateBankCommandHandler(
         var updateResult = bank.Update(request.Name, request.Description, request.IsActive, actionByResult.Value);
         if (updateResult.IsFailure) return updateResult;
 
+        if (bank.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(bank.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            bank.ClearDomainEvents();
+        }
+
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await bankService.PublishEvents(bank, cancellationToken);
 
         return Result.Success();
     }

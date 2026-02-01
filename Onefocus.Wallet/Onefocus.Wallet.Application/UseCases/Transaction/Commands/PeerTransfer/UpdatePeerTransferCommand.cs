@@ -5,8 +5,6 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -32,7 +30,7 @@ public sealed record UpdateTransferTransaction(
 );
 
 internal sealed class UpdatePeerTransferCommandHandler(
-    ITransactionService transactionService,
+    IDomainEventService domainEventService,
     ILogger<UpdatePeerTransferCommandHandler> logger,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
@@ -80,11 +78,15 @@ internal sealed class UpdatePeerTransferCommandHandler(
         );
         if (updateCashflowResult.IsFailure) return updateCashflowResult;
 
+        if (peerTransfer.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(peerTransfer.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            peerTransfer.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await transactionService.PublishEvents(peerTransfer, cancellationToken);
-
         return Result.Success();
     }
 

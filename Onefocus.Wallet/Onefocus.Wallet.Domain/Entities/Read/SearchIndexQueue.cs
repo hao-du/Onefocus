@@ -2,7 +2,7 @@
 
 namespace Onefocus.Wallet.Domain.Entities.Read;
 
-public sealed class OutboxEvent : ReadEntityBase
+public sealed class SearchIndexQueue : ReadEntityBase
 {
     public string IndexName { get; init; } = default!;
     public string DocumentId { get; init; } = default!;

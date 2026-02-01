@@ -13,7 +13,7 @@ public sealed record CreateCounterpartyCommandResponse(Guid Id);
 
 internal sealed class CreateCounterpartyCommandHandler(
     IWriteUnitOfWork writeUnitOfWork,
-    ICounterpartyService counterpartyService,
+    IDomainEventService domainEventService,
     ILogger<CreateCounterpartyCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateCounterpartyCommandRequest, CreateCounterpartyCommandResponse>(httpContextAccessor, logger)
@@ -39,12 +39,17 @@ internal sealed class CreateCounterpartyCommandHandler(
         var counterparty = counterpartyCreationResult.Value;
 
         var createResult = await writeUnitOfWork.Counterparty.AddCounterpartyAsync(new(counterparty), cancellationToken);
-        if (createResult.IsFailure) return Failure(createResult); ;
+        if (createResult.IsFailure) return Failure(createResult);
+
+        if (counterparty.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(counterparty.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+            counterparty.ClearDomainEvents();
+        }
 
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
-
-        await counterpartyService.PublishEvents(counterparty, cancellationToken);
 
         return Result.Success<CreateCounterpartyCommandResponse>(new(counterparty.Id));
     }

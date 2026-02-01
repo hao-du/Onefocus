@@ -38,7 +38,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
         var bank = new Bank(name, description, ownerId, actionedBy);
 
-        bank.AddDomainEvent(BankUpsertedEvent.Create(bank));
+        bank.AddDomainEvent(BankUpsertedEvents.AddSearchIndex(bank));
 
         return bank;
     }
@@ -56,7 +56,7 @@ public sealed class Bank : WriteEntityBase, INameField, IOwnerUserField, IAggreg
 
         SetActiveFlag(isActive, actionedBy);
 
-        AddDomainEvent(BankUpsertedEvent.Create(this));
+        AddDomainEvent(BankUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

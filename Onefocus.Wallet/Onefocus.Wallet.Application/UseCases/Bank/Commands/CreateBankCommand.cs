@@ -13,6 +13,7 @@ public sealed record CreateBankCommandResponse(Guid Id);
 
 internal sealed class CreateBankCommandHandler(
     IBankService bankService,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork writeUnitOfWork,
     ILogger<CreateBankCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
@@ -37,12 +38,17 @@ internal sealed class CreateBankCommandHandler(
         var bank = bankCreationResult.Value;
 
         var createResult = await writeUnitOfWork.Bank.AddBankAsync(new(bank), cancellationToken);
-        if (createResult.IsFailure) return Failure(createResult); ;
+        if (createResult.IsFailure) return Failure(createResult);
+
+        if (bank.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(bank.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+            bank.ClearDomainEvents();
+        }
 
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
-
-        await bankService.PublishEvents(bank, cancellationToken);
 
         return Result.Success<CreateBankCommandResponse>(new(bankCreationResult.Value.Id));
     }

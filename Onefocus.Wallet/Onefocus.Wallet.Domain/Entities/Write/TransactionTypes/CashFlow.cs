@@ -40,7 +40,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
             ));
         if (createTransactionResult.IsFailure) return (Result<CashFlow>)createTransactionResult;
 
-        cashFlow.AddDomainEvent(CashFlowUpsertedEvent.Create(cashFlow));
+        cashFlow.AddDomainEvent(CashFlowUpsertedEvents.AddSearchIndex(cashFlow));
 
         return Result.Success(cashFlow);
     }
@@ -63,7 +63,7 @@ public sealed class CashFlow : WriteEntityBase, IAggregateRoot
             ));
         if (updateTransactionResult.IsFailure) return updateTransactionResult;
 
-        AddDomainEvent(CashFlowUpsertedEvent.Create(this));
+        AddDomainEvent(CashFlowUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

@@ -10,7 +10,6 @@ public sealed class User : ReadEntityBase
     private readonly List<Bank> _banks = [];
     private readonly List<Counterparty> _counterparties = [];
     private readonly List<Currency> _currencies = [];
-    private readonly List<Option> _options = [];
 
     public string FirstName { get; init; } = default!;
     public string LastName { get; init; } = default!;
@@ -21,7 +20,6 @@ public sealed class User : ReadEntityBase
     public IReadOnlyCollection<Bank> Banks => _banks.AsReadOnly();
     public IReadOnlyCollection<Counterparty> Counterparties => _counterparties.AsReadOnly();
     public IReadOnlyCollection<Currency> Currencies => _currencies.AsReadOnly();
-    public IReadOnlyCollection<Option> Options => _options.AsReadOnly();
 
     public string GetFullName() => $"{FirstName} {LastName}".Trim();
 }

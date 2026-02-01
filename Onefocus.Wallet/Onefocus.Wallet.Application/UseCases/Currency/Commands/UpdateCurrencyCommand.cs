@@ -11,11 +11,12 @@ namespace Onefocus.Wallet.Application.UseCases.Currency.Commands;
 public sealed record UpdateCurrencyCommandRequest(Guid Id, string Name, string ShortName, bool IsDefault, bool IsActive, string? Description) : ICommand;
 
 internal sealed class UpdateCurrencyCommandHandler(
-        ILogger<UpdateCurrencyCommandHandler> logger
-        , ICurrencyService currencyService
-        , IWriteUnitOfWork unitOfWork
-        , IHttpContextAccessor httpContextAccessor
-    ) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor, logger)
+    ILogger<CreateCurrencyCommandHandler> logger,
+    ICurrencyService currencyService,
+    IDomainEventService domainEventService,
+    IWriteUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
+) : CommandHandler<UpdateCurrencyCommandRequest>(httpContextAccessor, logger)
 {
     public override async Task<Result> Handle(UpdateCurrencyCommandRequest request, CancellationToken cancellationToken)
     {
@@ -49,11 +50,16 @@ internal sealed class UpdateCurrencyCommandHandler(
                 if (bulkUpdateResult.IsFailure) return bulkUpdateResult.Error;
             }
 
+            if (currency.DomainEvents.Count > 0)
+            {
+                var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(currency.DomainEvents, cancellationToken);
+                if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+                currency.ClearDomainEvents();
+            }
+
             var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
             return saveChangesResult;
         }, cancellationToken);
-
-        await currencyService.PublishEvents(currency, cancellationToken);
 
         return transactionResult;
     }

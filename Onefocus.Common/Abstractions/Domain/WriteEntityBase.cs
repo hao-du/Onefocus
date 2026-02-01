@@ -29,8 +29,13 @@ public abstract class WriteEntityBase : EntityBase
         Update(actionedBy);
     }
 
-    public void AddDomainEvent(IDomainEvent @event)
+    protected void AddDomainEvent(IDomainEvent @event)
     {
         _domainEvents.Add(@event);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
     }
 }

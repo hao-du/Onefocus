@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Domain;
 using Onefocus.Common.Exceptions;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain.Entities.Write;
 using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
-using System.Linq.Expressions;
 
 namespace Onefocus.Wallet.Infrastructure.UnitOfWork.Write;
 
@@ -17,6 +14,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
         , ICurrencyWriteRepository currencyRepository
         , ICounterpartyWriteRepository counterpartyWriteRepository
         , ITransactionWriteRepository transactionRepository
+        , ISearchIndexQueueWriteRepository searchIndexQueueRepository
     ) : IWriteUnitOfWork
 {
     protected ILogger<WriteUnitOfWork> Logger { get; } = logger;
@@ -25,6 +23,7 @@ public class WriteUnitOfWork(WalletWriteDbContext context
     public ICurrencyWriteRepository Currency { get; } = currencyRepository;
     public ICounterpartyWriteRepository Counterparty { get; } = counterpartyWriteRepository;
     public ITransactionWriteRepository Transaction { get; } = transactionRepository;
+    public ISearchIndexQueueWriteRepository SearchIndexQueue { get; } = searchIndexQueueRepository;
 
     public async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

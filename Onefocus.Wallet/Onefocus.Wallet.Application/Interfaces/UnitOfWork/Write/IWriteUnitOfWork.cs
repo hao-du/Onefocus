@@ -1,7 +1,5 @@
-﻿using Onefocus.Common.Abstractions.Domain;
-using Onefocus.Common.Results;
+﻿using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
-using System.Linq.Expressions;
 
 namespace Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
 
@@ -12,6 +10,7 @@ public interface IWriteUnitOfWork
     ICurrencyWriteRepository Currency { get; }
     ICounterpartyWriteRepository Counterparty { get; }
     ITransactionWriteRepository Transaction { get; }
+    ISearchIndexQueueWriteRepository SearchIndexQueue { get; }
 
     Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task<Result> WithTransactionAsync(Func<CancellationToken, Task<Result>> action, CancellationToken cancellationToken = default);

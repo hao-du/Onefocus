@@ -60,7 +60,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
             if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<BankAccount>();
         }
 
-        bankAccount.AddDomainEvent(BankAccountUpsertedEvent.Create(bankAccount));
+        bankAccount.AddDomainEvent(BankAccountUpsertedEvents.AddSearchIndex(bankAccount));
 
         return Result.Success(bankAccount);
     }
@@ -94,7 +94,7 @@ public sealed class BankAccount : WriteEntityBase, IAggregateRoot
         var deleteInterestsResult = DeleteInterests(actionedBy, transactionParams);
         if (deleteInterestsResult.IsFailure) return deleteInterestsResult;
 
-        AddDomainEvent(BankAccountUpsertedEvent.Create(this));
+        AddDomainEvent(BankAccountUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

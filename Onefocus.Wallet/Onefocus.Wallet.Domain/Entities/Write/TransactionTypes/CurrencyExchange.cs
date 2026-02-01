@@ -65,7 +65,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         exchange._currencyExchangeTransactions.Add(createExchangeSourceTransactionResult.Value);
         exchange._currencyExchangeTransactions.Add(createExchangeTargetTransactionResult.Value);
 
-        exchange.AddDomainEvent(CurrencyExchangeUpsertedEvent.Create(exchange));
+        exchange.AddDomainEvent(CurrencyExchangeUpsertedEvents.AddSearchIndex(exchange));
 
         return Result.Success(exchange);
     }
@@ -111,7 +111,7 @@ public sealed class CurrencyExchange : WriteEntityBase, IAggregateRoot
         );
         if (updateTargetTransactionResult.IsFailure) return updateTargetTransactionResult;
 
-        AddDomainEvent(CurrencyExchangeUpsertedEvent.Create(this));
+        AddDomainEvent(CurrencyExchangeUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

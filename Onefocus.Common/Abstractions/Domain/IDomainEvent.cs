@@ -2,14 +2,9 @@
 
 public interface IDomainEvent
 {
-    string IndexName { get; }
-    string EntityId { get; }
     string EventType { get; }
-    object Payload { get; }
-    Dictionary<string, string> VectorSearchTerms { get; }
-}
-
-public interface IDomainEvent<T> : IDomainEvent
-{
-    T Entity { get; }
+    string ObjectName { get; }
+    string ObjectId { get; }
+    string Payload { get; }
+    Dictionary<string, string> KeyValuePairs { get; }
 }

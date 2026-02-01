@@ -12,8 +12,7 @@ public class WalletReadDbContext(DbContextOptions<WalletReadDbContext> options) 
     public required DbSet<Bank> Bank { get; set; }
     public required DbSet<Counterparty> Counterparty { get; set; }
     public required DbSet<Currency> Currency { get; set; }
-    public required DbSet<Option> Option { get; set; }
-    public required DbSet<OutboxEvent> OutboxEvent { get; set; }
+    public required DbSet<SearchIndexQueue> SearchIndexQueue { get; set; }
     public required DbSet<Transaction> Transaction { get; set; }
     public required DbSet<TransactionItem> TransactionItem { get; set; }
     public required DbSet<User> User { get; set; }
@@ -32,7 +31,7 @@ public class WalletReadDbContext(DbContextOptions<WalletReadDbContext> options) 
 
         builder.ApplyConfiguration(new BankAccountConfiguration());
         builder.ApplyConfiguration(new CounterpartyConfiguration());
-        builder.ApplyConfiguration(new OutboxEventConfiguration());
+        builder.ApplyConfiguration(new SearchIndexQueueConfiguration());
         builder.ApplyConfiguration(new CashFlowConfiguration());
         builder.ApplyConfiguration(new CurrencyExchangeConfiguration());
         builder.ApplyConfiguration(new PeerTransferConfiguration());

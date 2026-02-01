@@ -5,14 +5,12 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.Services;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
 public sealed record UpdateCurrencyExchangeCommandRequest(
-    Guid Id, 
+    Guid Id,
     decimal SourceAmount,
     Guid SourceCurrencyId,
     decimal TargetAmount,
@@ -24,8 +22,8 @@ public sealed record UpdateCurrencyExchangeCommandRequest(
 ) : ICommand;
 
 internal sealed class UpdateCurrencyExchangeCommandHandler(
-    ITransactionService transactionService,
     ILogger<UpdateCurrencyExchangeCommandHandler> logger,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateCurrencyExchangeCommandRequest>(httpContextAccessor, logger)
@@ -63,10 +61,15 @@ internal sealed class UpdateCurrencyExchangeCommandHandler(
         );
         if (updateCashflowResult.IsFailure) return updateCashflowResult;
 
+        if (currencyExchange.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(currencyExchange.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            currencyExchange.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await transactionService.PublishEvents(currencyExchange, cancellationToken);
 
         return Result.Success();
     }

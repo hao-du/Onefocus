@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Onefocus.Common.Abstractions.Domain.Specifications;
 using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Counterparty.Commands;
@@ -15,7 +13,7 @@ public sealed record UpdateCounterpartyCommandRequest(Guid Id, string FullName, 
 
 internal sealed class UpdateCounterpartyCommandHandler(
     IWriteUnitOfWork writeUnitOfWork,
-    ICounterpartyService counterpartyService,
+    IDomainEventService domainEventService,
     ILogger<UpdateCounterpartyCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateCounterpartyCommandRequest>(httpContextAccessor, logger)
@@ -45,10 +43,15 @@ internal sealed class UpdateCounterpartyCommandHandler(
         );
         if (updateResult.IsFailure) return updateResult;
 
+        if (counterparty.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(counterparty.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            counterparty.ClearDomainEvents();
+        }
+
         var saveChangesResult = await writeUnitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await counterpartyService.PublishEvents(counterparty, cancellationToken);
 
         return Result.Success();
     }

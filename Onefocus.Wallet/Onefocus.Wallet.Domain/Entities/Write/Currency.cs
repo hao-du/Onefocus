@@ -43,7 +43,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
 
         var currency = new Currency(name, shortName, description, isDefault, ownerId, actionedBy);
 
-        currency.AddDomainEvent(CurrencyUpsertedEvent.Create(currency));
+        currency.AddDomainEvent(CurrencyUpsertedEvents.AddSearchIndex(currency));
 
         return currency;
     }
@@ -63,7 +63,7 @@ public class Currency : WriteEntityBase, INameField, IAggregateRoot
 
         SetActiveFlag(isActive, actionedBy);
 
-        AddDomainEvent(CurrencyUpsertedEvent.Create(this));
+        AddDomainEvent(CurrencyUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

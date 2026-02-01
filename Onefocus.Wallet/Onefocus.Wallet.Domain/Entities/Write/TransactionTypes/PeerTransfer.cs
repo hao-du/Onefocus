@@ -46,7 +46,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
             if (upsertInterestsResult.IsFailure) return upsertInterestsResult.Failure<PeerTransfer>();
         }
 
-        peerTransfer.AddDomainEvent(PeerTransferUpsertedEvent.Create(peerTransfer));
+        peerTransfer.AddDomainEvent(PeerTransferUpsertedEvents.AddSearchIndex(peerTransfer));
 
         return Result.Success(peerTransfer);
     }
@@ -72,7 +72,7 @@ public sealed class PeerTransfer : WriteEntityBase, IAggregateRoot
 
         UpsertTransferDetails(ownerId, actionedBy, transactionParams);
 
-        AddDomainEvent(PeerTransferUpsertedEvent.Create(this));
+        AddDomainEvent(PeerTransferUpsertedEvents.AddSearchIndex(this));
 
         return Result.Success();
     }

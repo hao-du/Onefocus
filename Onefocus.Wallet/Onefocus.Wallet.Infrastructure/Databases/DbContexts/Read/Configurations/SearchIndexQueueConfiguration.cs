@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onefocus.Common.Utilities;
-using Onefocus.Wallet.Domain.Entities.Write;
+using Onefocus.Wallet.Domain.Entities.Read;
 
-namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write.Configurations;
+namespace Onefocus.Wallet.Infrastructure.Databases.DbContexts.Read.Configurations;
 
-internal class OutboxEventConfiguration : BaseConfiguration<OutboxEvent>
+internal class SearchIndexQueueConfiguration : BaseConfiguration<SearchIndexQueue>
 {
-    public override void Configure(EntityTypeBuilder<OutboxEvent> builder)
+    public override void Configure(EntityTypeBuilder<SearchIndexQueue> builder)
     {
         base.Configure(builder);
         builder.Property(o => o.VectorSearchTerms)

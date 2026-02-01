@@ -4,7 +4,6 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -14,8 +13,8 @@ public sealed record CreateTransactionItem(string Name, decimal Amount, string? 
 public sealed record CreateCashFlowCommandResponse(Guid Id);
 
 internal sealed class CreateCashFlowCommandHandler(
-    ITransactionService transactionService,
     ILogger<CreateCashFlowCommandHandler> logger,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<CreateCashFlowCommandRequest, CreateCashFlowCommandResponse>(httpContextAccessor, logger)
@@ -48,10 +47,15 @@ internal sealed class CreateCashFlowCommandHandler(
         var repoResult = await unitOfWork.Transaction.AddCashFlowAsync(new(cashFlow), cancellationToken);
         if (repoResult.IsFailure) return Failure(repoResult);
 
+        if (cashFlow.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(cashFlow.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+            cashFlow.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
-
-        //await transactionService.PublishEvents(cashFlow, cancellationToken);
 
         return Result.Success<CreateCashFlowCommandResponse>(new(cashFlow.Id));
     }
@@ -63,7 +67,7 @@ internal sealed class CreateCashFlowCommandHandler(
             currency,
             request.TransactedOn
         );
-        if(validationResult.IsFailure) return validationResult;
+        if (validationResult.IsFailure) return validationResult;
 
         foreach (var item in request.TransactionItems)
         {

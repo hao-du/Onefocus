@@ -5,7 +5,6 @@ using Onefocus.Common.Exceptions.Errors;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Domain;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
@@ -33,8 +32,8 @@ public sealed record UpdateTransaction(
 );
 
 internal sealed class UpdateBankAccountCommandHandler(
-    ITransactionService transactionService,
     ILogger<UpdateBankAccountCommandHandler> logger,
+    IDomainEventService domainEventService,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
 ) : CommandHandler<UpdateBankAccountCommandRequest>(httpContextAccessor, logger)
@@ -80,10 +79,15 @@ internal sealed class UpdateBankAccountCommandHandler(
         );
         if (updateBankAccountResult.IsFailure) return updateBankAccountResult;
 
+        if (bankAccount.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(bankAccount.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return addSearchIndexEventResult;
+            bankAccount.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return saveChangesResult;
-
-        await transactionService.PublishEvents(bankAccount, cancellationToken);
 
         return Result.Success();
     }

@@ -4,18 +4,15 @@ using Onefocus.Common.Abstractions.Messages;
 using Onefocus.Common.Results;
 using Onefocus.Wallet.Application.Interfaces.Services;
 using Onefocus.Wallet.Application.Interfaces.UnitOfWork.Write;
-using Onefocus.Wallet.Application.UseCases.Transaction.Commands.CurrencyExchange;
-using Onefocus.Wallet.Domain;
-using Onefocus.Wallet.Domain.Entities.Enums;
 using Onefocus.Wallet.Domain.Entities.Write.Params;
 using Entity = Onefocus.Wallet.Domain.Entities.Write;
 
 namespace Onefocus.Wallet.Application.UseCases.Transaction.Commands.PeerTransfer;
 public sealed record CreatePeerTransferCommandRequest(
-    int Status, 
-    int Type, 
-    Guid CounterpartyId, 
-    string? Description, 
+    int Status,
+    int Type,
+    Guid CounterpartyId,
+    string? Description,
     IReadOnlyList<CreateTransferTransaction> TransferTransactions
 ) : ICommand<CreatePeerTransferCommandResponse>;
 public sealed record CreateTransferTransaction(
@@ -28,7 +25,7 @@ public sealed record CreateTransferTransaction(
 public sealed record CreatePeerTransferCommandResponse(Guid Id);
 
 internal sealed class CreatePeerTransferCommandHandler(
-    ITransactionService transactionService,
+    IDomainEventService domainEventService,
     ILogger<CreatePeerTransferCommandHandler> logger,
     IWriteUnitOfWork unitOfWork,
     IHttpContextAccessor httpContextAccessor
@@ -71,10 +68,15 @@ internal sealed class CreatePeerTransferCommandHandler(
         var repoResult = await unitOfWork.Transaction.AddPeerTransferAsync(new(peerTransfer), cancellationToken);
         if (repoResult.IsFailure) return Failure(repoResult);
 
+        if (peerTransfer.DomainEvents.Count > 0)
+        {
+            var addSearchIndexEventResult = await domainEventService.AddSearchIndexEvent(peerTransfer.DomainEvents, cancellationToken);
+            if (addSearchIndexEventResult.IsFailure) return Failure(addSearchIndexEventResult);
+            peerTransfer.ClearDomainEvents();
+        }
+
         var saveChangesResult = await unitOfWork.SaveChangesAsync(cancellationToken);
         if (saveChangesResult.IsFailure) return Failure(saveChangesResult);
-
-        await transactionService.PublishEvents(peerTransfer, cancellationToken);
 
         return Result.Success<CreatePeerTransferCommandResponse>(new(peerTransfer.Id));
     }

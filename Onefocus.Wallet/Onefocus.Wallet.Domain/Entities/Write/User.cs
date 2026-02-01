@@ -11,7 +11,6 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     private readonly List<Bank> _banks = [];
     private readonly List<Counterparty> _counterparties = [];
     private readonly List<Currency> _currencies = [];
-    private readonly List<Option> _options = [];
 
     public string FirstName { get; private set; } = default!;
     public string LastName { get; private set; } = default!;
@@ -22,7 +21,6 @@ public sealed class User : WriteEntityBase, IAggregateRoot
     public IReadOnlyCollection<Bank> Banks => _banks.AsReadOnly();
     public IReadOnlyCollection<Counterparty> Counterparties => _counterparties.AsReadOnly();
     public IReadOnlyCollection<Currency> Currencies => _currencies.AsReadOnly();
-    public IReadOnlyCollection<Option> Options => _options.AsReadOnly();
 
     private User()
     {
