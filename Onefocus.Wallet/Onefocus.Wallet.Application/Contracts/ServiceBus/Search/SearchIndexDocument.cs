@@ -2,4 +2,4 @@
 
 namespace Onefocus.Wallet.Application.Contracts.ServiceBus.Search;
 
-public record SearchIndexDocument(string? IndexName, string? DocumentId, object Payload, Dictionary<string, string> VectorSearchTerms) : ISearchIndexDocument;
+public record SearchIndexDocument(string IndexName, string DocumentId, string Payload, Dictionary<string, string> VectorSearchTerms) : ISearchIndexDocument;

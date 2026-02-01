@@ -109,7 +109,6 @@ public static class DependencyInjection
         services.AddScoped<IBankReadRepository, BankReadRepository>();
         services.AddScoped<ICounterpartyReadRepository, CounterpartyReadRepository>();
         services.AddScoped<ITransactionReadRepository, TransactionReadRepository>();
-        services.AddScoped<ISearchIndexQueueReadRepository, SearchIndexQueueReadRepository>();
 
         services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
         services.AddScoped<IUserWriteRepository, UserWriteRepository>();

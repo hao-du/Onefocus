@@ -1,14 +1,13 @@
 ﻿using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Contracts.ServiceBus.Search;
-using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
-using Onefocus.Wallet.Application.Interfaces.ServiceBus;
-using Onefocus.Wallet.Application.Interfaces.Services.Search;
+using Onefocus.Search.Application.Contracts;
+using Onefocus.Search.Application.Interfaces.Repositories;
+using Onefocus.Search.Application.Interfaces.Services;
 
-namespace Onefocus.Wallet.Application.Services;
+namespace Onefocus.Search.Application.Services;
 
 public class SearchIndexManagementService(
-    ISearchIndexQueueWriteRepository searchIndexQueueWriteRepository,
-    ISearchIndexPublisher searchIndexPublisher
+    ISearchIndexQueueRepository searchIndexQueueWriteRepository,
+    ISearchIndexService indexingService
 ) : ISearchIndexManagementService
 {
     private const int BatchSize = 10;
@@ -27,14 +26,15 @@ public class SearchIndexManagementService(
             return Result.Success();
         }
 
-        var documents = queueItems.Select(q => new SearchIndexDocument(
+        var documents = queueItems.Select(q => new SearchIndexDocumentDto(
             IndexName: q.IndexName,
             DocumentId: q.DocumentId,
             Payload: q.Payload,
             VectorSearchTerms: q.VectorSearchTerms
         )).ToList();
-        var publishResult = await searchIndexPublisher.Publish(new SearchIndexMessage(documents), cancellationToken);
-        if (publishResult.IsFailure) return publishResult;
+
+        var indexResult = await indexingService.IndexEntities(documents, cancellationToken);
+        if (indexResult.IsFailure) return indexResult;
 
         var bulkUpdateResult = await searchIndexQueueWriteRepository.BulkUpdateActiveStatusAsync(new([.. queueItems.Select(q => q.Id)]), cancellationToken);
         if (bulkUpdateResult.IsFailure) return bulkUpdateResult;

@@ -10,11 +10,17 @@
 		<PackageReference Include="MassTransit.RabbitMQ" Version="9.0.0" />
 		<PackageReference Include="OpenSearch.Client" Version="1.8.0" />
 		<PackageReference Include="OpenSearch.Net" Version="1.8.0" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Onefocus.Common\Onefocus.Common.csproj" />
 	  <ProjectReference Include="..\Onefocus.Search.Application\Onefocus.Search.Application.csproj" />
+	  <ProjectReference Include="..\Onefocus.Search.Domain\Onefocus.Search.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Databases\Migrations\" />
 	</ItemGroup>
 
 </Project>

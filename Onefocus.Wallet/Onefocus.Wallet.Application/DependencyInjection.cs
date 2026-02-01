@@ -12,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
 
+        services.AddScoped<ISearchIndexManagementService, SearchIndexManagementService>();
         services.AddScoped<ISearchSchemaManagementService, SearchSchemaManagementService>();
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IBankService, BankService>();

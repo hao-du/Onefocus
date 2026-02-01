@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Contracts.Write.SearchIndexQueue;
-using Onefocus.Wallet.Application.Interfaces.Repositories.Write;
-using Onefocus.Wallet.Infrastructure.Databases.DbContexts.Write;
+using Onefocus.Search.Application.Contracts.SearchIndexQueue;
+using Onefocus.Search.Application.Interfaces.Repositories;
+using Onefocus.Search.Infrastructure.Databases.DbContexts;
 
-namespace Onefocus.Wallet.Infrastructure.Repositories.Write;
+namespace Onefocus.Search.Infrastructure.Repositories;
 
-public sealed class SearchIndexQueueWriteRepository(
-    ILogger<SearchIndexQueueWriteRepository> logger
-        , WalletWriteDbContext context
-    ) : BaseContextRepository<SearchIndexQueueWriteRepository>(logger, context), ISearchIndexQueueWriteRepository
+public sealed class SearchIndexQueueRepository(
+    ILogger<SearchIndexQueueRepository> logger
+        , SearchDbContext context
+    ) : BaseContextRepository<SearchIndexQueueRepository>(logger, context), ISearchIndexQueueRepository
 {
     public async Task<Result<GetSearchIndexQueuesResponseDto>> GetSearchIndexQueuesAsync(GetSearchIndexQueuesRequestDto request, CancellationToken cancellationToken = default)
     {
@@ -26,7 +26,7 @@ public sealed class SearchIndexQueueWriteRepository(
     {
         return await ExecuteAsync(async () =>
         {
-            await context.AddRangeAsync(request.domainEvents, cancellationToken);
+            await context.AddRangeAsync(request.searchIndexQueues, cancellationToken);
             return Result.Success();
         });
     }

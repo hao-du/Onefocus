@@ -2,29 +2,38 @@
 using Microsoft.Extensions.Logging;
 using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Results;
-using Onefocus.Search.Application.Contracts;
-using Onefocus.Search.Application.Interfaces.Services;
+using Onefocus.Search.Application.Interfaces.UnitOfWork;
+using Onefocus.Search.Domain.Entities;
 
 namespace Onefocus.Search.Infrastructure.ServiceBus;
 
 internal class SearchIndexConsumer(
-    ISearchIndexService indexingService,
+    IUnitOfWork unitOfWork,
     ILogger<SearchIndexConsumer> logger
     ) : IConsumer<ISearchIndexMessage>
 {
     public async Task Consume(ConsumeContext<ISearchIndexMessage> context)
     {
-        var searchIndexDtos = context.Message.Documents.Select(entity => new SearchIndexDocumentDto(
-            EntityId: entity.DocumentId,
-            IndexName: entity.IndexName,
-            Payload: entity.Payload,
-            VectorSearchTerms: entity.VectorSearchTerms
-        )).ToList();
+        var queues = context.Message.Documents.Select(entity => SearchIndexQueue.Create(
+            documentId: entity.DocumentId,
+            indexName: entity.IndexName,
+            payload: entity.Payload,
+            vectorSearchTerms: entity.VectorSearchTerms
+        ).Value).ToList();
 
-        var indexResult = await indexingService.IndexEntities(searchIndexDtos, context.CancellationToken);
+        var addQueueResult = await unitOfWork.SearchIndexQueue.AddSearchIndexQueueAsync(new(queues));
+        if (addQueueResult.IsFailure)
+        {
+            LogError(addQueueResult);
+            return;
+        }
 
-        if (indexResult.IsFailure)
-            LogError(indexResult);
+        var saveResult = await unitOfWork.SaveChangesAsync();
+        if (saveResult.IsFailure)
+        {
+            LogError(saveResult);
+            return;
+        }
     }
 
     private void LogError(Result result)
@@ -33,6 +42,5 @@ internal class SearchIndexConsumer(
         {
             logger.LogError("Error when bulk-indexing with Code: {Code}, Description: {Description}", error.Code, error.Description);
         }
-        throw new InvalidOperationException($"Error when bulk-indexing with Code: {result.Error.Code}, Description: {result.Error.Description}");
     }
 }

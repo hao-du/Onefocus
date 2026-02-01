@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,11 @@ using Onefocus.Common.Abstractions.ServiceBus.Search;
 using Onefocus.Common.Configurations;
 using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure.Http;
+using Onefocus.Search.Application.Interfaces.Repositories;
 using Onefocus.Search.Application.Interfaces.Services;
+using Onefocus.Search.Application.Interfaces.UnitOfWork;
+using Onefocus.Search.Infrastructure.Databases.DbContexts;
+using Onefocus.Search.Infrastructure.Repositories;
 using Onefocus.Search.Infrastructure.ServiceBus;
 using Onefocus.Search.Infrastructure.Services;
 using OpenSearch.Client;
@@ -22,9 +27,26 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
+            .AddDbContexts(configuration)
             .AddMessage(configuration)
             .AddSearch(logger, configuration)
-            .AddClient(configuration);
+            .AddClient(configuration)
+            .AddRepositories();
+
+        return services;
+    }
+
+    private static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
+    {
+        var databaseConnectionString = configuration.GetConnectionString("SearchDatabase");
+
+        services.AddDbContext<SearchDbContext>(option =>
+        {
+            option.UseNpgsql(databaseConnectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
+        });
 
         return services;
     }
@@ -115,6 +137,14 @@ public static class DependencyInjection
                     headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 }
             );
+
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+        services.AddScoped<ISearchIndexQueueRepository, SearchIndexQueueRepository>();
 
         return services;
     }

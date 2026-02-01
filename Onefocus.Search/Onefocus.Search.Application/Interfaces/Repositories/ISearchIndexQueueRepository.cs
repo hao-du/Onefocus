@@ -1,10 +1,10 @@
 ﻿using Onefocus.Common.Repositories;
 using Onefocus.Common.Results;
-using Onefocus.Wallet.Application.Contracts.Write.SearchIndexQueue;
+using Onefocus.Search.Application.Contracts.SearchIndexQueue;
 
-namespace Onefocus.Wallet.Application.Interfaces.Repositories.Write;
+namespace Onefocus.Search.Application.Interfaces.Repositories;
 
-public interface ISearchIndexQueueWriteRepository : IBaseContextRepository
+public interface ISearchIndexQueueRepository : IBaseContextRepository
 {
     Task<Result<GetSearchIndexQueuesResponseDto>> GetSearchIndexQueuesAsync(GetSearchIndexQueuesRequestDto request, CancellationToken cancellationToken = default);
     Task<Result> AddSearchIndexQueueAsync(AddSearchIndexQueueRequestDto request, CancellationToken cancellationToken = default);

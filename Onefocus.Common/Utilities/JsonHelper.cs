@@ -34,6 +34,13 @@ public static class JsonHelper
         }
     }
 
+    public static JsonElement? DeserializeToJsonElement(string? json)
+    {
+        if (string.IsNullOrEmpty(json)) return null;
+        using var doc = JsonDocument.Parse(json);
+        return doc.RootElement.Clone();
+    }
+
     public static string SerializeJson(object content)
     {
         if (content is null)
@@ -43,7 +50,10 @@ public static class JsonHelper
             return str;
 
         if (content is JsonElement element)
-            return JsonSerializer.Serialize(element, GetOptions());
+        {
+            using var doc = JsonDocument.Parse(element.GetRawText());
+            return JsonSerializer.Serialize(doc.RootElement, GetOptions());
+        }
 
         return JsonSerializer.Serialize(content, GetOptions());
     }

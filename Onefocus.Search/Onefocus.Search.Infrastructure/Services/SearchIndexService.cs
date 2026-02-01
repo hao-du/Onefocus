@@ -33,7 +33,7 @@ public class SearchIndexService(IOpenSearchClient client, IEmbeddingService embe
                 minifiedJson = JsonHelper.AppendEmbeddings(minifiedJson, doc.VectorSearchTerms, embeddings);
 
                 // action/metadata line
-                sb.AppendLine($@"{{ ""index"": {{ ""_index"": ""{doc.IndexName}"", ""_id"": ""{doc.EntityId}"" }} }}");
+                sb.AppendLine($@"{{ ""index"": {{ ""_index"": ""{doc.IndexName}"", ""_id"": ""{doc.DocumentId}"" }} }}");
                 // source line (raw JSON)
                 sb.AppendLine(minifiedJson);
             }

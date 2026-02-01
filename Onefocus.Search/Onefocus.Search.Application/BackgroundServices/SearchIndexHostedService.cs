@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Onefocus.Wallet.Application.Interfaces.Services.Search;
+using Onefocus.Search.Application.Interfaces.Services;
 
-namespace Onefocus.Wallet.Application.BackgroundServices;
+namespace Onefocus.Search.Application.BackgroundServices;
 
 internal class SearchIndexHostedService(
     IServiceProvider serviceProvider,
