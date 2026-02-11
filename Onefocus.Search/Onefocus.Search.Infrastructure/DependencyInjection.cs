@@ -117,7 +117,7 @@ public static class DependencyInjection
         services.AddScoped<IEmbeddingService, EmbeddingService>();
         services.AddScoped<ISearchSchemaService, SearchSchemaService>();
         services.AddScoped<ISearchIndexService, SearchIndexService>();
-
+        services.AddScoped<ISearchQueryService, SearchQueryService>();
         return services;
     }
 

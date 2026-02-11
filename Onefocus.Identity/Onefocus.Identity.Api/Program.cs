@@ -25,7 +25,7 @@ services.AddSwaggerGen(option =>
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Onefocus Identity", Description = Common.SwaggerApiInfoDescription, Version = "v1" });
     option.DocumentFilter<SwaggerDocumentFilter>(new KeyValuePair<string, string>[] {
         new ("default", "/"),
-        new ("with gateway", "/identity")
+        new ("with gateway", "/api/identity")
     });
 });
 

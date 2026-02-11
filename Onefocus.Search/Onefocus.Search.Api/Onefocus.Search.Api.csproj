@@ -9,6 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="HotChocolate.AspNetCore" Version="15.1.12" />
+		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
 			<PrivateAssets>all</PrivateAssets>
@@ -23,6 +25,10 @@
 		<ProjectReference Include="..\..\Onefocus.ServiceDefaults\Onefocus.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\Onefocus.Search.Application\Onefocus.Search.Application.csproj" />
 		<ProjectReference Include="..\Onefocus.Search.Infrastructure\Onefocus.Search.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
 	</ItemGroup>
 
 </Project>

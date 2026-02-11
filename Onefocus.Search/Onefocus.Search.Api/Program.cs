@@ -4,6 +4,7 @@ using Onefocus.Common.Constants;
 using Onefocus.Common.Infrastructure;
 using Onefocus.Common.Utilities;
 using Onefocus.Search.Api.Endpoints;
+using Onefocus.Search.Api.Resolvers;
 using Onefocus.Search.Application;
 using Onefocus.Search.Infrastructure;
 using Onefocus.ServiceDefaults;
@@ -18,6 +19,11 @@ var preLoggerFactory = LoggerFactory.Create(logging =>
 });
 var logger = preLoggerFactory.CreateLogger("SearchApiLog");
 builder.Services.AddSingleton(preLoggerFactory);
+
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<GraphQuery>();
 
 builder.AddServiceDefaults();
 var services = builder.Services;
@@ -54,7 +60,10 @@ services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
 app.MapDefaultEndpoints();
+
+app.MapGraphQL("/graphql");
 
 if (app.Environment.IsDevelopmentLike())
 {
