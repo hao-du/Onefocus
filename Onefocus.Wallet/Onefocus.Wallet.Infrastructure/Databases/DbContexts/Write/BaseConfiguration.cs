@@ -8,12 +8,13 @@ internal abstract class BaseConfiguration<T> : IEntityTypeConfiguration<T> where
 {
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {
-        builder.Property(e => e.Id).HasValueGenerator<IdGenerator>().ValueGeneratedOnAdd();
+        builder.Property(t => t.Id).HasValueGenerator<IdGenerator>().ValueGeneratedOnAdd();
 
-        builder.Property(f => f.IsActive).IsRequired();
-        builder.Property(f => f.Description).HasMaxLength(255);
+        builder.Property(t => t.IsActive).IsRequired();
+        builder.Property(t => t.Description).HasMaxLength(255);
 
-        builder.HasQueryFilter(ba => ba.IsActive);
+        builder.HasIndex(t => new { t.CreatedOn })
+            .HasDatabaseName($"IX_{typeof(T).Name}_CreatedOn");
     }
 }
 
